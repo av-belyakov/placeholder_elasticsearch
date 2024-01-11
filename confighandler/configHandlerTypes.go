@@ -5,6 +5,7 @@ type ConfigApp struct {
 	AppConfigNATS
 	AppConfigElasticSearch
 	AppConfigMongoDB
+	AppConfigRulesProcMsg
 }
 
 type CommonAppConfig struct {
@@ -59,4 +60,9 @@ type AppConfigMongoDB struct {
 	User   string `yaml:"user"`
 	Passwd string `yaml:"passwd"`
 	NameDB string `yaml:"namedb"`
+}
+
+type AppConfigRulesProcMsg struct {
+	Directory string `yaml:"directory"`
+	File      string `yaml:"file"`
 }

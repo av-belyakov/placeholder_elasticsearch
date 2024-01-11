@@ -17,6 +17,7 @@ import (
 	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/memorytemporarystorage"
 	"placeholder_elasticsearch/natsinteractions"
+	rules "placeholder_elasticsearch/rulesinteraction"
 	"placeholder_elasticsearch/supportingfunctions"
 	"placeholder_elasticsearch/zabbixinteractions"
 )
@@ -30,6 +31,7 @@ var (
 	hz         *zabbixinteractions.HandlerZabbixConnection
 	warnings   []string
 	storageApp *memorytemporarystorage.CommonStorageTemporary
+	lr         *rules.ListRule
 	iz         chan string
 	logging    chan datamodels.MessageLogging
 	counting   chan datamodels.DataCounterSettings
@@ -106,16 +108,21 @@ func counterHandler(
 			storageApp.SetEventsDoNotMeetRulesDataCounter(d.Count)
 		}
 
-		dc := storageApp.GetDataCounter()
-		d, h, m, s := supportingfunctions.GetDifference(dc.StartTime, time.Now())
+		d, h, m, s := supportingfunctions.GetDifference(storageApp.GetStartTimeDataCounter(), time.Now())
 
-		log.Printf("\tсобытий принятых/обработанных: %d/%d, соответствие/не соответствие правилам: %d/%d, время со старта приложения: дней %d, часов %d, минут %d, секунд %d\n", dc.AcceptedEvents, dc.ProcessedEvents, dc.EventsMeetRules, dc.EventsDoNotMeetRules, d, h, m, s)
+		patternReciveEvents := fmt.Sprintf("событий принятых/обработанных: %d/%d", storageApp.GetAcceptedEventsDataCounter(), storageApp.GetProcessedEventsDataCounter())
+		patternRuleIsOk := fmt.Sprintf("соответствие/не соответствие правилам: %d/%d", storageApp.GetEventsMeetRulesDataCounter(), storageApp.GetEventsDoNotMeetRulesDataCounter())
+		patternTime := fmt.Sprintf("время со старта приложения: дней %d, часов %d, минут %d, секунд %d", d, h, m, s)
+		log.Printf("\t%s, %s, %s\n", patternReciveEvents, patternRuleIsOk, patternTime)
 
-		if ae != dc.AcceptedEvents || emr != dc.EventsMeetRules {
-			iz <- fmt.Sprintf("событий принятых: %d, соответствие правилам: %d, время со старта приложения: дней %d, часов %d, минут %d, секунд %d\n", dc.AcceptedEvents, dc.EventsMeetRules, d, h, m, s)
+		//log.Printf("\tсобытий принятых/обработанных: %d/%d, соответствие/не соответствие правилам: %d/%d, время со старта приложения: дней %d, часов %d, минут %d, секунд %d\n", storageApp.GetAcceptedEventsDataCounter(), storageApp.GetProcessedEventsDataCounter(), storageApp.GetEventsMeetRulesDataCounter(), storageApp.GetEventsDoNotMeetRulesDataCounter(), d, h, m, s)
 
-			ae = dc.AcceptedEvents
-			emr = dc.EventsMeetRules
+		if ae != storageApp.GetAcceptedEventsDataCounter() || emr != storageApp.GetEventsMeetRulesDataCounter() {
+			//iz <- fmt.Sprintf("событий принятых: %d, соответствие правилам: %d, время со старта приложения: дней %d, часов %d, минут %d, секунд %d\n", storageApp.GetAcceptedEventsDataCounter(), storageApp.GetEventsMeetRulesDataCounter(), d, h, m, s)
+			iz <- fmt.Sprintf("событий принятых: %d, соответствие правилам: %d, %s\n", storageApp.GetAcceptedEventsDataCounter(), storageApp.GetEventsMeetRulesDataCounter(), patternTime)
+
+			ae = storageApp.GetAcceptedEventsDataCounter()
+			emr = storageApp.GetEventsMeetRulesDataCounter()
 		}
 	}
 }
@@ -177,19 +184,48 @@ func init() {
 		log.Fatalf("error module 'simplelogger': %v", err)
 	}
 
-	/*
-		//инициализируем модуль временного хранения информации
-		storageApp = memorytemporarystorage.NewTemporaryStorage()
+	// инициализируем модуль чтения правил обработки сообщений поступающих через NATS
+	lr, warnings, err = rules.NewListRule(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.File)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		_ = sl.WriteLoggingData(fmt.Sprintf("%v %s:%d", err, f, l-2), "error")
 
-		//добавляем время инициализации счетчика хранения
-		storageApp.SetStartTimeDataCounter(time.Now())
+		log.Fatalf("error module 'rulesinteraction': %v\n", err)
+	}
 
-		commOpt := confApp.GetCommonApp()
-		host := fmt.Sprintf("%s:%d", commOpt.Zabbix.NetworkHost, commOpt.Zabbix.NetworkPort)
+	// если есть какие либо логические ошибки в файле с YAML правилами для обработки сообщений поступающих от NATS
+	if len(warnings) > 0 {
+		var warningStr string
 
-		//инициализируем модуль связи с Zabbix
-		hz = zabbixinteractions.NewHandlerZabbixConnection(host, commOpt.Zabbix.ZabbixHost, commOpt.Zabbix.ZabbixKey)
-	*/
+		for _, v := range warnings {
+			warningStr += fmt.Sprintln(v)
+		}
+
+		_, f, l, _ := runtime.Caller(0)
+		_ = sl.WriteLoggingData(fmt.Sprintf("%s:%d\n%v", f, l, warningStr), "warning")
+	}
+
+	// проверяем наличие правил Pass или Passany
+	if len(lr.GetRulePass()) == 0 && !lr.GetRulePassany() {
+		msg := "there are no rules for handling messages received from NATS or all rules have failed validation"
+		_, f, l, _ := runtime.Caller(0)
+		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", msg, f, l-3), "error")
+
+		log.Fatalf("%s\n", msg)
+	}
+
+	//инициализируем модуль временного хранения информации
+	storageApp = memorytemporarystorage.NewTemporaryStorage()
+
+	//добавляем время инициализации счетчика хранения
+	storageApp.SetStartTimeDataCounter(time.Now())
+
+	commOpt := confApp.GetCommonApp()
+	host := fmt.Sprintf("%s:%d", commOpt.Zabbix.NetworkHost, commOpt.Zabbix.NetworkPort)
+
+	//инициализируем модуль связи с Zabbix
+	hz = zabbixinteractions.NewHandlerZabbixConnection(host, commOpt.Zabbix.ZabbixHost, commOpt.Zabbix.ZabbixKey)
+
 }
 
 func main() {
@@ -220,10 +256,10 @@ func main() {
 	go loggingHandler(iz, sl, logging)
 
 	//вывод данных счетчика
-	//go counterHandler(iz, storageApp, counting)
+	go counterHandler(iz, storageApp, counting)
 
 	//взаимодействие с Zabbix
-	//go interactionZabbix(confApp, hz, iz, logging)
+	go interactionZabbix(confApp, hz, iz, logging)
 
 	//инициализация модуля для взаимодействия с NATS (Данный модуль обязателен для взаимодействия)
 	natsModule, err := natsinteractions.NewClientNATS(confApp.AppConfigNATS, storageApp, logging, counting)
@@ -250,5 +286,5 @@ func main() {
 		MsgType: "info",
 	}
 
-	coremodule.CoreHandler(natsModule, storageApp, logging, counting)
+	coremodule.CoreHandler(natsModule, storageApp, lr, logging, counting)
 }

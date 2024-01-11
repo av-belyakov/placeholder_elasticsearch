@@ -20,6 +20,10 @@ func (conf *ConfigApp) GetAppMongoDB() *AppConfigMongoDB {
 	return &conf.AppConfigMongoDB
 }
 
+func (conf *ConfigApp) GetAppRulesProcMsg() *AppConfigRulesProcMsg {
+	return &conf.AppConfigRulesProcMsg
+}
+
 func (conf *ConfigApp) Clean() {
 	conf = &ConfigApp{}
 }

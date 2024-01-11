@@ -48,6 +48,12 @@ var _ = Describe("Confighandler", func() {
 			Expect(cmdb.Passwd).Should(Equal("gDbv5cf7*F2"))
 			Expect(cmdb.NameDB).Should(Equal("placeholder_elasticsearch"))
 		})
+		It("Все пораметры конфигрурационного файла для загрузки правил должны быть успешно получены", func() {
+			cr := conf.GetAppRulesProcMsg()
+
+			Expect(cr.Directory).Should(Equal("rules"))
+			Expect(cr.File).Should(Equal("mispmsgrule.yaml"))
+		})
 	})
 
 	Context("Тест 2. Проверяем установленные значения переменных окружения", func() {
@@ -68,6 +74,9 @@ var _ = Describe("Confighandler", func() {
 			MDB_USER   = "module_placeholder_elasticsearch.test.test"
 			MDB_PASSWD = "gDbv5cf7*F2.test.test"
 			MDB_NAMEDB = "placeholder_elasticsearch.test.test"
+
+			R_DIR  = "rules_dir_test"
+			R_FILE = "filre_reules.test.test"
 		)
 
 		os.Setenv("GO_PHELASTIC_NHOST", NATS_HOST)
@@ -86,6 +95,9 @@ var _ = Describe("Confighandler", func() {
 		os.Setenv("GO_PHELASTIC_MONGOUSER", MDB_USER)
 		os.Setenv("GO_PHELASTIC_MONGOPASSWD", MDB_PASSWD)
 		os.Setenv("GO_PHELASTIC_MONGONAMEDB", MDB_NAMEDB)
+
+		os.Setenv("GO_PHELASTIC_RULES_DIR", R_DIR)
+		os.Setenv("GO_PHELASTIC_RULES_FILE", R_FILE)
 
 		confEnv, err := confighandler.NewConfig("placeholder_elasticsearch")
 

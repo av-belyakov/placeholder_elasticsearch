@@ -54,8 +54,6 @@ func (h *handlerSendData) New() error {
 }
 
 func (hsd handlerSendData) sendingData(uuid string) {
-	defer hsd.storageApp.SetIsProcessedElasticsearshHiveFormatMessage(uuid)
-
 	if !hsd.conf.Send {
 		return
 	}

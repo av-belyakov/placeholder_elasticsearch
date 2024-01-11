@@ -36,6 +36,10 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 		"GO_PHELASTIC_MONGOUSER":   "",
 		"GO_PHELASTIC_MONGOPASSWD": "",
 		"GO_PHELASTIC_MONGONAMEDB": "",
+
+		//Место нахождение правил
+		"GO_PHELASTIC_RULES_DIR":  "",
+		"GO_PHELASTIC_RULES_FILE": "",
 	}
 
 	getFileName := func(sf, confPath string, lfs []fs.DirEntry) (string, error) {
@@ -154,6 +158,14 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 			conf.AppConfigMongoDB.NameDB = viper.GetString("MongoDB.namedb")
 		}
 
+		//Настройки для модуля правил обработки сообщений
+		if viper.IsSet("Rules_proc_msg.directory") {
+			conf.AppConfigRulesProcMsg.Directory = viper.GetString("Rules_proc_msg.directory")
+		}
+		if viper.IsSet("Rules_proc_msg.file") {
+			conf.AppConfigRulesProcMsg.File = viper.GetString("Rules_proc_msg.file")
+		}
+
 		return nil
 	}
 
@@ -260,6 +272,14 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 	}
 	if envList["GO_PHELASTIC_MONGONAMEDB"] != "" {
 		conf.AppConfigMongoDB.NameDB = envList["GO_PHELASTIC_MONGONAMEDB"]
+	}
+
+	//Настройки для модуля правил обработки сообщений
+	if envList["GO_PHELASTIC_RULES_DIR"] != "" {
+		conf.AppConfigRulesProcMsg.Directory = envList["GO_PHELASTIC_RULES_DIR"]
+	}
+	if envList["GO_PHELASTIC_RULES_FILE"] != "" {
+		conf.AppConfigRulesProcMsg.File = envList["GO_PHELASTIC_RULES_FILE"]
 	}
 
 	return conf, nil

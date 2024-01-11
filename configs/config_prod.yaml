@@ -15,3 +15,6 @@ MongoDB:
   user: "module_placeholder_elasticsearch"
   passwd: "gDbv5cf7*F2"
   namedb: "placeholder_elasticsearch"
+Rules_proc_msg:
+  directory: "rules"
+  file: "mispmsgrule.yaml"
