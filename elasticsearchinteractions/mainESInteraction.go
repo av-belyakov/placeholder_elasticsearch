@@ -52,6 +52,8 @@ func (h *handlerSendData) New() error {
 }
 
 func (hsd handlerSendData) sendingData(data []byte) {
+	fmt.Println("func 'sendingData', STARt...")
+
 	if !hsd.conf.Send {
 		return
 	}

@@ -2,7 +2,7 @@ NATS:
   host: "nats.cloud.gcm"
   port: 4222
 ElasticSearch:
-  send: false
+  send: true
   host: "datahook.cloud.gcm"
   port: 9200
   prefix:
