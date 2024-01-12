@@ -272,7 +272,7 @@ func main() {
 	}
 
 	// инициализация модуля для взаимодействия с СУБД MongoDB
-	//ctxRedis := context.Background()
+	//ctxMongoDB := context.Background()
 	//redisModule := redisinteractions.HandlerRedis(ctxRedis, *confApp.GetAppRedis(), storageApp, logging)
 
 	//инициализация модуля для взаимодействия с ElasticSearch
