@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/memorytemporarystorage"
 	"placeholder_elasticsearch/natsinteractions"
 	rules "placeholder_elasticsearch/rulesinteraction"
@@ -12,6 +13,7 @@ import (
 func CoreHandler(natsModule *natsinteractions.ModuleNATS,
 	storageApp *memorytemporarystorage.CommonStorageTemporary,
 	listRule *rules.ListRule,
+	esModule *elasticsearchinteractions.ModuleElasticSearch,
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings,
 ) {
@@ -23,6 +25,16 @@ func CoreHandler(natsModule *natsinteractions.ModuleNATS,
 
 		fmt.Println("func 'CoreHandler'", data)
 
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		// отправка СЫРОГО сообщения в Elasticshearch
+		//ПОКА ОСТАВЛЯЮ, ПОТОМ НАДО БУДЕТ УДАЛИТЬ
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		esModule.HandlerData(elasticsearchinteractions.SettingsInputChan{
+			UUID: data.MsgId,
+			Data: data.Data,
+		})
+
+		//НОВЫЙ
 		//обработчик сообщений из TheHive (выполняется разбор сообщения и его разбор на основе правил)
 		chanOutputJsonDecode, chanDecodeDone := decodeJson.HandlerJsonMessage(data.Data, data.MsgId)
 		go NewVerifiedTheHiveFormat(chanOutputJsonDecode, chanDecodeDone, logging)

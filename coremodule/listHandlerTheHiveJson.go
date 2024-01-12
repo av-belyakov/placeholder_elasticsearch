@@ -1,8 +1,6 @@
 package coremodule
 
 import (
-	"strings"
-
 	"placeholder_elasticsearch/datamodels"
 )
 
@@ -109,24 +107,23 @@ func NewSupportiveObservablesReports() *supportiveObservablesReports {
 	o.reportsTmp[fields[1]][fields[2]]
 }*/
 
-func (sor *supportiveObservablesReports) HandlerReportValue(
+/*func (sor *supportiveObservablesReports) HandlerReportValue(
 	fieldBranch string,
 	i interface{},
 	f func(interface{})) {
-	/*
-	   Reports          map[string]ReportTaxonomys `json:"reports"`
 
-	   	type ReportTaxonomies struct {
-	   		Taxonomies []Taxonomy `json:"taxonomys"`
-	   	}
-
-	   	type Taxonomy struct {
-	   		Level     string `json:"level"`
-	   		Namespace string `json:"namespace"`
-	   		Predicate string `json:"predicate"`
-	   		Value     string `json:"value"`
-	   	}
-	*/
+	//   Reports          map[string]ReportTaxonomys `json:"reports"`
+	//
+	//   	type ReportTaxonomies struct {
+	//   		Taxonomies []Taxonomy `json:"taxonomys"`
+	//   	}
+	//
+	//   	type Taxonomy struct {
+	//   		Level     string `json:"level"`
+	//   		Namespace string `json:"namespace"`
+	//   		Predicate string `json:"predicate"`
+	//   		Value     string `json:"value"`
+	//   	}
 
 	fields := strings.Split(fieldBranch, ".")
 	if len(fields) != 4 {
@@ -145,7 +142,7 @@ func (sor *supportiveObservablesReports) HandlerReportValue(
 	if sor.isExistFieldBranch(fields[4]) {
 		sor.reports[fields[1]].Taxonomies = append(sor.reports[fields[1]].Taxonomies, sor.taxonomyTmp)
 	}
-}
+}*/
 
 func (sor *supportiveObservablesReports) isExistFieldBranch(value string) bool {
 	for _, v := range sor.listAcceptedFields {

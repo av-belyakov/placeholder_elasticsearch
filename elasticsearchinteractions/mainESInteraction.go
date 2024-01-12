@@ -12,7 +12,6 @@ import (
 
 	"placeholder_elasticsearch/confighandler"
 	"placeholder_elasticsearch/datamodels"
-	"placeholder_elasticsearch/memorytemporarystorage"
 )
 
 var es ModuleElasticSearch
@@ -31,10 +30,9 @@ type ModuleElasticSearch struct {
 }
 
 type handlerSendData struct {
-	client     *elasticsearch.Client
-	conf       confighandler.AppConfigElasticSearch
-	storageApp *memorytemporarystorage.CommonStorageTemporary
-	logging    chan<- datamodels.MessageLogging
+	client  *elasticsearch.Client
+	conf    confighandler.AppConfigElasticSearch
+	logging chan<- datamodels.MessageLogging
 }
 
 func (h *handlerSendData) New() error {
@@ -53,7 +51,7 @@ func (h *handlerSendData) New() error {
 	return nil
 }
 
-func (hsd handlerSendData) sendingData(uuid string) {
+func (hsd handlerSendData) sendingData(data []byte) {
 	if !hsd.conf.Send {
 		return
 	}
@@ -68,19 +66,8 @@ func (hsd handlerSendData) sendingData(uuid string) {
 		return
 	}
 
-	b, ok := hsd.storageApp.GetRawDataHiveFormatMessage(uuid)
-	if !ok {
-		_, f, l, _ := runtime.Caller(0)
-		hsd.logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'the raw data was not found in the repository' %s:%d", f, l-2),
-			MsgType: "warning",
-		}
-
-		return
-	}
-
 	t := time.Now()
-	buf := bytes.NewReader(b)
+	buf := bytes.NewReader(data)
 	res, err := hsd.client.Index(fmt.Sprintf("%s%s_%d_%d", hsd.conf.Prefix, hsd.conf.Index, t.Year(), int(t.Month())), buf)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -125,13 +112,11 @@ func init() {
 
 func HandlerElasticSearch(
 	conf confighandler.AppConfigElasticSearch,
-	storageApp *memorytemporarystorage.CommonStorageTemporary,
 	logging chan<- datamodels.MessageLogging) (*ModuleElasticSearch, error) {
 
 	hsd := handlerSendData{
-		conf:       conf,
-		storageApp: storageApp,
-		logging:    logging,
+		conf:    conf,
+		logging: logging,
 	}
 	if err := hsd.New(); err != nil {
 		if err != nil {
@@ -144,7 +129,7 @@ func HandlerElasticSearch(
 
 			//получаем  data.Data и сохраняем ее в Redis list
 
-			go hsd.sendingData(data.UUID)
+			go hsd.sendingData(data.Data)
 		}
 	}()
 

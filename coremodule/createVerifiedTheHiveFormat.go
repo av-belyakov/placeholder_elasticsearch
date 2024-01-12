@@ -26,7 +26,7 @@ func NewVerifiedTheHiveFormat(
 		select {
 		case data := <-input:
 
-			fmt.Println("func 'NewVerifiedTheHiveFormat' DATA:", data)
+			fmt.Println("func 'NewVerifiedTheHiveFormat' DATA.Value:", data.Value)
 
 		case <-done:
 			/*bytes, err := json.Marshal(struct {

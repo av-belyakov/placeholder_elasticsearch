@@ -12,6 +12,7 @@ import (
 
 	"placeholder_elasticsearch/confighandler"
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/elasticsearchinteractions"
 
 	//"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/coremodule"
@@ -275,16 +276,16 @@ func main() {
 	//redisModule := redisinteractions.HandlerRedis(ctxRedis, *confApp.GetAppRedis(), storageApp, logging)
 
 	//инициализация модуля для взаимодействия с ElasticSearch
-	/*esModule, err := elasticsearchinteractions.HandlerElasticSearch(*confApp.GetAppES(), storageApp, logging)
+	esModule, err := elasticsearchinteractions.HandlerElasticSearch(*confApp.GetAppES(), logging)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")
-	}*/
+	}
 
 	logging <- datamodels.MessageLogging{
 		MsgData: "application '" + appName + "' is started",
 		MsgType: "info",
 	}
 
-	coremodule.CoreHandler(natsModule, storageApp, lr, logging, counting)
+	coremodule.CoreHandler(natsModule, storageApp, lr, esModule, logging, counting)
 }
