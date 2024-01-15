@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	rules "placeholder_misp/rulesinteraction"
+	rules "placeholder_elasticsearch/rulesinteraction"
 )
 
 var _ = Describe("Readrule", Ordered, func() {

@@ -14,19 +14,17 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
-var es ModuleElasticSearch
-
 type SettingsInputChan struct {
 	UUID string
 	Data []byte
 }
 
-// ModuleElasticSearch инициализированный модуль
-// chanInputElasticSearch - канал для отправки данных в модуль
-// chanOutputElasticSearch - канал для принятия данных из модуля
-type ModuleElasticSearch struct {
-	chanInputElasticSearch  chan SettingsInputChan
-	chanOutputElasticSearch chan interface{}
+// ElasticSearchModule инициализированный модуль
+// ChanInputModule - канал для отправки данных В модуль
+// ChanOutputModule - канал для принятия данных ИЗ модуля
+type ElasticSearchModule struct {
+	ChanInputModule  chan SettingsInputChan
+	ChanOutputModule chan interface{}
 }
 
 type handlerSendData struct {
@@ -105,16 +103,13 @@ func (hsd handlerSendData) sendingData(data []byte) {
 	}
 }
 
-func init() {
-	es = ModuleElasticSearch{
-		chanInputElasticSearch:  make(chan SettingsInputChan),
-		chanOutputElasticSearch: make(chan interface{}),
-	}
-}
-
 func HandlerElasticSearch(
 	conf confighandler.AppConfigElasticSearch,
-	logging chan<- datamodels.MessageLogging) (*ModuleElasticSearch, error) {
+	logging chan<- datamodels.MessageLogging) (*ElasticSearchModule, error) {
+	module := &ElasticSearchModule{
+		ChanInputModule:  make(chan SettingsInputChan),
+		ChanOutputModule: make(chan interface{}),
+	}
 
 	hsd := handlerSendData{
 		conf:    conf,
@@ -122,22 +117,16 @@ func HandlerElasticSearch(
 	}
 	if err := hsd.New(); err != nil {
 		if err != nil {
-			return &es, err
+			return module, err
 		}
 	}
 
 	go func() {
-		for data := range es.chanInputElasticSearch {
-
-			//получаем  data.Data и сохраняем ее в Redis list
+		for data := range module.ChanInputModule {
 
 			go hsd.sendingData(data.Data)
 		}
 	}()
 
-	return &es, nil
-}
-
-func (es ModuleElasticSearch) HandlerData(data SettingsInputChan) {
-	es.chanInputElasticSearch <- data
+	return module, nil
 }
