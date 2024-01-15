@@ -20,13 +20,12 @@ func NewVerifiedTheHiveFormat(
 		listHandlerEventDetailsCustomFields,
 	})
 
-	fmt.Println("func 'NewVerifiedTheHiveFormat' LIST HANDLER:", listHandler)
+	fmt.Println("func 'NewVerifiedTheHiveFormat' LIST HANDLER size:", len(listHandler))
 
 	for {
 		select {
-		case data := <-input:
-
-			fmt.Println("func 'NewVerifiedTheHiveFormat' DATA.Value:", data.Value)
+		case <-input:
+			fmt.Println("func 'NewVerifiedTheHiveFormat' DATA.Value")
 
 		case <-done:
 			/*bytes, err := json.Marshal(struct {

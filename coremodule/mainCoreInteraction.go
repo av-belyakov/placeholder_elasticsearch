@@ -1,8 +1,6 @@
 package coremodule
 
 import (
-	"fmt"
-
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/memorytemporarystorage"
@@ -25,8 +23,6 @@ func CoreHandler(natsModule *natsinteractions.ModuleNATS,
 
 	for {
 		data := <-natsChanReception
-
-		fmt.Println("func 'CoreHandler'", data)
 
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		// отправка СЫРОГО сообщения в Elasticshearch
