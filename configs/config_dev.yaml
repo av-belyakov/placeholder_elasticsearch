@@ -11,7 +11,7 @@ ElasticSearch:
   passwd: "XxZqesYXuk8C"
 MongoDB:
   host: "192.168.9.208"
-  port: 37017
+  port: 27117
   user: "module_placeholder_elasticsearch"
   passwd: "gDbv5cf7*F2"
   namedb: "placeholder_elasticsearch"

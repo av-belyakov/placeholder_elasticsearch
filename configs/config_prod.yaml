@@ -6,12 +6,12 @@ ElasticSearch:
   host: "datahook.cloud.gcm"
   port: 9200
   prefix:
-  index: "module_placeholder_elasticsearch"
+  index: "module_placeholder_thehive_case"
   user: "writer"
   passwd: "XxZqesYXuk8C"
 MongoDB:
-  host: "192.168.9.208"
-  port: 37017
+  host: "172.10.11.2"
+  port: 27017
   user: "module_placeholder_elasticsearch"
   passwd: "gDbv5cf7*F2"
   namedb: "placeholder_elasticsearch"
