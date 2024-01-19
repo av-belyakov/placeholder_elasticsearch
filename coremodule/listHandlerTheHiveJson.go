@@ -2,6 +2,7 @@ package coremodule
 
 import (
 	"placeholder_elasticsearch/datamodels"
+	"strings"
 )
 
 var (
@@ -87,17 +88,16 @@ type supportiveObservablesReports struct {
 
 func NewSupportiveObservablesReports() *supportiveObservablesReports {
 	return &supportiveObservablesReports{
-		listAcceptedFields: make([]string, 0),
-		taxonomyTmp:        datamodels.Taxonomy{},
-		reports:            make(map[string]datamodels.ReportTaxonomies),
+		//listAcceptedFields: make([]string, 0),
+		taxonomyTmp: datamodels.Taxonomy{},
+		reports:     make(map[string]datamodels.ReportTaxonomies),
 	}
 }
 
 /*func (o *supportiveObservables) HandlerReportValue(fieldBranch string, i interface{}, f func(interface{})) {
-		i := strings.Split("reports.BIZONE_ThreatVision_1_0.taxonomies.level", ".")
-		assert.Equal(t, len(i), 4)
-		assert.Equal(t, i[1], "BIZONE_ThreatVision_1_0")
-
+	tmp := strings.Split("reports.BIZONE_ThreatVision_1_0.taxonomies.level", ".")
+	//assert.Equal(t, len(i), 4)
+	//assert.Equal(t, i[1], "BIZONE_ThreatVision_1_0")
 
 	fields := strings.Split(fieldBranch, ".")
 	if len(fields) != 4 {
@@ -107,10 +107,10 @@ func NewSupportiveObservablesReports() *supportiveObservablesReports {
 	o.reportsTmp[fields[1]][fields[2]]
 }*/
 
-/*func (sor *supportiveObservablesReports) HandlerReportValue(
+func (sor *supportiveObservablesReports) HandlerReportValue(
 	fieldBranch string,
 	i interface{},
-	f func(interface{})) {
+	/*f func(interface{})*/) {
 
 	//   Reports          map[string]ReportTaxonomys `json:"reports"`
 	//
@@ -139,10 +139,35 @@ func NewSupportiveObservablesReports() *supportiveObservablesReports {
 		sor.reports[fields[1]] = datamodels.ReportTaxonomies{}
 	}
 
+	//для того чтобы понять нужно ли создавать новый элемент среза
+	//используем хранилище listAcceptedFields для временного хранения
+	//наименований полей, создаем новый элемент среза, если попадается
+	// повторяющееся свойство структуры Taxonomy
 	if sor.isExistFieldBranch(fields[4]) {
-		sor.reports[fields[1]].Taxonomies = append(sor.reports[fields[1]].Taxonomies, sor.taxonomyTmp)
+		tmpSlice := sor.reports[fields[1]]
+		tmpSlice.Taxonomies = append(tmpSlice.Taxonomies, datamodels.Taxonomy{})
+		sor.reports[fields[1]] = tmpSlice
+
+		sor.listAcceptedFields = []string{}
 	}
-}*/
+
+	sor.listAcceptedFields = append(sor.listAcceptedFields, fields[4])
+
+	switch fields[4] {
+	case "level":
+		sor.reports[fields[1]].Taxonomies[0].SetAnyLevel(i)
+
+	case "namespace":
+		sor.reports[fields[1]].Taxonomies[0].SetAnyNamespace(i)
+
+	case "predicate":
+		sor.reports[fields[1]].Taxonomies[0].SetAnyPredicate(i)
+
+	case "value":
+		sor.reports[fields[1]].Taxonomies[0].SetAnyValue(i)
+	}
+
+}
 
 func (sor *supportiveObservablesReports) isExistFieldBranch(value string) bool {
 	for _, v := range sor.listAcceptedFields {
