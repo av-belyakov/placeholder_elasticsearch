@@ -19,6 +19,9 @@ var (
 	so *supportiveObservables = NewSupportiveObservables()
 )
 
+//----------- Supportive Observables -----------
+//------------------- START --------------------
+
 // supportiveObservables вспомогательный тип для формирования объекта типа observables
 // currentNum текущий номер объекта типа observables
 // currentNumReports текущий номер временного объекта для свойства reports
@@ -77,6 +80,12 @@ func (o *supportiveObservables) GetObservables() []datamodels.ObservableMessage 
 
 	return o.observables
 }
+
+//--------- Supportive Observables -----------
+//------------------ END ---------------------
+
+//----------- Supportive Observables Reports -----------
+//---------------------- START -------------------------
 
 // supportiveObservablesReports вспомогательный тип для формирования объекта типа reports
 type supportiveObservablesReports struct {
@@ -178,6 +187,9 @@ func (sor *supportiveObservablesReports) isExistFieldBranch(value string) bool {
 
 	return false
 }
+
+//--------- Supportive Observables Reports -----------
+//---------------------- END -------------------------
 
 // ------ EVENT ------
 var listHandlerEvent map[string][]func(interface{}) = map[string][]func(interface{}){
@@ -501,7 +513,7 @@ var listHandlerObservables map[string][]func(interface{}) = map[string][]func(in
 		so.HandlerValue(
 			"observables._createdAt",
 			i,
-			so.observableTmp.SetAnyCreatedAt,
+			so.observableTmp.SetAnyUnderliningCreatedAt,
 		)
 	}},
 	//--- _updatedAt ---
@@ -509,7 +521,7 @@ var listHandlerObservables map[string][]func(interface{}) = map[string][]func(in
 		so.HandlerValue(
 			"observables._updatedAt",
 			i,
-			so.observableTmp.SetAnyUpdatedAt,
+			so.observableTmp.SetAnyUnderliningUpdatedAt,
 		)
 	}},
 	//--- startDate ---
@@ -525,7 +537,7 @@ var listHandlerObservables map[string][]func(interface{}) = map[string][]func(in
 		so.HandlerValue(
 			"observables._createdBy",
 			i,
-			so.observableTmp.SetAnyCreatedBy,
+			so.observableTmp.SetAnyUnderliningCreatedBy,
 		)
 	}},
 	//--- _updatedBy ---
@@ -533,7 +545,7 @@ var listHandlerObservables map[string][]func(interface{}) = map[string][]func(in
 		so.HandlerValue(
 			"observables._updatedBy",
 			i,
-			so.observableTmp.SetAnyUpdatedBy,
+			so.observableTmp.SetAnyUnderliningUpdatedBy,
 		)
 	}},
 	//--- _id ---

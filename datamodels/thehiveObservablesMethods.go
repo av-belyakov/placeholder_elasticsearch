@@ -62,51 +62,69 @@ func (o *ObservableMessage) SetAnyIgnoreSimilarity(i interface{}) {
 	}
 }
 
-func (o *ObservableMessage) GetTlp() int {
+func (o *ObservableMessage) GetTlp() uint64 {
 	return o.Tlp
 }
 
 // SetValueTlp устанавливает INT значение для поля Tlp
-func (o *ObservableMessage) SetValueTlp(v int) {
+func (o *ObservableMessage) SetValueTlp(v uint64) {
 	o.Tlp = v
 }
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
 func (o *ObservableMessage) SetAnyTlp(i interface{}) {
-	if v, ok := i.(int); ok {
+	if v, ok := i.(float64); ok {
+		o.Tlp = uint64(v)
+
+		return
+	}
+
+	if v, ok := i.(uint64); ok {
 		o.Tlp = v
 	}
 }
 
-func (o *ObservableMessage) GetCreatedAt() uint64 {
-	return o.CreatedAt
+func (o *ObservableMessage) GetUnderliningCreatedAt() uint64 {
+	return o.UnderliningCreatedAt
 }
 
-// SetValueCreatedAt устанавливает UINT64 значение для поля CreatedAt
-func (o *ObservableMessage) SetValueCreatedAt(v uint64) {
-	o.CreatedAt = v
+// SetValueUnderliningCreatedAt устанавливает UINT64 значение для поля CreatedAt
+func (o *ObservableMessage) SetValueUnderliningCreatedAt(v uint64) {
+	o.UnderliningCreatedAt = v
 }
 
-// SetAnyCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
-func (o *ObservableMessage) SetAnyCreatedAt(i interface{}) {
+// SetAnyUnderliningCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
+func (o *ObservableMessage) SetAnyUnderliningCreatedAt(i interface{}) {
+	if v, ok := i.(float64); ok {
+		o.UnderliningCreatedAt = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
-		o.CreatedAt = v
+		o.UnderliningCreatedAt = v
 	}
 }
 
-func (o *ObservableMessage) GetUpdatedAt() uint64 {
-	return o.UpdatedAt
+func (o *ObservableMessage) GetUnderliningUpdatedAt() uint64 {
+	return o.UnderliningUpdatedAt
 }
 
-// SetValueUpdatedAt устанавливает UINT64 значение для поля UpdatedAt
-func (o *ObservableMessage) SetValueUpdatedAt(v uint64) {
-	o.UpdatedAt = v
+// SetValueUnderliningUpdatedAt устанавливает UINT64 значение для поля UpdatedAt
+func (o *ObservableMessage) SetValueUnderliningUpdatedAt(v uint64) {
+	o.UnderliningUpdatedAt = v
 }
 
-// SetAnyUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
-func (o *ObservableMessage) SetAnyUpdatedAt(i interface{}) {
+// SetAnyUnderliningUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
+func (o *ObservableMessage) SetAnyUnderliningUpdatedAt(i interface{}) {
+	if v, ok := i.(float64); ok {
+		o.UnderliningUpdatedAt = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
-		o.UpdatedAt = v
+		o.UnderliningUpdatedAt = v
 	}
 }
 
@@ -121,37 +139,43 @@ func (o *ObservableMessage) SetValueStartDate(v uint64) {
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (o *ObservableMessage) SetAnyStartDate(i interface{}) {
+	if v, ok := i.(float64); ok {
+		o.StartDate = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
 		o.StartDate = v
 	}
 }
 
-func (o *ObservableMessage) GetCreatedBy() string {
-	return o.CreatedBy
+func (o *ObservableMessage) GetUnderliningCreatedBy() string {
+	return o.UnderliningCreatedBy
 }
 
-// SetValueCreatedBy устанавливает STRING значение для поля CreatedBy
-func (o *ObservableMessage) SetValueCreatedBy(v string) {
-	o.CreatedBy = v
+// SetValueUnderliningCreatedBy устанавливает STRING значение для поля CreatedBy
+func (o *ObservableMessage) SetValueUnderliningCreatedBy(v string) {
+	o.UnderliningCreatedBy = v
 }
 
-// SetAnyCreatedBy устанавливает ЛЮБОЕ значение для поля CreatedBy
-func (o *ObservableMessage) SetAnyCreatedBy(i interface{}) {
-	o.CreatedBy = fmt.Sprint(i)
+// SetAnyUnderliningCreatedBy устанавливает ЛЮБОЕ значение для поля CreatedBy
+func (o *ObservableMessage) SetAnyUnderliningCreatedBy(i interface{}) {
+	o.UnderliningCreatedBy = fmt.Sprint(i)
 }
 
-func (o *ObservableMessage) GetUpdatedBy() string {
-	return o.UpdatedBy
+func (o *ObservableMessage) GetUnderliningUpdatedBy() string {
+	return o.UnderliningUpdatedBy
 }
 
-// SetValueUpdatedBy устанавливает STRING значение для поля UpdatedBy
-func (o *ObservableMessage) SetValueUpdatedBy(v string) {
-	o.UpdatedBy = v
+// SetValueUnderliningUpdatedBy устанавливает STRING значение для поля UpdatedBy
+func (o *ObservableMessage) SetValueUnderliningUpdatedBy(v string) {
+	o.UnderliningUpdatedBy = v
 }
 
-// SetAnyUpdatedBy устанавливает ЛЮБОЕ значение для поля UpdatedBy
-func (o *ObservableMessage) SetAnyUpdatedBy(i interface{}) {
-	o.UpdatedBy = fmt.Sprint(i)
+// SetAnyUnderliningUpdatedBy устанавливает ЛЮБОЕ значение для поля UpdatedBy
+func (o *ObservableMessage) SetAnyUnderliningUpdatedBy(i interface{}) {
+	o.UnderliningUpdatedBy = fmt.Sprint(i)
 }
 
 func (o *ObservableMessage) GetUnderliningId() string {
@@ -235,7 +259,16 @@ func (o *ObservableMessage) SetValueTags(v string) {
 
 // SetAnyTags устанавливает ЛЮБОЕ значение для поля Tags
 func (o *ObservableMessage) SetAnyTags(i interface{}) {
+	fmt.Println("func 'SetAnyTags', VALUE:", i)
+	fmt.Println("func 'SetAnyTags', BEFORE:", o.Tags)
+
 	o.Tags = append(o.Tags, fmt.Sprint(i))
+
+	fmt.Println("func 'SetAnyTags', AFTER:", o.Tags)
+}
+
+func (o *ObservableMessage) GetAttachment() *AttachmentData {
+	return &o.Attachment
 }
 
 func (o *ObservableMessage) GetReports() map[string]ReportTaxonomies {
@@ -280,12 +313,12 @@ func (om ObservableMessage) ToStringBeautiful(num int) string {
 	var str string
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%s_createdAt: '%d'\n", ws, om.CreatedAt)
-	str += fmt.Sprintf("%s_createdBy: '%s'\n", ws, om.CreatedBy)
+	str += fmt.Sprintf("%s_createdAt: '%d'\n", ws, om.UnderliningCreatedAt)
+	str += fmt.Sprintf("%s_createdBy: '%s'\n", ws, om.UnderliningCreatedBy)
 	str += fmt.Sprintf("%s_id: '%s'\n", ws, om.UnderliningId)
 	str += fmt.Sprintf("%s_type: '%s'\n", ws, om.UnderliningType)
-	str += fmt.Sprintf("%s_updatedAt: '%d'\n", ws, om.UpdatedAt)
-	str += fmt.Sprintf("%s_updatedBy: '%s'\n", ws, om.UpdatedBy)
+	str += fmt.Sprintf("%s_updatedAt: '%d'\n", ws, om.UnderliningUpdatedAt)
+	str += fmt.Sprintf("%s_updatedBy: '%s'\n", ws, om.UnderliningUpdatedBy)
 	str += fmt.Sprintf("%sdata: '%s'\n", ws, om.Data)
 	str += fmt.Sprintf("%sdataType: '%s'\n", ws, om.DataType)
 	str += fmt.Sprintf("%signoreSimilarity: '%v'\n", ws, om.IgnoreSimilarity)
@@ -333,18 +366,24 @@ func (om ObservableMessage) ToStringBeautiful(num int) string {
 }
 
 // ****************** AttachmentData ********************
-func (a *AttachmentData) GetSize() int {
+func (a *AttachmentData) GetSize() uint64 {
 	return a.Size
 }
 
 // SetValueSize устанавливает INT значение для поля Size
-func (a *AttachmentData) SetValueSize(v int) {
+func (a *AttachmentData) SetValueSize(v uint64) {
 	a.Size = v
 }
 
 // SetAnySize устанавливает ЛЮБОЕ значение для поля Size
 func (a *AttachmentData) SetAnySize(i interface{}) {
-	if v, ok := i.(int); ok {
+	if v, ok := i.(float64); ok {
+		a.Size = uint64(v)
+
+		return
+	}
+
+	if v, ok := i.(uint64); ok {
 		a.Size = v
 	}
 }

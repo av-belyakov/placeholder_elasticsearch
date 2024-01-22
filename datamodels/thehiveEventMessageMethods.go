@@ -38,6 +38,12 @@ func (e *EventMessageTheHive) SetValueStartDate(v uint64) {
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (e *EventMessageTheHive) SetAnyStartDate(i interface{}) {
+	if v, ok := i.(float64); ok {
+		e.StartDate = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
 		e.StartDate = v
 	}
@@ -192,6 +198,12 @@ func (e *EventDetails) SetValueEndDate(v uint64) {
 
 // SetAnyEndDate устанавливает ЛЮБОЕ значение для поля EndDate
 func (e *EventDetails) SetAnyEndDate(i interface{}) {
+	if v, ok := i.(float64); ok {
+		e.EndDate = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
 		e.EndDate = v
 	}
@@ -284,66 +296,90 @@ func (e *EventObject) SetAnyFlag(i interface{}) {
 	}
 }
 
-func (e *EventObject) GetCaseId() int {
+func (e *EventObject) GetCaseId() uint64 {
 	return e.CaseId
 }
 
 // SetValueCaseId устанавливает INT значение для поля CaseId
-func (e *EventObject) SetValueCaseId(v int) {
+func (e *EventObject) SetValueCaseId(v uint64) {
 	e.CaseId = v
 }
 
 // SetAnyCaseId устанавливает ЛЮБОЕ значение для поля CaseId
 func (e *EventObject) SetAnyCaseId(i interface{}) {
-	if v, ok := i.(int); ok {
+	if v, ok := i.(float64); ok {
+		e.CaseId = uint64(v)
+
+		return
+	}
+
+	if v, ok := i.(uint64); ok {
 		e.CaseId = v
 	}
 }
 
-func (e *EventObject) GetSeverity() int {
+func (e *EventObject) GetSeverity() uint64 {
 	return e.Severity
 }
 
 // SetValueSeverity устанавливает INT значение для поля Severity
-func (e *EventObject) SetValueSeverity(v int) {
+func (e *EventObject) SetValueSeverity(v uint64) {
 	e.Severity = v
 }
 
 // SetAnySeverity устанавливает ЛЮБОЕ значение для поля Severity
 func (e *EventObject) SetAnySeverity(i interface{}) {
-	if v, ok := i.(int); ok {
+	if v, ok := i.(float64); ok {
+		e.Severity = uint64(v)
+
+		return
+	}
+
+	if v, ok := i.(uint64); ok {
 		e.Severity = v
 	}
 }
 
-func (e *EventObject) GetTlp() int {
+func (e *EventObject) GetTlp() uint64 {
 	return e.Tlp
 }
 
 // SetValueTlp устанавливает INT значение для поля Tlp
-func (e *EventObject) SetValueTlp(v int) {
+func (e *EventObject) SetValueTlp(v uint64) {
 	e.Tlp = v
 }
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
 func (e *EventObject) SetAnyTlp(i interface{}) {
-	if v, ok := i.(int); ok {
+	if v, ok := i.(float64); ok {
+		e.Tlp = uint64(v)
+
+		return
+	}
+
+	if v, ok := i.(uint64); ok {
 		e.Tlp = v
 	}
 }
 
-func (e *EventObject) GetPap() int {
+func (e *EventObject) GetPap() uint64 {
 	return e.Pap
 }
 
 // SetValuePap устанавливает INT значение для поля Pap
-func (e *EventObject) SetValuePap(v int) {
+func (e *EventObject) SetValuePap(v uint64) {
 	e.Pap = v
 }
 
 // SetAnyPap устанавливает ЛЮБОЕ значение для поля Pap
 func (e *EventObject) SetAnyPap(i interface{}) {
-	if v, ok := i.(int); ok {
+	if v, ok := i.(float64); ok {
+		e.Pap = uint64(v)
+
+		return
+	}
+
+	if v, ok := i.(uint64); ok {
 		e.Pap = v
 	}
 }
@@ -359,6 +395,12 @@ func (e *EventObject) SetValueStartDate(v uint64) {
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (e *EventObject) SetAnyStartDate(i interface{}) {
+	if v, ok := i.(float64); ok {
+		e.StartDate = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
 		e.StartDate = v
 	}
@@ -375,6 +417,12 @@ func (e *EventObject) SetValueEndDate(v uint64) {
 
 // SetAnyEndDate устанавливает ЛЮБОЕ значение для поля EndDate
 func (e *EventObject) SetAnyEndDate(i interface{}) {
+	if v, ok := i.(float64); ok {
+		e.EndDate = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
 		e.EndDate = v
 	}
@@ -391,6 +439,12 @@ func (e *EventObject) SetValueCreatedAt(v uint64) {
 
 // SetAnyCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
 func (e *EventObject) SetAnyCreatedAt(i interface{}) {
+	if v, ok := i.(float64); ok {
+		e.CreatedAt = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
 		e.CreatedAt = v
 	}
@@ -407,6 +461,12 @@ func (e *EventObject) SetValueUpdatedAt(v uint64) {
 
 // SetAnyUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
 func (e *EventObject) SetAnyUpdatedAt(i interface{}) {
+	if v, ok := i.(float64); ok {
+		e.UpdatedAt = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
 		e.UpdatedAt = v
 	}
