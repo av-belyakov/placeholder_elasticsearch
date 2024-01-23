@@ -17,6 +17,7 @@ import (
 	//"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/memorytemporarystorage"
+	"placeholder_elasticsearch/mongodbinteractions"
 	"placeholder_elasticsearch/natsinteractions"
 	rules "placeholder_elasticsearch/rulesinteraction"
 	"placeholder_elasticsearch/supportingfunctions"
@@ -263,7 +264,7 @@ func main() {
 	go interactionZabbix(confApp, hz, iz, logging)
 
 	//инициализация модуля для взаимодействия с NATS (Данный модуль обязателен для взаимодействия)
-	natsModule, err := natsinteractions.NewClientNATS(confApp.AppConfigNATS, storageApp, logging, counting)
+	natsModule, err := natsinteractions.NewClientNATS(*confApp.GetAppNATS(), storageApp, logging, counting)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")
@@ -272,8 +273,13 @@ func main() {
 	}
 
 	// инициализация модуля для взаимодействия с СУБД MongoDB
-	//ctxRedis := context.Background()
-	//redisModule := redisinteractions.HandlerRedis(ctxRedis, *confApp.GetAppRedis(), storageApp, logging)
+	mongodbModule, err := mongodbinteractions.HandlerMongoDB(*confApp.GetAppMongoDB(), storageApp, logging)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")
+
+		log.Fatal(err)
+	}
 
 	//инициализация модуля для взаимодействия с ElasticSearch
 	esModule, err := elasticsearchinteractions.HandlerElasticSearch(*confApp.GetAppES(), logging)
@@ -287,5 +293,5 @@ func main() {
 		MsgType: "info",
 	}
 
-	coremodule.CoreHandler(natsModule, storageApp, lr, esModule, logging, counting)
+	coremodule.CoreHandler(natsModule, storageApp, lr, esModule, mongodbModule, logging, counting)
 }

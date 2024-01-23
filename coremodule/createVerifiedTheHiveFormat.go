@@ -14,19 +14,16 @@ func NewVerifiedTheHiveFormat(
 ) {
 	//var taskId string
 
-	listHandler := joinListHandler([]map[string][]func(interface{}){
+	/*listHandler := joinListHandler([]map[string][]func(interface{}){
 		listHandlerEvent,
 		listHandlerEventDetails,
 		listHandlerEventDetailsCustomFields,
-	})
-
-	fmt.Println("func 'NewVerifiedTheHiveFormat' LIST HANDLER:", listHandler)
+	})*/
 
 	for {
 		select {
-		case data := <-input:
-
-			fmt.Println("func 'NewVerifiedTheHiveFormat' DATA.Value:", data.Value)
+		case <-input:
+			//fmt.Println("func 'NewVerifiedTheHiveFormat' DATA.Value")
 
 		case <-done:
 			/*bytes, err := json.Marshal(struct {

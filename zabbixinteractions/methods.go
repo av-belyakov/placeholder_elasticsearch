@@ -1,13 +1,11 @@
 package zabbixinteractions
 
 import (
-	"context"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net"
-	"time"
 )
 
 func (hzc *HandlerZabbixConnection) SendData(data []string) (int, error) {
@@ -43,14 +41,18 @@ func (hzc *HandlerZabbixConnection) SendData(data []string) (int, error) {
 	pkg = append(pkg, jsonReg...)
 
 	var d net.Dialer
-	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+	/*ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
 
 	conn, err := d.DialContext(ctx, "tcp", hzc.NetHost)
 	if err != nil {
 		return 0, err
 	}
-	defer conn.Close()
+	defer conn.Close()*/
+	conn, err := d.Dial("tcp", hzc.NetHost)
+	if err != nil {
+		return 0, err
+	}
 
 	num, err := conn.Write(pkg)
 	if err != nil {

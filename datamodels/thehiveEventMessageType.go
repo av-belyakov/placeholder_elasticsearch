@@ -70,10 +70,10 @@ type EventDetails struct {
 // Permissions - разрешения
 type EventObject struct {
 	Flag             bool                      `json:"flag"`
-	CaseId           int                       `json:"caseId"`
-	Severity         int                       `json:"severity"`
-	Tlp              int                       `json:"tlp"`
-	Pap              int                       `json:"pap"`
+	CaseId           uint64                    `json:"caseId"`
+	Severity         uint64                    `json:"severity"`
+	Tlp              uint64                    `json:"tlp"`
+	Pap              uint64                    `json:"pap"`
 	StartDate        uint64                    `json:"startDate"`
 	EndDate          uint64                    `json:"endDate"`
 	CreatedAt        uint64                    `json:"createdAt"`
