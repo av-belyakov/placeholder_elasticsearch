@@ -14,13 +14,11 @@ func NewVerifiedTheHiveFormat(
 ) {
 	//var taskId string
 
-	listHandler := joinListHandler([]map[string][]func(interface{}){
+	/*listHandler := joinListHandler([]map[string][]func(interface{}){
 		listHandlerEvent,
 		listHandlerEventDetails,
 		listHandlerEventDetailsCustomFields,
-	})
-
-	fmt.Println("func 'NewVerifiedTheHiveFormat' LIST HANDLER size:", len(listHandler))
+	})*/
 
 	for {
 		select {

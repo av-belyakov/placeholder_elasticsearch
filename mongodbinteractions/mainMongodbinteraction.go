@@ -89,7 +89,7 @@ func (conn ConnectionDescriptorMongoDB) Routing(channels *MongoDBModule, logging
 		for data := range channels.ChanInputModule {
 			switch data.Section {
 			case "add new case":
-				fmt.Println("func 'Routing' data.Section:", data.Section)
+				//				fmt.Println("func 'Routing' data.Section:", data.Section)
 			}
 		}
 	}()

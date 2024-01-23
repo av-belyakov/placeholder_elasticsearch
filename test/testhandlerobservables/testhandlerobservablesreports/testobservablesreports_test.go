@@ -741,6 +741,8 @@ var _ = Describe("Testobservablesreports", Ordered, func() {
 					}
 				}
 
+				//В первом тесте надо доделать
+
 				/*
 					listHandlerEventDetails             map[string][]func(interface{})
 					listHandlerEventDetailsCustomFields map[string][]func(interface{})
