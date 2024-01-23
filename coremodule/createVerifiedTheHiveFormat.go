@@ -23,7 +23,7 @@ func NewVerifiedTheHiveFormat(
 	for {
 		select {
 		case <-input:
-			fmt.Println("func 'NewVerifiedTheHiveFormat' DATA.Value")
+			//fmt.Println("func 'NewVerifiedTheHiveFormat' DATA.Value")
 
 		case <-done:
 			/*bytes, err := json.Marshal(struct {
