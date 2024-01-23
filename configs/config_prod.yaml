@@ -1,0 +1,20 @@
+NATS:
+  host: "nats.cloud.gcm"
+  port: 4222
+ElasticSearch:
+  send: true
+  host: "datahook.cloud.gcm"
+  port: 9200
+  prefix:
+  index: "module_placeholder_thehive_case"
+  user: "writer"
+  passwd: "XxZqesYXuk8C"
+MongoDB:
+  host: "172.10.11.2"
+  port: 27017
+  user: "module_placeholder_elasticsearch"
+  passwd: "gDbv5cf7*F2"
+  namedb: "placeholder_elasticsearch"
+Rules_proc_msg:
+  directory: "rules"
+  file: "mispmsgrule.yaml"
