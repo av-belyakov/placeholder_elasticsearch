@@ -98,10 +98,11 @@ func GetEventOne() []struct {
 		{ElemName: "event.base", ElemValue: true},
 		{ElemName: "event.startDate", ElemValue: float64(1705061267325)},
 		{ElemName: "event.organisation", ElemValue: "RCM"},
+		{ElemName: "event.organisationId", ElemValue: "~20488"},
 		{ElemName: "event.operation", ElemValue: "update"},
 		{ElemName: "event.rootId", ElemValue: "~419385432"},
 		{ElemName: "event.requestId", ElemValue: "019f0dbc0ab90bbe:-58339429:18b66b86afa:-8000:780802"},
-		{ElemName: "event.organisationId", ElemValue: "~20488"},
+
 		//----------- object
 		{ElemName: "event.object.id", ElemValue: "~85771464712"},
 		{ElemName: "event.object.tags", ElemValue: []interface{}{
@@ -120,19 +121,73 @@ func GetEventOne() []struct {
 		{ElemName: "event.object.title", ElemValue: "ПНПО \"Ammyy Admin\""},
 		{ElemName: "event.object.severity", ElemValue: float64(2)},
 		{ElemName: "event.object.endDate", ElemValue: float64(0)},
-		{ElemName: "event.object.caseId", ElemValue: 34411},
+		{ElemName: "event.object.caseId", ElemValue: float64(34411)},
 		{ElemName: "event.object.description", ElemValue: "Атака направлена **наружу**"},
 		{ElemName: "event.object.flag", ElemValue: true},
 		{ElemName: "event.object.tlp", ElemValue: float64(3)},
 		{ElemName: "event.object.pap", ElemValue: float64(5)},
-
-		//может customFields протестировать отдельно?
-		{ElemName: "event.object.customFields", ElemValue: ""},
+		//object.customFields
+		{
+			ElemName:  "event.object.customFields.ncircc-class-attack.order",
+			ElemValue: float64(3),
+		},
+		{
+			ElemName:  "event.object.customFields.class-attack.order",
+			ElemValue: float64(2),
+		},
+		{
+			ElemName:  "event.object.customFields.first-time.order",
+			ElemValue: float64(10),
+		},
+		{
+			ElemName:  "event.object.customFields.first-time.date",
+			ElemValue: float64(1705052465000),
+		},
+		{
+			ElemName:  "event.object.customFields.last-time.order",
+			ElemValue: float64(221),
+		},
+		{
+			ElemName:  "event.object.customFields.last-time.date",
+			ElemValue: float64(1705052479000),
+		},
+		{
+			ElemName:  "event.object.customFields.sphere.order",
+			ElemValue: float64(4),
+		},
+		{
+			ElemName:  "event.object.customFields.sphere.string",
+			ElemValue: "Здравоохранение",
+		},
+		{
+			ElemName:  "event.object.customFields.state.order",
+			ElemValue: float64(17),
+		},
+		{
+			ElemName:  "event.object.customFields.state.string",
+			ElemValue: "Город федерального значения Севастополь",
+		},
+		{
+			ElemName:  "event.object.customFields.id-soa.order",
+			ElemValue: float64(13),
+		},
+		{
+			ElemName:  "event.object.customFields.id-soa.string",
+			ElemValue: "220041",
+		},
+		{
+			ElemName:  "event.object.customFields.ir-name.order",
+			ElemValue: float64(11),
+		},
+		{
+			ElemName:  "event.object.customFields.ir-name.string",
+			ElemValue: "ГБУЗ Севастополя \"Медицинский информационно-аналитический центр\"",
+		},
 
 		//по этим двум полям пока не понятно
 		{ElemName: "event.object.stats", ElemValue: ""},
 		{ElemName: "event.object.permissions", ElemValue: ""},
-
+		//---------------------------------------------------
 		{ElemName: "event.object._type", ElemValue: "case"},
 		{ElemName: "event.object._id", ElemValue: "~85771464712"},
 		{ElemName: "event.object.startDate", ElemValue: float64(1704980275686)},
@@ -142,24 +197,53 @@ func GetEventOne() []struct {
 		{ElemName: "event.object.createdAt", ElemValue: float64(1704980275725)},
 		{ElemName: "event.object.updatedAt", ElemValue: float64(1705062426568)},
 		{ElemName: "event.object.resolutionStatus", ElemValue: "True Positive"},
+
 		//----------- details
 		{ElemName: "event.details.summary", ElemValue: "FP (Обращение на getz-club.ru) с 185.4.65.151"},
 		{ElemName: "event.details.status", ElemValue: "Resolved"},
 		{ElemName: "event.details.impactStatus", ElemValue: "NotApplicable"},
 		{ElemName: "event.details.endDate", ElemValue: float64(1705063488183)},
 		{ElemName: "event.details.resolutionStatus", ElemValue: "FalsePositive"},
-
-		//может customFields протестировать отдельно?
-		{ElemName: "event.details.customFields", ElemValue: ""},
-
-		/*{ElemName: "event.details.", ElemValue: ""},
-		{ElemName: "event.details.", ElemValue: ""},
-		{ElemName: "event.details.", ElemValue: ""},
-		{ElemName: "event.", ElemValue: ""},
-		{ElemName: "event.", ElemValue: ""},
-		{ElemName: "event.", ElemValue: ""},
-		{ElemName: "event.", ElemValue: ""},
-		{ElemName: "event.", ElemValue: ""},
-		{ElemName: "event.", ElemValue: ""},*/
+		//details.customFields
+		{
+			ElemName:  "event.details.customFields.notification.order",
+			ElemValue: float64(100),
+		},
+		{
+			ElemName:  "event.details.customFields.class-attack.order",
+			ElemValue: float64(2),
+		},
+		{
+			ElemName:  "event.details.customFields.is-incident.order",
+			ElemValue: float64(81),
+		},
+		{
+			ElemName:  "event.details.customFields.is-incident.boolean",
+			ElemValue: true,
+		},
+		{
+			ElemName:  "event.details.customFields.CNC.order",
+			ElemValue: float64(44),
+		},
+		{
+			ElemName:  "event.details.customFields.CNC.string",
+			ElemValue: "185.158.114.53",
+		},
+		{
+			ElemName:  "event.details.customFields.first-time.order",
+			ElemValue: float64(20),
+		},
+		{
+			ElemName:  "event.details.customFields.first-time.date",
+			ElemValue: float64(1705052465000),
+		},
+		{
+			ElemName:  "event.details.customFields.last-time.order",
+			ElemValue: float64(121),
+		},
+		{
+			ElemName:  "event.details.customFields.last-time.date",
+			ElemValue: float64(1705052479000),
+		},
 	}
 }

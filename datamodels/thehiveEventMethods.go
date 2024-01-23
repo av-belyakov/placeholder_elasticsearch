@@ -187,6 +187,10 @@ func (em EventMessageTheHive) ToStringBeautiful(num int) string {
 	return str
 }
 
+func (e *EventDetails) Get() *EventDetails {
+	return e
+}
+
 func (e *EventDetails) GetEndDate() uint64 {
 	return e.EndDate
 }
@@ -265,6 +269,15 @@ func (e *EventDetails) SetAnyImpactStatus(i interface{}) {
 	e.ImpactStatus = fmt.Sprint(i)
 }
 
+func (e *EventDetails) GetCustomFields() map[string]CustomerFields {
+	return e.CustomFields
+}
+
+// SetValueCustomFields устанавливает STRING значение для поля CustomFields
+func (e *EventDetails) SetValueCustomFields(v map[string]CustomerFields) {
+	e.CustomFields = v
+}
+
 func (ed EventDetails) ToStringBeautiful(num int) string {
 	var str string
 
@@ -278,6 +291,10 @@ func (ed EventDetails) ToStringBeautiful(num int) string {
 	str += fmt.Sprintf("%scustomFields: \n%s", ws, CustomFieldsToStringBeautiful(ed.CustomFields, num))
 
 	return str
+}
+
+func (e *EventObject) Get() *EventObject {
+	return e
 }
 
 func (e *EventObject) GetFlag() bool {
@@ -529,7 +546,7 @@ func (e *EventObject) SetAnyUpdatedBy(i interface{}) {
 }
 
 func (e *EventObject) GetUnderliningType() string {
-	return e.ImpactStatus
+	return e.UnderliningType
 }
 
 // SetValueUnderliningType устанавливает STRING значение для поля UnderliningType
@@ -584,7 +601,7 @@ func (e *EventObject) SetAnyImpactStatus(i interface{}) {
 	e.ImpactStatus = fmt.Sprint(i)
 }
 
-func (e *EventObject) GetImpactResolutionStatus() string {
+func (e *EventObject) GetResolutionStatus() string {
 	return e.ResolutionStatus
 }
 

@@ -259,12 +259,7 @@ func (o *ObservableMessage) SetValueTags(v string) {
 
 // SetAnyTags устанавливает ЛЮБОЕ значение для поля Tags
 func (o *ObservableMessage) SetAnyTags(i interface{}) {
-	fmt.Println("func 'SetAnyTags', VALUE:", i)
-	fmt.Println("func 'SetAnyTags', BEFORE:", o.Tags)
-
 	o.Tags = append(o.Tags, fmt.Sprint(i))
-
-	fmt.Println("func 'SetAnyTags', AFTER:", o.Tags)
 }
 
 func (o *ObservableMessage) GetAttachment() *AttachmentData {
