@@ -8,40 +8,40 @@ func GetReportsList() []struct {
 		ElemName  string
 		ElemValue interface{}
 	}{
-		{ElemName: "reports.CyberCrime-Tracker_1_0.taxonomies.level", ElemValue: "info"},
-		{ElemName: "reports.CyberCrime-Tracker_1_0.taxonomies.namespace", ElemValue: "CCT"},
-		{ElemName: "reports.CyberCrime-Tracker_1_0.taxonomies.predicate", ElemValue: "C2 Search"},
-		{ElemName: "reports.CyberCrime-Tracker_1_0.taxonomies.value", ElemValue: "0 hits"},
+		{ElemName: "observables.reports.CyberCrime-Tracker_1_0.taxonomies.level", ElemValue: "info"},
+		{ElemName: "observables.reports.CyberCrime-Tracker_1_0.taxonomies.namespace", ElemValue: "CCT"},
+		{ElemName: "observables.reports.CyberCrime-Tracker_1_0.taxonomies.predicate", ElemValue: "C2 Search"},
+		{ElemName: "observables.reports.CyberCrime-Tracker_1_0.taxonomies.value", ElemValue: "0 hits"},
 
-		{ElemName: "reports.CyberCrime-Tracker_1_0.taxonomies.level", ElemValue: "info"},
-		{ElemName: "reports.CyberCrime-Tracker_1_0.taxonomies.namespace", ElemValue: "HTy"},
-		{ElemName: "reports.CyberCrime-Tracker_1_0.taxonomies.predicate", ElemValue: "No search out"},
-		{ElemName: "reports.CyberCrime-Tracker_1_0.taxonomies.value", ElemValue: "78 bit"},
+		{ElemName: "observables.reports.CyberCrime-Tracker_1_0.taxonomies.level", ElemValue: "info"},
+		{ElemName: "observables.reports.CyberCrime-Tracker_1_0.taxonomies.namespace", ElemValue: "HTy"},
+		{ElemName: "observables.reports.CyberCrime-Tracker_1_0.taxonomies.predicate", ElemValue: "No search out"},
+		{ElemName: "observables.reports.CyberCrime-Tracker_1_0.taxonomies.value", ElemValue: "78 bit"},
 
-		{ElemName: "reports.DShield_lookup_1_0.taxonomies.level", ElemValue: "not info"},
-		{ElemName: "reports.DShield_lookup_1_0.taxonomies.namespace", ElemValue: "Jonson A"},
-		{ElemName: "reports.DShield_lookup_1_0.taxonomies.predicate", ElemValue: "Tyo"},
-		{ElemName: "reports.DShield_lookup_1_0.taxonomies.value", ElemValue: "1000"},
+		{ElemName: "observables.reports.DShield_lookup_1_0.taxonomies.level", ElemValue: "not info"},
+		{ElemName: "observables.reports.DShield_lookup_1_0.taxonomies.namespace", ElemValue: "Jonson A"},
+		{ElemName: "observables.reports.DShield_lookup_1_0.taxonomies.predicate", ElemValue: "Tyo"},
+		{ElemName: "observables.reports.DShield_lookup_1_0.taxonomies.value", ElemValue: "1000"},
 
-		{ElemName: "reports.URLhaus_2_0.taxonomies.level", ElemValue: "info"},
-		{ElemName: "reports.URLhaus_2_0.taxonomies.namespace", ElemValue: "Lochkarev"},
-		{ElemName: "reports.URLhaus_2_0.taxonomies.predicate", ElemValue: "CCNoK"},
-		{ElemName: "reports.URLhaus_2_0.taxonomies.value", ElemValue: "8bit"},
+		{ElemName: "observables.reports.URLhaus_2_0.taxonomies.level", ElemValue: "info"},
+		{ElemName: "observables.reports.URLhaus_2_0.taxonomies.namespace", ElemValue: "Lochkarev"},
+		{ElemName: "observables.reports.URLhaus_2_0.taxonomies.predicate", ElemValue: "CCNoK"},
+		{ElemName: "observables.reports.URLhaus_2_0.taxonomies.value", ElemValue: "8bit"},
 
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.level", ElemValue: "warning"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.namespace", ElemValue: "LPPPT1"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.predicate", ElemValue: "12-34"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.value", ElemValue: "NONE"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.level", ElemValue: "warning"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.namespace", ElemValue: "LPPPT1"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.predicate", ElemValue: "12-34"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.value", ElemValue: "NONE"},
 
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.level", ElemValue: "suspicious"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.namespace", ElemValue: "urlscan.io"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.predicate", ElemValue: "Search out"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.value", ElemValue: "6 results"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.level", ElemValue: "suspicious"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.namespace", ElemValue: "urlscan.io"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.predicate", ElemValue: "Search out"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.value", ElemValue: "6 results"},
 
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.level", ElemValue: "safe"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.namespace", ElemValue: "Maltiverse"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.predicate", ElemValue: "Report"},
-		{ElemName: "reports.Urlscan_io_Search_0_1_1.taxonomies.value", ElemValue: "6 neutral"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.level", ElemValue: "safe"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.namespace", ElemValue: "Maltiverse"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.predicate", ElemValue: "Report"},
+		{ElemName: "observables.reports.Urlscan_io_Search_0_1_1.taxonomies.value", ElemValue: "6 neutral"},
 	}
 }
 
@@ -78,6 +78,37 @@ func GetObservableOne() []struct {
 			"58861ef4c118cc3270b9871734ee54852a1374e5",
 			"7c531394dc2f483bc6c6c628c02e0788",
 		}},
+		//{ElemName: "observables.extraData", ElemValue: ""},
+		//{ElemName: "observables.extraData", ElemValue: ""},
+		//{ElemName: "observables.extraData", ElemValue: ""},
+		//{ElemName: "observables.", ElemValue: ""},
+	}
+}
+
+func GetObservableTwo() []struct {
+	ElemName  string
+	ElemValue interface{}
+} {
+	return []struct {
+		ElemName  string
+		ElemValue interface{}
+	}{
+		{ElemName: "observables._id", ElemValue: "~542580736"},
+		{ElemName: "observables.data", ElemValue: "/dbdata/dump/events/58964/B2M-58964.pcap"},
+		{ElemName: "observables.dataType", ElemValue: "url_pcap"},
+		{ElemName: "observables.ioc", ElemValue: true},
+		{ElemName: "observables._type", ElemValue: "Observable"},
+		{ElemName: "observables.tlp", ElemValue: float64(2)},
+		{ElemName: "observables._createdAt", ElemValue: float64(1705049449272)},
+		{ElemName: "observables._createdBy", ElemValue: "zhmurchuk@mail.rcm"},
+		{ElemName: "observables._updatedAt", ElemValue: float64(1705049448855)},
+		{ElemName: "observables.sighted", ElemValue: false},
+		{ElemName: "observables.startDate", ElemValue: float64(1705049449272)},
+		{ElemName: "observables.tags", ElemValue: []interface{}{
+			"misp:Network activity=\"ip-src\"",
+			"b2m:ip_ext=206.189.15.25",
+		}},
+
 		//{ElemName: "observables.extraData", ElemValue: ""},
 		//{ElemName: "observables.extraData", ElemValue: ""},
 		//{ElemName: "observables.extraData", ElemValue: ""},

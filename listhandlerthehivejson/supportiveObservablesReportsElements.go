@@ -6,13 +6,15 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
-// SupportiveObservablesReports вспомогательный тип для формирования объекта типа reports
+// SupportiveObservablesReports вспомогательный тип для для обработки observables.reports
 type SupportiveObservablesReports struct {
 	previousField      string
 	listAcceptedFields []string
 	reports            map[string]datamodels.ReportTaxonomies
 }
 
+// NewSupportiveObservablesReports формирует вспомогательный объект для обработки
+// thehive объектов типа observables.reports
 func NewSupportiveObservablesReports() *SupportiveObservablesReports {
 	return &SupportiveObservablesReports{
 		reports: make(map[string]datamodels.ReportTaxonomies),
@@ -21,18 +23,18 @@ func NewSupportiveObservablesReports() *SupportiveObservablesReports {
 
 func (sor *SupportiveObservablesReports) HandlerReportValue(fieldBranch string, i interface{}) {
 	fields := strings.Split(fieldBranch, ".")
-	if len(fields) != 4 {
+	if len(fields) != 5 {
 		return
 	}
 
 	//пока обрабатываем только taxonomies
-	if fields[2] != "taxonomies" {
+	if fields[3] != "taxonomies" {
 		return
 	}
 
-	if _, ok := sor.reports[fields[1]]; !ok {
-		sor.reports[fields[1]] = datamodels.ReportTaxonomies{Taxonomies: make([]datamodels.Taxonomy, 1)}
-		sor.previousField = fields[1]
+	if _, ok := sor.reports[fields[2]]; !ok {
+		sor.reports[fields[2]] = datamodels.ReportTaxonomies{Taxonomies: make([]datamodels.Taxonomy, 1)}
+		sor.previousField = fields[2]
 		sor.listAcceptedFields = []string{}
 	}
 
@@ -40,34 +42,33 @@ func (sor *SupportiveObservablesReports) HandlerReportValue(fieldBranch string, 
 	//используем хранилище listAcceptedFields для временного хранения
 	//наименований полей, создаем новый элемент среза, если попадается
 	// повторяющееся свойство структуры Taxonomy
-	if sor.previousField == fields[1] && sor.isExistFieldBranch(fields[3]) {
-		tmpSlice := sor.reports[fields[1]]
+	if sor.previousField == fields[2] && sor.isExistFieldBranch(fields[4]) {
+		tmpSlice := sor.reports[fields[2]]
 		tmpSlice.Taxonomies = append(tmpSlice.Taxonomies, datamodels.Taxonomy{})
-		sor.reports[fields[1]] = tmpSlice
+		sor.reports[fields[2]] = tmpSlice
 
 		sor.listAcceptedFields = []string{}
 	}
 
-	sor.listAcceptedFields = append(sor.listAcceptedFields, fields[3])
-	lastNum := len(sor.reports[fields[1]].Taxonomies) - 1
+	sor.listAcceptedFields = append(sor.listAcceptedFields, fields[4])
+	lastNum := len(sor.reports[fields[2]].Taxonomies) - 1
 	if lastNum < 0 {
 		lastNum = 0
 	}
 
-	switch fields[3] {
+	switch fields[4] {
 	case "level":
-		sor.reports[fields[1]].Taxonomies[lastNum].SetAnyLevel(i)
+		sor.reports[fields[2]].Taxonomies[lastNum].SetAnyLevel(i)
 
 	case "namespace":
-		sor.reports[fields[1]].Taxonomies[lastNum].SetAnyNamespace(i)
+		sor.reports[fields[2]].Taxonomies[lastNum].SetAnyNamespace(i)
 
 	case "predicate":
-		sor.reports[fields[1]].Taxonomies[lastNum].SetAnyPredicate(i)
+		sor.reports[fields[2]].Taxonomies[lastNum].SetAnyPredicate(i)
 
 	case "value":
-		sor.reports[fields[1]].Taxonomies[lastNum].SetAnyValue(i)
+		sor.reports[fields[2]].Taxonomies[lastNum].SetAnyValue(i)
 	}
-
 }
 
 func (sor *SupportiveObservablesReports) GetReports() map[string]datamodels.ReportTaxonomies {
