@@ -115,7 +115,7 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id string) (cha
 			Count:    1,
 		}
 
-		//останавливаем обработчик формирующий MISP формат
+		//останавливаем обработчик формирующий верифицированный кейс
 		chanDone <- isAllowed
 
 		close(chanOutputJsonData)

@@ -14,7 +14,7 @@ package datamodels
 // Organisation - наименование организации
 type EventMessageTheHive struct {
 	Base           bool         `json:"base"`
-	StartDate      uint64       `json:"startDate"`
+	StartDate      string       `json:"startDate"` //в формате RFC3339
 	RootId         string       `json:"rootId"`
 	Organisation   string       `json:"organisation"`
 	OrganisationId string       `json:"organisationId"`
@@ -34,7 +34,7 @@ type EventMessageTheHive struct {
 // ImpactStatus - краткое описание воздействия
 // CustomFields - настраиваемые поля
 type EventDetails struct {
-	EndDate          uint64                    `json:"endDate"`
+	EndDate          string                    `json:"endDate"` //формат RFC3339
 	ResolutionStatus string                    `json:"resolutionStatus"`
 	Summary          string                    `json:"summary"`
 	Status           string                    `json:"status"`
@@ -74,10 +74,10 @@ type EventObject struct {
 	Severity         uint64                    `json:"severity"`
 	Tlp              uint64                    `json:"tlp"`
 	Pap              uint64                    `json:"pap"`
-	StartDate        uint64                    `json:"startDate"`
-	EndDate          uint64                    `json:"endDate"`
-	CreatedAt        uint64                    `json:"createdAt"`
-	UpdatedAt        uint64                    `json:"updatedAt"`
+	StartDate        string                    `json:"startDate"` //формат RFC3339
+	EndDate          string                    `json:"endDate"`   //формат RFC3339
+	CreatedAt        string                    `json:"createdAt"` //формат RFC3339
+	UpdatedAt        string                    `json:"updatedAt"` //формат RFC3339
 	UnderliningId    string                    `json:"_id"`
 	Id               string                    `json:"id"`
 	CreatedBy        string                    `json:"createdBy"`

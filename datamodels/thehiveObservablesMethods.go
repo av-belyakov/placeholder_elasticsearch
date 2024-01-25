@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"fmt"
+	"time"
 
 	"placeholder_elasticsearch/supportingfunctions"
 )
@@ -84,70 +85,73 @@ func (o *ObservableMessage) SetAnyTlp(i interface{}) {
 	}
 }
 
-func (o *ObservableMessage) GetUnderliningCreatedAt() uint64 {
+func (o *ObservableMessage) GetUnderliningCreatedAt() string {
 	return o.UnderliningCreatedAt
 }
 
-// SetValueUnderliningCreatedAt устанавливает UINT64 значение для поля CreatedAt
-func (o *ObservableMessage) SetValueUnderliningCreatedAt(v uint64) {
+// SetValueUnderliningCreatedAt устанавливает значение в формате RFC3339 для поля CreatedAt
+func (o *ObservableMessage) SetValueUnderliningCreatedAt(v string) {
 	o.UnderliningCreatedAt = v
 }
 
 // SetAnyUnderliningCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
 func (o *ObservableMessage) SetAnyUnderliningCreatedAt(i interface{}) {
-	if v, ok := i.(float64); ok {
-		o.UnderliningCreatedAt = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		o.UnderliningCreatedAt = v
-	}
+	o.UnderliningCreatedAt = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
-func (o *ObservableMessage) GetUnderliningUpdatedAt() uint64 {
+func (o *ObservableMessage) GetUnderliningUpdatedAt() string {
 	return o.UnderliningUpdatedAt
 }
 
-// SetValueUnderliningUpdatedAt устанавливает UINT64 значение для поля UpdatedAt
-func (o *ObservableMessage) SetValueUnderliningUpdatedAt(v uint64) {
+// SetValueUnderliningUpdatedAt устанавливает значениев формате RFC3339 для поля UpdatedAt
+func (o *ObservableMessage) SetValueUnderliningUpdatedAt(v string) {
 	o.UnderliningUpdatedAt = v
 }
 
 // SetAnyUnderliningUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
 func (o *ObservableMessage) SetAnyUnderliningUpdatedAt(i interface{}) {
-	if v, ok := i.(float64); ok {
-		o.UnderliningUpdatedAt = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		o.UnderliningUpdatedAt = v
-	}
+	o.UnderliningUpdatedAt = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
-func (o *ObservableMessage) GetStartDate() uint64 {
+func (o *ObservableMessage) GetStartDate() string {
 	return o.StartDate
 }
 
-// SetValueStartDate устанавливает UINT64 значение для поля StartDate
-func (o *ObservableMessage) SetValueStartDate(v uint64) {
+// SetValueStartDate устанавливает значениев формате RFC3339 для поля StartDate
+func (o *ObservableMessage) SetValueStartDate(v string) {
 	o.StartDate = v
 }
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (o *ObservableMessage) SetAnyStartDate(i interface{}) {
-	if v, ok := i.(float64); ok {
-		o.StartDate = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		o.StartDate = v
-	}
+	o.StartDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
 func (o *ObservableMessage) GetUnderliningCreatedBy() string {
@@ -308,11 +312,11 @@ func (om ObservableMessage) ToStringBeautiful(num int) string {
 	var str string
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%s_createdAt: '%d'\n", ws, om.UnderliningCreatedAt)
+	str += fmt.Sprintf("%s_createdAt: '%s'\n", ws, om.UnderliningCreatedAt)
 	str += fmt.Sprintf("%s_createdBy: '%s'\n", ws, om.UnderliningCreatedBy)
 	str += fmt.Sprintf("%s_id: '%s'\n", ws, om.UnderliningId)
 	str += fmt.Sprintf("%s_type: '%s'\n", ws, om.UnderliningType)
-	str += fmt.Sprintf("%s_updatedAt: '%d'\n", ws, om.UnderliningUpdatedAt)
+	str += fmt.Sprintf("%s_updatedAt: '%s'\n", ws, om.UnderliningUpdatedAt)
 	str += fmt.Sprintf("%s_updatedBy: '%s'\n", ws, om.UnderliningUpdatedBy)
 	str += fmt.Sprintf("%sdata: '%s'\n", ws, om.Data)
 	str += fmt.Sprintf("%sdataType: '%s'\n", ws, om.DataType)
@@ -330,7 +334,7 @@ func (om ObservableMessage) ToStringBeautiful(num int) string {
 	str += fmt.Sprintf("%sioc: '%v'\n", ws, om.Ioc)
 	str += fmt.Sprintf("%smessage: '%s'\n", ws, om.Message)
 	str += fmt.Sprintf("%ssighted: '%v'\n", ws, om.Sighted)
-	str += fmt.Sprintf("%sstartDate: '%d'\n", ws, om.StartDate)
+	str += fmt.Sprintf("%sstartDate: '%s'\n", ws, om.StartDate)
 	str += fmt.Sprintf("%stags: \n%s", ws, func(l []string) string {
 		var str string
 		ws := supportingfunctions.GetWhitespace(num + 1)

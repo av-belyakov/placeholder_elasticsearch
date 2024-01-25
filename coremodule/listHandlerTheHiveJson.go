@@ -1,10 +1,6 @@
 package coremodule
 
-import (
-	"placeholder_elasticsearch/datamodels"
-	"strings"
-)
-
+/*
 var (
 	source datamodels.SourceMessageTheHive = datamodels.SourceMessageTheHive{}
 
@@ -103,23 +99,10 @@ func NewSupportiveObservablesReports() *supportiveObservablesReports {
 	}
 }
 
-/*func (o *supportiveObservables) HandlerReportValue(fieldBranch string, i interface{}, f func(interface{})) {
-	tmp := strings.Split("reports.BIZONE_ThreatVision_1_0.taxonomies.level", ".")
-	//assert.Equal(t, len(i), 4)
-	//assert.Equal(t, i[1], "BIZONE_ThreatVision_1_0")
-
-	fields := strings.Split(fieldBranch, ".")
-	if len(fields) != 4 {
-		return
-	}
-
-	o.reportsTmp[fields[1]][fields[2]]
-}*/
-
 func (sor *supportiveObservablesReports) HandlerReportValue(
 	fieldBranch string,
 	i interface{},
-	/*f func(interface{})*/) {
+	) {
 
 	//   Reports          map[string]ReportTaxonomys `json:"reports"`
 	//
@@ -639,49 +622,11 @@ var listHandlerObservables map[string][]func(interface{}) = map[string][]func(in
 	}},
 
 	"reports.BIZONE_ThreatVision_1_0.taxonomies.level": {func(i interface{}) {
-		/*so.HandlerReportValue(
-			"reports.BIZONE_ThreatVision_1_0.taxonomies.level",
-			i,
-		)*/
+		//so.HandlerReportValue(
+		//	"reports.BIZONE_ThreatVision_1_0.taxonomies.level",
+		//	i,
+		//)
 	}},
-	/*
-		!!!!!
-			Надо сделать Reports!!!!
-		!!!!!
-
-				so.observableTmp.Reports
-	*/
-
-	/*
-		+ Ioc              bool                             `json:"ioc"`
-		+ Sighted          bool                             `json:"sighted"`
-		+ IgnoreSimilarity bool                             `json:"ignoreSimilarity"`
-		+ Tlp              int                              `json:"tlp"`
-		+ CreatedAt        uint64                           `json:"_createdAt"`
-		+ UpdatedAt        uint64                           `json:"_updatedAt"`
-		+ StartDate        uint64                           `json:"startDate"`
-		+ CreatedBy        string                           `json:"_createdBy"`
-		+ UpdatedBy        string                           `json:"_updatedBy"`
-		+ UnderliningId    string                           `json:"_id"`
-		+ UnderliningType  string                           `json:"_type"`
-		+ Data             string                           `json:"data"`
-		+ DataType         string                           `json:"dataType"`
-		+ Message          string                           `json:"message"`
-		+ Tags             []string                         `json:"tags"`
-		+ Attachment       AttachmentData                   `json:"attachment"`
-		Reports          map[string]map[string][]Taxonomy `json:"reports"`
-	*/
-
-	/*
-		//---  ---
-		"observables.": {func(i interface{}) {
-			so.HandlerValue(
-				"observables.",
-				i,
-				so.observableTmp.SetAny,
-			)
-		}},
-	*/
 }
 
 func newCustomFieldsElement(elem, objType string, customFields *map[string]datamodels.CustomerFields) {
@@ -708,3 +653,4 @@ func joinListHandler(listSeveral []map[string][]func(interface{})) map[string][]
 
 	return result
 }
+*/

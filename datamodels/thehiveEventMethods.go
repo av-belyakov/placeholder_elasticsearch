@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"fmt"
+	"time"
 
 	"placeholder_elasticsearch/supportingfunctions"
 )
@@ -27,26 +28,27 @@ func (e *EventMessageTheHive) SetAnyBase(i interface{}) {
 	}
 }
 
-func (e *EventMessageTheHive) GetStartDate() uint64 {
+func (e *EventMessageTheHive) GetStartDate() string {
 	return e.StartDate
 }
 
-// SetValueStartDate устанавливает UINT64 значение для поля StartDate
-func (e *EventMessageTheHive) SetValueStartDate(v uint64) {
+// SetValueStartDate устанавливает значение в формате RFC3339 для поля StartDate
+func (e *EventMessageTheHive) SetValueStartDate(v string) {
 	e.StartDate = v
 }
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (e *EventMessageTheHive) SetAnyStartDate(i interface{}) {
-	if v, ok := i.(float64); ok {
-		e.StartDate = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		e.StartDate = v
-	}
+	e.StartDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
 func (e *EventMessageTheHive) GetRootId() string {
@@ -174,7 +176,7 @@ func (em EventMessageTheHive) ToStringBeautiful(num int) string {
 	str += fmt.Sprintf("%sobjectId: '%s'\n", ws, em.ObjectId)
 	str += fmt.Sprintf("%sobjectType: '%s'\n", ws, em.ObjectType)
 	str += fmt.Sprintf("%sbase: '%v'\n", ws, em.Base)
-	str += fmt.Sprintf("%sstartDate: '%d'\n", ws, em.StartDate)
+	str += fmt.Sprintf("%sstartDate: '%s'\n", ws, em.StartDate)
 	str += fmt.Sprintf("%srootId: '%s'\n", ws, em.RootId)
 	str += fmt.Sprintf("%srequestId: '%s'\n", ws, em.RequestId)
 	str += fmt.Sprintf("%sdetails:\n", ws)
@@ -191,26 +193,27 @@ func (e *EventDetails) Get() *EventDetails {
 	return e
 }
 
-func (e *EventDetails) GetEndDate() uint64 {
+func (e *EventDetails) GetEndDate() string {
 	return e.EndDate
 }
 
-// SetValueEndDate устанавливает UINT64 значение для поля EndDate
-func (e *EventDetails) SetValueEndDate(v uint64) {
+// SetValueEndDate устанавливает значение в формате RFC3339 для поля EndDate
+func (e *EventDetails) SetValueEndDate(v string) {
 	e.EndDate = v
 }
 
 // SetAnyEndDate устанавливает ЛЮБОЕ значение для поля EndDate
 func (e *EventDetails) SetAnyEndDate(i interface{}) {
-	if v, ok := i.(float64); ok {
-		e.EndDate = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		e.EndDate = v
-	}
+	e.EndDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
 func (e *EventDetails) GetResolutionStatus() string {
@@ -283,7 +286,7 @@ func (ed EventDetails) ToStringBeautiful(num int) string {
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%sendDate: '%d'\n", ws, ed.EndDate)
+	str += fmt.Sprintf("%sendDate: '%s'\n", ws, ed.EndDate)
 	str += fmt.Sprintf("%sresolutionStatus: '%s'\n", ws, ed.ResolutionStatus)
 	str += fmt.Sprintf("%ssummary: '%s'\n", ws, ed.Summary)
 	str += fmt.Sprintf("%sstatus: '%s'\n", ws, ed.Status)
@@ -401,92 +404,96 @@ func (e *EventObject) SetAnyPap(i interface{}) {
 	}
 }
 
-func (e *EventObject) GetStartDate() uint64 {
+func (e *EventObject) GetStartDate() string {
 	return e.StartDate
 }
 
-// SetValueStartDate устанавливает UINT64 значение для поля StartDate
-func (e *EventObject) SetValueStartDate(v uint64) {
+// SetValueStartDate устанавливает значение в формате RFC3339 для поля StartDate
+func (e *EventObject) SetValueStartDate(v string) {
 	e.StartDate = v
 }
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (e *EventObject) SetAnyStartDate(i interface{}) {
-	if v, ok := i.(float64); ok {
-		e.StartDate = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		e.StartDate = v
-	}
+	e.StartDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
-func (e *EventObject) GetEndDate() uint64 {
+func (e *EventObject) GetEndDate() string {
 	return e.EndDate
 }
 
-// SetValueEndDate устанавливает UINT64 значение для поля EndDate
-func (e *EventObject) SetValueEndDate(v uint64) {
+// SetValueEndDate устанавливает значение в формате RFC3339 для поля EndDate
+func (e *EventObject) SetValueEndDate(v string) {
 	e.EndDate = v
 }
 
 // SetAnyEndDate устанавливает ЛЮБОЕ значение для поля EndDate
 func (e *EventObject) SetAnyEndDate(i interface{}) {
-	if v, ok := i.(float64); ok {
-		e.EndDate = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		e.EndDate = v
-	}
+	e.EndDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
-func (e *EventObject) GetCreatedAt() uint64 {
+func (e *EventObject) GetCreatedAt() string {
 	return e.CreatedAt
 }
 
-// SetValueCreatedAt устанавливает UINT64 значение для поля CreatedAt
-func (e *EventObject) SetValueCreatedAt(v uint64) {
+// SetValueCreatedAt устанавливает значение в формате RFC3339 для поля CreatedAt
+func (e *EventObject) SetValueCreatedAt(v string) {
 	e.CreatedAt = v
 }
 
 // SetAnyCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
 func (e *EventObject) SetAnyCreatedAt(i interface{}) {
-	if v, ok := i.(float64); ok {
-		e.CreatedAt = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		e.CreatedAt = v
-	}
+	e.CreatedAt = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
-func (e *EventObject) GetUpdatedAt() uint64 {
+func (e *EventObject) GetUpdatedAt() string {
 	return e.UpdatedAt
 }
 
-// SetValueUpdatedAt устанавливает UINT64 значение для поля UpdatedAt
-func (e *EventObject) SetValueUpdatedAt(v uint64) {
+// SetValueUpdatedAt устанавливает значение  в формате RFC3339 для поля UpdatedAt
+func (e *EventObject) SetValueUpdatedAt(v string) {
 	e.UpdatedAt = v
 }
 
 // SetAnyUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
 func (e *EventObject) SetAnyUpdatedAt(i interface{}) {
-	if v, ok := i.(float64); ok {
-		e.UpdatedAt = uint64(v)
+	var datetime int64
 
-		return
+	switch v := i.(type) {
+	case float64:
+		datetime = int64(v)
+	case uint64:
+		datetime = int64(v)
 	}
 
-	if v, ok := i.(uint64); ok {
-		e.UpdatedAt = v
-	}
+	e.UpdatedAt = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
 }
 
 func (e *EventObject) GetUnderliningId() string {
@@ -689,15 +696,15 @@ func (eo EventObject) ToStringBeautiful(num int) string {
 	str += fmt.Sprintf("%sid: '%s'\n", ws, eo.Id)
 	str += fmt.Sprintf("%screatedBy: '%s'\n", ws, eo.CreatedBy)
 	str += fmt.Sprintf("%supdatedBy: '%s'\n", ws, eo.UpdatedBy)
-	str += fmt.Sprintf("%screatedAt: '%d'\n", ws, eo.CreatedAt)
-	str += fmt.Sprintf("%supdatedAt: '%d'\n", ws, eo.UpdatedAt)
+	str += fmt.Sprintf("%screatedAt: '%s'\n", ws, eo.CreatedAt)
+	str += fmt.Sprintf("%supdatedAt: '%s'\n", ws, eo.UpdatedAt)
 	str += fmt.Sprintf("%s_type: '%s'\n", ws, eo.UnderliningType)
 	str += fmt.Sprintf("%scaseId: '%d'\n", ws, eo.CaseId)
 	str += fmt.Sprintf("%stitle: '%s'\n", ws, eo.Title)
 	str += fmt.Sprintf("%sdescription: '%s'\n", ws, eo.Description)
 	str += fmt.Sprintf("%sseverity: '%d'\n", ws, eo.Severity)
-	str += fmt.Sprintf("%sstartDate: '%d'\n", ws, eo.StartDate)
-	str += fmt.Sprintf("%sendDate: '%d'\n", ws, eo.EndDate)
+	str += fmt.Sprintf("%sstartDate: '%s'\n", ws, eo.StartDate)
+	str += fmt.Sprintf("%sendDate: '%s'\n", ws, eo.EndDate)
 	str += fmt.Sprintf("%simpactStatus: '%s'\n", ws, eo.ImpactStatus)
 	str += fmt.Sprintf("%sresolutionStatus: '%s'\n", ws, eo.ResolutionStatus)
 	str += fmt.Sprintf("%stags: \n%s", ws, func(l []string) string {

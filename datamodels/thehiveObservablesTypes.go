@@ -29,9 +29,9 @@ type ObservableMessage struct {
 	Sighted              bool                        `json:"sighted"`
 	IgnoreSimilarity     bool                        `json:"ignoreSimilarity"`
 	Tlp                  uint64                      `json:"tlp"`
-	UnderliningCreatedAt uint64                      `json:"_createdAt"`
-	UnderliningUpdatedAt uint64                      `json:"_updatedAt"`
-	StartDate            uint64                      `json:"startDate"`
+	UnderliningCreatedAt string                      `json:"_createdAt"` //формат RFC3339
+	UnderliningUpdatedAt string                      `json:"_updatedAt"` //формат RFC3339
+	StartDate            string                      `json:"startDate"`  //формат RFC3339
 	UnderliningCreatedBy string                      `json:"_createdBy"`
 	UnderliningUpdatedBy string                      `json:"_updatedBy"`
 	UnderliningId        string                      `json:"_id"`
