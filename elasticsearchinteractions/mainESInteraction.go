@@ -15,8 +15,10 @@ import (
 )
 
 type SettingsInputChan struct {
-	UUID string
-	Data []byte
+	UUID           string
+	Data           []byte
+	Command        string
+	VerifiedObject *datamodels.VerifiedTheHiveCase
 }
 
 // ElasticSearchModule инициализированный модуль
@@ -121,8 +123,15 @@ func HandlerElasticSearch(
 
 	go func() {
 		for data := range module.ChanInputModule {
+			//полностью верефицированный объект
+			if data.Command == "add new object" {
+				go hsd.sendingData(data.Data)
 
-			go hsd.sendingData(data.Data)
+				continue
+			}
+
+			//не ВЕРЕФИЦИРОВАННОЕ значение, позже надо удалить
+			//go hsd.sendingData(data.Data)
 		}
 	}()
 

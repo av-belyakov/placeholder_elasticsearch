@@ -117,7 +117,7 @@ type CustomFieldStringType struct {
 
 type CustomFieldDateType struct {
 	Order int    `json:"order"`
-	Date  uint64 `json:"date"`
+	Date  string `json:"date"`
 }
 
 type CustomFieldIntegerType struct {

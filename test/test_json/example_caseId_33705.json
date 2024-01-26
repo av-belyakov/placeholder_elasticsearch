@@ -145,6 +145,14 @@
                 "class-attack": {
                     "order": 0,
                     "string": "Вирусное заражение"
+                },
+                "first-time": {
+                    "date": 1696583267911,
+                    "order": 2
+                },
+                "last-time": {
+                    "date": 1702709874604,
+                    "order": 3
                 }
             }
         }

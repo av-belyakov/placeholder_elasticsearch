@@ -2,10 +2,17 @@ package datamodels
 
 import (
 	"fmt"
-	"time"
 
 	"placeholder_elasticsearch/supportingfunctions"
 )
+
+func NewObservablesMessageTheHive() *ObservablesMessageTheHive {
+	return &ObservablesMessageTheHive{}
+}
+
+func (o *ObservablesMessageTheHive) SetObservables(list []ObservableMessage) {
+	o.Observables = list
+}
 
 func (o *ObservablesMessageTheHive) Get() []ObservableMessage {
 	return o.Observables
@@ -96,16 +103,8 @@ func (o *ObservableMessage) SetValueUnderliningCreatedAt(v string) {
 
 // SetAnyUnderliningCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
 func (o *ObservableMessage) SetAnyUnderliningCreatedAt(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	o.UnderliningCreatedAt = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	o.UnderliningCreatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (o *ObservableMessage) GetUnderliningUpdatedAt() string {
@@ -119,16 +118,8 @@ func (o *ObservableMessage) SetValueUnderliningUpdatedAt(v string) {
 
 // SetAnyUnderliningUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
 func (o *ObservableMessage) SetAnyUnderliningUpdatedAt(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	o.UnderliningUpdatedAt = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	o.UnderliningUpdatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (o *ObservableMessage) GetStartDate() string {
@@ -142,16 +133,8 @@ func (o *ObservableMessage) SetValueStartDate(v string) {
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (o *ObservableMessage) SetAnyStartDate(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	o.StartDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	o.StartDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (o *ObservableMessage) GetUnderliningCreatedBy() string {
@@ -279,30 +262,13 @@ func (o *ObservableMessage) SetValueReports(v map[string]ReportTaxonomies) {
 	o.Reports = v
 }
 
-/*
-Еще Reports
-
-
-func (o *ObservableMessage) Get() string {
-	return o.
-}
-
-// SetValue устанавливает СТРОКОВОЕ значение для поля
-func (o *ObservableMessage) SetValue(v string) {
-	o. = v
-}
-
-// SetAny устанавливает ЛЮБОЕ значение для поля
-func (o *ObservableMessage) SetAny(i interface{}) {
-	o. = fmt.Sprint(i)
-}
-*/
-
 func (om ObservablesMessageTheHive) ToStringBeautiful(num int) string {
 	var str string
+	ws := supportingfunctions.GetWhitespace(num)
 
-	for _, v := range om.Observables {
-		str += v.ToStringBeautiful(num)
+	for k, v := range om.Observables {
+		str += fmt.Sprintf("%s%d.\n", ws, k+1)
+		str += v.ToStringBeautiful(num + 1)
 	}
 
 	return str

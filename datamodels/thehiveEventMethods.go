@@ -2,7 +2,6 @@ package datamodels
 
 import (
 	"fmt"
-	"time"
 
 	"placeholder_elasticsearch/supportingfunctions"
 )
@@ -39,16 +38,8 @@ func (e *EventMessageTheHive) SetValueStartDate(v string) {
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (e *EventMessageTheHive) SetAnyStartDate(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	e.StartDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	e.StartDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (e *EventMessageTheHive) GetRootId() string {
@@ -204,16 +195,8 @@ func (e *EventDetails) SetValueEndDate(v string) {
 
 // SetAnyEndDate устанавливает ЛЮБОЕ значение для поля EndDate
 func (e *EventDetails) SetAnyEndDate(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	e.EndDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	e.EndDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (e *EventDetails) GetResolutionStatus() string {
@@ -415,16 +398,8 @@ func (e *EventObject) SetValueStartDate(v string) {
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
 func (e *EventObject) SetAnyStartDate(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	e.StartDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	e.StartDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (e *EventObject) GetEndDate() string {
@@ -438,16 +413,8 @@ func (e *EventObject) SetValueEndDate(v string) {
 
 // SetAnyEndDate устанавливает ЛЮБОЕ значение для поля EndDate
 func (e *EventObject) SetAnyEndDate(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	e.EndDate = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	e.EndDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (e *EventObject) GetCreatedAt() string {
@@ -461,16 +428,8 @@ func (e *EventObject) SetValueCreatedAt(v string) {
 
 // SetAnyCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
 func (e *EventObject) SetAnyCreatedAt(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	e.CreatedAt = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	e.CreatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (e *EventObject) GetUpdatedAt() string {
@@ -484,16 +443,8 @@ func (e *EventObject) SetValueUpdatedAt(v string) {
 
 // SetAnyUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
 func (e *EventObject) SetAnyUpdatedAt(i interface{}) {
-	var datetime int64
-
-	switch v := i.(type) {
-	case float64:
-		datetime = int64(v)
-	case uint64:
-		datetime = int64(v)
-	}
-
-	e.UpdatedAt = time.UnixMilli(int64(datetime)).Format(time.RFC3339)
+	tmp := supportingfunctions.ConversionAnyToInt(i)
+	e.UpdatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 func (e *EventObject) GetUnderliningId() string {

@@ -1,16 +1,17 @@
 package coremodule
 
 import (
-	"fmt"
-
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/listhandlerthehivejson"
+	"reflect"
+	"strings"
 )
 
 func NewVerifiedTheHiveFormat(
 	input <-chan datamodels.ChanOutputDecodeJSON,
 	done <-chan bool,
-	//esm *elasticsearchinteractions.ModuleElasticSearch,
+	esm *elasticsearchinteractions.ElasticSearchModule,
 	logging chan<- datamodels.MessageLogging,
 ) {
 	var (
@@ -37,6 +38,10 @@ func NewVerifiedTheHiveFormat(
 	// ------ EVENT DETAILS CUSTOMFIELDS ------
 	listHandlerEventDetailsCustomFields := listhandlerthehivejson.NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields)
 
+	//******************* Вспомогательный объект для Observables **********************
+	so := listhandlerthehivejson.NewSupportiveObservables()
+	listHandlerObservables := listhandlerthehivejson.NewListHandlerObservablesElement(so)
+
 	for {
 		select {
 		case data := <-input:
@@ -44,8 +49,8 @@ func NewVerifiedTheHiveFormat(
 				verifiedCase.SetSource(source)
 			}
 
-			//*************************************************************
-			//********** Сбор всех объектов относящихся к event  **********
+			//******************************************************************
+			//********** Сбор всех объектов относящихся к полю Event  **********
 			// event element
 			if lf, ok := listHandlerEvent[data.FieldBranch]; ok {
 				for _, f := range lf {
@@ -81,6 +86,32 @@ func NewVerifiedTheHiveFormat(
 				}
 			}
 
+			//************************************************************************
+			//********** Сбор всех объектов относящихся к полю Observables  **********
+			// для всех полей входящих в observables, кроме содержимого
+			//поля reports
+			if lf, ok := listHandlerObservables[data.FieldBranch]; ok {
+				for _, f := range lf {
+					r := reflect.TypeOf(data.Value)
+					switch r.Kind() {
+					case reflect.Slice:
+						if s, ok := data.Value.([]interface{}); ok {
+							for _, value := range s {
+								f(value)
+							}
+						}
+					default:
+						f(data.Value)
+
+					}
+				}
+			}
+
+			//для всех полей входящих в состав observables.reports
+			if strings.Contains(data.FieldBranch, "observables.reports.") {
+				so.HandlerReportValue(data.FieldBranch, data.Value)
+			}
+
 		case <-done:
 			//Собираем объект Event
 			eventObject.SetValueCustomFields(eventObjectCustomFields)
@@ -88,7 +119,17 @@ func NewVerifiedTheHiveFormat(
 			event.SetValueObject(eventObject)
 			event.SetValueDetails(eventDetails)
 
+			//собираем объект observables
+			observables := datamodels.NewObservablesMessageTheHive()
+			observables.SetObservables(so.GetObservables())
+
 			verifiedCase.SetEvent(event)
+			verifiedCase.SetObservables(*observables)
+
+			esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+				Command:        "add new object",
+				VerifiedObject: verifiedCase.Get(),
+			}
 
 			/*bytes, err := json.Marshal(struct {
 				datamodels.SourceMessageTheHive
@@ -116,7 +157,12 @@ func NewVerifiedTheHiveFormat(
 			//	Data: bytes,
 			//})
 
-			fmt.Println("func 'NewVerifiedTheHiveFormat' PROCESSING IS STOPED")
+			// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования
+			//при выполнения тестирования
+			logging <- datamodels.MessageLogging{
+				MsgData: "",
+				MsgType: "STOP TEST",
+			}
 
 			return
 		}

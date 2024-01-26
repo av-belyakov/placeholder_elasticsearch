@@ -2,7 +2,6 @@ package datamodels
 
 import (
 	"fmt"
-	"time"
 
 	"placeholder_elasticsearch/supportingfunctions"
 )
@@ -183,31 +182,28 @@ func (cf *CustomFieldStringType) Get() (string, int, string, string) {
 
 // Set устанавливает значения CustomFieldStringType
 func (cf *CustomFieldStringType) Set(order, str interface{}) {
-	if o, ok := order.(int); ok {
-		cf.Order = o
-	}
-
+	cf.Order = supportingfunctions.ConversionAnyToInt(order)
 	cf.String = fmt.Sprint(str)
 }
 
 // Get возвращает значения CustomFieldDateType, где 1 и 3 значение это
 // наименование поля
 func (cf *CustomFieldDateType) Get() (string, int, string, string) {
-	t := time.UnixMilli(int64(cf.Date))
-
-	return "order", cf.Order, "date", t.String()
+	return "order", cf.Order, "date", cf.Date
 }
 
-// Set устанавливает значения CustomFieldDateType, при этом
-// значение value должно быть типа uint64
+// Set устанавливает значения CustomFieldDateType
 func (cf *CustomFieldDateType) Set(order, date interface{}) {
-	if o, ok := order.(int); ok {
-		cf.Order = o
+	cf.Order = supportingfunctions.ConversionAnyToInt(order)
+
+	if str, ok := date.(string); ok {
+		cf.Date = str
+
+		return
 	}
 
-	if v, ok := date.(uint64); ok {
-		cf.Date = v
-	}
+	tmp := supportingfunctions.ConversionAnyToInt(date)
+	cf.Date = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
 // Get возвращает значения CustomFieldIntegerType, где 1 и 3 значение это
@@ -218,9 +214,7 @@ func (cf *CustomFieldIntegerType) Get() (string, int, string, string) {
 
 // Set устанавливает значения CustomFieldIntegerType
 func (cf *CustomFieldIntegerType) Set(order, integer interface{}) {
-	if o, ok := order.(int); ok {
-		cf.Order = o
-	}
+	cf.Order = supportingfunctions.ConversionAnyToInt(order)
 
 	if i, ok := integer.(int); ok {
 		cf.Integer = i
