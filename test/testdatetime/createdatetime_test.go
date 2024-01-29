@@ -20,6 +20,7 @@ var _ = Describe("Createdatetime", func() {
 			fmt.Printf("Unixtime millise: %d\n", time.Now().UnixMilli())
 			fmt.Printf("UnixMilli(1647277028643).Format(time.RFC3339): %s\n", time.UnixMilli(1647277028643).Format(time.RFC3339))
 			fmt.Println("now 1:", time.Now().String(), " now 2:", time.UnixMilli(time.Now().UnixMilli()).Format(time.RFC3339))
+			fmt.Println("empty:", time.UnixMilli(0).Format(time.RFC3339))
 
 			Expect(true).Should(BeTrue())
 		})

@@ -15,7 +15,9 @@ func newCustomFieldsElement(elem, objType string, customFields *map[string]datam
 		case "string":
 			(*customFields)[elem] = &datamodels.CustomFieldStringType{}
 		case "date":
-			(*customFields)[elem] = &datamodels.CustomFieldDateType{}
+			(*customFields)[elem] = &datamodels.CustomFieldDateType{
+				Date: "1970-01-01T03:00:00+03:00",
+			}
 		case "integer":
 			(*customFields)[elem] = &datamodels.CustomFieldIntegerType{}
 		default:

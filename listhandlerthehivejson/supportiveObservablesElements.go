@@ -19,10 +19,15 @@ type SupportiveObservables struct {
 // thehive объектов типа observables
 func NewSupportiveObservables() *SupportiveObservables {
 	return &SupportiveObservables{
-		listAcceptedFields:        make([]string, 0),
+		listAcceptedFields:        []string(nil),
 		listAcceptedFieldsReports: []string(nil),
-		observableTmp:             datamodels.ObservableMessage{Reports: map[string]datamodels.ReportTaxonomies{}},
-		observables:               make([]datamodels.ObservableMessage, 0)}
+		observableTmp: datamodels.ObservableMessage{
+			StartDate:            "1970-01-01T03:00:00+03:00",
+			UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
+			UnderliningUpdatedAt: "1970-01-01T03:00:00+03:00",
+			Reports:              map[string]datamodels.ReportTaxonomies{},
+		},
+		observables: make([]datamodels.ObservableMessage, 0)}
 }
 
 // GetObservables возвращает []datamodels.ObservableMessage, однако, метод
@@ -50,7 +55,12 @@ func (o *SupportiveObservables) HandlerValue(fieldBranch string, i interface{}, 
 		o.listAcceptedFieldsReports = []string(nil)
 		o.previousFieldReports = ""
 		o.observables = append(o.observables, o.observableTmp)
-		o.observableTmp = datamodels.ObservableMessage{Reports: map[string]datamodels.ReportTaxonomies{}}
+		o.observableTmp = datamodels.ObservableMessage{
+			StartDate:            "1970-01-01T03:00:00+03:00",
+			UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
+			UnderliningUpdatedAt: "1970-01-01T03:00:00+03:00",
+			Reports:              map[string]datamodels.ReportTaxonomies{},
+		}
 	}
 
 	o.listAcceptedFields = append(o.listAcceptedFields, fieldBranch)

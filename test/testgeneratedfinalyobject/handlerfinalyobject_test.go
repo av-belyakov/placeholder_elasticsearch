@@ -152,49 +152,39 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 
 	Context("Тест 4. Получаем валидированный финальный объект", func() {
 		It("Должен быть получен валидный объект", func() {
-			var esSettings elasticsearchinteractions.SettingsInputChan
+			//var esSettings elasticsearchinteractions.SettingsInputChan
 
-			for esSettings = range esModule.ChanInputModule {
-				verifiedObject := esSettings.VerifiedObject.Get()
+			esSettings := <-esModule.ChanInputModule
+			verifiedObject := esSettings.VerifiedObject.Get()
 
-				fmt.Println("func 'NewVerifiedTheHiveFormat' is STOPPED")
-				fmt.Println("------------------ VerifiedObject RESULT ----------------")
-				fmt.Println(verifiedObject.ToStringBeautiful(0))
-				//fmt.Println("CreateTimestatmp:", verifiedObject.CreateTimestatmp)
-				//fmt.Println("Source:", verifiedObject.Source)
-				//fmt.Println("Event:", verifiedObject.Event)
-				//fmt.Println("Observables:", verifiedObject.Observables)
+			fmt.Println("func 'NewVerifiedTheHiveFormat' is STOPPED")
+			fmt.Println("------------------ VerifiedObject RESULT ----------------")
+			fmt.Println(verifiedObject.ToStringBeautiful(0))
+			//fmt.Println("CreateTimestatmp:", verifiedObject.CreateTimestatmp)
+			//fmt.Println("Source:", verifiedObject.Source)
+			//fmt.Println("Event:", verifiedObject.Event)
+			//fmt.Println("Observables:", verifiedObject.Observables)
 
-				//************************************************
-				//тестовая отправка данных в Elastisearch
+			//************************************************
+			//тестовая отправка данных в Elastisearch
 
-				b, errMarshal = json.Marshal(verifiedObject)
+			b, errMarshal = json.Marshal(verifiedObject)
 
-				t := time.Now()
-				buf := bytes.NewReader(b)
-				res, errESSend = esClient.Index(fmt.Sprintf("%s%s_%d_%d", "", "test_module_placeholder_elasticsearch_case", t.Year(), int(t.Month())), buf)
+			t := time.Now()
+			buf := bytes.NewReader(b)
+			res, errESSend = esClient.Index(fmt.Sprintf("%s%s_%d_%d", "", "test_module_placeholder_elasticsearch_case", t.Year(), int(t.Month())), buf)
 
-				/*if res.StatusCode == http.StatusCreated || res.StatusCode == http.StatusOK {
-					return
-				}
+			r := map[string]interface{}{}
+			errJsonDecode := json.NewDecoder(res.Body).Decode(&r)
 
-				var errMsg string
-				r := map[string]interface{}{}
-				if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-					_, f, l, _ := runtime.Caller(0)
-					hsd.logging <- datamodels.MessageLogging{
-						MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-						MsgType: "error",
-					}
-				}
-
-				if e, ok := r["error"]; ok {
-					errMsg = fmt.Sprintln(e)
-				}*/
+			fmt.Println("Read response message:")
+			for k, v := range r {
+				fmt.Println(k, ":", v)
 			}
 
 			close(counting)
 
+			Expect(errJsonDecode).ShouldNot(HaveOccurred())
 			Expect(res.StatusCode).Should(Equal(http.StatusCreated))
 
 			Expect(errMarshal).ShouldNot(HaveOccurred())

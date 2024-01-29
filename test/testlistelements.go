@@ -278,3 +278,177 @@ func GetEventOne() []struct {
 		},
 	}
 }
+
+func GetTtpOne() []struct {
+	ElemName  string
+	ElemValue interface{}
+} {
+	return []struct {
+		ElemName  string
+		ElemValue interface{}
+	}{
+		{ElemName: "ttp._createdAt", ElemValue: float64(1705041429370)},
+		{ElemName: "ttp._createdBy", ElemValue: "prs@rcm"},
+		{ElemName: "ttp._id", ElemValue: "~185286688"},
+		{ElemName: "ttp.occurDate", ElemValue: float64(1705041420000)},
+		{ElemName: "ttp.patternId", ElemValue: "T1110.001"},
+		{ElemName: "ttp.tactic", ElemValue: "credential-access"},
+
+		//pattern
+		{ElemName: "ttp.pattern.remoteSupport", ElemValue: true},
+		{ElemName: "ttp.pattern.revoked", ElemValue: true},
+		{ElemName: "ttp.pattern._createdAt", ElemValue: float64(1705041429370)},
+		{ElemName: "ttp.pattern._createdBy", ElemValue: "admin@thehive.local"},
+		{ElemName: "ttp.pattern._id", ElemValue: "~164016"},
+		{ElemName: "ttp.pattern._type", ElemValue: "Pattern"},
+		{ElemName: "ttp.patternParent.description", ElemValue: "exploit edge network"},
+		{ElemName: "ttp.pattern.detection", ElemValue: "Monitor authentication logs for system"},
+		{ElemName: "ttp.pattern.name", ElemValue: "Password Guessing"},
+		{ElemName: "ttp.pattern.patternId", ElemValue: "T1110.001"},
+		{ElemName: "ttp.pattern.patternType", ElemValue: "attack-pattern"},
+		{ElemName: "ttp.pattern.url", ElemValue: "https://attack.mitre.org/techniques/T1110/001"},
+		{ElemName: "ttp.pattern.version", ElemValue: "1.4"},
+		{ElemName: "ttp.pattern.platforms", ElemValue: []interface{}{
+			"Windows",
+			"Azure AD",
+			"Office 365",
+		}},
+		{ElemName: "ttp.pattern.permissionsRequired", ElemValue: []interface{}{
+			"User",
+			"Administrator",
+		}},
+		{ElemName: "ttp.pattern.dataSources", ElemValue: []interface{}{
+			"Application Log: Application Log Content",
+			"User Account: User Account Authentication",
+		}},
+		{ElemName: "ttp.pattern.tactics", ElemValue: []interface{}{
+			"credential-access",
+		}},
+
+		//patternParent
+		{ElemName: "ttp.patternParent.remoteSupport", ElemValue: true},
+		{ElemName: "ttp.patternParent.revoked", ElemValue: true},
+		{ElemName: "ttp.patternParent._createdAt", ElemValue: float64(1705040481513)},
+		{ElemName: "ttp.patternParent._createdBy", ElemValue: "root@thehive.gcm"},
+		{ElemName: "ttp.patternParent._id", ElemValue: "~164016"},
+		{ElemName: "ttp.patternParent._type", ElemValue: "Pattern Parent"},
+		{ElemName: "ttp.patternParent.description", ElemValue: "Adversaries may"},
+		{ElemName: "ttp.patternParent.detection", ElemValue: "Adversaries with no prior knowledge"},
+		{ElemName: "ttp.patternParent.name", ElemValue: "Password Guessing"},
+		{ElemName: "ttp.patternParent.patternId", ElemValue: "T1110"},
+		{ElemName: "ttp.patternParent.patternType", ElemValue: "attack-pattern"},
+		{ElemName: "ttp.patternParent.url", ElemValue: "https://attack.mitre.org/techniques/T1110"},
+		{ElemName: "ttp.patternParent.version", ElemValue: "1.14"},
+		{ElemName: "ttp.patternParent.platforms", ElemValue: []interface{}{
+			"Office 365",
+			"SaaS",
+			"IaaS",
+			"Linux",
+			"macOS",
+			"Google Workspace",
+		}},
+		{ElemName: "ttp.patternParent.permissionsRequired", ElemValue: []interface{}{
+			"Root",
+			"User",
+			"Administrator",
+		}},
+		{ElemName: "ttp.patternParent.dataSources", ElemValue: []interface{}{
+			"Application Log: Application Log Content",
+			"User Account: User Account Authentication",
+			"Command: Command Execution",
+		}},
+		{ElemName: "ttp.patternParent.tactics", ElemValue: []interface{}{
+			"credential-access",
+		}},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+	}
+}
+
+func GetTtpTwo() []struct {
+	ElemName  string
+	ElemValue interface{}
+} {
+	return []struct {
+		ElemName  string
+		ElemValue interface{}
+	}{
+		{ElemName: "ttp._createdAt", ElemValue: float64(1705032829013)},
+		{ElemName: "ttp._createdBy", ElemValue: "prs@rcm"},
+		{ElemName: "ttp._id", ElemValue: "~104177744"},
+		{ElemName: "ttp.occurDate", ElemValue: float64(1705032780000)},
+		{ElemName: "ttp.patternId", ElemValue: "T1190"},
+		{ElemName: "ttp.tactic", ElemValue: "initial-access"},
+
+		//pattern
+		{ElemName: "ttp.pattern.remoteSupport", ElemValue: true},
+		{ElemName: "ttp.pattern.revoked", ElemValue: false},
+		{ElemName: "ttp.pattern._createdAt", ElemValue: float64(1705032829013)},
+		{ElemName: "ttp.pattern._createdBy", ElemValue: "prs@rcm"},
+		{ElemName: "ttp.pattern._id", ElemValue: "~104177744"},
+		{ElemName: "ttp.pattern._type", ElemValue: "Pattern"},
+		{ElemName: "ttp.pattern.detection", ElemValue: "Monitor application logs"},
+		{ElemName: "ttp.pattern.name", ElemValue: "Password Guessing"},
+		{ElemName: "ttp.pattern.patternId", ElemValue: "T1190"},
+		{ElemName: "ttp.pattern.patternType", ElemValue: "attack-pattern"},
+		{ElemName: "ttp.pattern.url", ElemValue: "https://attack.mitre.org/techniques/T1110/001"},
+		{ElemName: "ttp.pattern.version", ElemValue: "2.4"},
+		{ElemName: "ttp.pattern.platforms", ElemValue: []interface{}{
+			"Windows",
+			"Azure AD",
+			"Office 365",
+			"IaaS",
+		}},
+		{ElemName: "ttp.pattern.permissionsRequired", ElemValue: []interface{}{
+			"User",
+			"Admin",
+			"FreeUser",
+			"JobUser",
+		}},
+		{ElemName: "ttp.pattern.dataSources", ElemValue: []interface{}{
+			"Application Log: Application Log Content",
+			"User Account: User Account Authentication",
+		}},
+		{ElemName: "ttp.pattern.tactics", ElemValue: []interface{}{
+			"credential-access",
+		}},
+
+		//patternParent
+		{ElemName: "ttp.patternParent.remoteSupport", ElemValue: true},
+		{ElemName: "ttp.patternParent.revoked", ElemValue: true},
+		{ElemName: "ttp.patternParent._createdAt", ElemValue: float64(1705040481513)},
+		{ElemName: "ttp.patternParent._createdBy", ElemValue: "root@thehive.gcm"},
+		{ElemName: "ttp.patternParent._id", ElemValue: "~164016"},
+		{ElemName: "ttp.patternParent._type", ElemValue: "Pattern Parent"},
+		{ElemName: "ttp.patternParent.description", ElemValue: "applications are often websites/web"},
+		{ElemName: "ttp.patternParent.detection", ElemValue: "Adversaries with no prior knowledge"},
+		{ElemName: "ttp.patternParent.name", ElemValue: "Password Guessing"},
+		{ElemName: "ttp.patternParent.patternId", ElemValue: "T1110"},
+		{ElemName: "ttp.patternParent.patternType", ElemValue: "attack-pattern"},
+		{ElemName: "ttp.patternParent.url", ElemValue: "https://attack.mitre.org/techniques/T1110"},
+		{ElemName: "ttp.patternParent.version", ElemValue: "1.14"},
+		{ElemName: "ttp.patternParent.platforms", ElemValue: []interface{}{
+			"Office 365",
+			"SaaS",
+			"IaaS",
+			"Linux",
+			"macOS",
+			"Google Workspace",
+		}},
+		{ElemName: "ttp.patternParent.permissionsRequired", ElemValue: []interface{}{
+			"Root",
+			"User",
+			"Administrator",
+		}},
+		{ElemName: "ttp.patternParent.dataSources", ElemValue: []interface{}{
+			"Application Log: Application Log Content",
+			"User Account: User Account Authentication",
+			"Command: Command Execution",
+		}},
+		{ElemName: "ttp.patternParent.tactics", ElemValue: "resurce-development"},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+	}
+}

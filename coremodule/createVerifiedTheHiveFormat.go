@@ -119,6 +119,10 @@ func NewVerifiedTheHiveFormat(
 			event.SetValueObject(eventObject)
 			event.SetValueDetails(eventDetails)
 
+			//проверяем объек на наличие пустых полей которые должны
+			//содержать дату и время
+			checkDatetimeFieldsEventObject(&event)
+
 			//собираем объект observables
 			observables := datamodels.NewObservablesMessageTheHive()
 			observables.SetObservables(so.GetObservables())
@@ -181,4 +185,30 @@ func searchEventSource(fieldBranch string, value interface{}) (string, bool) {
 	}
 
 	return source, ok
+}
+
+func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHive) {
+	if e.GetStartDate() == "" {
+		e.SetValueStartDate("1970-01-01T03:00:00+03:00")
+	}
+
+	if e.Details.GetEndDate() == "" {
+		e.Details.SetValueEndDate("1970-01-01T03:00:00+03:00")
+	}
+
+	if e.Object.GetStartDate() == "" {
+		e.Object.SetValueStartDate("1970-01-01T03:00:00+03:00")
+	}
+
+	if e.Object.GetEndDate() == "" {
+		e.Object.SetValueEndDate("1970-01-01T03:00:00+03:00")
+	}
+
+	if e.Object.GetCreatedAt() == "" {
+		e.Object.SetValueCreatedAt("1970-01-01T03:00:00+03:00")
+	}
+
+	if e.Object.GetUpdatedAt() == "" {
+		e.Object.SetValueUpdatedAt("1970-01-01T03:00:00+03:00")
+	}
 }

@@ -14,7 +14,7 @@ func (o *ObservablesMessageTheHive) SetObservables(list []ObservableMessage) {
 	o.Observables = list
 }
 
-func (o *ObservablesMessageTheHive) Get() []ObservableMessage {
+func (o *ObservablesMessageTheHive) GetObservables() []ObservableMessage {
 	return o.Observables
 }
 

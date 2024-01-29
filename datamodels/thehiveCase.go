@@ -2,16 +2,17 @@ package datamodels
 
 import (
 	"fmt"
-	"placeholder_elasticsearch/supportingfunctions"
 	"time"
+
+	"placeholder_elasticsearch/supportingfunctions"
 )
 
 // VerifiedTheHiveCase объект представляет собой верифицированный 'кейс' TheHive
 type VerifiedTheHiveCase struct {
-	CreateTimestatmp string                    `json:"@timestamp"`
-	Source           string                    `json:"source"`
-	Event            EventMessageTheHive       `json:"event"`
-	Observables      ObservablesMessageTheHive `json:"observables"`
+	CreateTimestatmp string              `json:"@timestamp"`
+	Source           string              `json:"source"`
+	Event            EventMessageTheHive `json:"event"`
+	ObservablesMessageTheHive
 }
 
 func NewVerifiedTheHiveCase() *VerifiedTheHiveCase {
@@ -41,11 +42,11 @@ func (hcase *VerifiedTheHiveCase) SetEvent(event EventMessageTheHive) {
 }
 
 func (hcase *VerifiedTheHiveCase) GetObservables() *ObservablesMessageTheHive {
-	return &hcase.Observables
+	return &hcase.ObservablesMessageTheHive
 }
 
 func (hcase *VerifiedTheHiveCase) SetObservables(observables ObservablesMessageTheHive) {
-	hcase.Observables = observables
+	hcase.ObservablesMessageTheHive = observables
 }
 
 func (hcase *VerifiedTheHiveCase) ToStringBeautiful(num int) string {
@@ -56,7 +57,7 @@ func (hcase *VerifiedTheHiveCase) ToStringBeautiful(num int) string {
 	str += fmt.Sprintf("%sEvent:\n", ws)
 	str += hcase.Event.ToStringBeautiful(num + 1)
 	str += fmt.Sprintf("%sObservables:\n", ws)
-	str += hcase.Observables.ToStringBeautiful(num + 1)
+	str += hcase.ObservablesMessageTheHive.ToStringBeautiful(num + 1)
 
 	return str
 }
