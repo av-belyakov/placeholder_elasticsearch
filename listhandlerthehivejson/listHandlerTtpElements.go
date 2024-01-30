@@ -51,275 +51,275 @@ func NewListHandlerTtpElement(sttp *SupportiveTtp) map[string][]func(interface{}
 			)
 		}},
 		//****************** pattern *******************
-		//--- ttp.pattern.remoteSupport ---
-		"ttp.pattern.remoteSupport": {func(i interface{}) {
+		//--- ttp.extraData.pattern.remoteSupport ---
+		"ttp.extraData.pattern.remoteSupport": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.remoteSupport",
+				"ttp.extraData.pattern.remoteSupport",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyRemoteSupport,
 			)
 		}},
-		//--- ttp.pattern.revoked ---
-		"ttp.pattern.revoked": {func(i interface{}) {
+		//--- ttp.extraData.pattern.revoked ---
+		"ttp.extraData.pattern.revoked": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.revoked",
+				"ttp.extraData.pattern.revoked",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyRevoked,
 			)
 		}},
-		//--- ttp.pattern._createdAt ---
-		"ttp.pattern._createdAt": {func(i interface{}) {
+		//--- ttp.extraData.pattern._createdAt ---
+		"ttp.extraData.pattern._createdAt": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern._createdAt",
+				"ttp.extraData.pattern._createdAt",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyUnderliningCreatedAt,
 			)
 		}},
-		//--- ttp.pattern._createdBy ---
-		"ttp.pattern._createdBy": {func(i interface{}) {
+		//--- ttp.extraData.pattern._createdBy ---
+		"ttp.extraData.pattern._createdBy": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern._createdBy",
+				"ttp.extraData.pattern._createdBy",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyUnderliningCreatedBy,
 			)
 		}},
-		//--- ttp.pattern._id ---
-		"ttp.pattern._id": {func(i interface{}) {
+		//--- ttp.extraData.pattern._id ---
+		"ttp.extraData.pattern._id": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern._id",
+				"ttp.extraData.pattern._id",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyUnderliningId,
 			)
 		}},
-		//--- ttp.pattern._type ---
-		"ttp.pattern._type": {func(i interface{}) {
+		//--- ttp.extraData.pattern._type ---
+		"ttp.extraData.pattern._type": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern._type",
+				"ttp.extraData.pattern._type",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyUnderliningType,
 			)
 		}},
-		//--- ttp.pattern.detection ---
-		"ttp.pattern.detection": {func(i interface{}) {
+		//--- ttp.extraData.pattern.detection ---
+		"ttp.extraData.pattern.detection": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.detection",
+				"ttp.extraData.pattern.detection",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyDetection,
 			)
 		}},
-		//--- ttp.pattern.description ---
-		"ttp.pattern.description": {func(i interface{}) {
+		//--- ttp.extraData.pattern.description ---
+		"ttp.extraData.pattern.description": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.description",
+				"ttp.extraData.pattern.description",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyDescription,
 			)
 		}},
-		// --- ttp.pattern.name ---
-		"ttp.pattern.name": {func(i interface{}) {
+		// --- ttp.extraData.pattern.name ---
+		"ttp.extraData.pattern.name": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.name",
+				"ttp.extraData.pattern.name",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyName,
 			)
 		}},
-		// --- ttp.pattern.patternId ---
-		"ttp.pattern.patternId": {func(i interface{}) {
+		// --- ttp.extraData.pattern.patternId ---
+		"ttp.extraData.pattern.patternId": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.patternId",
+				"ttp.extraData.pattern.patternId",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyPatternId,
 			)
 		}},
-		// --- ttp.pattern.patternType ---
-		"ttp.pattern.patternType": {func(i interface{}) {
+		// --- ttp.extraData.pattern.patternType ---
+		"ttp.extraData.pattern.patternType": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.patternType",
+				"ttp.extraData.pattern.patternType",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyPatternType,
 			)
 		}},
-		//--- ttp.pattern.url ---
-		"ttp.pattern.url": {func(i interface{}) {
+		//--- ttp.extraData.pattern.url ---
+		"ttp.extraData.pattern.url": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.url",
+				"ttp.extraData.pattern.url",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyURL,
 			)
 		}},
-		//--- ttp.pattern.version ---
-		"ttp.pattern.version": {func(i interface{}) {
+		//--- ttp.extraData.pattern.version ---
+		"ttp.extraData.pattern.version": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.version",
+				"ttp.extraData.pattern.version",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyVersion,
 			)
 		}},
-		//--- ttp.pattern.platforms ---
-		"ttp.pattern.platforms": {func(i interface{}) {
+		//--- ttp.extraData.pattern.platforms ---
+		"ttp.extraData.pattern.platforms": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.platforms",
+				"ttp.extraData.pattern.platforms",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyPlatforms,
 			)
 		}},
-		//--- ttp.pattern.permissionsRequired ---
-		"ttp.pattern.permissionsRequired": {func(i interface{}) {
+		//--- ttp.extraData.pattern.permissionsRequired ---
+		"ttp.extraData.pattern.permissionsRequired": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.permissionsRequired",
+				"ttp.extraData.pattern.permissionsRequired",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyPermissionsRequired,
 			)
 		}},
-		//--- ttp.pattern.dataSources ---
-		"ttp.pattern.dataSources": {func(i interface{}) {
+		//--- ttp.extraData.pattern.dataSources ---
+		"ttp.extraData.pattern.dataSources": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.dataSources",
+				"ttp.extraData.pattern.dataSources",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyDataSources,
 			)
 		}},
-		//--- ttp.pattern.tactics ---
-		"ttp.pattern.tactics": {func(i interface{}) {
+		//--- ttp.extraData.pattern.tactics ---
+		"ttp.extraData.pattern.tactics": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.pattern.tactics",
+				"ttp.extraData.pattern.tactics",
 				i,
 				sttp.GetTtpTmp().ExtraData.Pattern.SetAnyTactics,
 			)
 		}},
 		//****************** patternParent *******************
-		//--- ttp.patternParent.remoteSupport ---
-		"ttp.patternParent.remoteSupport": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.remoteSupport ---
+		"ttp.extraData.patternParent.remoteSupport": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.remoteSupport",
+				"ttp.extraData.patternParent.remoteSupport",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyRemoteSupport,
 			)
 		}},
-		//--- ttp.patternParent.revoked ---
-		"ttp.patternParent.revoked": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.revoked ---
+		"ttp.extraData.patternParent.revoked": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.revoked",
+				"ttp.extraData.patternParent.revoked",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyRevoked,
 			)
 		}},
-		//--- ttp.patternParent._createdAt ---
-		"ttp.patternParent._createdAt": {func(i interface{}) {
+		//--- ttp.extraData.patternParent._createdAt ---
+		"ttp.extraData.patternParent._createdAt": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent._createdAt",
+				"ttp.extraData.patternParent._createdAt",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyUnderliningCreatedAt,
 			)
 		}},
-		//--- ttp.patternParent._createdBy ---
-		"ttp.patternParent._createdBy": {func(i interface{}) {
+		//--- ttp.extraData.patternParent._createdBy ---
+		"ttp.extraData.patternParent._createdBy": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent._createdBy",
+				"ttp.extraData.patternParent._createdBy",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyUnderliningCreatedBy,
 			)
 		}},
-		//--- ttp.patternParent._id ---
-		"ttp.patternParent._id": {func(i interface{}) {
+		//--- ttp.extraData.patternParent._id ---
+		"ttp.extraData.patternParent._id": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent._id",
+				"ttp.extraData.patternParent._id",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyUnderliningId,
 			)
 		}},
-		//--- ttp.patternParent._type ---
-		"ttp.patternParent._type": {func(i interface{}) {
+		//--- ttp.extraData.patternParent._type ---
+		"ttp.extraData.patternParent._type": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent._type",
+				"ttp.extraData.patternParent._type",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyUnderliningType,
 			)
 		}},
-		//--- ttp.patternParent.detection ---
-		"ttp.patternParent.detection": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.detection ---
+		"ttp.extraData.patternParent.detection": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.detection",
+				"ttp.extraData.patternParent.detection",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyDetection,
 			)
 		}},
-		//--- ttp.patternParent.description ---
-		"ttp.patternParent.description": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.description ---
+		"ttp.extraData.patternParent.description": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.description",
+				"ttp.extraData.patternParent.description",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyDescription,
 			)
 		}},
-		// --- ttp.patternParent.name ---
-		"ttp.patternParent.name": {func(i interface{}) {
+		// --- ttp.extraData.patternParent.name ---
+		"ttp.extraData.patternParent.name": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.name",
+				"ttp.extraData.patternParent.name",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyName,
 			)
 		}},
-		// --- ttp.patternParent.patternId ---
-		"ttp.patternParent.patternId": {func(i interface{}) {
+		// --- ttp.extraData.patternParent.patternId ---
+		"ttp.extraData.patternParent.patternId": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.patternId",
+				"ttp.extraData.patternParent.patternId",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyPatternId,
 			)
 		}},
-		// --- ttp.patternParent.patternType ---
-		"ttp.patternParent.patternType": {func(i interface{}) {
+		// --- ttp.extraData.patternParent.patternType ---
+		"ttp.extraData.patternParent.patternType": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.patternType",
+				"ttp.extraData.patternParent.patternType",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyPatternType,
 			)
 		}},
-		//--- ttp.patternParent.url ---
-		"ttp.patternParent.url": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.url ---
+		"ttp.extraData.patternParent.url": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.url",
+				"ttp.extraData.patternParent.url",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyURL,
 			)
 		}},
-		//--- ttp.patternParent.version ---
-		"ttp.patternParent.version": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.version ---
+		"ttp.extraData.patternParent.version": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.version",
+				"ttp.extraData.patternParent.version",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyVersion,
 			)
 		}},
-		//--- ttp.patternParent.platforms ---
-		"ttp.patternParent.platforms": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.platforms ---
+		"ttp.extraData.patternParent.platforms": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.platforms",
+				"ttp.extraData.patternParent.platforms",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyPlatforms,
 			)
 		}},
-		//--- ttp.patternParent.permissionsRequired ---
-		"ttp.patternParent.permissionsRequired": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.permissionsRequired ---
+		"ttp.extraData.patternParent.permissionsRequired": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.permissionsRequired",
+				"ttp.extraData.patternParent.permissionsRequired",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyPermissionsRequired,
 			)
 		}},
-		//--- ttp.patternParent.dataSources ---
-		"ttp.patternParent.dataSources": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.dataSources ---
+		"ttp.extraData.patternParent.dataSources": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.dataSources",
+				"ttp.extraData.patternParent.dataSources",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyDataSources,
 			)
 		}},
-		//--- ttp.patternParent.tactics ---
-		"ttp.patternParent.tactics": {func(i interface{}) {
+		//--- ttp.extraData.patternParent.tactics ---
+		"ttp.extraData.patternParent.tactics": {func(i interface{}) {
 			sttp.HandlerValue(
-				"ttp.patternParent.tactics",
+				"ttp.extraData.patternParent.tactics",
 				i,
 				sttp.GetTtpTmp().ExtraData.PatternParent.SetAnyTactics,
 			)

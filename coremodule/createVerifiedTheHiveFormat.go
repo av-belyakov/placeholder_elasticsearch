@@ -4,6 +4,7 @@ import (
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/listhandlerthehivejson"
+	"placeholder_elasticsearch/mongodbinteractions"
 	"reflect"
 	"strings"
 )
@@ -12,6 +13,7 @@ func NewVerifiedTheHiveFormat(
 	input <-chan datamodels.ChanOutputDecodeJSON,
 	done <-chan bool,
 	esm *elasticsearchinteractions.ElasticSearchModule,
+	mongodbm *mongodbinteractions.MongoDBModule,
 	logging chan<- datamodels.MessageLogging,
 ) {
 	var (
@@ -42,9 +44,15 @@ func NewVerifiedTheHiveFormat(
 	so := listhandlerthehivejson.NewSupportiveObservables()
 	listHandlerObservables := listhandlerthehivejson.NewListHandlerObservablesElement(so)
 
+	//******************* Вспомогательный объект для Ttp **********************
+	sttp := listhandlerthehivejson.NewSupportiveTtp()
+	listHandlerTtp := listhandlerthehivejson.NewListHandlerTtpElement(sttp)
+
 	for {
 		select {
 		case data := <-input:
+			verifiedCase.SetID(data.UUID)
+
 			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
 				verifiedCase.SetSource(source)
 			}
@@ -112,6 +120,25 @@ func NewVerifiedTheHiveFormat(
 				so.HandlerReportValue(data.FieldBranch, data.Value)
 			}
 
+			//*********************************************************************
+			//********** Сбор всех объектов относящихся к полю Ttp  ***************
+			if lf, ok := listHandlerTtp[data.FieldBranch]; ok {
+				for _, f := range lf {
+					r := reflect.TypeOf(data.Value)
+					switch r.Kind() {
+					case reflect.Slice:
+						if s, ok := data.Value.([]interface{}); ok {
+							for _, value := range s {
+								f(value)
+							}
+						}
+					default:
+						f(data.Value)
+
+					}
+				}
+			}
+
 		case <-done:
 			//Собираем объект Event
 			eventObject.SetValueCustomFields(eventObjectCustomFields)
@@ -127,12 +154,23 @@ func NewVerifiedTheHiveFormat(
 			observables := datamodels.NewObservablesMessageTheHive()
 			observables.SetObservables(so.GetObservables())
 
+			//собираем объект ttp
+			ttps := datamodels.NewTtpsMessageTheHive()
+			ttps.SetTtps(sttp.GetTtps())
+
 			verifiedCase.SetEvent(event)
 			verifiedCase.SetObservables(*observables)
+			verifiedCase.SetTtps(*ttps)
 
 			esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
 				Command:        "add new object",
 				VerifiedObject: verifiedCase.Get(),
+			}
+
+			mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
+				Section: "handling case",
+				Command: "add new case",
+				Data:    verifiedCase.Get(),
 			}
 
 			/*bytes, err := json.Marshal(struct {

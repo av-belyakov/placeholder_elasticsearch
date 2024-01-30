@@ -36,6 +36,6 @@ func CoreHandler(natsModule *natsinteractions.ModuleNATS,
 		//НОВЫЙ
 		//обработчик сообщений из TheHive (выполняется разбор сообщения и его разбор на основе правил)
 		chanOutputJsonDecode, chanDecodeDone := decodeJson.HandlerJsonMessage(data.Data, data.MsgId)
-		go NewVerifiedTheHiveFormat(chanOutputJsonDecode, chanDecodeDone, esModule, logging)
+		go NewVerifiedTheHiveFormat(chanOutputJsonDecode, chanDecodeDone, esModule, mdbModule, logging)
 	}
 }

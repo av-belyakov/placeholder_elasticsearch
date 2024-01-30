@@ -267,7 +267,7 @@ func main() {
 	}
 
 	// инициализация модуля для взаимодействия с СУБД MongoDB
-	mongodbModule, err := mongodbinteractions.HandlerMongoDB(*confApp.GetAppMongoDB(), storageApp, logging)
+	mongodbModule, err := mongodbinteractions.HandlerMongoDB(*confApp.GetAppMongoDB(), logging)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")

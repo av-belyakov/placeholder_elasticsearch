@@ -136,17 +136,29 @@ func (tm TtpMessage) ToStringBeautiful(num int) string {
 	return str
 }
 
+func (tm *TtpMessage) GetExtraData() ExtraDataTtpMessage {
+	return tm.ExtraData
+}
+
 func (edtm ExtraDataTtpMessage) ToStringBeautiful(num int) string {
 	var str string
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%sPattern:\n", ws)
+	str += fmt.Sprintf("%spattern:\n", ws)
 	str += edtm.Pattern.ToStringBeautiful(num + 1)
-	str += fmt.Sprintf("%sPatternParent:\n", ws)
+	str += fmt.Sprintf("%spatternParent:\n", ws)
 	str += edtm.PatternParent.ToStringBeautiful(num + 1)
 
 	return str
+}
+
+func (tm *TtpMessage) GetPattern() *PatternExtraData {
+	return &tm.ExtraData.Pattern
+}
+
+func (tm *TtpMessage) GetPatternParent() *PatternExtraData {
+	return &tm.ExtraData.PatternParent
 }
 
 func (ped *PatternExtraData) GetRemoteSupport() bool {

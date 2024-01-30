@@ -1,6 +1,8 @@
 package listhandlerthehivejson
 
-import "placeholder_elasticsearch/datamodels"
+import (
+	"placeholder_elasticsearch/datamodels"
+)
 
 var fieldsRepresentedAsList []string
 
@@ -17,11 +19,15 @@ func isExistFieldsRepresentedAsList(field string, list []string) bool {
 func init() {
 	fieldsRepresentedAsList = []string{
 		"ttp.extraData.pattern.tactics",
-		"ttp.extraData.patternParent.tactics",
-		"ttp.extraData.pattern.dataSources",
-		"ttp.extraData.patternParent.dataSources",
 		"ttp.extraData.pattern.platforms",
+		"ttp.extraData.pattern.dataSources",
+		"ttp.extraData.pattern.systemRequirements",
+		"ttp.extraData.pattern.permissionsRequired",
+		"ttp.extraData.patternParent.tactics",
 		"ttp.extraData.patternParent.platforms",
+		"ttp.extraData.patternParent.dataSources",
+		"ttp.extraData.patternParent.systemRequirements",
+		"ttp.extraData.patternParent.permissionsRequired",
 	}
 }
 
@@ -73,6 +79,7 @@ func (sttp *SupportiveTtp) GetTtpTmp() *datamodels.TtpMessage {
 func (sttp *SupportiveTtp) HandlerValue(fieldBranch string, i interface{}, f func(interface{})) {
 	//если поле повторяется то считается что это уже новый объект
 	isExist := isExistFieldsRepresentedAsList(fieldBranch, fieldsRepresentedAsList)
+
 	if !isExist && sttp.isExistFieldBranch(fieldBranch) {
 		sttp.listAcceptedFields = []string(nil)
 		sttp.ttps = append(sttp.ttps, sttp.ttpTmp)

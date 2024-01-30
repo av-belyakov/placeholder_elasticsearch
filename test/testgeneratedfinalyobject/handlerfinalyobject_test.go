@@ -17,9 +17,11 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	"placeholder_elasticsearch/confighandler"
 	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
+	"placeholder_elasticsearch/mongodbinteractions"
 	rules "placeholder_elasticsearch/rulesinteraction"
 	"placeholder_elasticsearch/supportingfunctions"
 )
@@ -52,15 +54,17 @@ func readFileJson(fpath, fname string) ([]byte, error) {
 
 var _ = Describe("Handlerfinalyobject", Ordered, func() {
 	var (
-		errReadFile, errRule, errES, errMarshal, errESSend error
-		exampleByte                                        []byte
-		listRule                                           *rules.ListRule
-		esModule                                           *elasticsearchinteractions.ElasticSearchModule
-		decodeJson                                         *coremodule.DecodeJsonMessageSettings
-		warnings                                           []string
-		esClient                                           *elasticsearch.Client
-		b                                                  []byte
-		res                                                *esapi.Response
+		errReadFile, errRule, errES       error
+		errMongoDB, errMarshal, errESSend error
+		exampleByte                       []byte
+		listRule                          *rules.ListRule
+		esModule                          *elasticsearchinteractions.ElasticSearchModule
+		mongodbModule                     *mongodbinteractions.MongoDBModule
+		decodeJson                        *coremodule.DecodeJsonMessageSettings
+		warnings                          []string
+		esClient                          *elasticsearch.Client
+		b                                 []byte
+		res                               *esapi.Response
 
 		logging              chan datamodels.MessageLogging
 		counting             chan datamodels.DataCounterSettings
@@ -123,9 +127,18 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 			Password:  "XxZqesYXuk8C",
 		})
 
+		// инициализация модуля для взаимодействия с СУБД MongoDB
+		mongodbModule, errMongoDB = mongodbinteractions.HandlerMongoDB(confighandler.AppConfigMongoDB{
+			Host:   "192.168.9.208",
+			Port:   27117,
+			User:   "module_placeholder_elasticsearch",
+			Passwd: "gDbv5cf7*F2",
+			NameDB: "placeholder_elasticsearch",
+		}, logging)
+
 		decodeJson = coremodule.NewDecodeJsonMessageSettings(listRule, logging, counting)
 		chanOutputJsonDecode, chanDecodeDone = decodeJson.HandlerJsonMessage(exampleByte, uuid.NewString())
-		go coremodule.NewVerifiedTheHiveFormat(chanOutputJsonDecode, chanDecodeDone, esModule, logging)
+		go coremodule.NewVerifiedTheHiveFormat(chanOutputJsonDecode, chanDecodeDone, esModule, mongodbModule, logging)
 	})
 
 	Context("Тест 1. Проверка чтения тестового JSON файла", func() {
@@ -144,30 +157,26 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 		})
 	})
 
-	Context("Тест 3. Проверка подключения к Elasticsearch", func() {
-		It("При подключении не должно быть ошибок", func() {
+	Context("Тест 3. Проверка подключения к СУБД", func() {
+		It("При подключении к Elasticsearch не должно быть ошибок", func() {
 			Expect(errES).ShouldNot(HaveOccurred())
+		})
+		It("При подключении к MongoDB не должно быть ошибок", func() {
+			Expect(errMongoDB).ShouldNot(HaveOccurred())
 		})
 	})
 
 	Context("Тест 4. Получаем валидированный финальный объект", func() {
 		It("Должен быть получен валидный объект", func() {
-			//var esSettings elasticsearchinteractions.SettingsInputChan
-
 			esSettings := <-esModule.ChanInputModule
 			verifiedObject := esSettings.VerifiedObject.Get()
 
-			fmt.Println("func 'NewVerifiedTheHiveFormat' is STOPPED")
-			fmt.Println("------------------ VerifiedObject RESULT ----------------")
-			fmt.Println(verifiedObject.ToStringBeautiful(0))
-			//fmt.Println("CreateTimestatmp:", verifiedObject.CreateTimestatmp)
-			//fmt.Println("Source:", verifiedObject.Source)
-			//fmt.Println("Event:", verifiedObject.Event)
-			//fmt.Println("Observables:", verifiedObject.Observables)
+			//fmt.Println("func 'NewVerifiedTheHiveFormat' is STOPPED")
+			//fmt.Println("------------------ VerifiedObject RESULT ----------------")
+			//fmt.Println(verifiedObject.ToStringBeautiful(0))
 
 			//************************************************
 			//тестовая отправка данных в Elastisearch
-
 			b, errMarshal = json.Marshal(verifiedObject)
 
 			t := time.Now()

@@ -9,10 +9,12 @@ import (
 
 // VerifiedTheHiveCase объект представляет собой верифицированный 'кейс' TheHive
 type VerifiedTheHiveCase struct {
+	ID               string              `json:"@id"`
 	CreateTimestatmp string              `json:"@timestamp"`
 	Source           string              `json:"source"`
 	Event            EventMessageTheHive `json:"event"`
 	ObservablesMessageTheHive
+	TtpsMessageTheHive
 }
 
 func NewVerifiedTheHiveCase() *VerifiedTheHiveCase {
@@ -23,6 +25,14 @@ func NewVerifiedTheHiveCase() *VerifiedTheHiveCase {
 
 func (hcase *VerifiedTheHiveCase) Get() *VerifiedTheHiveCase {
 	return hcase
+}
+
+func (hcase *VerifiedTheHiveCase) GetID() string {
+	return hcase.ID
+}
+
+func (hcase *VerifiedTheHiveCase) SetID(id string) {
+	hcase.ID = id
 }
 
 func (hcase *VerifiedTheHiveCase) GetSource() string {
@@ -47,6 +57,14 @@ func (hcase *VerifiedTheHiveCase) GetObservables() *ObservablesMessageTheHive {
 
 func (hcase *VerifiedTheHiveCase) SetObservables(observables ObservablesMessageTheHive) {
 	hcase.ObservablesMessageTheHive = observables
+}
+
+func (hcase *VerifiedTheHiveCase) GetTtps() *TtpsMessageTheHive {
+	return &hcase.TtpsMessageTheHive
+}
+
+func (hcase *VerifiedTheHiveCase) SetTtps(ttp TtpsMessageTheHive) {
+	hcase.TtpsMessageTheHive = ttp
 }
 
 func (hcase *VerifiedTheHiveCase) ToStringBeautiful(num int) string {

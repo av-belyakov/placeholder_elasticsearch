@@ -12,14 +12,20 @@ import (
 
 	"placeholder_elasticsearch/confighandler"
 	"placeholder_elasticsearch/datamodels"
-	"placeholder_elasticsearch/memorytemporarystorage"
 )
 
 // MongoDBModule содержит описание каналов для взаимодействия с БД MongoDB
 // ChanInputModule - канал для отправки данных В модуль
 // ChanOutputModule - канал для принятия данных ИЗ модуля
 type MongoDBModule struct {
-	ChanInputModule, ChanOutputModule chan ModuleDataBaseInteractionChannel
+	ChanInputModule  chan SettingsInputChan
+	ChanOutputModule chan ModuleDataBaseInteractionChannel
+}
+
+type wrappers struct {
+	AdditionalRequestParameters interface{}
+	NameDB                      string
+	ConnDB                      *mongo.Client
 }
 
 // ConnectionDescriptorMongoDB дескриптор соединения с БД MongoDB
@@ -35,10 +41,9 @@ type ConnectionDescriptorMongoDB struct {
 }
 
 func HandlerMongoDB(conf confighandler.AppConfigMongoDB,
-	storageApp *memorytemporarystorage.CommonStorageTemporary,
 	logging chan<- datamodels.MessageLogging) (*MongoDBModule, error) {
 	channels := &MongoDBModule{
-		ChanInputModule:  make(chan ModuleDataBaseInteractionChannel),
+		ChanInputModule:  make(chan SettingsInputChan),
 		ChanOutputModule: make(chan ModuleDataBaseInteractionChannel),
 	}
 
@@ -70,6 +75,9 @@ func NewConnection(ctx context.Context, conf confighandler.AppConfigMongoDB) (*m
 	})
 
 	confPath := fmt.Sprintf("mongodb://%s:%d/%s", conf.Host, conf.Port, conf.NameDB)
+
+	fmt.Println("NewConnection: ", confPath)
+
 	connect, err := mongo.Connect(ctx, options.Client().ApplyURI(confPath))
 	if err != nil {
 		return connect, err
@@ -85,11 +93,24 @@ func NewConnection(ctx context.Context, conf confighandler.AppConfigMongoDB) (*m
 }
 
 func (conn ConnectionDescriptorMongoDB) Routing(channels *MongoDBModule, logging chan<- datamodels.MessageLogging) {
+	ws := wrappers{
+		NameDB: conn.databaseName,
+		ConnDB: conn.connection,
+	}
+
 	go func() {
+		defer func() {
+			_ = conn.connection.Disconnect(context.TODO())
+		}()
+
 		for data := range channels.ChanInputModule {
 			switch data.Section {
-			case "add new case":
-				//				fmt.Println("func 'Routing' data.Section:", data.Section)
+			case "handling case":
+				if data.Command == "add new case" {
+					fmt.Println("________ MONGODB - func 'Routing' data.Section:", data.Section)
+
+					ws.AddNewCase([]interface{}{data.Data}, logging)
+				}
 			}
 		}
 	}()
