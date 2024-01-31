@@ -1,13 +1,16 @@
 package mongodbinteractions
 
+import "placeholder_elasticsearch/datamodels"
+
 // SettingsInputChan
 // Section - секция обработки данных
 // Command - команда
 // Data - данные
 type SettingsInputChan struct {
-	Section string
-	Command string
-	Data    interface{}
+	Section        string
+	Command        string
+	Data           interface{}
+	VerifiedObject *datamodels.VerifiedTheHiveCase
 }
 
 // ModuleDataBaseInteractionChannel описание типов данных циркулирующих между модулем взаимодействия с БД и Ядром приложения

@@ -19,6 +19,12 @@ func (w *wrappers) AddNewCase(data []interface{}, logging chan<- datamodels.Mess
 		ConnectDB:      w.ConnDB,
 	}
 
+	/*
+		var ok bool
+		newList := make([]datamodels.VerifiedTheHiveCase, len(data))
+		newList, ok = data.([]datamodels.VerifiedTheHiveCase)
+	*/
+
 	if _, err := qp.InsertData(data, []mongo.IndexModel{
 		{
 			Keys: bson.D{

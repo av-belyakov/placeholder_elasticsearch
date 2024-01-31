@@ -19,7 +19,7 @@ type VerifiedTheHiveCase struct {
 
 func NewVerifiedTheHiveCase() *VerifiedTheHiveCase {
 	return &VerifiedTheHiveCase{
-		CreateTimestatmp: supportingfunctions.GetDateTimeFormat(time.Now().UnixMilli()),
+		CreateTimestatmp: supportingfunctions.GetDateTimeFormatRFC3339(time.Now().UnixMilli()),
 	}
 }
 

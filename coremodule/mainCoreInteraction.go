@@ -24,16 +24,6 @@ func CoreHandler(natsModule *natsinteractions.ModuleNATS,
 	for {
 		data := <-natsChanReception
 
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// отправка СЫРОГО сообщения в Elasticshearch
-		//ПОКА ОСТАВЛЯЮ, ПОТОМ НАДО БУДЕТ УДАЛИТЬ
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		esModule.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
-			UUID: data.MsgId,
-			Data: data.Data,
-		}
-
-		//НОВЫЙ
 		//обработчик сообщений из TheHive (выполняется разбор сообщения и его разбор на основе правил)
 		chanOutputJsonDecode, chanDecodeDone := decodeJson.HandlerJsonMessage(data.Data, data.MsgId)
 		go NewVerifiedTheHiveFormat(chanOutputJsonDecode, chanDecodeDone, esModule, mdbModule, logging)
