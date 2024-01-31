@@ -7,17 +7,17 @@ type CustomerFields interface {
 
 // ResponseMessageFromMispToTheHave содержит ответ для TheHive получаемый от MISP
 type ResponseMessageFromMispToTheHave struct {
-	Success  bool                        `json:"success"`
-	Service  string                      `json:"service"`
-	Error    error                       `json:"error"`
-	Commands []ResponseCommandForTheHive `json:"commands"`
+	Success  bool                        `json:"success" bson:"success"`
+	Service  string                      `json:"service" bson:"service"`
+	Error    error                       `json:"error" bson:"error"`
+	Commands []ResponseCommandForTheHive `json:"commands" bson:"commands"`
 }
 
 // ResponseCommandForTheHive ответы с командами для TheHive
 type ResponseCommandForTheHive struct {
-	Command string `json:"command"`
-	String  string `json:"string"`
-	Name    string `json:"name"`
+	Command string `json:"command" bson:"command"`
+	String  string `json:"string" bson:"string"`
+	Name    string `json:"name" bson:"name"`
 }
 
 // MainMessageTheHive основное сообщение получаемое через NATS
@@ -31,20 +31,20 @@ type MainMessageTheHive struct {
 // SourceMessageTheHive сообщение с информацией об источнике
 // Source - источник
 type SourceMessageTheHive struct {
-	Source string `json:"source"`
+	Source string `json:"source" bson:"source"`
 }
 
 type CustomFieldStringType struct {
-	Order  int    `json:"order"`
-	String string `json:"string"`
+	Order  int    `json:"order" bson:"order"`
+	String string `json:"string" bson:"string"`
 }
 
 type CustomFieldDateType struct {
-	Order int    `json:"order"`
-	Date  string `json:"date"`
+	Order int    `json:"order" bson:"order"`
+	Date  string `json:"date" bson:"date"`
 }
 
 type CustomFieldIntegerType struct {
-	Order   int `json:"order"`
-	Integer int `json:"integer"`
+	Order   int `json:"order" bson:"order"`
+	Integer int `json:"integer" bson:"integer"`
 }
