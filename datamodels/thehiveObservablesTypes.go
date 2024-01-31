@@ -3,7 +3,7 @@ package datamodels
 // ObservablesMessageTheHive список наблюдаемых сообщений
 // Observables - наблюдаемые сообщения
 type ObservablesMessageTheHive struct {
-	Observables []ObservableMessage `json:"observables"`
+	Observables []ObservableMessage `json:"observables" bson:"observables"`
 }
 
 // ObservableMessage наблюдаемое сообщение

@@ -9,10 +9,10 @@ import (
 
 // VerifiedTheHiveCase объект представляет собой верифицированный 'кейс' TheHive
 type VerifiedTheHiveCase struct {
-	ID               string              `json:"@id"`
-	CreateTimestatmp string              `json:"@timestamp"`
-	Source           string              `json:"source"`
-	Event            EventMessageTheHive `json:"event"`
+	ID               string              `json:"@id" bson:"@id"`
+	CreateTimestatmp string              `json:"@timestamp" bson:"@timestamp"`
+	Source           string              `json:"source" bson:"source"`
+	Event            EventMessageTheHive `json:"event" bson:"event"`
 	ObservablesMessageTheHive
 	TtpsMessageTheHive
 }
