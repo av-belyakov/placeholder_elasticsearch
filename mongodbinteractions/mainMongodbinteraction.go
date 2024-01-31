@@ -66,19 +66,14 @@ func HandlerMongoDB(conf confighandler.AppConfigMongoDB,
 }
 
 func NewConnection(ctx context.Context, conf confighandler.AppConfigMongoDB) (*mongo.Client, error) {
-	clientOption := options.Client()
-	clientOption.SetAuth(options.Credential{
+	confPath := fmt.Sprintf("mongodb://%s:%d/%s", conf.Host, conf.Port, conf.NameDB)
+
+	connect, err := mongo.Connect(ctx, options.Client().SetAuth(options.Credential{
 		AuthMechanism: "SCRAM-SHA-256",
 		AuthSource:    conf.NameDB,
 		Username:      conf.User,
 		Password:      conf.Passwd,
-	})
-
-	confPath := fmt.Sprintf("mongodb://%s:%d/%s", conf.Host, conf.Port, conf.NameDB)
-
-	fmt.Println("NewConnection: ", confPath)
-
-	connect, err := mongo.Connect(ctx, options.Client().ApplyURI(confPath))
+	}).ApplyURI(confPath))
 	if err != nil {
 		return connect, err
 	}
@@ -111,6 +106,8 @@ func (conn ConnectionDescriptorMongoDB) Routing(channels *MongoDBModule, logging
 
 					ws.AddNewCase([]interface{}{data.Data}, logging)
 				}
+
+			case "":
 			}
 		}
 	}()

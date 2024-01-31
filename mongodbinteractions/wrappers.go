@@ -2,6 +2,7 @@ package mongodbinteractions
 
 import (
 	"fmt"
+	"runtime"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,6 +11,7 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
+// AddNewCase добавляет новый кейс в БД
 func (w *wrappers) AddNewCase(data []interface{}, logging chan<- datamodels.MessageLogging) {
 	qp := QueryParameters{
 		NameDB:         w.NameDB,
@@ -31,15 +33,10 @@ func (w *wrappers) AddNewCase(data []interface{}, logging chan<- datamodels.Mess
 			Options: &options.IndexOptions{},
 		},
 	}); err != nil {
-		fmt.Println("func 'AddNewCase' ERROR:", err)
-
-		/*
-			Для тестов пока отключаем
-
-			_, f, l, _ := runtime.Caller(0)
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-				MsgType: "error",
-			}*/
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
 	}
 }

@@ -3,6 +3,7 @@ package testmongodbconnect_test
 import (
 	"context"
 	"fmt"
+	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -20,17 +21,21 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 	)
 
 	const (
-		Host           = "192.168.9.208"
-		Port           = 27117
-		NameDB         = "placeholder_elasticsearch"
-		User           = "module_placeholder_elasticsearch"
-		Passwd         = "gDbv5cf7*F2"
+		Host = "192.168.9.208"
+		Port = 27117
+		//Port = 37017
+		NameDB = "placeholder_elasticsearch"
+		//NameDB = "isems-mrsict"
+		User = "module_placeholder_elasticsearch"
+		//User = "module-isems-mrsict"
+		Passwd = "gDbv5cf7*F2"
+		//Passwd = "vkL6Znj$Pmt1e1"
 		CollectionName = "case_test"
+		//CollectionName = "stix_object_collection"
 	)
 
 	BeforeAll(func() {
-		clientOption := options.Client()
-		clientOption.SetAuth(options.Credential{
+		clientOption := options.Client().SetAuth(options.Credential{
 			AuthMechanism: "SCRAM-SHA-256",
 			AuthSource:    NameDB,
 			Username:      User,
@@ -40,8 +45,10 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 		confPath := fmt.Sprintf("mongodb://%s:%d/%s", Host, Port, NameDB)
 
 		fmt.Println("NewConnection: ", confPath)
+		ctx, cancel := context.WithTimeout(context.Background(), 7*time.Second)
+		defer cancel()
 
-		conn, err = mongo.Connect(context.Background(), options.Client().ApplyURI(confPath))
+		conn, err = mongo.Connect(ctx, clientOption.ApplyURI(confPath))
 	})
 
 	Context("Тест 1. Проверка соединения с MongoDB", func() {
@@ -49,7 +56,10 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 		It("При отправки запроса Ping не должно быть ошибок", func() {
-			err := conn.Ping(context.Background(), readpref.Primary())
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			defer cancel()
+
+			err := conn.Ping(ctx, readpref.Primary())
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
@@ -65,6 +75,10 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 				bson.D{{}},
 				opts,
 			).Decode(&result)
+
+			for _, v := range result {
+				fmt.Println(v)
+			}
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})

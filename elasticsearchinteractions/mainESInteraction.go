@@ -16,8 +16,9 @@ import (
 
 type SettingsInputChan struct {
 	UUID           string
-	Data           []byte
+	Section        string
 	Command        string
+	Data           []byte
 	VerifiedObject *datamodels.VerifiedTheHiveCase
 }
 
@@ -123,15 +124,16 @@ func HandlerElasticSearch(
 
 	go func() {
 		for data := range module.ChanInputModule {
-			//полностью верефицированный объект
-			if data.Command == "add new object" {
-				go hsd.sendingData(data.Data)
+			switch data.Section {
+			case "handling case":
+				if data.Command == "add new case" {
+					go hsd.sendingData(data.Data)
 
-				continue
+					continue
+				}
+
+			case "":
 			}
-
-			//не ВЕРЕФИЦИРОВАННОЕ значение, позже надо удалить
-			//go hsd.sendingData(data.Data)
 		}
 	}()
 

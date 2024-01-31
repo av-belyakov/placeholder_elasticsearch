@@ -163,7 +163,8 @@ func NewVerifiedTheHiveFormat(
 			verifiedCase.SetTtps(*ttps)
 
 			esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
-				Command:        "add new object",
+				Section:        "handling case",
+				Command:        "add new case",
 				VerifiedObject: verifiedCase.Get(),
 			}
 
@@ -172,32 +173,6 @@ func NewVerifiedTheHiveFormat(
 				Command: "add new case",
 				Data:    verifiedCase.Get(),
 			}
-
-			/*bytes, err := json.Marshal(struct {
-				datamodels.SourceMessageTheHive
-				datamodels.ObservablesMessageTheHive
-				event datamodels.EventMessageTheHive
-			}{
-				source,
-				observables,
-				event,
-			})
-			if err != nil {
-				_, f, l, _ := runtime.Caller(0)
-				logging <- datamodels.MessageLogging{
-					MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-10),
-					MsgType: "error",
-				}
-
-				return
-			}*/
-
-			//Тут надо отправить в модули Elasticsearch и MongoDB
-
-			//esm.HandlerData(elasticsearchinteractions.SettingsInputChan{
-			//	UUID: taskId,
-			//	Data: bytes,
-			//})
 
 			// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования
 			//при выполнения тестирования

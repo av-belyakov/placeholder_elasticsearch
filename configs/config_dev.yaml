@@ -5,8 +5,8 @@ ElasticSearch:
   send: true
   host: "datahook.cloud.gcm"
   port: 9200
-  prefix:
-  index: "module_placeholder_elasticsearch_test"
+  prefix: "test"
+  index: "module_placeholder_elasticsearch_thehive_case"
   user: "writer"
   passwd: "XxZqesYXuk8C"
 MongoDB:
