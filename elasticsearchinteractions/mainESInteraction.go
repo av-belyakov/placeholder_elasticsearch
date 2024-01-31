@@ -127,9 +127,16 @@ func HandlerElasticSearch(
 			switch data.Section {
 			case "handling case":
 				if data.Command == "add new case" {
-					go hsd.sendingData(data.Data)
+					b, err := json.Marshal(data.VerifiedObject)
+					if err != nil {
+						_, f, l, _ := runtime.Caller(0)
+						hsd.logging <- datamodels.MessageLogging{
+							MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+							MsgType: "error",
+						}
+					}
 
-					continue
+					go hsd.sendingData(b)
 				}
 
 			case "":
