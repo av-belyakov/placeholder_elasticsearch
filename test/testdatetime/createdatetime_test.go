@@ -21,6 +21,9 @@ var _ = Describe("Createdatetime", func() {
 			fmt.Printf("UnixMilli(1647277028643).Format(time.RFC3339): %s\n", time.UnixMilli(1647277028643).Format(time.RFC3339))
 			fmt.Println("now 1:", time.Now().String(), " now 2:", time.UnixMilli(time.Now().UnixMilli()).Format(time.RFC3339))
 			fmt.Println("empty:", time.UnixMilli(0).Format(time.RFC3339))
+			fmt.Println("________________________________________")
+			fmt.Println("Date rfc3339:", time.UnixMilli(time.Now().UnixMilli()).Format(time.RFC3339))
+			fmt.Println("Date Datetime type:", time.UnixMilli(time.Now().UnixMilli()).Format(time.DateTime))
 
 			Expect(true).Should(BeTrue())
 		})

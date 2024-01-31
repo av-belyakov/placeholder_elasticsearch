@@ -198,7 +198,7 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 
 			Expect(errMarshal).ShouldNot(HaveOccurred())
 			Expect(errESSend).ShouldNot(HaveOccurred())
-			Expect(esSettings.Command).Should(Equal("add new object"))
+			Expect(esSettings.Command).Should(Equal("add new case"))
 		})
 	})
 	/*
