@@ -190,7 +190,7 @@ var _ = Describe("Testevent", Ordered, func() {
 
 		It("Объект Event.object.customFields должен быть успешно заполнен", func() {
 			//event.object.customFields
-			Expect(len(anyEventObject.GetCustomFields())).Should(Equal(8))
+			Expect(len(anyEventObject.GetCustomFields())).Should(Equal(9))
 		})
 
 		It("Объект Event.details.customFields должен быть успешно заполнен", func() {
@@ -207,11 +207,21 @@ var _ = Describe("Testevent", Ordered, func() {
 
 		It("Объект Event.details.customFields должен быть успешно заполнен", func() {
 			//event.details.customFields
-			Expect(len(anyEventDetails.GetCustomFields())).Should(Equal(6))
+			Expect(len(anyEventDetails.GetCustomFields())).Should(Equal(8))
 		})
 
 		It("Должен быть выведен полный объект Event", func() {
 			fmt.Printf("---=== EVENT OBJECT ===---\n%v\v", anyEvent.Get())
+
+			fmt.Println("--------- Event.object.CustomFields ---------")
+			for k, v := range anyEvent.Get().Object.GetCustomFields() {
+				fmt.Printf("%s\n%v\n", k, v)
+			}
+
+			fmt.Println("--------- Event.details.CustomFields ---------")
+			for k, v := range anyEvent.Get().Details.GetCustomFields() {
+				fmt.Printf("%s\n%v\n", k, v)
+			}
 
 			Expect(true).Should(BeTrue())
 		})

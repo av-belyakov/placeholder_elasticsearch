@@ -1,9 +1,33 @@
 package listhandlerthehivejson
 
-import "placeholder_elasticsearch/datamodels"
+import (
+	"fmt"
+	"strings"
+
+	"placeholder_elasticsearch/datamodels"
+)
 
 func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields map[string]datamodels.CustomerFields) map[string][]func(interface{}) {
 	return map[string][]func(interface{}){
+		//------------- для обработки тегов содержащих geoip -------------
+		"event.object.tags": {func(i interface{}) {
+			s := fmt.Sprint(i)
+			if !strings.Contains(s, "geoip") {
+				return
+			}
+
+			tmp := strings.Split(s, "=")
+			if len(tmp) < 2 {
+				return
+			}
+
+			countru := strings.Trim(tmp[1], "\"")
+
+			//создаем элемент "geoip" если его нет
+			newCustomFieldsElement("geoip", "string", &eventObjectCustomFields)
+			eventObjectCustomFields["geoip"].Set(0, countru)
+		}},
+
 		//------------------ attack-type ------------------
 		"event.object.customFields.attack-type.order": {func(i interface{}) {
 			//создаем элемент "attack-type" если его нет

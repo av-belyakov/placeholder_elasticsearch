@@ -182,14 +182,14 @@ func NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields map[
 		}},
 		//--------------- CNC ------------------
 		"event.details.customFields.CNC.order": {func(i interface{}) {
-			newCustomFieldsElement("CNC", "integer", &eventDetailsCustomFields)
+			newCustomFieldsElement("CNC", "string", &eventDetailsCustomFields)
 			_, _, _, str := eventDetailsCustomFields["CNC"].Get()
 			eventDetailsCustomFields["CNC"].Set(i, str)
 		}},
 		"event.details.customFields.CNC.string": {func(i interface{}) {
 			newCustomFieldsElement("CNC", "string", &eventDetailsCustomFields)
-			_, _, _, str := eventDetailsCustomFields["CNC"].Get()
-			eventDetailsCustomFields["CNC"].Set(i, str)
+			_, order, _, _ := eventDetailsCustomFields["CNC"].Get()
+			eventDetailsCustomFields["CNC"].Set(order, i)
 		}},
 	}
 }
