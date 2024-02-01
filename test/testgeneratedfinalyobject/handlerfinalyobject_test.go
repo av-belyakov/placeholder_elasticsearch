@@ -134,7 +134,7 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 			User:   "module_placeholder_elasticsearch",
 			Passwd: "gDbv5cf7*F2",
 			NameDB: "placeholder_elasticsearch",
-		}, logging)
+		}, logging, counting)
 
 		decodeJson = coremodule.NewDecodeJsonMessageSettings(listRule, logging, counting)
 		chanOutputJsonDecode, chanDecodeDone = decodeJson.HandlerJsonMessage(exampleByte, uuid.NewString())

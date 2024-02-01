@@ -55,17 +55,22 @@ func (w *wrappers) AddNewCase(
 		}
 
 		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("MongoDB , document with ID:'%s', author: '%s' to be deleted", modelType.ID, modelType.Source),
+			MsgData: fmt.Sprintf("MongoDB , document with ID:'%s', author: '%s' data will be deleted", modelType.ID, modelType.Source),
 			MsgType: "warning",
 		}
 
 		listForDelete = append(listForDelete, modelType.ID)
 	}
 
-	if _, err := qp.DeleteManyData(listForDelete, options.Delete()); err != nil {
+	if _, err := qp.DeleteManyData(
+		bson.D{{
+			Key:   "@id",
+			Value: bson.D{{Key: "$in", Value: listForDelete}}}},
+		options.Delete(),
+	); err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
 			MsgType: "error",
 		}
 	}

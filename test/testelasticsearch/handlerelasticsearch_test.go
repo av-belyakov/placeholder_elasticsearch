@@ -1,10 +1,13 @@
 package testelasticsearch_test
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v8/typedapi/eql/search"
+	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	//"placeholder_elasticsearch/test/testelasticsearch"
@@ -34,7 +37,18 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 	Context("Тест 2. Выполнение запросов к СУБД", func() {
 		It("Запрос на получения документа по id не должен вызывать ошибок, должен быть получен результат", func() {
 			//"test_module_placeholder_elasticsearch_case_2024_1"
-			res, err := esClient.Get("test_module_placeholder_elasticsearch_case_2024_1", "hEUzWo0BNzcaI2GK2cLu")
+			//res, err := esClient.Get("test_module_placeholder_elasticsearch_case_2024_2", "hEUzWo0BNzcaI2GK2cLu")
+			res, err := esClient.Search().
+				Index("test_module_placeholder_elasticsearch_case_2024_").
+				Request(&search.Request{
+					Query: &types.Query{
+						Match: map[string]types.MatchQuery{
+							"source":       {Query: "rcmsr"},
+							"event.rootId": {Query: "~1682026696"},
+						},
+					},
+				}).
+				Do(context.TODO())
 			Expect(err).ShouldNot(HaveOccurred())
 
 			r := map[string]interface{}{}
