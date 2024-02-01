@@ -96,7 +96,7 @@ func counterHandler(
 	iz chan<- string,
 	storageApp *memorytemporarystorage.CommonStorageTemporary,
 	counting <-chan datamodels.DataCounterSettings) {
-	var ae, emr int
+	//var ae, emr int
 
 	for d := range counting {
 		switch d.DataType {
@@ -125,12 +125,12 @@ func counterHandler(
 
 		log.Printf("\t%s\n", msg)
 
-		if ae != storageApp.GetAcceptedEventsDataCounter() || emr != storageApp.GetEventsMeetRulesDataCounter() {
-			iz <- msg
+		//if ae != storageApp.GetAcceptedEventsDataCounter() || emr != storageApp.GetEventsMeetRulesDataCounter() {
+		iz <- msg
 
-			ae = storageApp.GetAcceptedEventsDataCounter()
-			emr = storageApp.GetEventsMeetRulesDataCounter()
-		}
+		//	ae = storageApp.GetAcceptedEventsDataCounter()
+		//	emr = storageApp.GetEventsMeetRulesDataCounter()
+		//}
 	}
 }
 
