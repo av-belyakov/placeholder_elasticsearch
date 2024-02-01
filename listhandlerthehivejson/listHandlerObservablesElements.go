@@ -1,7 +1,5 @@
 package listhandlerthehivejson
 
-import "fmt"
-
 func NewListHandlerObservablesElement(so *SupportiveObservables) map[string][]func(interface{}) {
 	return map[string][]func(interface{}){
 		//--- ioc ---
@@ -70,8 +68,6 @@ func NewListHandlerObservablesElement(so *SupportiveObservables) map[string][]fu
 		}},
 		//--- _updatedBy ---
 		"observables._updatedBy": {func(i interface{}) {
-			fmt.Println("-------- _updatedBy", i)
-
 			so.HandlerValue(
 				"observables._updatedBy",
 				i,

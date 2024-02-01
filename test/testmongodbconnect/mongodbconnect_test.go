@@ -30,7 +30,7 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 		//User = "module-isems-mrsict"
 		Passwd = "gDbv5cf7*F2"
 		//Passwd = "vkL6Znj$Pmt1e1"
-		CollectionName = "case_test"
+		CollectionName = "case_collection"
 		//CollectionName = "stix_object_collection"
 	)
 
@@ -72,7 +72,7 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 			var result bson.M
 			err := collection.FindOne(
 				context.TODO(),
-				bson.D{{}},
+				bson.D{{Key: "@id", Value: "6b3be7fe-94a5-4143-a923-70b2a44720cc"}},
 				opts,
 			).Decode(&result)
 
@@ -81,6 +81,58 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 			}
 
 			Expect(err).ShouldNot(HaveOccurred())
+		})
+	})
+
+	Context("Тест 3. Поиск объектов для дальнейшего удаления", func() {
+		It("Некоторое количество объектов должно быть найдено", func() {
+			collection := conn.Database(NameDB).Collection(CollectionName)
+			opts := options.Find().SetAllowDiskUse(true).SetSort(bson.D{{Key: "@timestamp", Value: 1}})
+			cur, err := collection.Find(
+				context.TODO(),
+				bson.D{
+					{Key: "source", Value: "rcmkha"},
+					{Key: "event.rootId", Value: "~2901024984"},
+				},
+				opts,
+			)
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			type TheHiveCase struct {
+				ID               string `bson:"@id"`
+				CreateTimestatmp string `bson:"@timestamp"`
+				Source           string `bson:"source"`
+			}
+
+			//****************************************************
+			// Я не мог взять тип datamodels.VerifiedTheHiveCase
+			// так как при дикодировании документа из MongoDB
+			// возникают какие то трудности с полями event.object.customFields и
+			// event.object.customFields возможно из-за определения этих
+			// полей как interfece CustomerFields
+			// Для текущего типа хватит и такой реализации
+			// однако в далбнейшем этот вопрос придется решать
+			//****************************************************
+
+			list := []TheHiveCase(nil)
+			for cur.Next(context.Background()) {
+				var modelType TheHiveCase
+				if err := cur.Decode(&modelType); err != nil {
+
+					fmt.Println("Decode ERROR:", err)
+
+					continue
+				}
+
+				list = append(list, modelType)
+			}
+
+			for _, v := range list {
+				fmt.Println(v)
+			}
+
+			Expect(len(list)).Should(Equal(5))
 		})
 	})
 })

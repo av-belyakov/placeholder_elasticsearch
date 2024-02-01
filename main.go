@@ -14,7 +14,6 @@ import (
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
 
-	//"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/memorytemporarystorage"
 	"placeholder_elasticsearch/mongodbinteractions"
@@ -34,9 +33,10 @@ var (
 	warnings   []string
 	storageApp *memorytemporarystorage.CommonStorageTemporary
 	lr         *rules.ListRule
-	iz         chan string
-	logging    chan datamodels.MessageLogging
-	counting   chan datamodels.DataCounterSettings
+
+	iz       chan string
+	logging  chan datamodels.MessageLogging
+	counting chan datamodels.DataCounterSettings
 )
 
 func getAppName(pf string, nl int) (string, error) {
@@ -108,20 +108,25 @@ func counterHandler(
 			storageApp.SetEventsMeetRulesDataCounter(d.Count)
 		case "events do not meet rules":
 			storageApp.SetEventsDoNotMeetRulesDataCounter(d.Count)
+		case "update count insert MongoDB":
+			storageApp.SetInsertMongoDBDataCounter(d.Count)
+		case "update count insert Elasticserach":
+			storageApp.SetInsertElasticsearchDataCounter(d.Count)
 		}
 
 		d, h, m, s := supportingfunctions.GetDifference(storageApp.GetStartTimeDataCounter(), time.Now())
 
-		patternReciveEvents := fmt.Sprintf("событий принятых/обработанных: %d/%d", storageApp.GetAcceptedEventsDataCounter(), storageApp.GetProcessedEventsDataCounter())
-		patternRuleIsOk := fmt.Sprintf("соответствие/не соответствие правилам: %d/%d", storageApp.GetEventsMeetRulesDataCounter(), storageApp.GetEventsDoNotMeetRulesDataCounter())
+		patternReciveEvents := fmt.Sprintf("событий принятых: %d", storageApp.GetAcceptedEventsDataCounter())
+		patternRuleIsOk := fmt.Sprintf("соответствие правилам: %d", storageApp.GetEventsMeetRulesDataCounter())
+		patternInsertMongoDB := fmt.Sprintf("добавлено в MongoDB: %d", storageApp.GetInsertMongoDBDataCounter())
+		patternInsertES := fmt.Sprintf("добавлено в Elasticsearch: %d", storageApp.GetInsertElasticsearchDataCounter())
 		patternTime := fmt.Sprintf("время со старта приложения: дней %d, часов %d, минут %d, секунд %d", d, h, m, s)
-		log.Printf("\t%s, %s, %s\n", patternReciveEvents, patternRuleIsOk, patternTime)
+		msg := fmt.Sprintf("%s, %s, %s, %s %s", patternReciveEvents, patternRuleIsOk, patternInsertMongoDB, patternInsertES, patternTime)
 
-		//log.Printf("\tсобытий принятых/обработанных: %d/%d, соответствие/не соответствие правилам: %d/%d, время со старта приложения: дней %d, часов %d, минут %d, секунд %d\n", storageApp.GetAcceptedEventsDataCounter(), storageApp.GetProcessedEventsDataCounter(), storageApp.GetEventsMeetRulesDataCounter(), storageApp.GetEventsDoNotMeetRulesDataCounter(), d, h, m, s)
+		log.Printf("\t%s\n", msg)
 
 		if ae != storageApp.GetAcceptedEventsDataCounter() || emr != storageApp.GetEventsMeetRulesDataCounter() {
-			//iz <- fmt.Sprintf("событий принятых: %d, соответствие правилам: %d, время со старта приложения: дней %d, часов %d, минут %d, секунд %d\n", storageApp.GetAcceptedEventsDataCounter(), storageApp.GetEventsMeetRulesDataCounter(), d, h, m, s)
-			iz <- fmt.Sprintf("событий принятых: %d, соответствие правилам: %d, %s\n", storageApp.GetAcceptedEventsDataCounter(), storageApp.GetEventsMeetRulesDataCounter(), patternTime)
+			iz <- msg
 
 			ae = storageApp.GetAcceptedEventsDataCounter()
 			emr = storageApp.GetEventsMeetRulesDataCounter()
@@ -267,7 +272,7 @@ func main() {
 	}
 
 	// инициализация модуля для взаимодействия с СУБД MongoDB
-	mongodbModule, err := mongodbinteractions.HandlerMongoDB(*confApp.GetAppMongoDB(), logging)
+	mongodbModule, err := mongodbinteractions.HandlerMongoDB(*confApp.GetAppMongoDB(), logging, counting)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")
@@ -276,7 +281,7 @@ func main() {
 	}
 
 	//инициализация модуля для взаимодействия с ElasticSearch
-	esModule, err := elasticsearchinteractions.HandlerElasticSearch(*confApp.GetAppES(), logging)
+	esModule, err := elasticsearchinteractions.HandlerElasticSearch(*confApp.GetAppES(), logging, counting)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")

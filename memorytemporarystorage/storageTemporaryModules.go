@@ -50,6 +50,8 @@ func (cst *CommonStorageTemporary) GetDataCounter() DataCounterStorage {
 		processedEvents:      cst.dataCounter.processedEvents,
 		eventsMeetRules:      cst.dataCounter.eventsMeetRules,
 		eventsDoNotMeetRules: cst.dataCounter.eventsDoNotMeetRules,
+		insertMongoDB:        cst.dataCounter.insertMongoDB,
+		insertElasticsearch:  cst.dataCounter.insertElasticsearch,
 		startTime:            cst.dataCounter.startTime,
 	}
 }
@@ -117,4 +119,30 @@ func (cst *CommonStorageTemporary) SetEventsDoNotMeetRulesDataCounter(num int) {
 	defer cst.dataCounter.Unlock()
 
 	cst.dataCounter.eventsDoNotMeetRules += num
+}
+
+// GetInsertMongoDBDataCounter возвращает сетчик вставленных в MongoDB документов
+func (cst *CommonStorageTemporary) GetInsertMongoDBDataCounter() int {
+	return cst.dataCounter.insertMongoDB
+}
+
+// SetInsertMongoDBDataCounter увеличивает сетчик вставленных в MongoDB документов
+func (cst *CommonStorageTemporary) SetInsertMongoDBDataCounter(num int) {
+	cst.dataCounter.Lock()
+	defer cst.dataCounter.Unlock()
+
+	cst.dataCounter.insertMongoDB += num
+}
+
+// GetInsertElasticsearchDataCounter возвращает сетчик вставленных в Elasticsearch документов
+func (cst *CommonStorageTemporary) GetInsertElasticsearchDataCounter() int {
+	return cst.dataCounter.insertElasticsearch
+}
+
+// SetInsertElasticsearchDataCounter увеличивает сетчик вставленных в Elasticsearch документов
+func (cst *CommonStorageTemporary) SetInsertElasticsearchDataCounter(num int) {
+	cst.dataCounter.Lock()
+	defer cst.dataCounter.Unlock()
+
+	cst.dataCounter.insertElasticsearch += num
 }

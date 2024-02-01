@@ -10,6 +10,7 @@ import (
 // VerifiedTheHiveCase объект представляет собой верифицированный 'кейс' TheHive
 type VerifiedTheHiveCase struct {
 	ID               string              `json:"@id" bson:"@id"`
+	ElasticsearchID  string              `json:"@es_id" bson:"@es_id"`
 	CreateTimestatmp string              `json:"@timestamp" bson:"@timestamp"`
 	Source           string              `json:"source" bson:"source"`
 	Event            EventMessageTheHive `json:"event" bson:"event"`

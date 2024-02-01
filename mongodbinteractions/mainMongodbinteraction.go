@@ -40,8 +40,12 @@ type ConnectionDescriptorMongoDB struct {
 	ctxCancel    context.CancelFunc
 }
 
-func HandlerMongoDB(conf confighandler.AppConfigMongoDB,
-	logging chan<- datamodels.MessageLogging) (*MongoDBModule, error) {
+func HandlerMongoDB(
+	conf confighandler.AppConfigMongoDB,
+	logging chan<- datamodels.MessageLogging,
+	counting chan<- datamodels.DataCounterSettings,
+) (*MongoDBModule, error) {
+
 	channels := &MongoDBModule{
 		ChanInputModule:  make(chan SettingsInputChan),
 		ChanOutputModule: make(chan ModuleDataBaseInteractionChannel),
@@ -60,7 +64,7 @@ func HandlerMongoDB(conf confighandler.AppConfigMongoDB,
 	}
 
 	description.connection = conn
-	description.Routing(channels, logging)
+	description.Routing(channels, logging, counting)
 
 	return channels, nil
 }
@@ -87,7 +91,11 @@ func NewConnection(ctx context.Context, conf confighandler.AppConfigMongoDB) (*m
 	return connect, nil
 }
 
-func (conn ConnectionDescriptorMongoDB) Routing(channels *MongoDBModule, logging chan<- datamodels.MessageLogging) {
+func (conn ConnectionDescriptorMongoDB) Routing(
+	channels *MongoDBModule,
+	logging chan<- datamodels.MessageLogging,
+	counting chan<- datamodels.DataCounterSettings,
+) {
 	ws := wrappers{
 		NameDB: conn.databaseName,
 		ConnDB: conn.connection,
@@ -102,7 +110,7 @@ func (conn ConnectionDescriptorMongoDB) Routing(channels *MongoDBModule, logging
 			switch data.Section {
 			case "handling case":
 				if data.Command == "add new case" {
-					ws.AddNewCase([]interface{}{data.Data}, logging)
+					go ws.AddNewCase(data.VerifiedObject, logging, counting)
 				}
 
 			case "":

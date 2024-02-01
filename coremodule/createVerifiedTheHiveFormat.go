@@ -162,16 +162,16 @@ func NewVerifiedTheHiveFormat(
 			verifiedCase.SetObservables(*observables)
 			verifiedCase.SetTtps(*ttps)
 
-			esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+			mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
 				Section:        "handling case",
 				Command:        "add new case",
 				VerifiedObject: verifiedCase.Get(),
 			}
 
-			mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
-				Section: "handling case",
-				Command: "add new case",
-				Data:    verifiedCase.Get(),
+			esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+				Section:        "handling case",
+				Command:        "add new case",
+				VerifiedObject: verifiedCase.Get(),
 			}
 
 			// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования

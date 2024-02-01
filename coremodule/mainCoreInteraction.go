@@ -18,7 +18,6 @@ func CoreHandler(natsModule *natsinteractions.ModuleNATS,
 	counting chan<- datamodels.DataCounterSettings,
 ) {
 	natsChanReception := natsModule.GetDataReceptionChannel()
-	//mongodbChanReception :=
 	decodeJson := NewDecodeJsonMessageSettings(listRule, logging, counting)
 
 	for {

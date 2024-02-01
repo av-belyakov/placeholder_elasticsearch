@@ -31,9 +31,8 @@ type ElasticSearchModule struct {
 }
 
 type handlerSendData struct {
-	client  *elasticsearch.Client
-	conf    confighandler.AppConfigElasticSearch
-	logging chan<- datamodels.MessageLogging
+	client *elasticsearch.Client
+	conf   confighandler.AppConfigElasticSearch
 }
 
 func (h *handlerSendData) New() error {
@@ -52,14 +51,18 @@ func (h *handlerSendData) New() error {
 	return nil
 }
 
-func (hsd handlerSendData) sendingData(data []byte) {
+func (hsd handlerSendData) sendingData(
+	data []byte,
+	logging chan<- datamodels.MessageLogging,
+	counting chan<- datamodels.DataCounterSettings,
+) {
 	if !hsd.conf.Send {
 		return
 	}
 
 	if hsd.client == nil {
 		_, f, l, _ := runtime.Caller(0)
-		hsd.logging <- datamodels.MessageLogging{
+		logging <- datamodels.MessageLogging{
 			MsgData: fmt.Sprintf("'the client parameters for connecting to the Elasticsearch database are not set correctly' %s:%d", f, l-2),
 			MsgType: "error",
 		}
@@ -72,7 +75,7 @@ func (hsd handlerSendData) sendingData(data []byte) {
 	res, err := hsd.client.Index(fmt.Sprintf("%s%s_%d_%d", hsd.conf.Prefix, hsd.conf.Index, t.Year(), int(t.Month())), buf)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		hsd.logging <- datamodels.MessageLogging{
+		logging <- datamodels.MessageLogging{
 			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
 			MsgType: "error",
 		}
@@ -88,7 +91,7 @@ func (hsd handlerSendData) sendingData(data []byte) {
 	r := map[string]interface{}{}
 	if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		hsd.logging <- datamodels.MessageLogging{
+		logging <- datamodels.MessageLogging{
 			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
 			MsgType: "error",
 		}
@@ -98,24 +101,31 @@ func (hsd handlerSendData) sendingData(data []byte) {
 		errMsg = fmt.Sprintln(e)
 	}
 
-	hsd.logging <- datamodels.MessageLogging{
+	logging <- datamodels.MessageLogging{
 		MsgData: fmt.Sprintf("received from module Elsaticsearch: %s (%s)", res.Status(), errMsg),
 		MsgType: "warning",
+	}
+
+	//счетчик
+	counting <- datamodels.DataCounterSettings{
+		DataType: "update count insert Elasticserach",
+		Count:    1,
 	}
 }
 
 func HandlerElasticSearch(
 	conf confighandler.AppConfigElasticSearch,
-	logging chan<- datamodels.MessageLogging) (*ElasticSearchModule, error) {
+	logging chan<- datamodels.MessageLogging,
+	counting chan<- datamodels.DataCounterSettings,
+) (*ElasticSearchModule, error) {
+
 	module := &ElasticSearchModule{
 		ChanInputModule:  make(chan SettingsInputChan),
 		ChanOutputModule: make(chan interface{}),
 	}
 
-	hsd := handlerSendData{
-		conf:    conf,
-		logging: logging,
-	}
+	hsd := handlerSendData{conf: conf}
+
 	if err := hsd.New(); err != nil {
 		if err != nil {
 			return module, err
@@ -130,13 +140,13 @@ func HandlerElasticSearch(
 					b, err := json.Marshal(data.VerifiedObject)
 					if err != nil {
 						_, f, l, _ := runtime.Caller(0)
-						hsd.logging <- datamodels.MessageLogging{
+						logging <- datamodels.MessageLogging{
 							MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
 							MsgType: "error",
 						}
 					}
 
-					go hsd.sendingData(b)
+					go hsd.sendingData(b, logging, counting)
 				}
 
 			case "":
