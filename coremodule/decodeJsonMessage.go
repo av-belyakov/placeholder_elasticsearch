@@ -86,12 +86,6 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id string) (cha
 			_ = reflectSlice(s.Logging, chanOutputJsonData, listSlice, s.ListRule, 0, "", id)
 		}
 
-		// сетчик обработанных кейсов
-		s.Counting <- datamodels.DataCounterSettings{
-			DataType: "update processed events",
-			Count:    1,
-		}
-
 		//проверяем что бы хотя бы одно правило разрешало пропуск кейса
 		if s.ListRule.GetRulePassany() || s.ListRule.SomePassRuleIsTrue() {
 			isAllowed = true

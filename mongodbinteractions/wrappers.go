@@ -38,12 +38,13 @@ func (w *wrappers) AddNewCase(
 		}
 	}
 
-	listForDelete := []string(nil)
+	listForDelete := []string{}
 	for cur.Next(context.Background()) {
 		var modelType struct {
 			ID     string `bson:"@id"`
 			Source string `bson:"source"`
 		}
+
 		if err := cur.Decode(&modelType); err != nil {
 			_, f, l, _ := runtime.Caller(0)
 			logging <- datamodels.MessageLogging{
@@ -62,16 +63,18 @@ func (w *wrappers) AddNewCase(
 		listForDelete = append(listForDelete, modelType.ID)
 	}
 
-	if _, err := qp.DeleteManyData(
-		bson.D{{
-			Key:   "@id",
-			Value: bson.D{{Key: "$in", Value: listForDelete}}}},
-		options.Delete(),
-	); err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
-			MsgType: "error",
+	if len(listForDelete) > 0 {
+		if _, err := qp.DeleteManyData(
+			bson.D{{
+				Key:   "@id",
+				Value: bson.D{{Key: "$in", Value: listForDelete}}}},
+			options.Delete(),
+		); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
+				MsgType: "error",
+			}
 		}
 	}
 	//******************************************************************************
