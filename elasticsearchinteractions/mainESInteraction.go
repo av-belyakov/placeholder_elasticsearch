@@ -84,6 +84,12 @@ func (hsd handlerSendData) sendingData(
 	}
 
 	if res.StatusCode == http.StatusCreated || res.StatusCode == http.StatusOK {
+		//счетчик
+		counting <- datamodels.DataCounterSettings{
+			DataType: "update count insert Elasticserach",
+			Count:    1,
+		}
+
 		return
 	}
 
@@ -104,12 +110,6 @@ func (hsd handlerSendData) sendingData(
 	logging <- datamodels.MessageLogging{
 		MsgData: fmt.Sprintf("received from module Elsaticsearch: %s (%s)", res.Status(), errMsg),
 		MsgType: "warning",
-	}
-
-	//счетчик
-	counting <- datamodels.DataCounterSettings{
-		DataType: "update count insert Elasticserach",
-		Count:    1,
 	}
 }
 

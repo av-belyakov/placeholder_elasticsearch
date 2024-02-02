@@ -91,19 +91,13 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 			cur, err := collection.Find(
 				context.TODO(),
 				bson.D{
-					{Key: "source", Value: "rcmkha"},
-					{Key: "event.rootId", Value: "~2901024984"},
+					{Key: "source", Value: "gcm"},
+					{Key: "event.rootId", Value: "~85917298816"},
 				},
 				opts,
 			)
-
+			//"source": "gcm", "event.rootId": "~85917298816"
 			Expect(err).ShouldNot(HaveOccurred())
-
-			type TheHiveCase struct {
-				ID               string `bson:"@id"`
-				CreateTimestatmp string `bson:"@timestamp"`
-				Source           string `bson:"source"`
-			}
 
 			//****************************************************
 			// Я не мог взять тип datamodels.VerifiedTheHiveCase
@@ -115,9 +109,13 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 			// однако в далбнейшем этот вопрос придется решать
 			//****************************************************
 
-			list := []TheHiveCase(nil)
+			list := []string(nil)
+
 			for cur.Next(context.Background()) {
-				var modelType TheHiveCase
+				var modelType struct {
+					ID     string `bson:"@id"`
+					Source string `bson:"source"`
+				}
 				if err := cur.Decode(&modelType); err != nil {
 
 					fmt.Println("Decode ERROR:", err)
@@ -125,14 +123,15 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 					continue
 				}
 
-				list = append(list, modelType)
+				list = append(list, modelType.ID)
 			}
 
 			for _, v := range list {
 				fmt.Println(v)
 			}
 
-			Expect(len(list)).Should(Equal(5))
+			//{"source": "gcm", "event.rootId": "~85917298816"}
+			Expect(len(list)).Should(Equal(2))
 		})
 	})
 })
