@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"fmt"
+	"strings"
 
 	"placeholder_elasticsearch/supportingfunctions"
 )
@@ -110,30 +111,31 @@ func (ttpm *TtpMessage) SetAnyTactic(i interface{}) {
 
 func (tm TtpsMessageTheHive) ToStringBeautiful(num int) string {
 	return fmt.Sprintf("%sttp: \n%s", supportingfunctions.GetWhitespace(num), func(l []TtpMessage) string {
-		var str string
+		var str strings.Builder = strings.Builder{}
 		for k, v := range l {
-			str += fmt.Sprintf("%s%d.\n", supportingfunctions.GetWhitespace(num+1), k+1)
-			str += v.ToStringBeautiful(num + 2)
+			str.WriteString(fmt.Sprintf("%s%d.\n", supportingfunctions.GetWhitespace(num+1), k+1))
+			str.WriteString(v.ToStringBeautiful(num + 2))
 		}
-		return str
+
+		return str.String()
 	}(tm.Ttp))
 }
 
 func (tm TtpMessage) ToStringBeautiful(num int) string {
-	var str string
+	var str strings.Builder = strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%s_createdAt: '%s'\n", ws, tm.UnderliningCreatedAt)
-	str += fmt.Sprintf("%s_createdBy: '%s'\n", ws, tm.UnderliningCreatedBy)
-	str += fmt.Sprintf("%s_id: '%s'\n", ws, tm.UnderliningId)
-	str += fmt.Sprintf("%soccurDate: '%s'\n", ws, tm.OccurDate)
-	str += fmt.Sprintf("%spatternId: '%s'\n", ws, tm.PatternId)
-	str += fmt.Sprintf("%stactic: '%s'\n", ws, tm.Tactic)
-	str += fmt.Sprintf("%sextraData:\n", ws)
-	str += tm.ExtraData.ToStringBeautiful(num + 1)
+	str.WriteString(fmt.Sprintf("%s_createdAt: '%s'\n", ws, tm.UnderliningCreatedAt))
+	str.WriteString(fmt.Sprintf("%s_createdBy: '%s'\n", ws, tm.UnderliningCreatedBy))
+	str.WriteString(fmt.Sprintf("%s_id: '%s'\n", ws, tm.UnderliningId))
+	str.WriteString(fmt.Sprintf("%soccurDate: '%s'\n", ws, tm.OccurDate))
+	str.WriteString(fmt.Sprintf("%spatternId: '%s'\n", ws, tm.PatternId))
+	str.WriteString(fmt.Sprintf("%stactic: '%s'\n", ws, tm.Tactic))
+	str.WriteString(fmt.Sprintf("%sextraData:\n", ws))
+	str.WriteString(tm.ExtraData.ToStringBeautiful(num + 1))
 
-	return str
+	return str.String()
 }
 
 func (tm *TtpMessage) GetExtraData() ExtraDataTtpMessage {
@@ -141,16 +143,16 @@ func (tm *TtpMessage) GetExtraData() ExtraDataTtpMessage {
 }
 
 func (edtm ExtraDataTtpMessage) ToStringBeautiful(num int) string {
-	var str string
+	var str strings.Builder = strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%spattern:\n", ws)
-	str += edtm.Pattern.ToStringBeautiful(num + 1)
-	str += fmt.Sprintf("%spatternParent:\n", ws)
-	str += edtm.PatternParent.ToStringBeautiful(num + 1)
+	str.WriteString(fmt.Sprintf("%spattern:\n", ws))
+	str.WriteString(edtm.Pattern.ToStringBeautiful(num + 1))
+	str.WriteString(fmt.Sprintf("%spatternParent:\n", ws))
+	str.WriteString(edtm.PatternParent.ToStringBeautiful(num + 1))
 
-	return str
+	return str.String()
 }
 
 func (tm *TtpMessage) GetPattern() *PatternExtraData {
@@ -405,71 +407,75 @@ func (ped *PatternExtraData) SetAnyTactics(i interface{}) {
 }
 
 func (ped PatternExtraData) ToStringBeautiful(num int) string {
-	var str string
+	var str strings.Builder = strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%s_createdAt: '%s'\n", ws, ped.UnderliningCreatedAt)
-	str += fmt.Sprintf("%s_createdBy: '%s'\n", ws, ped.UnderliningCreatedBy)
-	str += fmt.Sprintf("%s_id: '%s'\n", ws, ped.UnderliningId)
-	str += fmt.Sprintf("%s_type: '%s'\n", ws, ped.UnderliningType)
-	str += fmt.Sprintf("%sdataSources: \n%v", ws, func(l []string) string {
-		var str string
+	str.WriteString(fmt.Sprintf("%s_createdAt: '%s'\n", ws, ped.UnderliningCreatedAt))
+	str.WriteString(fmt.Sprintf("%s_createdBy: '%s'\n", ws, ped.UnderliningCreatedBy))
+	str.WriteString(fmt.Sprintf("%s_id: '%s'\n", ws, ped.UnderliningId))
+	str.WriteString(fmt.Sprintf("%s_type: '%s'\n", ws, ped.UnderliningType))
+	str.WriteString(fmt.Sprintf("%sdataSources: \n%v", ws, func(l []string) string {
+		var str strings.Builder = strings.Builder{}
 		for k, v := range l {
-			str += fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v)
+			str.WriteString(fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v))
 		}
-		return str
-	}(ped.DataSources))
-	/*str += fmt.Sprintf("%sdefenseBypassed: \n%v", ws, func(l []string) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v)
-		}
-		return str
-	}(ped.DefenseBypassed))*/
-	str += fmt.Sprintf("%sdescription: '%s'\n", ws, ped.Description)
-	/*str += fmt.Sprintf("%sextraData: \n%s", ws, func(l map[string]interface{}) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("%s%s: '%v'\n", supportingfunctions.GetWhitespace(num+1), k, v)
-		}
-		return str
-	}(ped.ExtraData))*/
-	str += fmt.Sprintf("%sname: '%s'\n", ws, ped.Name)
-	str += fmt.Sprintf("%spatternId: '%s'\n", ws, ped.PatternId)
-	str += fmt.Sprintf("%spatternType: '%s'\n", ws, ped.PatternType)
-	str += fmt.Sprintf("%spermissionsRequired: \n%s", ws, func(l []string) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v)
-		}
-		return str
-	}(ped.PermissionsRequired))
-	str += fmt.Sprintf("%splatforms: \n%s", ws, func(l []string) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v)
-		}
-		return str
-	}(ped.Platforms))
-	str += fmt.Sprintf("%sremoteSupport: '%v'\n", ws, ped.RemoteSupport)
-	str += fmt.Sprintf("%srevoked: '%v'\n", ws, ped.Revoked)
-	/*str += fmt.Sprintf("%ssystemRequirements: \n%s", ws, func(l []string) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v)
-		}
-		return str
-	}(ped.SystemRequirements))*/
-	str += fmt.Sprintf("%stactics: \n%s", ws, func(l []string) string {
-		var str string
-		for k, v := range l {
-			str += fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v)
-		}
-		return str
-	}(ped.Tactics))
-	str += fmt.Sprintf("%sURL: '%s'\n", ws, ped.URL)
-	str += fmt.Sprintf("%sversion: '%s'\n", ws, ped.Version)
 
-	return str
+		return str.String()
+	}(ped.DataSources)))
+	/*str.WriteString(fmt.Sprintf("%sdefenseBypassed: \n%v", ws, func(l []string) string {
+		var str strings.Builder = strings.Builder{}
+		for k, v := range l {
+			str.WriteString(fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v))
+		}
+		return str.String()
+	}(ped.DefenseBypassed)))*/
+	str.WriteString(fmt.Sprintf("%sdescription: '%s'\n", ws, ped.Description))
+	/*str.WriteString(fmt.Sprintf("%sextraData: \n%s", ws, func(l map[string]interface{}) string {
+		var str strings.Builder = string.Builder{}
+		for k, v := range l {
+			str.WriteString(fmt.Sprintf("%s%s: '%v'\n", supportingfunctions.GetWhitespace(num+1), k, v))
+		}
+		return str
+	}(ped.ExtraData)))*/
+	str.WriteString(fmt.Sprintf("%sname: '%s'\n", ws, ped.Name))
+	str.WriteString(fmt.Sprintf("%spatternId: '%s'\n", ws, ped.PatternId))
+	str.WriteString(fmt.Sprintf("%spatternType: '%s'\n", ws, ped.PatternType))
+	str.WriteString(fmt.Sprintf("%spermissionsRequired: \n%s", ws, func(l []string) string {
+		var str strings.Builder = strings.Builder{}
+		for k, v := range l {
+			str.WriteString(fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v))
+		}
+
+		return str.String()
+	}(ped.PermissionsRequired)))
+	str.WriteString(fmt.Sprintf("%splatforms: \n%s", ws, func(l []string) string {
+		var str strings.Builder = strings.Builder{}
+		for k, v := range l {
+			str.WriteString(fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v))
+		}
+
+		return str.String()
+	}(ped.Platforms)))
+	str.WriteString(fmt.Sprintf("%sremoteSupport: '%v'\n", ws, ped.RemoteSupport))
+	str.WriteString(fmt.Sprintf("%srevoked: '%v'\n", ws, ped.Revoked))
+	/*str.WriteString(fmt.Sprintf("%ssystemRequirements: \n%s", ws, func(l []string) string {
+		var str strings.Builder = strings.Builder()
+		for k, v := range l {
+			str.WriteString(fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v))
+		}
+		return str.String()
+	}(ped.SystemRequirements)))*/
+	str.WriteString(fmt.Sprintf("%stactics: \n%s", ws, func(l []string) string {
+		var str strings.Builder = strings.Builder{}
+		for k, v := range l {
+			str.WriteString(fmt.Sprintf("%s%d. '%s'\n", supportingfunctions.GetWhitespace(num+1), k+1, v))
+		}
+
+		return str.String()
+	}(ped.Tactics)))
+	str.WriteString(fmt.Sprintf("%sURL: '%s'\n", ws, ped.URL))
+	str.WriteString(fmt.Sprintf("%sversion: '%s'\n", ws, ped.Version))
+
+	return str.String()
 }

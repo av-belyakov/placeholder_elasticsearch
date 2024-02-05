@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"fmt"
+	"strings"
 
 	"placeholder_elasticsearch/supportingfunctions"
 )
@@ -36,17 +37,17 @@ func (mm *MainMessageTheHive) Get() *MainMessageTheHive {
 }
 
 func (mm MainMessageTheHive) ToStringBeautiful(num int) string {
-	var str string
+	strB := strings.Builder{}
 
-	str += mm.SourceMessageTheHive.ToStringBeautiful(num + 1)
-	str += fmt.Sprintln("event:")
-	str += mm.EventMessageTheHive.ToStringBeautiful(num + 1)
-	str += fmt.Sprintln("observables:")
-	str += mm.ObservablesMessageTheHive.ToStringBeautiful(num + 1)
-	str += fmt.Sprintln("ttps:")
-	str += mm.TtpsMessageTheHive.ToStringBeautiful(num + 1)
+	strB.WriteString(mm.SourceMessageTheHive.ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintln("event:"))
+	strB.WriteString(mm.EventMessageTheHive.ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintln("observables:"))
+	strB.WriteString(mm.ObservablesMessageTheHive.ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintln("ttps:"))
+	strB.WriteString(mm.TtpsMessageTheHive.ToStringBeautiful(num + 1))
 
-	return str
+	return strB.String()
 }
 
 // GetSource возвращает содержимое поля Source

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 // NewReadReflectJSONSprint функция выполняет вывод JSON сообщения в виде текста
@@ -35,7 +36,11 @@ func NewReadReflectJSONSprint(b []byte) (string, error) {
 }
 
 func readReflectAnyTypeSprint(name interface{}, anyType interface{}, num int) string {
-	var str, nameStr string
+	var (
+		nameStr string
+		str     strings.Builder = strings.Builder{}
+	)
+
 	r := reflect.TypeOf(anyType)
 	ws := GetWhitespace(num)
 
@@ -46,97 +51,95 @@ func readReflectAnyTypeSprint(name interface{}, anyType interface{}, num int) st
 	}
 
 	if r == nil {
-		return str
+		return str.String()
 	}
 
 	switch r.Kind() {
 	case reflect.String:
-		str += fmt.Sprintf("%s \"%s\"\n", nameStr, reflect.ValueOf(anyType).String())
+		str.WriteString(fmt.Sprintf("%s \"%s\"\n", nameStr, reflect.ValueOf(anyType).String()))
 
 	case reflect.Int, reflect.Int16, reflect.Int32, reflect.Int64:
-		str += fmt.Sprintf("%s %d\n", nameStr, reflect.ValueOf(anyType).Int())
+		str.WriteString(fmt.Sprintf("%s %d\n", nameStr, reflect.ValueOf(anyType).Int()))
 
 	case reflect.Uint, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		str += fmt.Sprintf("%s %d\n", nameStr, reflect.ValueOf(anyType).Uint())
+		str.WriteString(fmt.Sprintf("%s %d\n", nameStr, reflect.ValueOf(anyType).Uint()))
 
 	case reflect.Float32, reflect.Float64:
-		str += fmt.Sprintf("%s %v\n", nameStr, int(reflect.ValueOf(anyType).Float()))
+		str.WriteString(fmt.Sprintf("%s %v\n", nameStr, int(reflect.ValueOf(anyType).Float())))
 
 	case reflect.Bool:
-		str += fmt.Sprintf("%s %v\n", nameStr, reflect.ValueOf(anyType).Bool())
+		str.WriteString(fmt.Sprintf("%s %v\n", nameStr, reflect.ValueOf(anyType).Bool()))
 	}
 
-	return str
+	return str.String()
 }
 
 func readReflectMapSprint(list map[string]interface{}, num int) string {
-	var str string
+	var str strings.Builder = strings.Builder{}
 	ws := GetWhitespace(num)
 
 	for k, v := range list {
 		r := reflect.TypeOf(v)
 
 		if r == nil {
-			return str
+			return str.String()
 		}
 
 		switch r.Kind() {
 		case reflect.Map:
 			if v, ok := v.(map[string]interface{}); ok {
-				str += fmt.Sprintf("%s%s:\n", ws, k)
-				str += readReflectMapSprint(v, num+1)
+				str.WriteString(fmt.Sprintf("%s%s:\n", ws, k))
+				str.WriteString(readReflectMapSprint(v, num+1))
 			}
 
 		case reflect.Slice:
 			if v, ok := v.([]interface{}); ok {
-				str += fmt.Sprintf("%s%s:\n", ws, k)
-				str += readReflectSliceSprint(v, num+1)
+				str.WriteString(fmt.Sprintf("%s%s:\n", ws, k))
+				str.WriteString(readReflectSliceSprint(v, num+1))
 			}
 
 		case reflect.Array:
-			str += fmt.Sprintf("%s: %s (it is array)\n", k, reflect.ValueOf(v).String())
+			str.WriteString(fmt.Sprintf("%s: %s (it is array)\n", k, reflect.ValueOf(v).String()))
 
 		default:
-			str += readReflectAnyTypeSprint(k, v, num)
+			str.WriteString(readReflectAnyTypeSprint(k, v, num))
 		}
 	}
 
-	return str
+	return str.String()
 }
 
 func readReflectSliceSprint(list []interface{}, num int) string {
-	var str string
+	var str strings.Builder = strings.Builder{}
 	ws := GetWhitespace(num)
 
 	for k, v := range list {
 		r := reflect.TypeOf(v)
 
 		if r == nil {
-			return str
+			return str.String()
 		}
-
-		//str += readReflectAnyTypeSprint(k, v, num)
 
 		switch r.Kind() {
 		case reflect.Map:
 			if v, ok := v.(map[string]interface{}); ok {
-				str += fmt.Sprintf("%s%d.\n", ws, k+1)
-				str += readReflectMapSprint(v, num+1)
+				str.WriteString(fmt.Sprintf("%s%d.\n", ws, k+1))
+				str.WriteString(readReflectMapSprint(v, num+1))
 			}
 
 		case reflect.Slice:
 			if v, ok := v.([]interface{}); ok {
-				str += fmt.Sprintf("%s%d.\n", ws, k+1)
-				str += readReflectSliceSprint(v, num+1)
+				str.WriteString(fmt.Sprintf("%s%d.\n", ws, k+1))
+				str.WriteString(readReflectSliceSprint(v, num+1))
 			}
 
 		case reflect.Array:
-			str += fmt.Sprintf("%d. %s (it is array)\n", k, reflect.ValueOf(v).String())
+			str.WriteString(fmt.Sprintf("%d. %s (it is array)\n", k, reflect.ValueOf(v).String()))
 
 		default:
-			str += readReflectAnyTypeSprint(k, v, num)
+			str.WriteString(readReflectAnyTypeSprint(k, v, num))
 		}
 	}
 
-	return str
+	return str.String()
 }

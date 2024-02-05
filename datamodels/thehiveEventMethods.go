@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"fmt"
+	"strings"
 
 	"placeholder_elasticsearch/supportingfunctions"
 )
@@ -159,25 +160,25 @@ func (e *EventMessageTheHive) SetValueObject(v EventObject) {
 }
 
 func (em EventMessageTheHive) ToStringBeautiful(num int) string {
-	var str string
+	strB := strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%soperation: '%s'\n", ws, em.Operation)
-	str += fmt.Sprintf("%sobjectId: '%s'\n", ws, em.ObjectId)
-	str += fmt.Sprintf("%sobjectType: '%s'\n", ws, em.ObjectType)
-	str += fmt.Sprintf("%sbase: '%v'\n", ws, em.Base)
-	str += fmt.Sprintf("%sstartDate: '%s'\n", ws, em.StartDate)
-	str += fmt.Sprintf("%srootId: '%s'\n", ws, em.RootId)
-	str += fmt.Sprintf("%srequestId: '%s'\n", ws, em.RequestId)
-	str += fmt.Sprintf("%sdetails:\n", ws)
-	str += em.Details.ToStringBeautiful(num + 1)
-	str += fmt.Sprintf("%sobject:\n", ws)
-	str += em.Object.ToStringBeautiful(num + 1)
-	str += fmt.Sprintf("%sorganisationId: '%s'\n", ws, em.OrganisationId)
-	str += fmt.Sprintf("%sorganisation: '%s'\n", ws, em.Organisation)
+	strB.WriteString(fmt.Sprintf("%soperation: '%s'\n", ws, em.Operation))
+	strB.WriteString(fmt.Sprintf("%sobjectId: '%s'\n", ws, em.ObjectId))
+	strB.WriteString(fmt.Sprintf("%sobjectType: '%s'\n", ws, em.ObjectType))
+	strB.WriteString(fmt.Sprintf("%sbase: '%v'\n", ws, em.Base))
+	strB.WriteString(fmt.Sprintf("%sstartDate: '%s'\n", ws, em.StartDate))
+	strB.WriteString(fmt.Sprintf("%srootId: '%s'\n", ws, em.RootId))
+	strB.WriteString(fmt.Sprintf("%srequestId: '%s'\n", ws, em.RequestId))
+	strB.WriteString(fmt.Sprintf("%sdetails:\n", ws))
+	strB.WriteString(em.Details.ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintf("%sobject:\n", ws))
+	strB.WriteString(em.Object.ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintf("%sorganisationId: '%s'\n", ws, em.OrganisationId))
+	strB.WriteString(fmt.Sprintf("%sorganisation: '%s'\n", ws, em.Organisation))
 
-	return str
+	return strB.String()
 }
 
 func (e *EventDetails) Get() *EventDetails {
@@ -265,18 +266,18 @@ func (e *EventDetails) SetValueCustomFields(v map[string]CustomerFields) {
 }
 
 func (ed EventDetails) ToStringBeautiful(num int) string {
-	var str string
+	strB := strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%sendDate: '%s'\n", ws, ed.EndDate)
-	str += fmt.Sprintf("%sresolutionStatus: '%s'\n", ws, ed.ResolutionStatus)
-	str += fmt.Sprintf("%ssummary: '%s'\n", ws, ed.Summary)
-	str += fmt.Sprintf("%sstatus: '%s'\n", ws, ed.Status)
-	str += fmt.Sprintf("%simpactStatus: '%s'\n", ws, ed.ImpactStatus)
-	str += fmt.Sprintf("%scustomFields: \n%s", ws, CustomFieldsToStringBeautiful(ed.CustomFields, num))
+	strB.WriteString(fmt.Sprintf("%sendDate: '%s'\n", ws, ed.EndDate))
+	strB.WriteString(fmt.Sprintf("%sresolutionStatus: '%s'\n", ws, ed.ResolutionStatus))
+	strB.WriteString(fmt.Sprintf("%ssummary: '%s'\n", ws, ed.Summary))
+	strB.WriteString(fmt.Sprintf("%sstatus: '%s'\n", ws, ed.Status))
+	strB.WriteString(fmt.Sprintf("%simpactStatus: '%s'\n", ws, ed.ImpactStatus))
+	strB.WriteString(fmt.Sprintf("%scustomFields: \n%s", ws, CustomFieldsToStringBeautiful(ed.CustomFields, num)))
 
-	return str
+	return strB.String()
 }
 
 func (e *EventObject) Get() *EventObject {
@@ -639,64 +640,64 @@ func (e *EventObject) SetValueCustomFields(v map[string]CustomerFields) {
 }
 
 func (eo EventObject) ToStringBeautiful(num int) string {
-	var str string
+	strB := strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str += fmt.Sprintf("%s_id: '%s'\n", ws, eo.UnderliningId)
-	str += fmt.Sprintf("%sid: '%s'\n", ws, eo.Id)
-	str += fmt.Sprintf("%screatedBy: '%s'\n", ws, eo.CreatedBy)
-	str += fmt.Sprintf("%supdatedBy: '%s'\n", ws, eo.UpdatedBy)
-	str += fmt.Sprintf("%screatedAt: '%s'\n", ws, eo.CreatedAt)
-	str += fmt.Sprintf("%supdatedAt: '%s'\n", ws, eo.UpdatedAt)
-	str += fmt.Sprintf("%s_type: '%s'\n", ws, eo.UnderliningType)
-	str += fmt.Sprintf("%scaseId: '%d'\n", ws, eo.CaseId)
-	str += fmt.Sprintf("%stitle: '%s'\n", ws, eo.Title)
-	str += fmt.Sprintf("%sdescription: '%s'\n", ws, eo.Description)
-	str += fmt.Sprintf("%sseverity: '%d'\n", ws, eo.Severity)
-	str += fmt.Sprintf("%sstartDate: '%s'\n", ws, eo.StartDate)
-	str += fmt.Sprintf("%sendDate: '%s'\n", ws, eo.EndDate)
-	str += fmt.Sprintf("%simpactStatus: '%s'\n", ws, eo.ImpactStatus)
-	str += fmt.Sprintf("%sresolutionStatus: '%s'\n", ws, eo.ResolutionStatus)
-	str += fmt.Sprintf("%stags: \n%s", ws, func(l []string) string {
-		var str string
+	strB.WriteString(fmt.Sprintf("%s_id: '%s'\n", ws, eo.UnderliningId))
+	strB.WriteString(fmt.Sprintf("%sid: '%s'\n", ws, eo.Id))
+	strB.WriteString(fmt.Sprintf("%screatedBy: '%s'\n", ws, eo.CreatedBy))
+	strB.WriteString(fmt.Sprintf("%supdatedBy: '%s'\n", ws, eo.UpdatedBy))
+	strB.WriteString(fmt.Sprintf("%screatedAt: '%s'\n", ws, eo.CreatedAt))
+	strB.WriteString(fmt.Sprintf("%supdatedAt: '%s'\n", ws, eo.UpdatedAt))
+	strB.WriteString(fmt.Sprintf("%s_type: '%s'\n", ws, eo.UnderliningType))
+	strB.WriteString(fmt.Sprintf("%scaseId: '%d'\n", ws, eo.CaseId))
+	strB.WriteString(fmt.Sprintf("%stitle: '%s'\n", ws, eo.Title))
+	strB.WriteString(fmt.Sprintf("%sdescription: '%s'\n", ws, eo.Description))
+	strB.WriteString(fmt.Sprintf("%sseverity: '%d'\n", ws, eo.Severity))
+	strB.WriteString(fmt.Sprintf("%sstartDate: '%s'\n", ws, eo.StartDate))
+	strB.WriteString(fmt.Sprintf("%sendDate: '%s'\n", ws, eo.EndDate))
+	strB.WriteString(fmt.Sprintf("%simpactStatus: '%s'\n", ws, eo.ImpactStatus))
+	strB.WriteString(fmt.Sprintf("%sresolutionStatus: '%s'\n", ws, eo.ResolutionStatus))
+	strB.WriteString(fmt.Sprintf("%stags: \n%s", ws, func(l []string) string {
+		str := strings.Builder{}
 		ws := supportingfunctions.GetWhitespace(num + 1)
 
 		for k, v := range l {
-			str += fmt.Sprintf("%s%d. '%s'\n", ws, k+1, v)
+			strB.WriteString(fmt.Sprintf("%s%d. '%s'\n", ws, k+1, v))
 		}
-		return str
-	}(eo.Tags))
-	str += fmt.Sprintf("%sflag: '%v'\n", ws, eo.Flag)
-	str += fmt.Sprintf("%stlp: '%d'\n", ws, eo.Tlp)
-	str += fmt.Sprintf("%spap: '%d'\n", ws, eo.Pap)
-	str += fmt.Sprintf("%sstatus: '%s'\n", ws, eo.Status)
-	str += fmt.Sprintf("%ssummary: '%s'\n", ws, eo.Summary)
-	str += fmt.Sprintf("%sowner: '%s'\n", ws, eo.Owner)
-	str += fmt.Sprintf("%scustomFields: \n%s", ws, CustomFieldsToStringBeautiful(eo.CustomFields, num))
-	/*str += fmt.Sprintf("%spermissions: \n%s", ws, func(l []string) string {
-		var str string
+		return str.String()
+	}(eo.Tags)))
+	strB.WriteString(fmt.Sprintf("%sflag: '%v'\n", ws, eo.Flag))
+	strB.WriteString(fmt.Sprintf("%stlp: '%d'\n", ws, eo.Tlp))
+	strB.WriteString(fmt.Sprintf("%spap: '%d'\n", ws, eo.Pap))
+	strB.WriteString(fmt.Sprintf("%sstatus: '%s'\n", ws, eo.Status))
+	strB.WriteString(fmt.Sprintf("%ssummary: '%s'\n", ws, eo.Summary))
+	strB.WriteString(fmt.Sprintf("%sowner: '%s'\n", ws, eo.Owner))
+	strB.WriteString(fmt.Sprintf("%scustomFields: \n%s", ws, CustomFieldsToStringBeautiful(eo.CustomFields, num)))
+	/*strB.WriteString(fmt.Sprintf("%spermissions: \n%s", ws, func(l []string) string {
+		str := strings.Builder{}
 		ws := supportingfunctions.GetWhitespace(num + 1)
 
 		for k, v := range l {
-			str += fmt.Sprintf("%s%d. '%s'\n", ws, k+1, v)
+			strB.WriteString(fmt.Sprintf("%s%d. '%s'\n", ws, k+1, v))
 		}
-		return str
-	}(eo.Permissions))*/
+		return str.String()
+	}(eo.Permissions)))*/
 
-	return str
+	return strB.String()
 }
 
 func CustomFieldsToStringBeautiful(l map[string]CustomerFields, num int) string {
-	var str string
+	strB := strings.Builder{}
 	ws := supportingfunctions.GetWhitespace(num + 2)
 
 	for k, v := range l {
-		str += fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k)
+		strB.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k))
 
 		nameOne, dataOne, nameTwo, dataTwo := v.Get()
-		str += fmt.Sprintf("%s%s: %d\n", ws, nameOne, dataOne)
-		str += fmt.Sprintf("%s%s: %s\n", ws, nameTwo, dataTwo)
+		strB.WriteString(fmt.Sprintf("%s%s: %d\n", ws, nameOne, dataOne))
+		strB.WriteString(fmt.Sprintf("%s%s: %s\n", ws, nameTwo, dataTwo))
 	}
-	return str
+	return strB.String()
 }

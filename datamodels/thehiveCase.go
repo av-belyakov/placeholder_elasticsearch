@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"placeholder_elasticsearch/supportingfunctions"
@@ -71,12 +72,13 @@ func (hcase *VerifiedTheHiveCase) SetTtps(ttp TtpsMessageTheHive) {
 func (hcase *VerifiedTheHiveCase) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str := fmt.Sprintf("%sCreateTimestatmp: '%s'\n", ws, hcase.CreateTimestatmp)
-	str += fmt.Sprintf("%sSource: '%s'\n", ws, hcase.Source)
-	str += fmt.Sprintf("%sEvent:\n", ws)
-	str += hcase.Event.ToStringBeautiful(num + 1)
-	str += fmt.Sprintf("%sObservables:\n", ws)
-	str += hcase.ObservablesMessageTheHive.ToStringBeautiful(num + 1)
+	strB := strings.Builder{}
+	strB.WriteString(fmt.Sprintf("%sCreateTimestatmp: '%s'\n", ws, hcase.CreateTimestatmp))
+	strB.WriteString(fmt.Sprintf("%sSource: '%s'\n", ws, hcase.Source))
+	strB.WriteString(fmt.Sprintf("%sEvent:\n", ws))
+	strB.WriteString(hcase.Event.ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintf("%sObservables:\n", ws))
+	strB.WriteString(hcase.ObservablesMessageTheHive.ToStringBeautiful(num + 1))
 
-	return str
+	return strB.String()
 }

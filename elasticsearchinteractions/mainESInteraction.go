@@ -54,7 +54,7 @@ func (h *handlerSendData) New() error {
 	return nil
 }
 
-func (hsd handlerSendData) sendingData(
+/*func (hsd handlerSendData) sendingData(
 	data []byte,
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings,
@@ -114,7 +114,7 @@ func (hsd handlerSendData) sendingData(
 		MsgData: fmt.Sprintf("received from module Elsaticsearch: %s (%s)", res.Status(), errMsg),
 		MsgType: "warning",
 	}
-}
+}*/
 
 // insertDocument добавляет новый документ в заданный индекс
 func (hsd handlerSendData) insertDocument(index string, b []byte) (*esapi.Response, error) {
@@ -270,27 +270,7 @@ func HandlerElasticSearch(
 			switch data.Section {
 			case "handling case":
 				if data.Command == "add new case" {
-					//*********************************
-					//ЭТОТ новый метод должен заменить весь закоментированный
-					//код который идет ниже
-					//Однако тесты нового метода я не успел провести
-					//************************************************
 					go hsd.replacementDocument(data.VerifiedObject, logging, counting)
-
-					/*
-						Это старый код который не умеет удалять дубли документов
-
-						b, err := json.Marshal(data.VerifiedObject)
-						if err != nil {
-							_, f, l, _ := runtime.Caller(0)
-							logging <- datamodels.MessageLogging{
-								MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-								MsgType: "error",
-							}
-						}
-
-						go hsd.sendingData(b, logging, counting)
-					*/
 				}
 
 			case "":
