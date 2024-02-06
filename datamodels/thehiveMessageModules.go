@@ -41,7 +41,7 @@ func (mm MainMessageTheHive) ToStringBeautiful(num int) string {
 
 	strB.WriteString(mm.SourceMessageTheHive.ToStringBeautiful(num + 1))
 	strB.WriteString(fmt.Sprintln("event:"))
-	strB.WriteString(mm.EventMessageTheHive.ToStringBeautiful(num + 1))
+	strB.WriteString(mm.EventMessageTheHiveCase.ToStringBeautiful(num + 1))
 	strB.WriteString(fmt.Sprintln("observables:"))
 	strB.WriteString(mm.ObservablesMessageTheHive.ToStringBeautiful(num + 1))
 	strB.WriteString(fmt.Sprintln("ttps:"))

@@ -110,7 +110,7 @@ func (conn ConnectionDescriptorMongoDB) Routing(
 			switch data.Section {
 			case "handling case":
 				if data.Command == "add new case" {
-					go ws.AddNewCase(data.VerifiedObject, logging, counting)
+					go ws.AddNewCase(data.Data, logging, counting)
 				}
 
 			case "":

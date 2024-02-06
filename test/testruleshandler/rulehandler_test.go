@@ -22,7 +22,7 @@ var _ = Describe("Rulehandler", Ordered, func() {
 		conf, errConf = confighandler.NewConfig("placeholder_elasticsearch")
 
 		// инициализируем модуль чтения правил обработки MISP сообщений
-		lr, ruleWarnings, errRule = rules.NewListRule("placeholder_elasticsearch", conf.AppConfigRulesProcMsg.Directory, conf.AppConfigRulesProcMsg.File)
+		lr, ruleWarnings, errRule = rules.NewListRule("placeholder_elasticsearch", conf.AppConfigRulesProcMsg.Directory, conf.AppConfigRulesProcMsg.FileCase)
 	})
 
 	Context("Тест 1. Проверка чтения конфигурационного файла", func() {

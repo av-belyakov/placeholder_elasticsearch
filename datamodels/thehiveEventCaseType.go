@@ -1,6 +1,6 @@
 package datamodels
 
-// EventMessageTheHive сообщение с информацией о событии
+// EventMessageTheHiveCase сообщение с информацией о событии
 // Operation - операция
 // ObjectId - уникальный идентификатор объекта
 // ObjectType - тип объекта
@@ -12,18 +12,18 @@ package datamodels
 // Object - объект события
 // OrganisationId - уникальный идентификатор организации
 // Organisation - наименование организации
-type EventMessageTheHive struct {
-	Base           bool         `json:"base" bson:"base"`
-	StartDate      string       `json:"startDate" bson:"startDate"` //в формате RFC3339
-	RootId         string       `json:"rootId" bson:"rootId"`
-	Organisation   string       `json:"organisation" bson:"organisation"`
-	OrganisationId string       `json:"organisationId" bson:"organisationId"`
-	ObjectId       string       `json:"objectId" bson:"objectId"`
-	ObjectType     string       `json:"objectType" bson:"objectType"`
-	Operation      string       `json:"operation" bson:"operation"`
-	RequestId      string       `json:"requestId" bson:"requestId"`
-	Details        EventDetails `json:"details" bson:"details"`
-	Object         EventObject  `json:"object" bson:"object"`
+type EventMessageTheHiveCase struct {
+	Base           bool             `json:"base" bson:"base"`
+	StartDate      string           `json:"startDate" bson:"startDate"` //в формате RFC3339
+	RootId         string           `json:"rootId" bson:"rootId"`
+	Organisation   string           `json:"organisation" bson:"organisation"`
+	OrganisationId string           `json:"organisationId" bson:"organisationId"`
+	ObjectId       string           `json:"objectId" bson:"objectId"`
+	ObjectType     string           `json:"objectType" bson:"objectType"`
+	Operation      string           `json:"operation" bson:"operation"`
+	RequestId      string           `json:"requestId" bson:"requestId"`
+	Details        EventCaseDetails `json:"details" bson:"details"`
+	Object         EventCaseObject  `json:"object" bson:"object"`
 }
 
 // EventDetails детальная информация о событии
@@ -33,7 +33,7 @@ type EventMessageTheHive struct {
 // Status - статус
 // ImpactStatus - краткое описание воздействия
 // CustomFields - настраиваемые поля
-type EventDetails struct {
+type EventCaseDetails struct {
 	EndDate          string                    `json:"endDate" bson:"endDate"` //формат RFC3339
 	ResolutionStatus string                    `json:"resolutionStatus" bson:"resolutionStatus"`
 	Summary          string                    `json:"summary" bson:"summary"`
@@ -68,7 +68,7 @@ type EventDetails struct {
 // CustomFields - настраиваемые поля
 // Stats - статистика
 // Permissions - разрешения
-type EventObject struct {
+type EventCaseObject struct {
 	Flag             bool                      `json:"flag" bson:"flag"`
 	CaseId           uint64                    `json:"caseId" bson:"caseId"`
 	Severity         uint64                    `json:"severity" bson:"severity"`

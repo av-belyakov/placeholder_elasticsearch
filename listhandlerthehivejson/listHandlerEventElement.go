@@ -2,7 +2,7 @@ package listhandlerthehivejson
 
 import "placeholder_elasticsearch/datamodels"
 
-func NewListHandlerEventElement(event *datamodels.EventMessageTheHive) map[string][]func(interface{}) {
+func NewListHandlerEventCaseElement(event *datamodels.EventMessageTheHiveCase) map[string][]func(interface{}) {
 	return map[string][]func(interface{}){
 		"event.rootId":         {event.SetAnyRootId},
 		"event.objectId":       {event.SetAnyObjectId},

@@ -41,11 +41,11 @@ LOGGING:
       maxFileSize: 10000,
     }
   - {
-      msgTypeName: "events",
+      msgTypeName: "objects",
       writingFile: true,
       pathDirectory: "logs",
       writingStdout: false,
-      maxFileSize: 10000,
+      maxFileSize: 100000,
     }
   - {
       msgTypeName: "testing",

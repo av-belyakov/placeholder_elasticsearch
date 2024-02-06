@@ -6,11 +6,17 @@ type ModuleNATS struct {
 	chanOutputNATS chan SettingsOutputChan
 }
 
+// SettingsOutputChan канал вывода данных из модула
+// MsgId - id сообщения
+// SubjectType - тип подписки
+// Data - данные
 type SettingsOutputChan struct {
-	MsgId string
-	Data  []byte
+	MsgId       string
+	SubjectType string
+	Data        []byte
 }
 
+// SettingsInputChan канал для приема данных в модуль
 type SettingsInputChan struct {
 	Command, EventId, TaskId string
 }

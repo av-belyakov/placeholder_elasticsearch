@@ -23,7 +23,7 @@ type ResponseCommandForTheHive struct {
 // MainMessageTheHive основное сообщение получаемое через NATS
 type MainMessageTheHive struct {
 	SourceMessageTheHive
-	EventMessageTheHive
+	EventMessageTheHiveCase
 	ObservablesMessageTheHive
 	TtpsMessageTheHive
 }

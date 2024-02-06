@@ -18,17 +18,20 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 		"GO_PHELASTIC_MAIN": "",
 
 		//Подключение к NATS
-		"GO_PHELASTIC_NHOST": "",
-		"GO_PHELASTIC_NPORT": "",
+		"GO_PHELASTIC_NHOST":        "",
+		"GO_PHELASTIC_NPORT":        "",
+		"GO_PHELASTIC_SUBJECTCASE":  "",
+		"GO_PHELASTIC_SUBJECTALERT": "",
 
 		// Подключение к СУБД Elasticsearch
-		"GO_PHELASTIC_ESSEND":   "",
-		"GO_PHELASTIC_ESHOST":   "",
-		"GO_PHELASTIC_ESPORT":   "",
-		"GO_PHELASTIC_ESPREFIX": "",
-		"GO_PHELASTIC_ESINDEX":  "",
-		"GO_PHELASTIC_ESUSER":   "",
-		"GO_PHELASTIC_ESPASSWD": "",
+		"GO_PHELASTIC_ESHOST":        "",
+		"GO_PHELASTIC_ESPORT":        "",
+		"GO_PHELASTIC_ESUSER":        "",
+		"GO_PHELASTIC_ESPASSWD":      "",
+		"GO_PHELASTIC_ESPREFIXCASE":  "",
+		"GO_PHELASTIC_ESINDEXCASE":   "",
+		"GO_PHELASTIC_ESPREFIXALERT": "",
+		"GO_PHELASTIC_ESINDEXALERT":  "",
 
 		// Подключение к СУБД MongoDB
 		"GO_PHELASTIC_MONGOHOST":   "",
@@ -38,8 +41,9 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 		"GO_PHELASTIC_MONGONAMEDB": "",
 
 		//Место нахождение правил
-		"GO_PHELASTIC_RULES_DIR":  "",
-		"GO_PHELASTIC_RULES_FILE": "",
+		"GO_PHELASTIC_RULES_DIR":       "",
+		"GO_PHELASTIC_RULES_FILECASE":  "",
+		"GO_PHELASTIC_RULES_FILEALERT": "",
 	}
 
 	getFileName := func(sf, confPath string, lfs []fs.DirEntry) (string, error) {
@@ -117,28 +121,37 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 		if viper.IsSet("NATS.port") {
 			conf.AppConfigNATS.Port = viper.GetInt("NATS.port")
 		}
+		if viper.IsSet("NATS.subject_case") {
+			conf.AppConfigNATS.SubjectCase = viper.GetString("NATS.subject_case")
+		}
+		if viper.IsSet("NATS.subject_alert") {
+			conf.AppConfigNATS.SubjectAlert = viper.GetString("NATS.subject_alert")
+		}
 
 		// Настройки для модуля подключения к СУБД ElasticSearch
-		if viper.IsSet("ElasticSearch.send") {
-			conf.AppConfigElasticSearch.Send = viper.GetBool("ElasticSearch.send")
-		}
 		if viper.IsSet("ElasticSearch.host") {
 			conf.AppConfigElasticSearch.Host = viper.GetString("ElasticSearch.host")
 		}
 		if viper.IsSet("ElasticSearch.port") {
 			conf.AppConfigElasticSearch.Port = viper.GetInt("ElasticSearch.port")
 		}
-		if viper.IsSet("ElasticSearch.prefix") {
-			conf.AppConfigElasticSearch.Prefix = viper.GetString("ElasticSearch.prefix")
-		}
-		if viper.IsSet("ElasticSearch.index") {
-			conf.AppConfigElasticSearch.Index = viper.GetString("ElasticSearch.index")
-		}
 		if viper.IsSet("ElasticSearch.user") {
 			conf.AppConfigElasticSearch.User = viper.GetString("ElasticSearch.user")
 		}
 		if viper.IsSet("ElasticSearch.passwd") {
 			conf.AppConfigElasticSearch.Passwd = viper.GetString("ElasticSearch.passwd")
+		}
+		if viper.IsSet("ElasticSearch.prefix_case") {
+			conf.AppConfigElasticSearch.PrefixCase = viper.GetString("ElasticSearch.prefix_case")
+		}
+		if viper.IsSet("ElasticSearch.index_case") {
+			conf.AppConfigElasticSearch.IndexCase = viper.GetString("ElasticSearch.index_case")
+		}
+		if viper.IsSet("ElasticSearch.prefix_alert") {
+			conf.AppConfigElasticSearch.PrefixAlert = viper.GetString("ElasticSearch.prefix_alert")
+		}
+		if viper.IsSet("ElasticSearch.index_alert") {
+			conf.AppConfigElasticSearch.IndexAlert = viper.GetString("ElasticSearch.index_alert")
 		}
 
 		// Настройки для модуля подключения к СУБД MongoDB
@@ -162,8 +175,11 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 		if viper.IsSet("Rules_proc_msg.directory") {
 			conf.AppConfigRulesProcMsg.Directory = viper.GetString("Rules_proc_msg.directory")
 		}
-		if viper.IsSet("Rules_proc_msg.file") {
-			conf.AppConfigRulesProcMsg.File = viper.GetString("Rules_proc_msg.file")
+		if viper.IsSet("Rules_proc_msg.file_case") {
+			conf.AppConfigRulesProcMsg.FileCase = viper.GetString("Rules_proc_msg.file_case")
+		}
+		if viper.IsSet("Rules_proc_msg.file_alert") {
+			conf.AppConfigRulesProcMsg.FileAlert = viper.GetString("Rules_proc_msg.file_alert")
 		}
 
 		return nil
@@ -223,17 +239,14 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 			conf.AppConfigNATS.Port = p
 		}
 	}
+	if envList["GO_PHELASTIC_SUBJECTCASE"] != "" {
+		conf.AppConfigNATS.SubjectCase = envList["GO_PHELASTIC_SUBJECTCASE"]
+	}
+	if envList["GO_PHELASTIC_SUBJECTALERT"] != "" {
+		conf.AppConfigNATS.SubjectAlert = envList["GO_PHELASTIC_SUBJECTALERT"]
+	}
 
 	//Настройки для модуля подключения к СУБД ElasticSearch
-	if envList["GO_PHELASTIC_ESSEND"] != "" {
-		if envList["GO_PHELASTIC_ESSEND"] == "true" {
-			conf.AppConfigElasticSearch.Send = true
-		}
-
-		if envList["GO_PHELASTIC_ESSEND"] == "false" {
-			conf.AppConfigElasticSearch.Send = false
-		}
-	}
 	if envList["GO_PHELASTIC_ESHOST"] != "" {
 		conf.AppConfigElasticSearch.Host = envList["GO_PHELASTIC_ESHOST"]
 	}
@@ -242,17 +255,24 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 			conf.AppConfigElasticSearch.Port = p
 		}
 	}
-	if envList["GO_PHELASTIC_ESPREFIX"] != "" {
-		conf.AppConfigElasticSearch.Prefix = envList["GO_PHELASTIC_ESPREFIX"]
-	}
-	if envList["GO_PHELASTIC_ESINDEX"] != "" {
-		conf.AppConfigElasticSearch.Index = envList["GO_PHELASTIC_ESINDEX"]
-	}
 	if envList["GO_PHELASTIC_ESUSER"] != "" {
 		conf.AppConfigElasticSearch.User = envList["GO_PHELASTIC_ESUSER"]
 	}
 	if envList["GO_PHELASTIC_ESPASSWD"] != "" {
 		conf.AppConfigElasticSearch.Passwd = envList["GO_PHELASTIC_ESPASSWD"]
+	}
+	//"GO_PHELASTIC_ESINDEXALERT":  "",
+	if envList["GO_PHELASTIC_ESPREFIXCASE"] != "" {
+		conf.AppConfigElasticSearch.PrefixCase = envList["GO_PHELASTIC_ESPREFIXCASE"]
+	}
+	if envList["GO_PHELASTIC_ESINDEXCASE"] != "" {
+		conf.AppConfigElasticSearch.IndexCase = envList["GO_PHELASTIC_ESINDEXCASE"]
+	}
+	if envList["GO_PHELASTIC_ESPREFIXALERT"] != "" {
+		conf.AppConfigElasticSearch.PrefixAlert = envList["GO_PHELASTIC_ESPREFIXALERT"]
+	}
+	if envList["GO_PHELASTIC_ESINDEXALERT"] != "" {
+		conf.AppConfigElasticSearch.IndexAlert = envList["GO_PHELASTIC_ESINDEXALERT"]
 	}
 
 	//Настройки для модуля подключения к СУБД MongoDB
@@ -278,8 +298,11 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 	if envList["GO_PHELASTIC_RULES_DIR"] != "" {
 		conf.AppConfigRulesProcMsg.Directory = envList["GO_PHELASTIC_RULES_DIR"]
 	}
-	if envList["GO_PHELASTIC_RULES_FILE"] != "" {
-		conf.AppConfigRulesProcMsg.File = envList["GO_PHELASTIC_RULES_FILE"]
+	if envList["GO_PHELASTIC_RULES_FILECASE"] != "" {
+		conf.AppConfigRulesProcMsg.FileCase = envList["GO_PHELASTIC_RULES_FILECASE"]
+	}
+	if envList["GO_PHELASTIC_RULES_FILEALERT"] != "" {
+		conf.AppConfigRulesProcMsg.FileAlert = envList["GO_PHELASTIC_RULES_FILEALERT"]
 	}
 
 	return conf, nil

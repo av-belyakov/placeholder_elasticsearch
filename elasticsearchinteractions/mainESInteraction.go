@@ -21,7 +21,7 @@ type SettingsInputChan struct {
 	UUID           string
 	Section        string
 	Command        string
-	Data           []byte
+	Data           interface{}
 	VerifiedObject *datamodels.VerifiedTheHiveCase
 }
 
@@ -34,15 +34,22 @@ type ElasticSearchModule struct {
 }
 
 type handlerSendData struct {
-	client *elasticsearch.Client
-	conf   confighandler.AppConfigElasticSearch
+	client   *elasticsearch.Client
+	settings settingsHandler
+}
+
+type settingsHandler struct {
+	port   int
+	host   string
+	user   string
+	passwd string
 }
 
 func (h *handlerSendData) New() error {
 	es, err := elasticsearch.NewClient(elasticsearch.Config{
-		Addresses: []string{fmt.Sprintf("http://%s:%d", h.conf.Host, h.conf.Port)},
-		Username:  h.conf.User,
-		Password:  h.conf.Passwd,
+		Addresses: []string{fmt.Sprintf("http://%s:%d", h.settings.host, h.settings.port)},
+		Username:  h.settings.user,
+		Password:  h.settings.passwd,
 	})
 
 	if err != nil {
@@ -53,68 +60,6 @@ func (h *handlerSendData) New() error {
 
 	return nil
 }
-
-/*func (hsd handlerSendData) sendingData(
-	data []byte,
-	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) {
-	if !hsd.conf.Send {
-		return
-	}
-
-	if hsd.client == nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'the client parameters for connecting to the Elasticsearch database are not set correctly' %s:%d", f, l-2),
-			MsgType: "error",
-		}
-
-		return
-	}
-
-	t := time.Now()
-	buf := bytes.NewReader(data)
-	res, err := hsd.client.Index(fmt.Sprintf("%s%s_%d_%d", hsd.conf.Prefix, hsd.conf.Index, t.Year(), int(t.Month())), buf)
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
-
-		return
-	}
-
-	if res.StatusCode == http.StatusCreated || res.StatusCode == http.StatusOK {
-		//счетчик
-		counting <- datamodels.DataCounterSettings{
-			DataType: "update count insert Elasticserach",
-			Count:    1,
-		}
-
-		return
-	}
-
-	var errMsg string
-	r := map[string]interface{}{}
-	if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
-	}
-
-	if e, ok := r["error"]; ok {
-		errMsg = fmt.Sprintln(e)
-	}
-
-	logging <- datamodels.MessageLogging{
-		MsgData: fmt.Sprintf("received from module Elsaticsearch: %s (%s)", res.Status(), errMsg),
-		MsgType: "warning",
-	}
-}*/
 
 // insertDocument добавляет новый документ в заданный индекс
 func (hsd handlerSendData) insertDocument(index string, b []byte) (*esapi.Response, error) {
@@ -186,24 +131,30 @@ func (hsd handlerSendData) deleteDocument(index []string, query *strings.Reader)
 	return countDoc, err
 }
 
-// replacementDocument выполняет замену документа, но только в рамках одного индекса
-func (hsd handlerSendData) replacementDocument(
-	data *datamodels.VerifiedTheHiveCase,
+// replacementDocumentCase выполняет замену документа, но только в рамках одного индекса
+func (hsd handlerSendData) replacementDocumentCase(
+	//data *datamodels.VerifiedTheHiveCase,
+	data interface{},
+	index string,
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings,
 ) {
-	//нужно ли вообще добавлять документ
-	if !hsd.conf.Send {
+	obj, ok := data.(*datamodels.VerifiedTheHiveCase)
+	if !ok {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.VerifiedTheHiveCase' %s:%d", f, l-1),
+			MsgType: "error",
+		}
+
 		return
 	}
 
-	t := time.Now()
-	index := fmt.Sprintf("%s%s_%d_%d", hsd.conf.Prefix, hsd.conf.Index, t.Year(), int(t.Month()))
 	queryDelete := strings.NewReader(
 		fmt.Sprintf(
 			"{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}",
-			data.GetSource(),
-			data.GetEvent().GetRootId(),
+			obj.GetSource(),
+			obj.GetEvent().GetRootId(),
 		))
 
 	countDel, err := hsd.deleteDocument([]string{index}, queryDelete)
@@ -216,7 +167,7 @@ func (hsd handlerSendData) replacementDocument(
 	}
 	if countDel > 0 {
 		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("a total of '%d' data has been deleted that corresponds to the parameters: ", countDel),
+			MsgData: fmt.Sprintf("a total of '%d' data has been deleted that corresponds to the parameters: source = '%s' and event.rootId = '%s'", countDel, obj.GetSource(), obj.GetEvent().GetRootId()),
 			MsgType: "warning",
 		}
 	}
@@ -242,6 +193,7 @@ func (hsd handlerSendData) replacementDocument(
 	//счетчик
 	counting <- datamodels.DataCounterSettings{
 		DataType: "update count insert Elasticserach",
+		DataMsg:  "subject_case",
 		Count:    1,
 	}
 }
@@ -257,7 +209,14 @@ func HandlerElasticSearch(
 		ChanOutputModule: make(chan interface{}),
 	}
 
-	hsd := handlerSendData{conf: conf}
+	hsd := handlerSendData{
+		settings: settingsHandler{
+			port:   conf.Port,
+			host:   conf.Host,
+			user:   conf.User,
+			passwd: conf.Passwd,
+		},
+	}
 
 	if err := hsd.New(); err != nil {
 		if err != nil {
@@ -270,10 +229,13 @@ func HandlerElasticSearch(
 			switch data.Section {
 			case "handling case":
 				if data.Command == "add new case" {
-					go hsd.replacementDocument(data.VerifiedObject, logging, counting)
+					t := time.Now()
+					index := fmt.Sprintf("%s%s_%d_%d", conf.PrefixCase, conf.IndexCase, t.Year(), int(t.Month()))
+
+					go hsd.replacementDocumentCase(data.Data, index, logging, counting)
 				}
 
-			case "":
+			case "handling alert":
 			}
 		}
 	}()

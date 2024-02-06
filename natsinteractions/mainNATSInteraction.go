@@ -86,6 +86,15 @@ func NewClientNATS(
 	storageApp *memorytemporarystorage.CommonStorageTemporary,
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings) (*ModuleNATS, error) {
+	if conf.SubjectCase == "" && conf.SubjectAlert == "" {
+		_, f, l, _ := runtime.Caller(0)
+		return &mnats, fmt.Errorf("'there is not a single subscription available for NATS in the configuration file' %s:%d", f, l-1)
+	}
+
+	subjects := map[string]string{
+		"subject_case":  conf.SubjectCase,
+		"subject_alert": conf.SubjectAlert,
+	}
 
 	nc, err := nats.Connect(
 		fmt.Sprintf("%s:%d", conf.Host, conf.Port),
@@ -112,18 +121,28 @@ func NewClientNATS(
 		}
 	})
 
-	nc.Subscribe("main_caseupdate", func(m *nats.Msg) {
-		mnats.chanOutputNATS <- SettingsOutputChan{
-			MsgId: ns.setElement(m),
-			Data:  m.Data,
+	for k, v := range subjects {
+		//не добавляем обработчик если подписка пуста
+		if v == "" {
+			continue
 		}
 
-		//счетчик принятых кейсов
-		counting <- datamodels.DataCounterSettings{
-			DataType: "update accepted events",
-			Count:    1,
-		}
-	})
+		nc.Subscribe(v, func(m *nats.Msg) {
+			mnats.chanOutputNATS <- SettingsOutputChan{
+				MsgId:       ns.setElement(m),
+				SubjectType: k,
+				Data:        m.Data,
+			}
+
+			//счетчик принятых кейсов
+			counting <- datamodels.DataCounterSettings{
+				DataType: "update accepted events",
+				DataMsg:  k,
+				Count:    1,
+			}
+		})
+
+	}
 
 	log.Printf("Connect to NATS with address %s:%d\n", conf.Host, conf.Port)
 

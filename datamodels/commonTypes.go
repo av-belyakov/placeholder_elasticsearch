@@ -12,6 +12,7 @@ type MessageLogging struct {
 // DataCounterSettings содержит информацию для подсчета
 type DataCounterSettings struct {
 	DataType string
+	DataMsg  string
 	Count    int
 }
 

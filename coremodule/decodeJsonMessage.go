@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
+	"strings"
 
 	"placeholder_elasticsearch/datamodels"
 	rules "placeholder_elasticsearch/rulesinteraction"
@@ -28,15 +29,15 @@ func NewDecodeJsonMessageSettings(
 	}
 }
 
-func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id string) (chan datamodels.ChanOutputDecodeJSON, chan bool) {
+func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id, subject string) (chan datamodels.ChanOutputDecodeJSON, chan bool) {
 	chanOutputJsonData := make(chan datamodels.ChanOutputDecodeJSON)
 	chanDone := make(chan bool)
 
-	//ПРЕДНАЗНАЧЕНО для записи событий в лог-файл events
+	//ПРЕДНАЗНАЧЕНО для записи принимаемых объектов в лог-файл
 	str, _ := supportingfunctions.NewReadReflectJSONSprint(b)
 	s.Logging <- datamodels.MessageLogging{
-		MsgData: fmt.Sprintf("\t---------------\n\tEVENTS:\n%s\n", str),
-		MsgType: "events",
+		MsgData: fmt.Sprintf("\t---------------\n\t%s:\n%s\n", strings.ToUpper(subject), str),
+		MsgType: "objects",
 	}
 
 	go func() {
@@ -86,7 +87,7 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id string) (cha
 			_ = reflectSlice(s.Logging, chanOutputJsonData, listSlice, s.ListRule, 0, "", id)
 		}
 
-		//проверяем что бы хотя бы одно правило разрешало пропуск кейса
+		//проверяем что бы хотя бы одно правило разрешало пропуск объекта
 		if s.ListRule.GetRulePassany() || s.ListRule.SomePassRuleIsTrue() {
 			isAllowed = true
 		}
@@ -103,13 +104,14 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id string) (cha
 			dt = "update events meet rules"
 		}
 
-		//сетчик кейсов соответствующих или не соответствующих правилам
+		//сетчик объектов соответствующих или не соответствующих правилам
 		s.Counting <- datamodels.DataCounterSettings{
 			DataType: dt,
+			DataMsg:  subject,
 			Count:    1,
 		}
 
-		//останавливаем обработчик формирующий верифицированный кейс
+		//останавливаем обработчик формирующий верифицированный объект
 		chanDone <- isAllowed
 
 		close(chanOutputJsonData)

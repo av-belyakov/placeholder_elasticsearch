@@ -14,21 +14,33 @@ import (
 
 // AddNewCase добавляет новый кейс в БД
 func (w *wrappers) AddNewCase(
-	data *datamodels.VerifiedTheHiveCase,
+	//data *datamodels.VerifiedTheHiveCase,
+	data interface{},
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings,
 ) {
 	qp := QueryParameters{
 		NameDB:         w.NameDB,
-		CollectionName: "case_collection",
 		ConnectDB:      w.ConnDB,
+		CollectionName: "case_collection",
+	}
+
+	obj, ok := data.(*datamodels.VerifiedTheHiveCase)
+	if !ok {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.VerifiedTheHiveCase' %s:%d", f, l-1),
+			MsgType: "error",
+		}
+
+		return
 	}
 
 	//******************************************************************************
 	//ищем документы подходящие под фильтр и удаляем их что бы избежать дублирования
 	cur, err := qp.Find(bson.D{
-		{Key: "source", Value: data.GetSource()},
-		{Key: "event.rootId", Value: data.GetEvent().GetRootId()},
+		{Key: "source", Value: obj.GetSource()},
+		{Key: "event.rootId", Value: obj.GetEvent().GetRootId()},
 	})
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -105,6 +117,7 @@ func (w *wrappers) AddNewCase(
 	//счетчик
 	counting <- datamodels.DataCounterSettings{
 		DataType: "update count insert MongoDB",
+		DataMsg:  "subject_case",
 		Count:    1,
 	}
 }

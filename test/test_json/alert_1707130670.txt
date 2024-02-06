@@ -1,0 +1,1110 @@
+	2024-02-05T14:12:52+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:16650"
+  "base": true
+  details:
+    tags:
+      1. "Sensor:id="8030003""
+      2. "ATs:reason="Редко встречающиеся признаки ВПО""
+      3. "is_private"
+      4. "'Webhook:send=ES'"
+    "sourceRef": ""
+  "objectType": "alert"
+  "objectId": "~84623609928"
+  "startDate": 1707132025750
+  "rootId": "~84623609928"
+  object:
+    "updatedAt": 1707132025741
+    "severity": 2
+    "createdBy": "zsiem@cloud.gcm"
+    "_id": "~84623609928"
+    "updatedBy": "webhook@cloud.gcm"
+    "pap": 2
+    "follow": true
+    "caseTemplate": "snort_alert"
+    "source": "zsiеmSystems"
+  "organisationId": "~4192"
+  "operation": "update"
+  "organisation": "GCM"
+alert:
+  "pap": 2
+  "sourceRef": "TSK-8MSK-6-ZPM-240205-1215902"
+  "caseTemplate": "snort_alert"
+  "date": 1707132024176
+  "follow": true
+  "id": "~84623609928"
+  "severity": 2
+  "_id": "~84623609928"
+  "createdBy": "zsiem@cloud.gcm"
+  customFields:
+    first-time:
+      "date": 1707131450000
+    last-time:
+      "date": 1707131450000
+  "description": "**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215902`** ID: `1215902`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215902](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215902)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Редко встречающиеся признаки ВПО с 192.168.9.2`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 14:10:50
+ Время окончания: 2024-02-05 14:10:50
+ Продолжительность воздействий: 0:00:00`
+
+Отработало на СОА: 
+- **`8030003`**   АП8, Установлен: Москва,Москва, IP адрес: 10.20.0.248
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 14:10:50`**
+- Время окончания: **`05.02.2024 14:10:50`**
+- **IP из домашней подсети**
+
+1. **`10.0.41.4`**
+- **IP из внешней подсети**
+
+1. **`192.168.9.2`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`46728696`**, Сообщение: Backdoor.Agent.HTTP.C&C, Добавлена: 09.06.2023 10:29:05
+"
+  "tlp": 2
+
+	2024-02-05T14:13:00+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:16723"
+  object:
+    "sourceRef": "TSK-8MSK-6-ZPM-240205-1215903"
+    "pap": 2
+    "status": "New"
+    customFields:
+      first-time:
+        "date": 1707131296000
+      last-time:
+        "date": 1707131296000
+    "id": "~84992630944"
+    "createdBy": "zsiem@cloud.gcm"
+    "updatedAt": 1707132033711
+  "organisation": "GCM"
+  "objectType": "alert"
+  "base": true
+  "startDate": 1707132033721
+  "rootId": "~84992630944"
+  "organisationId": "~4192"
+  "operation": "update"
+  details:
+    "sourceRef": ""
+    tags:
+      1. "Sensor:id="8030003""
+      2. "ATs:reason="Редко встречающиеся признаки ВПО""
+      3. "is_private"
+      4. "'Webhook:send=ES'"
+  "objectId": "~84992630944"
+alert:
+  "source": "zsiеmSystems"
+  "tlp": 2
+  "updatedAt": 1707132033711
+  "updatedBy": "webhook@cloud.gcm"
+
+	2024-02-05T14:13:08+03:00 ------ ALERT ------
+event:
+  "objectId": "~84296314976"
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:16817"
+  object:
+    "description": "**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215904`** ID: `1215904`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215904](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215904)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Редко встречающиеся признаки ВПО, Зафиксирована подозрительная активность по признакам НКЦКИ, Гостевая зона Wi-Fi с 159.253.20.210`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 14:13:01
+ Время окончания: 2024-02-05 14:13:01
+ Продолжительность воздействий: 0:00:00`
+
+Отработало на СОА: 
+- **`8030070`**   ПО Белгород, Установлен: Белгород,Белгородская область, IP адрес: 10.20.0.70
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 14:13:01`**
+- Время окончания: **`05.02.2024 14:13:01`**
+- **IP из домашней подсети**
+
+1. **`2.63.252.214`**
+- **IP из внешней подсети**
+
+1. **`159.253.20.210`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`92000090`**, Сообщение: Sliver C2 Adversary Emulation Framework - Poll Detected, Добавлена: 19.12.2023 17:00:00
+"
+    "follow": true
+    artifacts:
+    similarCases:
+    "createdBy": "zsiem@cloud.gcm"
+    "updatedAt": 1707132042224
+  "organisation": "GCM"
+  "objectType": "alert"
+  details:
+    "sourceRef": ""
+    tags:
+      1. "'Webhook:send=ES'"
+      2. "ATs:reason="Гостевая зона Wi-Fi""
+      3. "ATs:reason="Редко встречающиеся признаки ВПО""
+      4. "ATs:reason="Зафиксирована подозрительная активность по признакам НКЦКИ""
+      5. "Sensor:id="8030070""
+      6. "ATs:geoip="Эстония""
+  "base": true
+  "startDate": 1707132042234
+  "rootId": "~84296314976"
+  "organisationId": "~4192"
+  "operation": "update"
+alert:
+  "_type": "alert"
+"source": "gcm"
+
+	2024-02-05T14:13:17+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:16888"
+  "operation": "update"
+  details:
+    "sourceRef": ""
+    tags:
+      1. "Sensor:id="8030124""
+      2. "ATs:reason="Редко встречающиеся признаки ВПО""
+      3. "ATs:geoip="Китай""
+      4. "'Webhook:send=ES'"
+  "objectId": "~84296331360"
+  "rootId": "~84296331360"
+  object:
+    "_type": "alert"
+    "type": "snort_alert"
+    similarCases:
+  "organisationId": "~4192"
+  "organisation": "GCM"
+  "objectType": "alert"
+  "base": true
+  "startDate": 1707132050799
+alert:
+  "caseTemplate": "snort_alert"
+  "source": "zsiеmSystems"
+  "sourceRef": "TSK-8MSK-6-ZPM-240205-1215905"
+  tags:
+    1. "Sensor:id="8030124""
+    2. "ATs:reason="Редко встречающиеся признаки ВПО""
+    3. "ATs:geoip="Китай""
+    4. "'Webhook:send=ES'"
+  "type": "snort_alert"
+  "createdAt": 1707132049400
+  "pap": 2
+  "severity": 2
+  "status": "New"
+  customFields:
+    first-time:
+      "date": 1707131815000
+    last-time:
+      "date": 1707131815000
+  "date": 1707132049379
+  "_type": "alert"
+
+	2024-02-05T14:13:25+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  "objectType": "alert"
+  "organisationId": "~4192"
+  "organisation": "GCM"
+  "base": true
+  "startDate": 1707132058453
+  "rootId": "~84296314976"
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:16976"
+  object:
+    "tlp": 2
+    "_type": "alert"
+    "source": "zsiеmSystems"
+    "createdAt": 1707132040933
+    "updatedAt": 1707132058335
+    "status": "New"
+    "severity": 2
+    "pap": 2
+    "caseTemplate": "snort_alert"
+    similarCases:
+    customFields:
+      last-time:
+        "date": 1707131581000
+      first-time:
+        "date": 1707131581000
+    "id": "~84296314976"
+  "operation": "update"
+  details:
+    "sourceRef": ""
+    "description": "**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215904`** ID: `1215904`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215904](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215904)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Редко встречающиеся признаки ВПО, Зафиксирована подозрительная активность по признакам НКЦКИ, Гостевая зона Wi-Fi с 159.253.20.210`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 14:13:01
+ Время окончания: 2024-02-05 14:13:01
+ Продолжительность воздействий: 0:00:00`
+
+Отработало на СОА: 
+- **`8030070`**   ПО Белгород, Установлен: Белгород,Белгородская область, IP адрес: 10.20.0.70
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 14:13:01`**
+- Время окончания: **`05.02.2024 14:13:01`**
+- **IP из домашней подсети**
+
+1. **`2.63.252.214`**
+- **IP из внешней подсети**
+
+1. **`159.253.20.210`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`92000090`**, Сообщение: Sliver C2 Adversary Emulation Framework - Poll Detected, Добавлена: 19.12.2023 17:00:00
+
+
+
+
+**Фильтрация и выгрузка от** Mon Feb 05 2024 14:20:58 GMT+0300 
+
+Размер: **`1.6 MB`**, [Скачать файл](ftp://ftp.cloud.gcm//traffic/8030070/1707132041_2024_02_05____14_20_41_793951.pcap)
+
+Контент: Фильтрация успешно завершена. Включена автоматическая выгрузка
+
+Файл на СОА: `/opt/zaslon/zmanager/data/pfilter_storage/1707132041_2024_02_05____14_20_41_793951.pcap`
+
+
+
+"
+  "objectId": "~84296314976"
+alert:
+  "caseTemplate": "snort_alert"
+  customFields:
+    first-time:
+      "date": 1707131581000
+    last-time:
+      "date": 1707131581000
+  "id": "~84296314976"
+  "tlp": 2
+  "follow": true
+  "status": "New"
+  tags:
+    1. "'Webhook:send=ES'"
+    2. "ATs:reason="Гостевая зона Wi-Fi""
+    3. "ATs:reason="Редко встречающиеся признаки ВПО""
+    4. "ATs:reason="Зафиксирована подозрительная активность по признакам НКЦКИ""
+    5. "Sensor:id="8030070""
+    6. "ATs:geoip="Эстония""
+  "date": 1707132040908
+  "_type": "alert"
+  artifacts:
+    1.
+      "_type": "case_artifact"
+      "data": "8030070:2.63.252.214"
+      "id": "~84296319072"
+      tags:
+        1. "home"
+      "createdAt": 1707132040949
+      "ioc": false
+      reports:
+      "sighted": false
+      "tlp": 2
+      "_id": "~84296319072"
+      "createdBy": "zsiem@cloud.gcm"
+      "dataType": "ip_home"
+      "startDate": 1707132040949
+      stats:
+    2.
+      "ioc": false
+      "createdAt": 1707132040986
+      "dataType": "snort_sid"
+      "id": "~84418818072"
+      "tlp": 2
+      "data": "92000090"
+      reports:
+      "sighted": false
+      stats:
+      "_id": "~84418818072"
+      "_type": "case_artifact"
+      "createdBy": "zsiem@cloud.gcm"
+      "startDate": 1707132040986
+      tags:
+        1. "snort"
+    3.
+      "createdBy": "zsiem@cloud.gcm"
+      "id": "~84992639136"
+      tags:
+        1. "external"
+        2. "geo:iso="EE""
+        3. "geo:country="Эстония""
+      "updatedBy": "asod@cloud.gcm"
+      stats:
+      "tlp": 2
+      "_id": "~84992639136"
+      "createdAt": 1707132040976
+      "dataType": "ip"
+      "startDate": 1707132040976
+      "ioc": true
+      "sighted": false
+      "_type": "case_artifact"
+      "data": "159.253.20.210"
+      reports:
+      "updatedAt": 1707132041943
+
+	2024-02-05T14:13:25+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  "rootId": "~84296331360"
+  "organisation": "GCM"
+  "operation": "update"
+  "objectType": "alert"
+  "base": true
+  "startDate": 1707132058478
+  "organisationId": "~4192"
+  details:
+    "sourceRef": ""
+    "title": "Редко встречающиеся признаки ВПО с 36.104.220.178внутрь; http/tcp"
+    "description": "Атака направлена **внутрь**, использует протоколы: **http/tcp**, хост отсутствует
+
+
+**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215905`** ID: `1215905`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215905](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215905)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Редко встречающиеся признаки ВПО с 36.104.220.178`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 14:16:55
+ Время окончания: 2024-02-05 14:16:55
+ Продолжительность воздействий: 0:00:00`
+
+Отработало на СОА: 
+- **`8030124`**   Липецк УСЗН, Установлен: Липецк,Липецкая область, IP адрес: 10.20.0.124
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 14:16:55`**
+- Время окончания: **`05.02.2024 14:16:55`**
+- **IP из домашней подсети**
+
+1. **`10.48.0.242`**
+- **IP из внешней подсети**
+
+1. **`36.104.220.178`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`39294389`**, Сообщение: Exploit.Agent.HTTP.C&C, Добавлена: 09.06.2023 10:29:05
+
+
+
+
+**Фильтрация и выгрузка от** Mon Feb 05 2024 14:20:54 GMT+0300 
+
+Размер: **`2.2 KB`**, [Скачать файл](ftp://ftp.cloud.gcm//traffic/8030124/1707132050_2024_02_05____14_20_50_134093.pcap)
+
+
+**Ссылка на arkime:** 
+ - [http://arkime.cloud.gcm/2024_02_05_14_18_43_855794____1707132050_2024_02_05____14_20_50_134093.pcap](http://anisimova.cloud.gcm:8005/sessions?expression=file%20%3D%3D%20%2Fopt%2Farkime%2Fraw%2F2024_02_05_14_18_43_855794____1707132050_2024_02_05____14_20_50_134093.pcap&date=-1)
+
+Контент: Фильтрация успешно завершена. Включена автоматическая выгрузка
+
+Файл на СОА: `/opt/zaslon/zmanager/data/pfilter_storage/1707132050_2024_02_05____14_20_50_134093.pcap`
+
+
+
+"
+  "objectId": "~84296331360"
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:16977"
+  object:
+    "_id": "~84296331360"
+    "_type": "alert"
+    "caseTemplate": "snort_alert"
+    "date": 1707132049379
+alert:
+  "_id": "~84296331360"
+  "description": "Атака направлена **внутрь**, использует протоколы: **http/tcp**, хост отсутствует
+
+
+**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215905`** ID: `1215905`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215905](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215905)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Редко встречающиеся признаки ВПО с 36.104.220.178`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 14:16:55
+ Время окончания: 2024-02-05 14:16:55
+ Продолжительность воздействий: 0:00:00`
+
+Отработало на СОА: 
+- **`8030124`**   Липецк УСЗН, Установлен: Липецк,Липецкая область, IP адрес: 10.20.0.124
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 14:16:55`**
+- Время окончания: **`05.02.2024 14:16:55`**
+- **IP из домашней подсети**
+
+1. **`10.48.0.242`**
+- **IP из внешней подсети**
+
+1. **`36.104.220.178`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`39294389`**, Сообщение: Exploit.Agent.HTTP.C&C, Добавлена: 09.06.2023 10:29:05
+
+
+
+
+**Фильтрация и выгрузка от** Mon Feb 05 2024 14:20:54 GMT+0300 
+
+Размер: **`2.2 KB`**, [Скачать файл](ftp://ftp.cloud.gcm//traffic/8030124/1707132050_2024_02_05____14_20_50_134093.pcap)
+
+
+**Ссылка на arkime:** 
+ - [http://arkime.cloud.gcm/2024_02_05_14_18_43_855794____1707132050_2024_02_05____14_20_50_134093.pcap](http://anisimova.cloud.gcm:8005/sessions?expression=file%20%3D%3D%20%2Fopt%2Farkime%2Fraw%2F2024_02_05_14_18_43_855794____1707132050_2024_02_05____14_20_50_134093.pcap&date=-1)
+
+Контент: Фильтрация успешно завершена. Включена автоматическая выгрузка
+
+Файл на СОА: `/opt/zaslon/zmanager/data/pfilter_storage/1707132050_2024_02_05____14_20_50_134093.pcap`
+
+
+
+"
+  "severity": 2
+
+	2024-02-05T14:13:32+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  "base": true
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:17074"
+  "organisationId": "~4192"
+  details:
+  "objectType": "alert"
+  "startDate": 1707132066073
+  "rootId": "~84296314976"
+  object:
+    "_type": "alert"
+  "organisation": "GCM"
+  "operation": "update"
+  "objectId": "~84296314976"
+alert:
+  "date": 1707132040908
+  similarCases:
+  "type": "snort_alert"
+  "status": "New"
+  "updatedBy": "appa_automatics@cloud.gcm"
+  "pap": 2
+  "_type": "alert"
+  "title": "Редко встречающиеся признаки ВПО, Зафиксирована подозрительная активность по признакам НКЦКИ, Гостевая зона Wi-Fi с 159.253.20.210наружу; tcp/http/tls; vse-postroim-sami[.]ru"
+  "_id": "~84296314976"
+  "source": "zsiеmSystems"
+  "sourceRef": "TSK-8MSK-6-ZPM-240205-1215904"
+  tags:
+    1. "'Webhook:send=ES'"
+    2. "ATs:reason="Гостевая зона Wi-Fi""
+    3. "ATs:reason="Редко встречающиеся признаки ВПО""
+    4. "ATs:reason="Зафиксирована подозрительная активность по признакам НКЦКИ""
+    5. "Sensor:id="8030070""
+    6. "ATs:geoip="Эстония""
+  "follow": true
+  "severity": 2
+  "caseTemplate": "snort_alert"
+  "description": "Атака направлена **наружу**, использует протоколы: **tcp/http/tls**, host: **vse-postroim-sami[.]ru**
+
+
+**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215904`** ID: `1215904`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215904](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215904)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Редко встречающиеся признаки ВПО, Зафиксирована подозрительная активность по признакам НКЦКИ, Гостевая зона Wi-Fi с 159.253.20.210`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 14:13:01
+ Время окончания: 2024-02-05 14:13:01
+ Продолжительность воздействий: 0:00:00`
+
+Отработало на СОА: 
+- **`8030070`**   ПО Белгород, Установлен: Белгород,Белгородская область, IP адрес: 10.20.0.70
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 14:13:01`**
+- Время окончания: **`05.02.2024 14:13:01`**
+- **IP из домашней подсети**
+
+1. **`2.63.252.214`**
+- **IP из внешней подсети**
+
+1. **`159.253.20.210`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`92000090`**, Сообщение: Sliver C2 Adversary Emulation Framework - Poll Detected, Добавлена: 19.12.2023 17:00:00
+
+
+
+
+**Фильтрация и выгрузка от** Mon Feb 05 2024 14:20:58 GMT+0300 
+
+Размер: **`1.6 MB`**, [Скачать файл](ftp://ftp.cloud.gcm//traffic/8030070/1707132041_2024_02_05____14_20_41_793951.pcap)
+
+
+**Ссылка на arkime:** 
+ - [http://arkime.cloud.gcm/2024_02_05_14_18_51_985312____1707132041_2024_02_05____14_20_41_793951.pcap](http://anisimova.cloud.gcm:8005/sessions?expression=file%20%3D%3D%20%2Fopt%2Farkime%2Fraw%2F2024_02_05_14_18_51_985312____1707132041_2024_02_05____14_20_41_793951.pcap&date=-1)
+
+Контент: Фильтрация успешно завершена. Включена автоматическая выгрузка
+
+Файл на СОА: `/opt/zaslon/zmanager/data/pfilter_storage/1707132041_2024_02_05____14_20_41_793951.pcap`
+
+
+
+"
+
+	2024-02-05T14:22:20+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:17829"
+  "organisationId": "~4192"
+  "organisation": "GCM"
+  "objectType": "alert"
+  "objectId": "~84623536200"
+  "rootId": "~84623536200"
+  "startDate": 1707132593242
+  object:
+    "_id": "~84623536200"
+    "description": "Атака направлена **наружу**, использует протоколы: **tcp/http/tls**, host: **ivo[.]garant[.]ru, base[.]garant[.]ru**
+
+
+**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215893`** ID: `1215893`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215893](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215893)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Редко встречающиеся признаки ВПО, INFO Controlled FGS с 185.178.208.73`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 13:23:21
+ Время окончания: 2024-02-05 13:23:21
+ Продолжительность воздействий: 0:00:00`
+
+Отработало на СОА: 
+- **`8030143`**   ФССП, Установлен: Москва,Москва, IP адрес: 10.20.0.143
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 13:23:21`**
+- Время окончания: **`05.02.2024 13:23:21`**
+- **IP из домашней подсети**
+
+1. **`95.173.156.83`**
+- **IP из внешней подсети**
+
+1. **`185.178.208.73`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`56301720`**, Сообщение: Trojan-PSW.Stealer.HTTP.C&C, Добавлена: 09.06.2023 10:29:05
+
+
+
+
+**Фильтрация и выгрузка от** Mon Feb 05 2024 13:30:00 GMT+0300 
+
+Размер: **`1.6 MB`**, [Скачать файл](ftp://ftp.cloud.gcm//traffic/8030143/1707128995_2024_02_05____13_29_55_890224.pcap)
+
+
+**Ссылка на arkime:** 
+ - [http://arkime.cloud.gcm/2024_02_05_13_27_51_159288____1707128995_2024_02_05____13_29_55_890224.pcap](http://anisimova.cloud.gcm:8005/sessions?expression=file%20%3D%3D%20%2Fopt%2Farkime%2Fraw%2F2024_02_05_13_27_51_159288____1707128995_2024_02_05____13_29_55_890224.pcap&date=-1)
+
+Контент: Фильтрация успешно завершена. Включена автоматическая выгрузка
+
+Файл на СОА: `/opt/zaslon/zmanager/data/pfilter_storage/1707128995_2024_02_05____13_29_55_890224.pcap`
+
+
+
+"
+    "severity": 2
+    "follow": true
+    "type": "snort_alert"
+    "tlp": 2
+    "date": 1707128995038
+    customFields:
+      first-time:
+        "date": 1707128601000
+      last-time:
+        "date": 1707128601000
+    "createdBy": "zsiem@cloud.gcm"
+    "sourceRef": "TSK-8MSK-6-ZPM-240205-1215893"
+    "caseTemplate": "snort_alert"
+    "pap": 2
+    "status": "Ignored"
+    artifacts:
+    "id": "~84623536200"
+  "operation": "update"
+  details:
+    "sourceRef": ""
+  "base": true
+alert:
+  "createdAt": 1707128995057
+  "description": "Атака направлена **наружу**, использует протоколы: **tcp/http/tls**, host: **ivo[.]garant[.]ru, base[.]garant[.]ru**
+
+
+**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215893`** ID: `1215893`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215893](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215893)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Редко встречающиеся признаки ВПО, INFO Controlled FGS с 185.178.208.73`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 13:23:21
+ Время окончания: 2024-02-05 13:23:21
+ Продолжительность воздействий: 0:00:00`
+
+Отработало на СОА: 
+- **`8030143`**   ФССП, Установлен: Москва,Москва, IP адрес: 10.20.0.143
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 13:23:21`**
+- Время окончания: **`05.02.2024 13:23:21`**
+- **IP из домашней подсети**
+
+1. **`95.173.156.83`**
+- **IP из внешней подсети**
+
+1. **`185.178.208.73`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`56301720`**, Сообщение: Trojan-PSW.Stealer.HTTP.C&C, Добавлена: 09.06.2023 10:29:05
+
+
+
+
+**Фильтрация и выгрузка от** Mon Feb 05 2024 13:30:00 GMT+0300 
+
+Размер: **`1.6 MB`**, [Скачать файл](ftp://ftp.cloud.gcm//traffic/8030143/1707128995_2024_02_05____13_29_55_890224.pcap)
+
+
+**Ссылка на arkime:** 
+ - [http://arkime.cloud.gcm/2024_02_05_13_27_51_159288____1707128995_2024_02_05____13_29_55_890224.pcap](http://anisimova.cloud.gcm:8005/sessions?expression=file%20%3D%3D%20%2Fopt%2Farkime%2Fraw%2F2024_02_05_13_27_51_159288____1707128995_2024_02_05____13_29_55_890224.pcap&date=-1)
+
+Контент: Фильтрация успешно завершена. Включена автоматическая выгрузка
+
+Файл на СОА: `/opt/zaslon/zmanager/data/pfilter_storage/1707128995_2024_02_05____13_29_55_890224.pcap`
+
+
+
+"
+  "source": "zsiеmSystems"
+  artifacts:
+    1.
+      "_id": "~84418764824"
+      "dataType": "ip_home"
+      reports:
+      tags:
+        1. "home"
+      "createdBy": "zsiem@cloud.gcm"
+      "ioc": false
+      "tlp": 2
+      "sighted": false
+      "startDate": 1707128995095
+      stats:
+      "_type": "case_artifact"
+      "createdAt": 1707128995095
+      "data": "8030143:95.173.156.83"
+      "id": "~84418764824"
+    2.
+      "sighted": false
+      stats:
+      "updatedAt": 1707128996124
+      "updatedBy": "asod@cloud.gcm"
+      "createdBy": "zsiem@cloud.gcm"
+      "ioc": true
+      "startDate": 1707128995130
+      "_id": "~84418768920"
+      "_type": "case_artifact"
+      "data": "185.178.208.73"
+      "dataType": "ip"
+      "createdAt": 1707128995130
+      "id": "~84418768920"
+      reports:
+      tags:
+        1. "geo:country="Россия""
+        2. "geo:iso="RU""
+        3. "geo:region="Ростовская область""
+        4. "external"
+        5. "geo:city="Ростов-на-Дону""
+      "tlp": 2
+    3.
+      "_id": "~84418773016"
+      "data": "56301720"
+      "ioc": false
+      tags:
+        1. "snort"
+      "startDate": 1707128995162
+      "tlp": 2
+      "_type": "case_artifact"
+      "sighted": false
+      stats:
+      "createdAt": 1707128995162
+      "createdBy": "zsiem@cloud.gcm"
+      "dataType": "snort_sid"
+      "id": "~84418773016"
+      reports:
+    4.
+      "id": "~85934317648"
+      "ioc": false
+      tags:
+      stats:
+      "createdAt": 1707129004010
+      "data": "http://anisimova.cloud.gcm:8005/sessions?expression=file%20%3D%3D%20%2Fopt%2Farkime%2Fraw%2F2024_02_05_13_27_51_159288____1707128995_2024_02_05____13_29_55_890224.pcap&date=-1"
+      "ignoreSimilarity": true
+      reports:
+      "startDate": 1707129004010
+      "_type": "case_artifact"
+      "createdBy": "e.anisimova@cloud.gcm"
+      "dataType": "url_arkime"
+      "message": "Ссылка на Arkime"
+      "_id": "~85934317648"
+      "sighted": false
+      "tlp": 2
+    5.
+      "_type": "case_artifact"
+      "dataType": "url_pcap"
+      "id": "~86057201792"
+      "message": "Download a piece of traffic"
+      stats:
+      "tlp": 2
+      "data": "ftp://ftp.cloud.gcm/traffic/8030143/1707128995_2024_02_05____13_29_55_890224.pcap"
+      "ioc": true
+      "sighted": false
+      "createdBy": "zsiem@cloud.gcm"
+      reports:
+      tags:
+        1. "1.6 MB"
+      "_id": "~86057201792"
+      "createdAt": 1707129000959
+      "ignoreSimilarity": true
+      "startDate": 1707129000959
+  "type": "snort_alert"
+  "updatedAt": 1707132593072
+  "_type": "alert"
+
+	2024-02-05T14:23:00+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  "objectId": "~84296314976"
+  "startDate": 1707132633104
+  "operation": "update"
+  details:
+    "sourceRef": ""
+  "objectType": "alert"
+  object:
+    "pap": 2
+    "id": "~84296314976"
+    "updatedBy": "a.pinyaskin@cloud.gcm"
+    "type": "snort_alert"
+    "_type": "alert"
+    "status": "Ignored"
+    customFields:
+      first-time:
+        "date": 1707131581000
+      last-time:
+        "date": 1707131581000
+    "caseTemplate": "snort_alert"
+    "source": "zsiеmSystems"
+    "sourceRef": "TSK-8MSK-6-ZPM-240205-1215904"
+  "organisationId": "~4192"
+  "organisation": "GCM"
+  "base": true
+  "rootId": "~84296314976"
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:17896"
+alert:
+  "follow": true
+  "source": "zsiеmSystems"
+  tags:
+    1. "'Webhook:send=ES'"
+    2. "ATs:reason="Гостевая зона Wi-Fi""
+    3. "ATs:reason="Редко встречающиеся признаки ВПО""
+    4. "ATs:reason="Зафиксирована подозрительная активность по признакам НКЦКИ""
+    5. "Sensor:id="8030070""
+    6. "ATs:geoip="Эстония""
+  similarCases:
+  "type": "snort_alert"
+  "_id": "~84296314976"
+  "date": 1707132040908
+  "id": "~84296314976"
+  "severity": 2
+  "updatedAt": 1707132632952
+  "createdBy": "zsiem@cloud.gcm"
+  "sourceRef": "TSK-8MSK-6-ZPM-240205-1215904"
+
+	2024-02-05T14:35:42+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  details:
+    "sourceRef": ""
+    tags:
+      1. "ATs:reason="NetTool.TorTool.C&C""
+      2. "Sensor:id="8030164""
+      3. "'Webhook:send=ES'"
+      4. "ATs:reason="Гостевая зона Wi-Fi""
+      5. "ATs:geoip="Германия""
+      6. "ATs:reason="Зафиксированы признаки взаимодействия ВПО класса trojan""
+  "base": true
+  "rootId": "~84623646792"
+  "organisationId": "~4192"
+  "organisation": "GCM"
+  "operation": "update"
+  "objectType": "alert"
+  "objectId": "~84623646792"
+  "startDate": 1707133395845
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:18850"
+  object:
+    "type": "snort_alert"
+    "tlp": 2
+    "follow": true
+alert:
+  "updatedBy": "webhook@cloud.gcm"
+  "status": "New"
+  "title": "Зафиксированы признаки взаимодействия ВПО класса trojan, Гостевая зона Wi-Fi, NetTool.TorTool.C&C с 185.220.101.181"
+  "type": "snort_alert"
+  customFields:
+    first-time:
+      "date": 1707132698000
+    last-time:
+      "date": 1707132819000
+  "follow": true
+  "source": "zsiеmSystems"
+  "sourceRef": "TSK-8MSK-6-ZPM-240205-1215906"
+  "description": "**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215906`** ID: `1215906`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215906](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215906)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Зафиксированы признаки взаимодействия ВПО класса trojan, Гостевая зона Wi-Fi, NetTool.TorTool.C&C с 185.220.101.181`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 14:31:38
+ Время окончания: 2024-02-05 14:33:39
+ Продолжительность воздействий: 0:02:01`
+
+Отработало на СОА: 
+- **`8030164`**   Сколково 2, Установлен: Москва,Москва, IP адрес: 10.20.0.164
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 14:31:38`**
+- Время окончания: **`05.02.2024 14:33:39`**
+- **IP из домашней подсети**
+
+1. **`77.108.80.171`**
+- **IP из внешней подсети**
+
+1. **`185.220.101.181`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`47012133`**, Сообщение: NetTool.TorTool.TCP.C&C, Добавлена: 09.06.2023 10:29:05
+2. РП: **`49116493`**, Сообщение: NetTool.TorToolE.TCP.C&C, Добавлена: 09.06.2023 10:29:05
+"
+
+	2024-02-05T14:35:53+03:00 ------ ALERT ------
+"source": "gcm"
+event:
+  details:
+    "sourceRef": ""
+    "description": "**Задача переданная из смежной системы: Заслон-Пост-Модерн**
+
+В формате ГЦМ: **`TSK-8MSK-6-ZPM-240205-1215906`** ID: `1215906`
+
+[http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215906](http://siem.cloud.gcm/tasks/card/TSK-8MSK-6-ZPM-240205-1215906)
+
+Автор задачи: **`Security Event Manager`**
+
+Тип: **`snort_alert`**
+
+**Причина по которой создана задача**
+
+Название: `Зафиксированы признаки взаимодействия ВПО класса trojan, Гостевая зона Wi-Fi, NetTool.TorTool.C&C с 185.220.101.181`
+
+Описание: `## Данная задача создана автоматически
+ Время начала: 2024-02-05 14:31:38
+ Время окончания: 2024-02-05 14:33:39
+ Продолжительность воздействий: 0:02:01`
+
+Отработало на СОА: 
+- **`8030164`**   Сколково 2, Установлен: Москва,Москва, IP адрес: 10.20.0.164
+
+
+**Полное описание события IDS:**
+
+- Время начала: **`05.02.2024 14:31:38`**
+- Время окончания: **`05.02.2024 14:33:39`**
+- **IP из домашней подсети**
+
+1. **`77.108.80.171`**
+- **IP из внешней подсети**
+
+1. **`185.220.101.181`**
+
+
+**Сигнатуры на которых отработал анализатор сетевого трафика:**
+
+1. РП: **`47012133`**, Сообщение: NetTool.TorTool.TCP.C&C, Добавлена: 09.06.2023 10:29:05
+2. РП: **`49116493`**, Сообщение: NetTool.TorToolE.TCP.C&C, Добавлена: 09.06.2023 10:29:05
+
+
+
+
+**Фильтрация и выгрузка от** Mon Feb 05 2024 14:43:26 GMT+0300 
+
+Размер: **`12.4 KB`**, [Скачать файл](ftp://ftp.cloud.gcm//traffic/8030164/1707133395_2024_02_05____14_43_15_719683.pcap)
+
+Контент: Фильтрация успешно завершена. Включена автоматическая выгрузка
+
+Файл на СОА: `/opt/zaslon/zmanager/data/pfilter_storage/1707133395_2024_02_05____14_43_15_719683.pcap`
+
+
+
+"
+  "objectId": "~84623646792"
+  "base": true
+  "rootId": "~84623646792"
+  "organisation": "GCM"
+  "operation": "update"
+  "objectType": "alert"
+  "startDate": 1707133406982
+  "requestId": "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:18912"
+  object:
+    "type": "snort_alert"
+    "severity": 2
+    artifacts:
+    "status": "New"
+    "tlp": 2
+    "date": 1707133394342
+    "_id": "~84623646792"
+    "id": "~84623646792"
+    "_type": "alert"
+    tags:
+      1. "ATs:reason="NetTool.TorTool.C&C""
+      2. "Sensor:id="8030164""
+      3. "'Webhook:send=ES'"
+      4. "ATs:reason="Гостевая зона Wi-Fi""
+      5. "ATs:geoip="Германия""
+      6. "ATs:reason="Зафиксированы признаки взаимодействия ВПО класса trojan""
+    "follow": true
+    similarCases:
+    "createdAt": 1707133394371
+    "updatedAt": 1707133406837
+    "source": "zsiеmSystems"
+  "organisationId": "~4192"
+alert:
+  "pap": 2
+  "tlp": 2
+  "type": "snort_alert"
+  "updatedAt": 1707133406837
+

@@ -2,12 +2,12 @@ package listhandlerthehivejson
 
 import "placeholder_elasticsearch/datamodels"
 
-func NewListHandlerEventDetailsElement(eventDetails *datamodels.EventDetails) map[string][]func(interface{}) {
+func NewListHandlerEventCaseDetailsElement(details *datamodels.EventCaseDetails) map[string][]func(interface{}) {
 	return map[string][]func(interface{}){
-		"event.details.endDate":          {eventDetails.SetAnyEndDate},
-		"event.details.resolutionStatus": {eventDetails.SetAnyResolutionStatus},
-		"event.details.summary":          {eventDetails.SetAnySummary},
-		"event.details.status":           {eventDetails.SetAnyStatus},
-		"event.details.impactStatus":     {eventDetails.SetAnyImpactStatus},
+		"event.details.endDate":          {details.SetAnyEndDate},
+		"event.details.resolutionStatus": {details.SetAnyResolutionStatus},
+		"event.details.summary":          {details.SetAnySummary},
+		"event.details.status":           {details.SetAnyStatus},
+		"event.details.impactStatus":     {details.SetAnyImpactStatus},
 	}
 }

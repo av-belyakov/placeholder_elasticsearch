@@ -1,14 +1,17 @@
 NATS:
   host: "nats.cloud.gcm"
   port: 4222
+  subject_case: "main_caseupdate"
+  subject_alert: "main_alertupdate"
 ElasticSearch:
-  send: true
   host: "datahook.cloud.gcm"
   port: 9200
-  prefix: "test"
-  index: "module_placeholder_elasticsearch_thehive_case"
   user: "writer"
   passwd: "XxZqesYXuk8C"
+  prefix_case: "test"
+  index_case: "module_placeholder_elasticsearch_thehive_case"
+  prefix_alert: "test"
+  index_alert: "module_placeholder_elasticsearch_thehive_alert"
 MongoDB:
   host: "192.168.9.208"
   port: 27117
@@ -17,4 +20,5 @@ MongoDB:
   namedb: "placeholder_elasticsearch"
 Rules_proc_msg:
   directory: "rules"
-  file: "mispmsgrule.yaml"
+  file_case: "msgrule_case.yaml"
+  file_alert: "msgrule_alert.yaml"

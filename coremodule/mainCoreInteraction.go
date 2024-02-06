@@ -9,22 +9,46 @@ import (
 	rules "placeholder_elasticsearch/rulesinteraction"
 )
 
-func CoreHandler(natsModule *natsinteractions.ModuleNATS,
-	storageApp *memorytemporarystorage.CommonStorageTemporary,
-	listRule *rules.ListRule,
+type CoreHandlerSettings struct {
+	storageApp *memorytemporarystorage.CommonStorageTemporary
+	logging    chan<- datamodels.MessageLogging
+	counting   chan<- datamodels.DataCounterSettings
+}
+
+func NewCoreHandler(
+	storage *memorytemporarystorage.CommonStorageTemporary,
+	log chan<- datamodels.MessageLogging,
+	count chan<- datamodels.DataCounterSettings,
+) *CoreHandlerSettings {
+	return &CoreHandlerSettings{
+		storageApp: storage,
+		logging:    log,
+		counting:   count,
+	}
+}
+
+func (settings *CoreHandlerSettings) CoreHandler(
+	listRuleCase *rules.ListRule,
+	listRuleAlert *rules.ListRule,
+	natsModule *natsinteractions.ModuleNATS,
 	esModule *elasticsearchinteractions.ElasticSearchModule,
 	mdbModule *mongodbinteractions.MongoDBModule,
-	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
 ) {
 	natsChanReception := natsModule.GetDataReceptionChannel()
-	decodeJson := NewDecodeJsonMessageSettings(listRule, logging, counting)
+	decodeJsonCase := NewDecodeJsonMessageSettings(listRuleCase, settings.logging, settings.counting)
+	decodeJsonAlert := NewDecodeJsonMessageSettings(listRuleAlert, settings.logging, settings.counting)
 
 	for {
 		data := <-natsChanReception
 
-		//обработчик сообщений из TheHive (выполняется разбор сообщения и его разбор на основе правил)
-		chanOutputJsonDecode, chanDecodeDone := decodeJson.HandlerJsonMessage(data.Data, data.MsgId)
-		go NewVerifiedTheHiveFormat(chanOutputJsonDecode, chanDecodeDone, esModule, mdbModule, logging)
+		switch data.SubjectType {
+		case "subject_case":
+			chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonCase.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)
+			go NewVerifiedTheHiveFormatCase(chanOutputDecodeJson, chanDecodeJsonDone, esModule, mdbModule, settings.logging)
+
+		case "subject_alert":
+			chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)
+			go NewVerifiedTheHiveFormatAlert(chanOutputDecodeJson, chanDecodeJsonDone, esModule, mdbModule, settings.logging)
+		}
 	}
 }

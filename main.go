@@ -26,13 +26,13 @@ import (
 const ROOT_DIR = "placeholder_elasticsearch"
 
 var (
-	err        error
-	sl         simplelogger.SimpleLoggerSettings
-	confApp    confighandler.ConfigApp
-	hz         *zabbixinteractions.HandlerZabbixConnection
-	warnings   []string
-	storageApp *memorytemporarystorage.CommonStorageTemporary
-	lr         *rules.ListRule
+	err             error
+	sl              simplelogger.SimpleLoggerSettings
+	confApp         confighandler.ConfigApp
+	hz              *zabbixinteractions.HandlerZabbixConnection
+	warning         string
+	storageApp      *memorytemporarystorage.CommonStorageTemporary
+	lrcase, lralert *rules.ListRule
 
 	iz       chan string
 	logging  chan datamodels.MessageLogging
@@ -96,41 +96,35 @@ func counterHandler(
 	iz chan<- string,
 	storageApp *memorytemporarystorage.CommonStorageTemporary,
 	counting <-chan datamodels.DataCounterSettings) {
-	//var ae, emr int
 
-	for d := range counting {
-		switch d.DataType {
+	for data := range counting {
+		switch data.DataType {
 		case "update accepted events":
-			storageApp.SetAcceptedEventsDataCounter(d.Count)
+			storageApp.SetAcceptedEventsDataCounter(data.Count)
 		case "update processed events":
-			storageApp.SetProcessedEventsDataCounter(d.Count)
+			storageApp.SetProcessedEventsDataCounter(data.Count)
 		case "update events meet rules":
-			storageApp.SetEventsMeetRulesDataCounter(d.Count)
+			storageApp.SetEventsMeetRulesDataCounter(data.Count)
 		case "events do not meet rules":
-			storageApp.SetEventsDoNotMeetRulesDataCounter(d.Count)
+			storageApp.SetEventsDoNotMeetRulesDataCounter(data.Count)
 		case "update count insert MongoDB":
-			storageApp.SetInsertMongoDBDataCounter(d.Count)
+			storageApp.SetInsertMongoDBDataCounter(data.Count)
 		case "update count insert Elasticserach":
-			storageApp.SetInsertElasticsearchDataCounter(d.Count)
+			storageApp.SetInsertElasticsearchDataCounter(data.Count)
 		}
 
 		d, h, m, s := supportingfunctions.GetDifference(storageApp.GetStartTimeDataCounter(), time.Now())
 
-		patternReciveEvents := fmt.Sprintf("событий принятых: %d", storageApp.GetAcceptedEventsDataCounter())
+		patternReciveEvents := fmt.Sprintf("принято: %d", storageApp.GetAcceptedEventsDataCounter())
 		patternRuleIsOk := fmt.Sprintf("соответствие правилам: %d", storageApp.GetEventsMeetRulesDataCounter())
 		patternInsertMongoDB := fmt.Sprintf("добавлено в MongoDB: %d", storageApp.GetInsertMongoDBDataCounter())
 		patternInsertES := fmt.Sprintf("добавлено в Elasticsearch: %d", storageApp.GetInsertElasticsearchDataCounter())
-		patternTime := fmt.Sprintf("время со старта приложения: дней %d, часов %d, минут %d, секунд %d", d, h, m, s)
-		msg := fmt.Sprintf("%s, %s, %s, %s %s", patternReciveEvents, patternRuleIsOk, patternInsertMongoDB, patternInsertES, patternTime)
+		patternTime := fmt.Sprintf("со старта приложения: дней %d, часов %d, минут %d, секунд %d", d, h, m, s)
+		msg := fmt.Sprintf("подписка-'%s', %s, %s, %s, %s %s", data.DataMsg, patternReciveEvents, patternRuleIsOk, patternInsertMongoDB, patternInsertES, patternTime)
 
 		log.Printf("\t%s\n", msg)
 
-		//if ae != storageApp.GetAcceptedEventsDataCounter() || emr != storageApp.GetEventsMeetRulesDataCounter() {
 		iz <- msg
-
-		//	ae = storageApp.GetAcceptedEventsDataCounter()
-		//	emr = storageApp.GetEventsMeetRulesDataCounter()
-		//}
 	}
 }
 
@@ -168,6 +162,37 @@ func interactionZabbix(
 	}
 }
 
+func readListRules(rootDir, dirName, fileName string) (*rules.ListRule, string, error) {
+	var (
+		err      error
+		warning  string
+		warnings []string
+		lr       *rules.ListRule
+	)
+
+	lr, warnings, err = rules.NewListRule(rootDir, dirName, fileName)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		return lr, warning, fmt.Errorf("%v %s:%d", err, f, l-2)
+	}
+
+	// проверяем наличие правил Pass или Passany
+	if len(lrcase.GetRulePass()) == 0 && !lrcase.GetRulePassany() {
+		msg := "there are no rules for handling received from NATS or all rules have failed validation"
+		_, f, l, _ := runtime.Caller(0)
+		return lr, warning, fmt.Errorf(" '%s' %s:%d", msg, f, l-3)
+	}
+
+	// если есть какие либо логические ошибки в файле с YAML правилами для обработки сообщений поступающих от NATS
+	if len(warnings) > 0 {
+		for _, v := range warnings {
+			warning += fmt.Sprintln(v)
+		}
+	}
+
+	return lr, warning, err
+}
+
 func init() {
 	iz = make(chan string)
 	logging = make(chan datamodels.MessageLogging)
@@ -185,34 +210,24 @@ func init() {
 		log.Fatalf("error module 'simplelogger': %v", err)
 	}
 
-	// инициализируем модуль чтения правил обработки сообщений поступающих через NATS
-	lr, warnings, err = rules.NewListRule(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.File)
+	// инициализируем модуль чтения правил обработки Cases поступающих через NATS
+	lrcase, warning, err = readListRules(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.FileCase)
 	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		_ = sl.WriteLoggingData(fmt.Sprintf("%v %s:%d", err, f, l-2), "error")
+		_ = sl.WriteLoggingData(fmt.Sprint(err), "error")
 
 		log.Fatalf("error module 'rulesinteraction': %v\n", err)
 	}
 
-	// если есть какие либо логические ошибки в файле с YAML правилами для обработки сообщений поступающих от NATS
-	if len(warnings) > 0 {
-		var warningStr string
+	// инициализируем модуль чтения правил обработки Alerts поступающих через NATS
+	lrcase, warning, err = readListRules(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.FileAlert)
+	if err != nil {
+		_ = sl.WriteLoggingData(fmt.Sprint(err), "error")
 
-		for _, v := range warnings {
-			warningStr += fmt.Sprintln(v)
-		}
-
-		_, f, l, _ := runtime.Caller(0)
-		_ = sl.WriteLoggingData(fmt.Sprintf("%s:%d\n%v", f, l, warningStr), "warning")
+		log.Fatalf("error module 'rulesinteraction': %v\n", err)
 	}
 
-	// проверяем наличие правил Pass или Passany
-	if len(lr.GetRulePass()) == 0 && !lr.GetRulePassany() {
-		msg := "there are no rules for handling messages received from NATS or all rules have failed validation"
-		_, f, l, _ := runtime.Caller(0)
-		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", msg, f, l-3), "error")
-
-		log.Fatalf("%s\n", msg)
+	if warning != "" {
+		_ = sl.WriteLoggingData(fmt.Sprint("%v", warning), "warning")
 	}
 
 	//инициализируем модуль временного хранения информации
@@ -226,7 +241,6 @@ func init() {
 
 	//инициализируем модуль связи с Zabbix
 	hz = zabbixinteractions.NewHandlerZabbixConnection(host, commOpt.Zabbix.ZabbixHost, commOpt.Zabbix.ZabbixKey)
-
 }
 
 func main() {
@@ -248,6 +262,11 @@ func main() {
 	envValue, ok := os.LookupEnv("GO_PHELASTIC_MAIN")
 	if ok && envValue == "development" {
 		appStatus = envValue
+	}
+
+	natsConf := confApp.GetAppNATS()
+	if natsConf.SubjectAlert == "" && natsConf.SubjectCase == "" {
+		log.Fatalln("The application has been stopped. At least one subscription must be set for NATS")
 	}
 
 	appVersion := supportingfunctions.GetAppVersion(appName)
@@ -292,5 +311,6 @@ func main() {
 		MsgType: "info",
 	}
 
-	coremodule.CoreHandler(natsModule, storageApp, lr, esModule, mongodbModule, logging, counting)
+	core := coremodule.NewCoreHandler(storageApp, logging, counting)
+	core.CoreHandler(lrcase, lralert, natsModule, esModule, mongodbModule)
 }

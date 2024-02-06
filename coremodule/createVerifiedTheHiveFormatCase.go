@@ -1,15 +1,16 @@
 package coremodule
 
 import (
+	"reflect"
+	"strings"
+
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/listhandlerthehivejson"
 	"placeholder_elasticsearch/mongodbinteractions"
-	"reflect"
-	"strings"
 )
 
-func NewVerifiedTheHiveFormat(
+func NewVerifiedTheHiveFormatCase(
 	input <-chan datamodels.ChanOutputDecodeJSON,
 	done <-chan bool,
 	esm *elasticsearchinteractions.ElasticSearchModule,
@@ -20,9 +21,9 @@ func NewVerifiedTheHiveFormat(
 		//Финальный объект
 		verifiedCase *datamodels.VerifiedTheHiveCase = datamodels.NewVerifiedTheHiveCase()
 
-		event        datamodels.EventMessageTheHive = datamodels.EventMessageTheHive{}
-		eventObject  datamodels.EventObject         = datamodels.EventObject{}
-		eventDetails datamodels.EventDetails        = datamodels.EventDetails{}
+		event        datamodels.EventMessageTheHiveCase = datamodels.EventMessageTheHiveCase{}
+		eventObject  datamodels.EventCaseObject         = datamodels.EventCaseObject{}
+		eventDetails datamodels.EventCaseDetails        = datamodels.EventCaseDetails{}
 
 		eventObjectCustomFields  map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
 		eventDetailsCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
@@ -30,13 +31,13 @@ func NewVerifiedTheHiveFormat(
 
 	//******************* Основные обработчики для Event **********************
 	// ------ EVENT ------
-	listHandlerEvent := listhandlerthehivejson.NewListHandlerEventElement(&event)
+	listHandlerEvent := listhandlerthehivejson.NewListHandlerEventCaseElement(&event)
 	// ------ EVENT OBJECT ------
-	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventObjectElement(&eventObject)
+	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventCaseObjectElement(&eventObject)
 	// ------ EVENT OBJECT CUSTOMFIELDS ------
 	listHandlerEventObjectCustomFields := listhandlerthehivejson.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
 	// ------ EVENT DETAILS ------
-	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventDetailsElement(&eventDetails)
+	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventCaseDetailsElement(&eventDetails)
 	// ------ EVENT DETAILS CUSTOMFIELDS ------
 	listHandlerEventDetailsCustomFields := listhandlerthehivejson.NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields)
 
@@ -163,15 +164,15 @@ func NewVerifiedTheHiveFormat(
 			verifiedCase.SetTtps(*ttps)
 
 			mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
-				Section:        "handling case",
-				Command:        "add new case",
-				VerifiedObject: verifiedCase.Get(),
+				Section: "handling case",
+				Command: "add new case",
+				Data:    verifiedCase.Get(),
 			}
 
 			esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
-				Section:        "handling case",
-				Command:        "add new case",
-				VerifiedObject: verifiedCase.Get(),
+				Section: "handling case",
+				Command: "add new case",
+				Data:    verifiedCase.Get(),
 			}
 
 			// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования
@@ -200,7 +201,7 @@ func searchEventSource(fieldBranch string, value interface{}) (string, bool) {
 	return source, ok
 }
 
-func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHive) {
+func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHiveCase) {
 	if e.GetStartDate() == "" {
 		e.SetValueStartDate("1970-01-01T03:00:00+03:00")
 	}

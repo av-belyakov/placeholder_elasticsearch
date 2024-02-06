@@ -40,23 +40,26 @@ type ZabbixOptions struct {
 }
 
 type AppConfigNATS struct {
-	Host string `yaml:"host"`
-	Port int    `yaml:"port"`
+	Port         int    `yaml:"port"`
+	Host         string `yaml:"host"`
+	SubjectCase  string `yaml:"subject_case"`
+	SubjectAlert string `yaml:"subject_alert"`
 }
 
 type AppConfigElasticSearch struct {
-	Send   bool   `yaml:"send"`
-	Prefix string `yaml:"prefix"`
-	Index  string `yaml:"index"`
-	User   string `yaml:"user"`
-	Passwd string `yaml:"passwd"`
-	Host   string `yaml:"host"`
-	Port   int    `yaml:"port"`
+	Port        int    `yaml:"port"`
+	PrefixCase  string `yaml:"prefix_case"`
+	IndexCase   string `yaml:"index_case"`
+	PrefixAlert string `yaml:"prefix_alert"`
+	IndexAlert  string `yaml:"index_alert"`
+	User        string `yaml:"user"`
+	Passwd      string `yaml:"passwd"`
+	Host        string `yaml:"host"`
 }
 
 type AppConfigMongoDB struct {
-	Host   string `yaml:"host"`
 	Port   int    `yaml:"port"`
+	Host   string `yaml:"host"`
 	User   string `yaml:"user"`
 	Passwd string `yaml:"passwd"`
 	NameDB string `yaml:"namedb"`
@@ -64,5 +67,6 @@ type AppConfigMongoDB struct {
 
 type AppConfigRulesProcMsg struct {
 	Directory string `yaml:"directory"`
-	File      string `yaml:"file"`
+	FileCase  string `yaml:"file_case"`
+	FileAlert string `yaml:"file_alert"`
 }

@@ -14,9 +14,9 @@ import (
 
 var _ = Describe("Testevent", Ordered, func() {
 	var (
-		event        datamodels.EventMessageTheHive = datamodels.EventMessageTheHive{}
-		eventObject  datamodels.EventObject         = datamodels.EventObject{}
-		eventDetails datamodels.EventDetails        = datamodels.EventDetails{}
+		event        datamodels.EventMessageTheHiveCase = datamodels.EventMessageTheHiveCase{}
+		eventObject  datamodels.EventCaseObject         = datamodels.EventCaseObject{}
+		eventDetails datamodels.EventCaseDetails        = datamodels.EventCaseDetails{}
 
 		eventObjectCustomFields  map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
 		eventDetailsCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
@@ -31,16 +31,16 @@ var _ = Describe("Testevent", Ordered, func() {
 
 	BeforeAll(func() {
 		// ------ EVENT ------
-		listHandlerEvent = listhandlerthehivejson.NewListHandlerEventElement(&event)
+		listHandlerEvent = listhandlerthehivejson.NewListHandlerEventCaseElement(&event)
 
 		// ------ EVENT OBJECT ------
-		listHandlerEventObject = listhandlerthehivejson.NewListHandlerEventObjectElement(&eventObject)
+		listHandlerEventObject = listhandlerthehivejson.NewListHandlerEventCaseObjectElement(&eventObject)
 
 		// ------ EVENT OBJECT CUSTOMFIELDS ------
 		listHandlerEventObjectCustomFields = listhandlerthehivejson.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
 
 		// ------ EVENT DETAILS ------
-		listHandlerEventDetails = listhandlerthehivejson.NewListHandlerEventDetailsElement(&eventDetails)
+		listHandlerEventDetails = listhandlerthehivejson.NewListHandlerEventCaseDetailsElement(&eventDetails)
 
 		// ------ EVENT DETAILS CUSTOMFIELDS ------
 		listHandlerEventDetailsCustomFields = listhandlerthehivejson.NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields)
@@ -48,9 +48,9 @@ var _ = Describe("Testevent", Ordered, func() {
 
 	Context("Тест 1. Проверка заполнения объекта для хранения events", func() {
 		var (
-			anyEvent        *datamodels.EventMessageTheHive
-			anyEventObject  *datamodels.EventObject
-			anyEventDetails *datamodels.EventDetails
+			anyEvent        *datamodels.EventMessageTheHiveCase
+			anyEventObject  *datamodels.EventCaseObject
+			anyEventDetails *datamodels.EventCaseDetails
 		)
 
 		BeforeAll(func() {

@@ -1,4 +1,4 @@
-Placeholder_Elasticsearch v0.2.8
+Placeholder_Elasticsearch v0.3.1
 
 Конфигурационные параметры для сервиса могут быть заданы как через конфигурационный файл так и методом установки переменных окружения.
 
@@ -18,15 +18,18 @@ GO_PHELASTIC_MAIN
 //Подключение к NATS
 GO_PHELASTIC_NHOST
 GO_PHELASTIC_NPORT
+GO_PHELASTIC_SUBJECT_CASE
+GO_PHELASTIC_SUBJECT_ALERT
 
 //Подключение к СУБД Elasticsearch
-GO_PHELASTIC_ESSEND
 GO_PHELASTIC_ESHOST
 GO_PHELASTIC_ESPORT
-GO_PHELASTIC_ESPREFIX
-GO_PHELASTIC_ESINDEX
 GO_PHELASTIC_ESUSER
 GO_PHELASTIC_ESPASSWD
+GO_PHELASTIC_ESPREFIXCASE
+GO_PHELASTIC_ESINDEXCASE
+GO_PHELASTIC_ESPREFIXALERT
+GO_PHELASTIC_ESINDEXALERT
 
 //Подключение к СУБД MongoDB
 GO_PHELASTIC_MONGOHOST
@@ -35,13 +38,18 @@ GO_PHELASTIC_MONGOUSER
 GO_PHELASTIC_MONGOPASSWD
 GO_PHELASTIC_MONGONAMEDB
 
+//Место нахождение правил
+GO_PHELASTIC_RULES_DIR
+GO_PHELASTIC_RULES_FILECASE
+GO_PHELASTIC_RULES_FILEALERT
+
 Приоритет значений заданных через переменные окружения выше чем значений полученных из конфигурационных файлов. Таким образом можно осуществлять гибкую временную настройку приложения.
 
 Сервис выполняет сделующие действия:
 
 1. Соединение с NATS.
-2. Прием кейсов от TheHive в формате JSON.
-3. Валидация кейсов на основе специальных правил.
-4. Валидация кейсов под определенные объекты.
-5. Сохранение кейсов в локальной СУБД MongoDB используемой для буферизации данных, при отсутствии подключения к СУБД Elasticsearch.
-6. Запись кейсов TheHive в СУБД Elasticsearch.
+2. Прием кейсов и алертов от TheHive в формате JSON.
+3. Валидация кейсов и алертов на основе специальных правил.
+4. Валидация кейсов и алертов под определенные объекты.
+5. Сохранение кейсов и алертов в локальной СУБД MongoDB используемой для буферизации данных, при отсутствии подключения к СУБД Elasticsearch.
+6. Запись кейсов и алертов TheHive в СУБД Elasticsearch.

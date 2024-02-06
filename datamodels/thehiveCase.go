@@ -10,11 +10,11 @@ import (
 
 // VerifiedTheHiveCase объект представляет собой верифицированный 'кейс' TheHive
 type VerifiedTheHiveCase struct {
-	ID               string              `json:"@id" bson:"@id"`
-	ElasticsearchID  string              `json:"@es_id" bson:"@es_id"`
-	CreateTimestatmp string              `json:"@timestamp" bson:"@timestamp"`
-	Source           string              `json:"source" bson:"source"`
-	Event            EventMessageTheHive `json:"event" bson:"event"`
+	ID               string                  `json:"@id" bson:"@id"`
+	ElasticsearchID  string                  `json:"@es_id" bson:"@es_id"`
+	CreateTimestatmp string                  `json:"@timestamp" bson:"@timestamp"`
+	Source           string                  `json:"source" bson:"source"`
+	Event            EventMessageTheHiveCase `json:"event" bson:"event"`
 	ObservablesMessageTheHive
 	TtpsMessageTheHive
 }
@@ -45,11 +45,11 @@ func (hcase *VerifiedTheHiveCase) SetSource(source string) {
 	hcase.Source = source
 }
 
-func (hcase *VerifiedTheHiveCase) GetEvent() *EventMessageTheHive {
+func (hcase *VerifiedTheHiveCase) GetEvent() *EventMessageTheHiveCase {
 	return &hcase.Event
 }
 
-func (hcase *VerifiedTheHiveCase) SetEvent(event EventMessageTheHive) {
+func (hcase *VerifiedTheHiveCase) SetEvent(event EventMessageTheHiveCase) {
 	hcase.Event = event
 }
 
@@ -79,6 +79,8 @@ func (hcase *VerifiedTheHiveCase) ToStringBeautiful(num int) string {
 	strB.WriteString(hcase.Event.ToStringBeautiful(num + 1))
 	strB.WriteString(fmt.Sprintf("%sObservables:\n", ws))
 	strB.WriteString(hcase.ObservablesMessageTheHive.ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintf("%sTtp:\n", ws))
+	strB.WriteString(hcase.TtpsMessageTheHive.ToStringBeautiful(num + 1))
 
 	return strB.String()
 }
