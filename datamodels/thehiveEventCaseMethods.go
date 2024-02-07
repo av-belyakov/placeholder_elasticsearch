@@ -181,6 +181,8 @@ func (em EventMessageTheHiveCase) ToStringBeautiful(num int) string {
 	return strB.String()
 }
 
+//****************** EventCaseDetails ******************
+
 func (e *EventCaseDetails) Get() *EventCaseDetails {
 	return e
 }
@@ -279,6 +281,8 @@ func (ed EventCaseDetails) ToStringBeautiful(num int) string {
 
 	return strB.String()
 }
+
+//****************** EventCaseObject ******************
 
 func (e *EventCaseObject) Get() *EventCaseObject {
 	return e

@@ -477,3 +477,72 @@ func GetTtpTwo() []struct {
 		//{ElemName: "ttp.patternParent.", ElemValue: ""},
 	}
 }
+
+func GetEventForAlertOne() []struct {
+	ElemName  string
+	ElemValue interface{}
+} {
+	return []struct {
+		ElemName  string
+		ElemValue interface{}
+	}{
+		{ElemName: "event.base", ElemValue: true},
+		{ElemName: "event.startDate", ElemValue: float64(1707223072562)},
+		{ElemName: "event.rootId", ElemValue: "~84625227848"},
+		{ElemName: "event.objectId", ElemValue: "~84625227848"},
+		{ElemName: "event.objectType", ElemValue: "alert"},
+		{ElemName: "event.organisation", ElemValue: "GCM"},
+		{ElemName: "event.organisationId", ElemValue: "~4192"},
+		{ElemName: "event.operation", ElemValue: "update"},
+		{ElemName: "event.requestId", ElemValue: "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497"},
+
+		//----------- details
+		{ElemName: "event.details.sourceRef", ElemValue: "TSK-8MSK-6-ZPM-240206-1215999"},
+		{ElemName: "event.details.title", ElemValue: "Зафиксированна КА"},
+		{ElemName: "event.details.description", ElemValue: "**Задача переданная из смежной системы"},
+		{ElemName: "event.details.tags", ElemValue: []interface{}{
+			"ATs:geoip=\"Индия\"",
+			"'Webhook:send=ES'",
+			"Sensor:id=\"8030066\"",
+			"ATs:reason=\"INFO Controlled FGS\"",
+			"ATs:reason=\"Зафиксированы признаки взаимодействия ВПО класса trojan\"",
+		}},
+
+		//----------- object
+		{ElemName: "event.object.follow", ElemValue: true},
+		{ElemName: "event.object.severity", ElemValue: float64(2)},
+		{ElemName: "event.object.tlp", ElemValue: float64(3)},
+		{ElemName: "event.object.pap", ElemValue: float64(5)},
+		{ElemName: "event.object._id", ElemValue: "~85455464790"},
+		{ElemName: "event.object.id", ElemValue: "~85771464712"},
+		{ElemName: "event.object.createdBy", ElemValue: "v.kovanko@cloud.gcm"},
+		{ElemName: "event.object.updatedBy", ElemValue: "y.kovalenko@cloud.gcm"},
+		{ElemName: "event.object.createdAt", ElemValue: float64(1707223072375)},
+		{ElemName: "event.object.updatedAt", ElemValue: float64(0)},
+		{ElemName: "event.object._type", ElemValue: "alert"},
+		{ElemName: "event.object.title", ElemValue: "Редко встречающиеся признаки ВПО"},
+		{ElemName: "event.object.description", ElemValue: "из смежной системы: Заслон-Пост-Модерн**"},
+		{ElemName: "event.object.status", ElemValue: "Ignored"},
+		{ElemName: "event.object.date", ElemValue: float64(1707223017220)},
+		{ElemName: "event.object.type", ElemValue: "snort_alert"},
+		{ElemName: "event.object.objectType", ElemValue: "alert"},
+		{ElemName: "event.object.source", ElemValue: "zsiеmSystems"},
+		{ElemName: "event.object.sourceRef", ElemValue: "TSK-8MSK-6-ZPM-240206-1215999"},
+		{ElemName: "event.object.case", ElemValue: "aallert"},
+		{ElemName: "event.object.caseTemplate", ElemValue: "snort_alert"},
+		{ElemName: "event.object.tags", ElemValue: []interface{}{
+			"Sensor:id=\"8030012\"",
+			"ATs:reason=\"Редко встречающиеся признаки ВПО\"",
+			"'Webhook:send=ES'",
+		}},
+		//object.customFields
+		{
+			ElemName:  "event.object.customFields.first-time.date",
+			ElemValue: float64(1707222030000),
+		},
+		{
+			ElemName:  "event.object.customFields.last-time.date",
+			ElemValue: float64(1707222030000),
+		},
+	}
+}

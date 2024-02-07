@@ -131,9 +131,7 @@ var _ = Describe("Testevent", Ordered, func() {
 						name:  v.ElemName,
 						value: v.ElemValue,
 					}
-
 				}
-
 			}
 
 			close(sendData)

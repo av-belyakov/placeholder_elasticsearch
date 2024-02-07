@@ -7,12 +7,12 @@ type ObservablesMessageTheHive struct {
 }
 
 // ObservableMessage наблюдаемое сообщение
-// CreatedAt - время создания
-// CreatedBy - кем создан
+// UnderliningCreatedAt - время создания
+// UnderliningCreatedBy - кем создан
 // UnderliningId - уникальный идентификатор
 // UnderliningType - тип
-// UpdatedAt - время обновления
-// UpdatedBy - кем обновлен
+// UnderliningUpdatedAt - время обновления
+// UnderliningUpdatedBy - кем обновлен
 // Data - данные
 // DataType - тип данных
 // IgnoreSimilarity - игнорировать сходство
