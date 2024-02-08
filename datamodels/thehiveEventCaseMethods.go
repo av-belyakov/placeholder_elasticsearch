@@ -315,6 +315,12 @@ func (e *EventCaseObject) SetValueCaseId(v uint64) {
 
 // SetAnyCaseId устанавливает ЛЮБОЕ значение для поля CaseId
 func (e *EventCaseObject) SetAnyCaseId(i interface{}) {
+	if v, ok := i.(float32); ok {
+		e.CaseId = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		e.CaseId = uint64(v)
 
@@ -337,6 +343,12 @@ func (e *EventCaseObject) SetValueSeverity(v uint64) {
 
 // SetAnySeverity устанавливает ЛЮБОЕ значение для поля Severity
 func (e *EventCaseObject) SetAnySeverity(i interface{}) {
+	if v, ok := i.(float32); ok {
+		e.Severity = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		e.Severity = uint64(v)
 
@@ -359,6 +371,12 @@ func (e *EventCaseObject) SetValueTlp(v uint64) {
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
 func (e *EventCaseObject) SetAnyTlp(i interface{}) {
+	if v, ok := i.(float32); ok {
+		e.Tlp = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		e.Tlp = uint64(v)
 
@@ -381,6 +399,12 @@ func (e *EventCaseObject) SetValuePap(v uint64) {
 
 // SetAnyPap устанавливает ЛЮБОЕ значение для поля Pap
 func (e *EventCaseObject) SetAnyPap(i interface{}) {
+	if v, ok := i.(float32); ok {
+		e.Pap = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		e.Pap = uint64(v)
 

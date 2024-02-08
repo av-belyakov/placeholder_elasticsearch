@@ -546,3 +546,101 @@ func GetEventForAlertOne() []struct {
 		},
 	}
 }
+
+func GetAlertForAlertOne() []struct {
+	ElemName  string
+	ElemValue interface{}
+} {
+	return []struct {
+		ElemName  string
+		ElemValue interface{}
+	}{
+		{ElemName: "alert.tlp", ElemValue: float64(2)},
+		{ElemName: "alert.severity", ElemValue: float64(3)},
+		{ElemName: "alert.date", ElemValue: float64(1707220877000)},
+		{ElemName: "alert.createdAt", ElemValue: float64(1707221547881)},
+		{ElemName: "alert.type", ElemValue: "snort_alert"},
+		{ElemName: "alert.description", ElemValue: "внутрь, протоколы: **smtp/tcp**"},
+		{ElemName: "alert.status", ElemValue: "Update"},
+	}
+}
+
+func GetAlertForAlertTwo() []struct {
+	ElemName  string
+	ElemValue interface{}
+} {
+	return []struct {
+		ElemName  string
+		ElemValue interface{}
+	}{
+		{ElemName: "alert.follow", ElemValue: true},
+		{ElemName: "alert.tlp", ElemValue: float64(2)},
+		{ElemName: "alert.severity", ElemValue: float64(3)},
+		{ElemName: "alert.date", ElemValue: float64(1707195545887)},
+		{ElemName: "alert.createdAt", ElemValue: float64(1707195545896)},
+		{ElemName: "alert.updatedAt", ElemValue: float64(1707223500033)},
+		{ElemName: "alert.updatedBy", ElemValue: "webhook@cloud.gcm"},
+		{ElemName: "alert._id", ElemValue: "~88026357960"},
+		{ElemName: "alert.status", ElemValue: "New"},
+		{ElemName: "alert.type", ElemValue: "snort_alert"},
+		{ElemName: "alert._type", ElemValue: "alert"},
+		{ElemName: "alert.description", ElemValue: "Атака направлена **внутрь**, использует протоколы: **smtp/tcp**"},
+		{ElemName: "alert.caseTemplate", ElemValue: "snort_alert"},
+		{ElemName: "alert.sourceRef", ElemValue: "TSK-8MSK-6-ZPM-240206-1216137"},
+		{ElemName: "alert.tags", ElemValue: []interface{}{
+			"Sensor:id=\"8030105\"",
+			"ATs:reason=\"Редко встречающиеся признаки ВПО\"",
+			"'Webhook:send=ES'",
+			"APPA:Direction=\"inbound\"",
+		}},
+		//object.customFields
+		{
+			ElemName:  "alert.customFields.first-time.date",
+			ElemValue: float64(1707194932000),
+		},
+		{
+			ElemName:  "alert.customFields.last-time.date",
+			ElemValue: float64(1707194932000),
+		},
+		{ElemName: "alert.artifacts.ioc", ElemValue: true},
+		{ElemName: "alert.artifacts.sighted", ElemValue: true},
+		{ElemName: "alert.artifacts.ignoreSimilarity", ElemValue: true},
+		{ElemName: "alert.artifacts.tlp", ElemValue: float64(2)},
+		{ElemName: "alert.artifacts._id", ElemValue: "~84302291040"},
+		{ElemName: "alert.artifacts.id", ElemValue: "~84302291040"},
+		{ElemName: "alert.artifacts._type", ElemValue: "case_artifact"},
+		{ElemName: "alert.artifacts.createdAt", ElemValue: float64(1707221115602)},
+		{ElemName: "alert.artifacts.updatedAt", ElemValue: float64(0)},
+		{ElemName: "alert.artifacts.startDate", ElemValue: float64(1707221115602)},
+		{ElemName: "alert.artifacts.createdBy", ElemValue: "e.anisimova@cloud.gcm"},
+		{ElemName: "alert.artifacts.updatedBy", ElemValue: ""},
+		{ElemName: "alert.artifacts.data", ElemValue: "http://anisimova.cloud.gcm:8005/sessions?expression=file%20%3D%3D%20%2Fopt%2Farkime%2Fraw%2F2024_02_06_15_03_01_522219____1707221109_2024_02_06____15_05_09_364449.pcap&date=-1"},
+		{ElemName: "alert.artifacts.dataType", ElemValue: "url_arkime"},
+		{ElemName: "alert.artifacts.message", ElemValue: "Ссылка на Arkime"},
+		{ElemName: "alert.artifacts.tags", ElemValue: []interface{}{
+			"home",
+		}},
+		{ElemName: "alert.artifacts.ioc", ElemValue: true},
+		{ElemName: "alert.artifacts.sighted", ElemValue: true},
+		{ElemName: "alert.artifacts.ignoreSimilarity", ElemValue: true},
+		{ElemName: "alert.artifacts.tlp", ElemValue: float64(1)},
+		{ElemName: "alert.artifacts._id", ElemValue: ""},
+		{ElemName: "alert.artifacts.id", ElemValue: "~84998705312"},
+		{ElemName: "alert.artifacts._type", ElemValue: "case_artifact"},
+		{ElemName: "alert.artifacts.createdAt", ElemValue: float64(1707221114151)},
+		{ElemName: "alert.artifacts.updatedAt", ElemValue: float64(1707221114151)},
+		{ElemName: "alert.artifacts.startDate", ElemValue: float64(1707221114151)},
+		{ElemName: "alert.artifacts.createdBy", ElemValue: ""},
+		{ElemName: "alert.artifacts.updatedBy", ElemValue: "zsiem@cloud.gcm"},
+		{ElemName: "alert.artifacts.data", ElemValue: "ftp://ftp.cloud.gcm/traffic/8030030/1707221109_2024_02_06____15_05_09_364449.pcap"},
+		{ElemName: "alert.artifacts.dataType", ElemValue: "url_pcap"},
+		{ElemName: "alert.artifacts.message", ElemValue: "Download a piece of traffic"},
+		{ElemName: "alert.artifacts.tags", ElemValue: []interface{}{
+			"geo:country=\"Россия\"",
+			"geo:iso=\"RU\"",
+			"geo:region=\"Калининградская область\"",
+			"external",
+			"geo:city=\"Калининград\"",
+		}},
+	}
+}

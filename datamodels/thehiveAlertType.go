@@ -73,9 +73,3 @@ type AlertArtifact struct {
 	Message          string   `json:"message" bson:"message"`
 	Tags             []string `json:"tags" bson:"tags"`
 }
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// Для проверки заполненности Alert можно использовать эти два поля на наличии пустоты
-//	Type            string                    `json:"type" bson:"type"`
-//	CaseTemplate    string                    `json:"caseTemplate" bson:"caseTemplate"`
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

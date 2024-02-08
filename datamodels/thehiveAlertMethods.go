@@ -44,6 +44,12 @@ func (a *AlertMessageTheHiveAlert) SetAnyTlp(i interface{}) {
 		return
 	}
 
+	if v, ok := i.(float64); ok {
+		a.Tlp = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(uint64); ok {
 		a.Tlp = v
 	}
@@ -60,6 +66,12 @@ func (a *AlertMessageTheHiveAlert) SetValueSeverity(v uint64) {
 
 // SetAnySeverity устанавливает ЛЮБОЕ значение для поля Severity
 func (a *AlertMessageTheHiveAlert) SetAnySeverity(i interface{}) {
+	if v, ok := i.(float64); ok {
+		a.Severity = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		a.Severity = uint64(v)
 
@@ -246,9 +258,18 @@ func (a *AlertMessageTheHiveAlert) GetCustomFields() map[string]CustomerFields {
 	return a.CustomFields
 }
 
-// SetValueCustomFields устанавливает STRING значение для поля CustomFields
+// SetValueCustomFields устанавливает значение для поля CustomFields
 func (a *AlertMessageTheHiveAlert) SetValueCustomFields(v map[string]CustomerFields) {
 	a.CustomFields = v
+}
+
+func (a *AlertMessageTheHiveAlert) GetArtifacts() []AlertArtifact {
+	return a.Artifacts
+}
+
+// SetArtifacts устанавливает значение для поля Artifacts
+func (a *AlertMessageTheHiveAlert) SetValueArtifacts(v []AlertArtifact) {
+	a.Artifacts = v
 }
 
 func (a *AlertMessageTheHiveAlert) ToStringBeautiful(num int) string {
@@ -286,7 +307,7 @@ func (a *AlertMessageTheHiveAlert) ToStringBeautiful(num int) string {
 
 		for k, v := range l {
 			str.WriteString(fmt.Sprintf("%s%d.\n", ws, k+1))
-			str.WriteString(v.ToStringBeautiful(num))
+			str.WriteString(v.ToStringBeautiful(num + 2))
 		}
 		return str.String()
 	}(a.Artifacts)))
@@ -358,6 +379,12 @@ func (a *AlertArtifact) SetValueTlp(v uint64) {
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
 func (a *AlertArtifact) SetAnyTlp(i interface{}) {
+	if v, ok := i.(float32); ok {
+		a.Tlp = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		a.Tlp = uint64(v)
 

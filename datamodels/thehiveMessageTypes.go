@@ -1,8 +1,14 @@
 package datamodels
 
+// CustomerFields
+// Set принимает значения где первое значение метода это первое значение
+// в структуре данных, второе значение метода это второе значение
+// в структуре данных
+// Get возвращает значения где 1 и 3 значение это
+// наименование поля
 type CustomerFields interface {
-	Set(interface{}, interface{})
-	Get() (string, int, string, string)
+	Set(oneStructField interface{}, twoStructField interface{})
+	Get() (fieldNameOne string, valueOne int, fieldNameTwo string, valueTwo string)
 }
 
 // ResponseMessageFromMispToTheHave содержит ответ для TheHive получаемый от MISP

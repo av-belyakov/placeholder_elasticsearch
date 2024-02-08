@@ -82,6 +82,12 @@ func (o *ObservableMessage) SetValueTlp(v uint64) {
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
 func (o *ObservableMessage) SetAnyTlp(i interface{}) {
+	if v, ok := i.(float32); ok {
+		o.Tlp = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		o.Tlp = uint64(v)
 
@@ -343,6 +349,12 @@ func (a *AttachmentData) SetValueSize(v uint64) {
 
 // SetAnySize устанавливает ЛЮБОЕ значение для поля Size
 func (a *AttachmentData) SetAnySize(i interface{}) {
+	if v, ok := i.(float32); ok {
+		a.Size = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		a.Size = uint64(v)
 

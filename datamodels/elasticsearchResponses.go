@@ -20,6 +20,4 @@ type OptionsTotal struct {
 type CaseHits struct {
 	ID    string `json:"_id"`
 	Index string `json:"_index"`
-	//Source map[string]interface{} `json:"_source"`
-	//Source datamodels.VerifiedTheHiveCase `json:"_source"`
 }

@@ -73,13 +73,13 @@ func (hcase *VerifiedTheHiveCase) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	strB := strings.Builder{}
-	strB.WriteString(fmt.Sprintf("%sCreateTimestatmp: '%s'\n", ws, hcase.CreateTimestatmp))
-	strB.WriteString(fmt.Sprintf("%sSource: '%s'\n", ws, hcase.Source))
-	strB.WriteString(fmt.Sprintf("%sEvent:\n", ws))
+	strB.WriteString(fmt.Sprintf("%screateTimestatmp: '%s'\n", ws, hcase.CreateTimestatmp))
+	strB.WriteString(fmt.Sprintf("%ssource: '%s'\n", ws, hcase.Source))
+	strB.WriteString(fmt.Sprintf("%sevent:\n", ws))
 	strB.WriteString(hcase.Event.ToStringBeautiful(num + 1))
-	strB.WriteString(fmt.Sprintf("%sObservables:\n", ws))
+	strB.WriteString(fmt.Sprintf("%sobservables:\n", ws))
 	strB.WriteString(hcase.ObservablesMessageTheHive.ToStringBeautiful(num + 1))
-	strB.WriteString(fmt.Sprintf("%sTtp:\n", ws))
+	strB.WriteString(fmt.Sprintf("%sttp:\n", ws))
 	strB.WriteString(hcase.TtpsMessageTheHive.ToStringBeautiful(num + 1))
 
 	return strB.String()

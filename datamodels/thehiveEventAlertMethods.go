@@ -297,6 +297,12 @@ func (e *EventAlertObject) SetValueSeverity(v uint64) {
 
 // SetAnySeverity устанавливает ЛЮБОЕ значение для поля Severity
 func (e *EventAlertObject) SetAnySeverity(i interface{}) {
+	if v, ok := i.(float32); ok {
+		e.Severity = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		e.Severity = uint64(v)
 
@@ -319,6 +325,12 @@ func (e *EventAlertObject) SetValueTlp(v uint64) {
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
 func (e *EventAlertObject) SetAnyTlp(i interface{}) {
+	if v, ok := i.(float32); ok {
+		e.Tlp = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		e.Tlp = uint64(v)
 
@@ -341,6 +353,12 @@ func (e *EventAlertObject) SetValuePap(v uint64) {
 
 // SetAnyPap устанавливает ЛЮБОЕ значение для поля Pap
 func (e *EventAlertObject) SetAnyPap(i interface{}) {
+	if v, ok := i.(float32); ok {
+		e.Pap = uint64(v)
+
+		return
+	}
+
 	if v, ok := i.(float64); ok {
 		e.Pap = uint64(v)
 

@@ -15,7 +15,7 @@ type VerifiedTheHiveAlert struct {
 	CreateTimestatmp string                   `json:"@timestamp" bson:"@timestamp"`
 	Source           string                   `json:"source" bson:"source"`
 	Event            EventMessageTheHiveAlert `json:"event" bson:"event"`
-	//Alert `json:"alert" bson:"alert"`
+	Alert            AlertMessageTheHiveAlert `json:"alert" bson:"alert"`
 }
 
 func NewVerifiedTheHiveAlert() *VerifiedTheHiveCase {
@@ -36,6 +36,22 @@ func (va *VerifiedTheHiveAlert) SetID(id string) {
 	va.ID = id
 }
 
+func (va *VerifiedTheHiveAlert) GetElasticsearchID() string {
+	return va.ElasticsearchID
+}
+
+func (va *VerifiedTheHiveAlert) SetElasticsearchID(id string) {
+	va.ElasticsearchID = id
+}
+
+func (va *VerifiedTheHiveAlert) GetCreateTimestatmp() string {
+	return va.CreateTimestatmp
+}
+
+func (va *VerifiedTheHiveAlert) SetCreateTimestatmp(time string) {
+	va.CreateTimestatmp = time
+}
+
 func (va *VerifiedTheHiveAlert) GetSource() string {
 	return va.Source
 }
@@ -52,16 +68,24 @@ func (va *VerifiedTheHiveAlert) SetEvent(event EventMessageTheHiveAlert) {
 	va.Event = event
 }
 
+func (va *VerifiedTheHiveAlert) GetAlert() *AlertMessageTheHiveAlert {
+	return &va.Alert
+}
+
+func (va *VerifiedTheHiveAlert) SetAlert(alert AlertMessageTheHiveAlert) {
+	va.Alert = alert
+}
+
 func (va *VerifiedTheHiveAlert) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	strB := strings.Builder{}
-	strB.WriteString(fmt.Sprintf("%sCreateTimestatmp: '%s'\n", ws, va.CreateTimestatmp))
-	strB.WriteString(fmt.Sprintf("%sSource: '%s'\n", ws, va.Source))
-	strB.WriteString(fmt.Sprintf("%sEvent:\n", ws))
+	strB.WriteString(fmt.Sprintf("%screateTimestatmp: '%s'\n", ws, va.CreateTimestatmp))
+	strB.WriteString(fmt.Sprintf("%ssource: '%s'\n", ws, va.Source))
+	strB.WriteString(fmt.Sprintf("%sevent:\n", ws))
 	strB.WriteString(va.Event.ToStringBeautiful(num + 1))
-	strB.WriteString(fmt.Sprintf("%sAlert:\n", ws))
-	//strB.WriteString(va. .ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintf("%salert:\n", ws))
+	strB.WriteString(va.Alert.ToStringBeautiful(num + 1))
 
 	return strB.String()
 }
