@@ -48,7 +48,14 @@ LOGGING:
       maxFileSize: 100000,
     }
   - {
-      msgTypeName: "testing",
+      msgTypeName: "alert_raw_fields",
+      writingFile: true,
+      pathDirectory: "logs",
+      writingStdout: false,
+      maxFileSize: 10000,
+    }
+  - {
+      msgTypeName: "case_raw_fields",
       writingFile: true,
       pathDirectory: "logs",
       writingStdout: false,

@@ -113,7 +113,16 @@ func (conn ConnectionDescriptorMongoDB) Routing(
 					go ws.AddNewCase(data.Data, logging, counting)
 				}
 
-			case "":
+			case "handling alert":
+				if data.Command == "add new alert" {
+					fmt.Println(data.Data)
+					/*
+						Тут должна быть обработка полученных от модуля core
+						verifiedAlert.Get(),
+						при этом нужно выполнять update объекта в СУБД
+						который совпадает с полученным объектом
+					*/
+				}
 			}
 		}
 	}()

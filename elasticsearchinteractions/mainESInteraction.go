@@ -236,6 +236,91 @@ func HandlerElasticSearch(
 				}
 
 			case "handling alert":
+				if data.Command == "add new alert" {
+					fmt.Println(data.Data)
+					/*
+						Тут должна быть обработка полученных от модуля core
+						verifiedAlert.Get(),
+						при этом нужно выполнять update объекта в СУБД
+						который совпадает с полученным объектом
+					*/
+
+					//ПРИМЕР СРАВНЕНИЯ двух структур
+					/*
+						func (istix IndicatorDomainObjectsSTIX) ComparisonTypeCommonFields(newObj interface{}, src string) (bool, DifferentObjectType, error) {
+							var (
+								isEqual bool = true
+								cot          = DifferentObjectType{
+									SourceReceivingChanges: src,
+									ModifiedTime:           time.Now(),
+									CollectionName:         "stix_object_collection",
+									DocumentID:             istix.ID,
+								}
+							)
+
+							iNew, ok := newObj.(*mstixo.IndicatorDomainObjectsSTIX)
+							if !ok {
+								return isEqual, cot, fmt.Errorf("type conversion error")
+							}
+
+							oldValue := reflect.ValueOf(istix.IndicatorDomainObjectsSTIX)
+							typeOfOldValue := oldValue.Type()
+
+							newValue := reflect.ValueOf(*iNew)
+							typeOfNewValue := newValue.Type()
+
+							for i := 0; i < oldValue.NumField(); i++ {
+								for j := 0; j < newValue.NumField(); j++ {
+									if typeOfOldValue.Field(i).Name != typeOfNewValue.Field(j).Name {
+										continue
+									}
+
+									if typeOfOldValue.Field(i).Name == "CommonPropertiesDomainObjectSTIX" {
+										//привести значение к типу CommonPropertiesDomainObjectSTIX
+										cpdoOld, ok := oldValue.Field(i).Interface().(mstixo.CommonPropertiesDomainObjectSTIX)
+										if !ok {
+											return false, cot, fmt.Errorf("type conversion error")
+										}
+
+										cpdoNew, ok := newValue.Field(j).Interface().(mstixo.CommonPropertiesDomainObjectSTIX)
+										if !ok {
+											return false, cot, fmt.Errorf("type conversion error")
+										}
+
+										ok, result := comparisonTypeCommonFields(cpdoOld, cpdoNew)
+										if ok {
+											continue
+										}
+
+										isEqual = false
+
+										for _, v := range result {
+											cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+												FeildType: v.FeildType,
+												Path:      path.Join("IndicatorDomainObjectsSTIX", v.Path),
+												Value:     v.Value,
+											})
+										}
+
+										continue
+									}
+
+									if !reflect.DeepEqual(oldValue.Field(i).Interface(), newValue.Field(j).Interface()) {
+										cot.FieldList = append(cot.FieldList, OldFieldValueObjectType{
+											FeildType: typeOfOldValue.Field(i).Type.Name(),
+											Path:      path.Join("IndicatorDomainObjectsSTIX", typeOfOldValue.Field(i).Name),
+											Value:     oldValue.Field(i).Interface(),
+										})
+
+										isEqual = false
+									}
+								}
+							}
+
+							return isEqual, cot, nil
+						}
+					*/
+				}
 			}
 		}
 	}()

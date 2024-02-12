@@ -360,4 +360,190 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			Expect(verified.GetCreateTimestatmp()).Should(Equal("2024-02-06T15:37:52+03:00"))
 		})
 	})
+
+	Context("Тест 2. Проверка возможности замены старых значений объекта, новыми значениями, если они отличаются", func() {
+		oldStruct := datamodels.EventMessageTheHiveAlert{
+			Base:           false,
+			StartDate:      "2024-02-06T15:20:30+03:00",
+			RootId:         "~84625227848",
+			ObjectId:       "~4192",
+			ObjectType:     "alert",
+			Organisation:   "GCM",
+			OrganisationId: "~4192",
+			Operation:      "new",
+			RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			Details: datamodels.EventAlertDetails{
+				SourceRef:   "TSK-8MSK-6-ZPM-240206-1215999",
+				Title:       "222",
+				Description: "111",
+				Tags: []string{
+					"ATs:reason=\"INFO Controlled FGS\"",
+					"Sensor:id=\"8030066\"",
+				},
+			},
+			Object: datamodels.EventAlertObject{
+				Severity:        1,
+				Tlp:             1,
+				Pap:             1,
+				UnderliningId:   "~85455464790",
+				Id:              "~85455464790",
+				CreatedBy:       "ddddd",
+				CreatedAt:       "1970-01-01T03:00:00+03:00",
+				UpdatedAt:       "1970-01-01T03:00:00+03:00",
+				UnderliningType: "aalllert",
+				Title:           "vbb er3",
+				Description:     "any more",
+				Status:          "None",
+				Date:            "2024-02-06T15:37:52+03:00",
+				Type:            "snort_alert",
+				ObjectType:      "",
+				Source:          "zsiеmSystems",
+				SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
+				Case:            "alert",
+				CaseTemplate:    "alert_snort",
+				Tags: []string{
+					"'Sensor:id=\"8030012\"'",
+					"'Webhook:send=ES'",
+				},
+				CustomFields: map[string]datamodels.CustomerFields{
+					"first-time": &datamodels.CustomFieldDateType{
+						Order: 0,
+						Date:  "2024-02-06T15:20:30+03:00",
+					},
+					"last-time": &datamodels.CustomFieldDateType{
+						Order: 0,
+						Date:  "2024-02-06T15:20:30+03:00",
+					},
+				},
+			},
+		}
+
+		newStruct := datamodels.EventMessageTheHiveAlert{
+			Base:           true,                       //замена
+			StartDate:      "2024-02-13T5:12:24+03:00", //замена
+			RootId:         "~84625227848",
+			ObjectId:       "~4192",
+			ObjectType:     "ALERT",   //замена
+			Organisation:   "GCM-MSK", //замена
+			OrganisationId: "~419211", //замена
+			Operation:      "update",  //замена
+			RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			Details: datamodels.EventAlertDetails{
+				SourceRef:   "TSK-8MSK-6-ZPM-240206-1215999",
+				Title:       "протоколы: **smtp/tcp**",            //замена
+				Description: "использует протоколы: **smtp/tcp**", //замена
+				//замена
+				Tags: []string{
+					"ATs:reason=\"INFO Controlled FGS\"",
+					"Sensor:id=\"8030066\"",
+					"'APPA:Direction=\"inbound\"'",
+					"ATs:geoip=\"Китай\"",
+					"misp:Network activity=\"snort\"",
+				},
+			},
+			Object: datamodels.EventAlertObject{
+				Severity:        1,
+				Tlp:             1,
+				Pap:             1,
+				UnderliningId:   "~85455464790",
+				Id:              "~85455464790",
+				CreatedBy:       "d.zablotsky@cloud.gcm",       //замена
+				CreatedAt:       "2024-02-10T23:25:14+03:00",   //замена
+				UpdatedAt:       "2024-02-06T15:15:14+03:00",   //замена
+				UnderliningType: "ALERT",                       //замена
+				Title:           "Атака направлена **внутрь**", //замена
+				Description:     "Вирусное заражение",          //замена
+				Status:          "None",
+				Date:            "2024-02-06T15:37:52+03:00",
+				Type:            "snort_alert",
+				ObjectType:      "",
+				Source:          "zsiеmSystems",
+				SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
+				Case:            "alert",
+				CaseTemplate:    "Alert_Snort", //замена
+				//замена
+				Tags: []string{
+					"'Webhook:send=ES'",
+					"'Sensor:id=\"8030105\"'",
+					"misp:Payload delivery=\"email-src\"",
+				},
+				CustomFields: map[string]datamodels.CustomerFields{
+					"first-time": &datamodels.CustomFieldDateType{
+						Order: 0,
+						Date:  "2024-02-06T15:20:30+03:00",
+					},
+					//замена
+					"last-time": &datamodels.CustomFieldDateType{
+						Order: 0,
+						Date:  "2024-02-06T15:20:30+03:00",
+					},
+				},
+			},
+		}
+
+		It("Ряд полей должны быть успешно заменены", func() {
+			num, err := oldStruct.ReplacingOldValues(newStruct)
+
+			Expect(err).ShouldNot(HaveOccurred())
+			//кол-во замененных полей
+			Expect(num).Should(Equal(18))
+
+			//меняется
+			Expect(oldStruct.GetBase()).Should(BeTrue())
+			//меняется
+			Expect(oldStruct.GetStartDate()).Should(Equal("2024-02-13T5:12:24+03:00"))
+			//НЕ меняется
+			Expect(oldStruct.GetObjectId()).Should(Equal("~4192"))
+			//меняется
+			Expect(oldStruct.GetObjectType()).Should(Equal("ALERT"))
+			//меняется
+			Expect(oldStruct.GetOrganisation()).Should(Equal("GCM-MSK"))
+			//меняется
+			Expect(oldStruct.GetOperation()).Should(Equal("update"))
+			//меняется
+			Expect(oldStruct.GetOrganisationId()).Should(Equal("~419211"))
+			//НЕ меняется
+			Expect(oldStruct.GetRequestId()).Should(Equal("55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497"))
+
+			//--- Details ---
+			//НЕ меняется
+			Expect(oldStruct.Details.GetSourceRef()).Should(Equal("TSK-8MSK-6-ZPM-240206-1215999"))
+			//меняется
+			Expect(oldStruct.Details.GetTitle()).Should(Equal("протоколы: **smtp/tcp**"))
+			//меняется
+			Expect(oldStruct.Details.GetDescription()).Should(Equal("использует протоколы: **smtp/tcp**"))
+			//меняется
+			fmt.Println("Details Tags:", oldStruct.Details.GetTags())
+			Expect(len(oldStruct.Details.GetTags())).Should(Equal(5))
+
+			//--- Object ---
+			//меняется
+			Expect(oldStruct.Object.GetCreatedBy()).Should(Equal("d.zablotsky@cloud.gcm"))
+			//меняется
+			Expect(oldStruct.Object.GetCreatedAt()).Should(Equal("2024-02-10T23:25:14+03:00"))
+			//меняется
+			Expect(oldStruct.Object.GetUpdatedAt()).Should(Equal("2024-02-06T15:15:14+03:00"))
+			//меняется
+			Expect(oldStruct.Object.UnderliningType).Should(Equal("ALERT"))
+			//меняется
+			Expect(oldStruct.Object.GetTitle()).Should(Equal("Атака направлена **внутрь**"))
+			//меняется
+			Expect(oldStruct.Object.GetDescription()).Should(Equal("Вирусное заражение"))
+			//НЕ меняется
+			Expect(oldStruct.Object.GetSource()).Should(Equal("zsiеmSystems"))
+			//меняется
+			Expect(oldStruct.Object.GetCaseTemplate()).Should(Equal("Alert_Snort"))
+			//меняется
+			fmt.Println("Details Tags:", oldStruct.Details.GetTags())
+			Expect(len(oldStruct.Details.GetTags())).Should(Equal(6))
+
+			customFields := oldStruct.Object.GetCustomFields()
+			_, _, _, firstTime := customFields["first-time"].Get()
+			_, _, _, lastTime := customFields["last-time"].Get()
+			//НЕ меняется
+			Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
+			//меняется
+			Expect(lastTime).Should(Equal("2024-02-07T22:48:13+03:00"))
+		})
+	})
 })

@@ -243,6 +243,11 @@ func (e *EventAlertDetails) SetAnyTags(i interface{}) {
 	e.Tags = append(e.Tags, fmt.Sprint(i))
 }
 
+// SetSliceValueTags устанавливает []STRING значение для поля Tags
+func (e *EventAlertDetails) SetSliceValueTags(v []string) {
+	e.Tags = v
+}
+
 func (e *EventAlertDetails) ToStringBeautiful(num int) string {
 	str := strings.Builder{}
 
@@ -625,6 +630,11 @@ func (e *EventAlertObject) SetAnyTags(i interface{}) {
 	e.Tags = append(e.Tags, fmt.Sprint(i))
 }
 
+// SetSliceValueTags устанавливает []STRING значение для поля Tags
+func (e *EventAlertObject) SetSliceValueTags(v []string) {
+	e.Tags = v
+}
+
 func (e *EventAlertObject) GetCustomFields() map[string]CustomerFields {
 	return e.CustomFields
 }
@@ -646,7 +656,7 @@ func (e *EventAlertObject) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%screatedAt: '%s'\n", ws, e.CreatedAt))
 	str.WriteString(fmt.Sprintf("%supdatedAt: '%s'\n", ws, e.UpdatedAt))
 	str.WriteString(fmt.Sprintf("%s_type: '%s'\n", ws, e.UnderliningType))
-	str.WriteString(fmt.Sprintf("%sfolow: '%t'\n", ws, e.Follow))
+	str.WriteString(fmt.Sprintf("%sfollow: '%t'\n", ws, e.Follow))
 	str.WriteString(fmt.Sprintf("%sseverity: '%d'\n", ws, e.Severity))
 	str.WriteString(fmt.Sprintf("%stlp: '%d'\n", ws, e.Tlp))
 	str.WriteString(fmt.Sprintf("%spap: '%d'\n", ws, e.Pap))

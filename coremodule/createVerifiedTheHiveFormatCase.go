@@ -1,6 +1,7 @@
 package coremodule
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -52,16 +53,27 @@ func NewVerifiedTheHiveFormatCase(
 	for {
 		select {
 		case data := <-input:
+			var (
+				rootId         string
+				handlerIsExist bool
+			)
+
 			verifiedCase.SetID(data.UUID)
 
 			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
 				verifiedCase.SetSource(source)
 			}
 
+			if data.FieldBranch == "event.rootId" {
+				rootId = fmt.Sprint(data.Value)
+			}
+
 			//******************************************************************
 			//********** Сбор всех объектов относящихся к полю Event  **********
 			// event element
 			if lf, ok := listHandlerEvent[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -69,6 +81,8 @@ func NewVerifiedTheHiveFormatCase(
 
 			// event.object element
 			if lf, ok := listHandlerEventObject[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -76,6 +90,8 @@ func NewVerifiedTheHiveFormatCase(
 
 			// event.object.customFields element
 			if lf, ok := listHandlerEventObjectCustomFields[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -83,6 +99,8 @@ func NewVerifiedTheHiveFormatCase(
 
 			// event.details element
 			if lf, ok := listHandlerEventDetails[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -90,6 +108,8 @@ func NewVerifiedTheHiveFormatCase(
 
 			// event.details.customFields element
 			if lf, ok := listHandlerEventDetailsCustomFields[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -100,6 +120,8 @@ func NewVerifiedTheHiveFormatCase(
 			// для всех полей входящих в observables, кроме содержимого
 			//поля reports
 			if lf, ok := listHandlerObservables[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					r := reflect.TypeOf(data.Value)
 					switch r.Kind() {
@@ -118,12 +140,15 @@ func NewVerifiedTheHiveFormatCase(
 
 			//для всех полей входящих в состав observables.reports
 			if strings.Contains(data.FieldBranch, "observables.reports.") {
+				handlerIsExist = true
 				so.HandlerReportValue(data.FieldBranch, data.Value)
 			}
 
 			//*********************************************************************
 			//********** Сбор всех объектов относящихся к полю Ttp  ***************
 			if lf, ok := listHandlerTtp[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					r := reflect.TypeOf(data.Value)
 					switch r.Kind() {
@@ -137,6 +162,14 @@ func NewVerifiedTheHiveFormatCase(
 						f(data.Value)
 
 					}
+				}
+			}
+
+			// записываем в лог-файл поля, которые не были обработаны
+			if handlerIsExist {
+				logging <- datamodels.MessageLogging{
+					MsgData: fmt.Sprintf("event rootId: '%s', field: '%s', value: '%v'", rootId, data.FieldBranch, data.Value),
+					MsgType: "case_raw_fields",
 				}
 			}
 

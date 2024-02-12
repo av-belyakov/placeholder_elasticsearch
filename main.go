@@ -227,7 +227,7 @@ func init() {
 	}
 
 	if warning != "" {
-		_ = sl.WriteLoggingData(fmt.Sprint("%v", warning), "warning")
+		_ = sl.WriteLoggingData(warning, "warning")
 	}
 
 	//инициализируем модуль временного хранения информации
