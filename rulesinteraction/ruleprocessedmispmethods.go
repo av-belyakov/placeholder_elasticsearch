@@ -20,7 +20,7 @@ func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error)
 	_, f, l, _ := runtime.Caller(0)
 	rootPath, err := getRootPath(rootDir)
 	if err != nil {
-		return &lr, []string{}, fmt.Errorf("'%s' %s:%d", err.Error(), f, l+1)
+		return &lr, []string{}, fmt.Errorf("'%v' %s:%d", err, f, l+1)
 	}
 
 	viper.SetConfigFile(path.Join(rootPath, workDir, fileName))
@@ -29,7 +29,7 @@ func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error)
 	_, f, l, _ = runtime.Caller(0)
 	err = viper.ReadInConfig()
 	if err != nil {
-		return &lr, []string{}, fmt.Errorf("'%s' %s:%d", err.Error(), f, l+1)
+		return &lr, []string{}, fmt.Errorf("'%v' %s:%d", err, f, l+1)
 	}
 
 	_, f, l, _ = runtime.Caller(0)
@@ -42,7 +42,7 @@ func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error)
 		dc.Squash = true
 	})
 	if err != nil {
-		return &lr, []string{}, fmt.Errorf("'%s' %s:%d", err.Error(), f, l+1)
+		return &lr, []string{}, fmt.Errorf("'%v' %s:%d", err, f, l+1)
 	}
 
 	warningCheckRules := lr.verification()

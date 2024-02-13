@@ -74,7 +74,7 @@ func (hsd handlerSendData) insertDocument(index string, b []byte) (*esapi.Respon
 	res, err := hsd.client.Index(index, buf)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		return res, fmt.Errorf("'%s' %s:%d", err.Error(), f, l-1)
+		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
 	if res.StatusCode == http.StatusCreated || res.StatusCode == http.StatusOK {
@@ -84,7 +84,7 @@ func (hsd handlerSendData) insertDocument(index string, b []byte) (*esapi.Respon
 	r := map[string]interface{}{}
 	if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		return res, fmt.Errorf("'%s' %s:%d", err.Error(), f, l-1)
+		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
 	if e, ok := r["error"]; ok {
@@ -110,20 +110,20 @@ func (hsd handlerSendData) deleteDocument(index []string, query *strings.Reader)
 	)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		return countDoc, fmt.Errorf("'%s' %s:%d", err.Error(), f, l-1)
+		return countDoc, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
 	decEs := datamodels.ElasticsearchResponseCase{}
 	if err = json.NewDecoder(res.Body).Decode(&decEs); err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		return countDoc, fmt.Errorf("'%s' %s:%d", err.Error(), f, l-1)
+		return countDoc, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
 	if decEs.Options.Total.Value > 0 {
 		countDoc = decEs.Options.Total.Value
 		for _, v := range decEs.Options.Hits {
 			if _, errDel := hsd.client.Delete(v.Index, v.ID); errDel != nil {
-				err = fmt.Errorf("%s, %s", err.Error(), errDel.Error())
+				err = fmt.Errorf("%v, %v", err, errDel)
 			}
 		}
 	}
@@ -238,6 +238,7 @@ func HandlerElasticSearch(
 			case "handling alert":
 				if data.Command == "add new alert" {
 					fmt.Println(data.Data)
+
 					/*
 						Тут должна быть обработка полученных от модуля core
 						verifiedAlert.Get(),

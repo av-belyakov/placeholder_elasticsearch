@@ -361,7 +361,7 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 		})
 	})
 
-	Context("Тест 2. Проверка возможности замены старых значений объекта, новыми значениями, если они отличаются", func() {
+	Context("Тест 2. Проверка замены старых значений EventMessageTheHiveAlert объекта, новыми значениями, если они отличаются", func() {
 		oldStruct := datamodels.EventMessageTheHiveAlert{
 			Base:           false,
 			StartDate:      "2024-02-06T15:20:30+03:00",
@@ -475,13 +475,13 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 					//замена
 					"last-time": &datamodels.CustomFieldDateType{
 						Order: 0,
-						Date:  "2024-02-06T15:20:30+03:00",
+						Date:  "2024-02-07T22:48:13+03:00",
 					},
 				},
 			},
 		}
 
-		It("Ряд полей должны быть успешно заменены", func() {
+		It("Ряд полей в EventMessageTheHiveAlert должны быть успешно заменены", func() {
 			num, err := oldStruct.ReplacingOldValues(newStruct)
 
 			Expect(err).ShouldNot(HaveOccurred())
@@ -513,7 +513,6 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			//меняется
 			Expect(oldStruct.Details.GetDescription()).Should(Equal("использует протоколы: **smtp/tcp**"))
 			//меняется
-			fmt.Println("Details Tags:", oldStruct.Details.GetTags())
 			Expect(len(oldStruct.Details.GetTags())).Should(Equal(5))
 
 			//--- Object ---
@@ -524,7 +523,7 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			//меняется
 			Expect(oldStruct.Object.GetUpdatedAt()).Should(Equal("2024-02-06T15:15:14+03:00"))
 			//меняется
-			Expect(oldStruct.Object.UnderliningType).Should(Equal("ALERT"))
+			Expect(oldStruct.Object.GetUnderliningType()).Should(Equal("ALERT"))
 			//меняется
 			Expect(oldStruct.Object.GetTitle()).Should(Equal("Атака направлена **внутрь**"))
 			//меняется
@@ -534,8 +533,7 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			//меняется
 			Expect(oldStruct.Object.GetCaseTemplate()).Should(Equal("Alert_Snort"))
 			//меняется
-			fmt.Println("Details Tags:", oldStruct.Details.GetTags())
-			Expect(len(oldStruct.Details.GetTags())).Should(Equal(6))
+			Expect(len(oldStruct.Object.GetTags())).Should(Equal(4))
 
 			customFields := oldStruct.Object.GetCustomFields()
 			_, _, _, firstTime := customFields["first-time"].Get()
@@ -544,6 +542,246 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
 			//меняется
 			Expect(lastTime).Should(Equal("2024-02-07T22:48:13+03:00"))
+		})
+	})
+
+	Context("Тест 3. Проверка замены старых значений AlertMessageTheHiveAlert объекта, новыми значениями, если они отличаются", func() {
+		oldStruct := datamodels.AlertMessageTheHiveAlert{
+			Follow:    false,
+			Tlp:       2,
+			Severity:  2,
+			Date:      "1970-01-01T03:00:00+03:00",
+			CreatedAt: "2024-02-07T11:11:11+03:00",
+			// UpdatedAt: ,
+			UpdatedBy:       "webhook@cloud.gcm",
+			UnderliningId:   "~88026357960",
+			Status:          "New",
+			Type:            "snort",
+			UnderliningType: "__Snort",
+			Description:     "free alerts",
+			CaseTemplate:    "sonr",
+			SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
+			Tags: []string{
+				"Sensor:id=\"8030105\"",
+				"ATs:reason=\"Редко встречающиеся признаки ВПО\"",
+				"'Webhook:send=ES'",
+			},
+			CustomFields: map[string]datamodels.CustomerFields{
+				"first-time": &datamodels.CustomFieldDateType{
+					Order: 0,
+					Date:  "2024-01-01T05:22:30+03:00",
+				},
+				"last-time": &datamodels.CustomFieldDateType{
+					Order: 0,
+					Date:  "2024-01-17T00:18:13+03:00",
+				},
+			},
+			Artifacts: []datamodels.AlertArtifact{
+				{
+					Ioc:              false,
+					Sighted:          false,
+					IgnoreSimilarity: true,
+					Tlp:              1,
+					UnderliningId:    "~84302220012",
+					Id:               "~84302220012",
+					CreatedAt:        "2024-01-26T13:02:01+03:00",
+					//UpdatedAt: ,
+					StartDate: "2024-01-26T13:02:01+03:00",
+					CreatedBy: "friman@email.net",
+					UpdatedBy: "friman@email.net",
+					Data:      "63.5656 89.12",
+					DataType:  "coordinates",
+					Message:   "Any message",
+					Tags: []string{
+						"Sensor:id=\"1111111\"",
+						"geoip:country=CH",
+						"'Webhook:send=ES'",
+					},
+				},
+				{
+					Ioc:              true,
+					Sighted:          false,
+					IgnoreSimilarity: true,
+					Tlp:              2,
+					UnderliningId:    "~306522241",
+					Id:               "~306522241",
+					CreatedAt:        "2024-01-16T03:32:01+03:00",
+					//UpdatedAt: ,
+					StartDate: "2024-01-04T19:32:01+03:00",
+					CreatedBy: "example@email.net",
+					UpdatedBy: "example@email.net",
+					Data:      "5.63.123.99",
+					DataType:  "ipaddr",
+					Message:   "ffdffd fdg",
+					Tags: []string{
+						"Sensor:id=\"3411\"",
+						"geoip:country=RU",
+						"'Webhook:send=ES'",
+					},
+				},
+			},
+		}
+
+		newStruct := datamodels.AlertMessageTheHiveAlert{
+			Follow:          true, //замена
+			Tlp:             3,    //замена
+			Severity:        4,    //замена
+			Date:            "1970-01-01T03:00:00+03:00",
+			CreatedAt:       "2024-02-10T10:00:41+03:00", //замена
+			UpdatedAt:       "2024-02-11T12:34:48+03:00", //замена
+			UpdatedBy:       "webexample@cloud.gcm",      //замена
+			UnderliningId:   "~88026357960",
+			Status:          "Update",       //замена
+			Type:            "snort_alert",  //замена
+			UnderliningType: "snort_alert",  //замена
+			Description:     "free alerts!", //замена
+			CaseTemplate:    "snort",        //замена
+			SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
+			//замена
+			Tags: []string{
+				"ATs:reason=\"Редко встречающиеся признаки ВПО\"",
+				"'Webhook:send=ES'",
+				"APPA:Direction=\"inbound\"",
+			},
+			CustomFields: map[string]datamodels.CustomerFields{
+				//замена
+				"first-time": &datamodels.CustomFieldDateType{
+					Order: 0,
+					Date:  "2024-01-22T15:13:10+03:00",
+				},
+				"last-time": &datamodels.CustomFieldDateType{
+					Order: 0,
+					Date:  "2024-01-17T00:18:13+03:00",
+				},
+			},
+			Artifacts: []datamodels.AlertArtifact{
+				{
+					Ioc:              true,  //замена
+					Sighted:          true,  //замена
+					IgnoreSimilarity: false, //замена
+					Tlp:              3,     //замена
+					UnderliningId:    "",    //НЕ замена
+					Id:               "~84302220012",
+					CreatedAt:        "2024-01-27T22:17:17+03:00", //замена
+					UpdatedAt:        "2024-02-01T02:00:47+03:00", //замена
+					StartDate:        "2024-01-26T13:02:01+03:00",
+					CreatedBy:        "friman@email.net",
+					UpdatedBy:        "grintman@email.net", //замена
+					Data:             "63.5656 89.1211",    //замена
+					DataType:         "coordinates",
+					Message:          "Any message",
+					//замена
+					Tags: []string{
+						"Sensor:id=\"12345667\"",
+						"geoip:country=CH",
+						"geoip:country=US",
+						"'Webhook:send=ES'",
+					},
+				},
+				{
+					Ioc:              false,
+					Sighted:          false,
+					IgnoreSimilarity: true,
+					Tlp:              1,
+					UnderliningId:    "~7344456683",
+					Id:               "~7344456683",
+					CreatedAt:        "2024-01-17T13:12:01+03:00",
+					UpdatedAt:        "2024-02-14T29:13:11+03:00",
+					StartDate:        "2024-01-04T19:32:01+03:00",
+					CreatedBy:        "example@email.net",
+					UpdatedBy:        "vbbbba@email.net",
+					Data:             "5.63.123.99",
+					DataType:         "ipaddr",
+					Message:          "ffdffd fdg",
+					Tags: []string{
+						"geoip:country=RU",
+						"'Webhook:send=ES'",
+					},
+				},
+			},
+		}
+		It("Ряд полей в AlertMessageTheHiveAlert должны быть успешно заменены", func() {
+			num, err := oldStruct.ReplacingOldValues(newStruct)
+
+			Expect(err).ShouldNot(HaveOccurred())
+			//кол-во замененных полей
+			Expect(num).Should(Equal(22))
+
+			//Alert
+			//меняется
+			Expect(oldStruct.GetFollow()).Should(BeTrue())
+			//меняется
+			Expect(oldStruct.GetTlp()).Should(Equal(uint64(3)))
+			//меняется
+			Expect(oldStruct.GetSeverity()).Should(Equal(uint64(4)))
+			//НЕ меняется
+			Expect(oldStruct.GetDate()).Should(Equal("1970-01-01T03:00:00+03:00"))
+			//меняется
+			Expect(oldStruct.GetCreatedAt()).Should(Equal("2024-02-10T10:00:41+03:00"))
+			//меняется
+			Expect(oldStruct.GetUpdatedAt()).Should(Equal("2024-02-11T12:34:48+03:00"))
+			//меняется
+			Expect(oldStruct.GetStatus()).Should(Equal("Update"))
+			//меняется
+			Expect(oldStruct.GetType()).Should(Equal("snort_alert"))
+			//меняется
+			Expect(oldStruct.GetUnderliningType()).Should(Equal("snort_alert"))
+			//меняется
+			Expect(oldStruct.GetDescription()).Should(Equal("free alerts!"))
+			//меняется
+			Expect(oldStruct.GetCaseTemplate()).Should(Equal("snort"))
+			//меняется
+			Expect(len(oldStruct.GetTags())).Should(Equal(4))
+
+			customFields := oldStruct.GetCustomFields()
+			_, _, _, firstTime := customFields["first-time"].Get()
+			_, _, _, lastTime := customFields["last-time"].Get()
+			//меняется
+			Expect(firstTime).Should(Equal("2024-01-22T15:13:10+03:00"))
+			//НЕ меняется
+			Expect(lastTime).Should(Equal("2024-01-17T00:18:13+03:00"))
+
+			for _, v := range oldStruct.GetArtifacts() {
+				if v.GetId() != "~84302220012" {
+					continue
+				}
+				//fmt.Println(v.ToStringBeautiful(1))
+
+				//не должно быть изменено на пустое значение
+				Expect(v.GetUnderliningId()).ShouldNot(Equal(""))
+				//меняется
+				Expect(v.GetIoc()).Should(BeTrue())
+				//меняется
+				Expect(v.GetSighted()).Should(BeTrue())
+				//меняется
+				Expect(v.GetIgnoreSimilarity()).ShouldNot(BeTrue())
+				//меняется
+				Expect(v.GetTlp()).Should(Equal(uint64(3)))
+				//меняется
+				Expect(v.GetIoc()).Should(BeTrue())
+				//меняется
+				Expect(v.GetCreatedAt()).Should(Equal("2024-01-27T22:17:17+03:00"))
+				//меняется
+				Expect(v.GetUpdatedAt()).Should(Equal("2024-02-01T02:00:47+03:00"))
+				//НЕ меняется
+				Expect(v.GetCreatedBy()).Should(Equal("friman@email.net"))
+				//меняется
+				Expect(v.GetUpdatedBy()).Should(Equal("grintman@email.net"))
+				//меняется
+				Expect(v.GetData()).Should(Equal("63.5656 89.1211"))
+				//меняется
+				Expect(len(v.GetTags())).Should(Equal(5))
+
+				customFields := oldStruct.GetCustomFields()
+				_, _, _, firstTime := customFields["first-time"].Get()
+				_, _, _, lastTime := customFields["last-time"].Get()
+				//меняется
+				Expect(firstTime).Should(Equal("2024-01-22T15:13:10+03:00"))
+				//НЕ меняется
+				Expect(lastTime).Should(Equal("2024-01-17T00:18:13+03:00"))
+			}
+
+			Expect(len(oldStruct.GetArtifacts())).Should(Equal(3))
 		})
 	})
 })

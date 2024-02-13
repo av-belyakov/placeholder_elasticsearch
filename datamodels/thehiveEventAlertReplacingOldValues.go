@@ -9,16 +9,17 @@ import (
 
 // ReplacingOldValues заменяет старые значения структуры EventMessageTheHiveAlert
 // новыми значениями. Изменяемые поля:
-//
-//	Base           bool              `json:"base" bson:"base"`
-//	StartDate      string            `json:"startDate" bson:"startDate"` //в формате RFC3339
-//	RootId         string            `json:"rootId" bson:"rootId"`
-//	ObjectId       string            `json:"objectId" bson:"objectId"`
-//	ObjectType     string            `json:"objectType" bson:"objectType"`
-//	Organisation   string            `json:"organisation" bson:"organisation"`
-//	OrganisationId string            `json:"organisationId" bson:"organisationId"`
-//	Operation      string            `json:"operation" bson:"operation"`
-//	RequestId      string            `json:"requestId" bson:"requestId"`
+// Base - основа
+// StartDate - начальная дата
+// RootId - главный уникальный идентификатор
+// ObjectId - уникальный идентификатор объекта
+// ObjectType - тип объекта
+// Organisation - наименование организации
+// OrganisationId - уникальный идентификатор организации
+// Operation - операция
+// RequestId - уникальный идентификатор запроса
+// Details - детальная информация о событии
+// Object - объект события
 func (e *EventMessageTheHiveAlert) ReplacingOldValues(element EventMessageTheHiveAlert) (int, error) {
 	var (
 		err                  error
@@ -65,6 +66,13 @@ DONE:
 			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
 				if !currentStruct.Field(i).CanSet() {
 					continue
+				}
+
+				if str, ok := newStruct.Field(j).Interface().(string); ok {
+					//не обновлять текущие значения новыми пустыми значениями
+					if str == "" {
+						continue
+					}
 				}
 
 				currentStruct.Field(i).Set(newStruct.Field(j))
@@ -125,13 +133,18 @@ func (d *EventAlertDetails) ReplacingOldValues(element EventAlertDetails) int {
 					continue
 				}
 
+				if str, ok := newStruct.Field(j).Interface().(string); ok {
+					//не обновлять текущие значения новыми пустыми значениями
+					if str == "" {
+						continue
+					}
+				}
+
 				currentStruct.Field(i).Set(newStruct.Field(j))
 				countReplacingFields++
 			}
 		}
 	}
-
-	fmt.Println("COUNT Details:", countReplacingFields)
 
 	return countReplacingFields
 }
@@ -218,6 +231,13 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
 				if !currentStruct.Field(i).CanSet() {
 					continue
+				}
+
+				if str, ok := newStruct.Field(j).Interface().(string); ok {
+					//не обновлять текущие значения новыми пустыми значениями
+					if str == "" {
+						continue
+					}
 				}
 
 				currentStruct.Field(i).Set(newStruct.Field(j))

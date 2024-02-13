@@ -12,7 +12,6 @@ package datamodels
 // RequestId - уникальный идентификатор запроса
 // Details - детальная информация о событии
 // Object - объект события
-
 type EventMessageTheHiveAlert struct {
 	Base           bool              `json:"base" bson:"base"`
 	StartDate      string            `json:"startDate" bson:"startDate"` //в формате RFC3339

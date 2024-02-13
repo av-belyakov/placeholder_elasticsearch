@@ -272,6 +272,11 @@ func (a *AlertMessageTheHiveAlert) SetValueArtifacts(v []AlertArtifact) {
 	a.Artifacts = v
 }
 
+// AddValueArtifact устанавливает значение для поля Artifacts
+func (a *AlertMessageTheHiveAlert) AddValueArtifact(v AlertArtifact) {
+	a.Artifacts = append(a.Artifacts, v)
+}
+
 func (a *AlertMessageTheHiveAlert) ToStringBeautiful(num int) string {
 	str := strings.Builder{}
 
