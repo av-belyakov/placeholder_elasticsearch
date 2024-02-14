@@ -17,13 +17,17 @@ func NewVerifiedTheHiveFormatAlert(
 	logging chan<- datamodels.MessageLogging,
 ) {
 	var (
-		event                   datamodels.EventMessageTheHiveAlert  = datamodels.EventMessageTheHiveAlert{}
-		eventObject             datamodels.EventAlertObject          = datamodels.EventAlertObject{}
-		eventDetails            datamodels.EventAlertDetails         = datamodels.EventAlertDetails{}
-		eventObjectCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		rootId string
 
-		alert                   datamodels.AlertMessageTheHiveAlert  = datamodels.AlertMessageTheHiveAlert{}
-		alertObjectCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		event        datamodels.EventMessageTheHiveAlert = datamodels.EventMessageTheHiveAlert{}
+		eventObject  datamodels.EventAlertObject         = datamodels.EventAlertObject{}
+		eventDetails datamodels.EventAlertDetails        = datamodels.EventAlertDetails{}
+		//eventObjectCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		eventObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
+
+		alert datamodels.AlertMessageTheHiveAlert = datamodels.AlertMessageTheHiveAlert{}
+		//alertObjectCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		alertObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 
 		//вспомогательный объект
 		sa listhandlerthehivejson.SupportiveAlertArtifacts = *listhandlerthehivejson.NewSupportiveAlertArtifacts()
@@ -56,10 +60,7 @@ func NewVerifiedTheHiveFormatAlert(
 	for {
 		select {
 		case data := <-input:
-			var (
-				rootId         string
-				handlerIsExist bool
-			)
+			var handlerIsExist bool
 
 			verifiedAlert.SetID(data.UUID)
 

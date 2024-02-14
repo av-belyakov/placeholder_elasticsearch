@@ -1,6 +1,7 @@
 package datamodels
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -67,6 +68,69 @@ func (s *SourceMessageTheHive) SetAnySource(i interface{}) {
 
 func (s SourceMessageTheHive) ToStringBeautiful(num int) string {
 	return fmt.Sprintf("source: '%s'\n", s.Source)
+}
+
+func (fields *CustomFields) Set(v map[string]CustomerFields) {
+	fields.CustomFields = v
+}
+
+func (fields *CustomFields) UnmarshalJSON(data []byte) error {
+	list := map[string]string{
+		"report":     "string",
+		"first-time": "date",
+		"last-time":  "date",
+	}
+
+	newResult := map[string]CustomerFields{}
+
+	type tmpType struct {
+		CustomFields map[string]*json.RawMessage
+	}
+	//list := map[string]*json.RawMessage{}
+	//tmp := map[string]CustomerFields{}
+	tmp := tmpType{}
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+
+	for k, v := range tmp.CustomFields {
+		fmt.Println("key:", k)
+
+		name, ok := list[k]
+		if !ok {
+			continue
+		}
+
+		switch name {
+		case "string":
+			custField := &CustomFieldStringType{}
+			if err := json.Unmarshal(*v, custField); err != nil {
+				return err
+			}
+
+			newResult[k] = custField
+
+		case "date":
+			custField := &CustomFieldDateType{}
+			if err := json.Unmarshal(*v, custField); err != nil {
+				return err
+			}
+
+			newResult[k] = custField
+
+		case "integer":
+			custField := &CustomFieldIntegerType{}
+			if err := json.Unmarshal(*v, custField); err != nil {
+				return err
+			}
+
+			newResult[k] = custField
+		}
+	}
+
+	fields.Set(newResult)
+
+	return nil
 }
 
 // Get возвращает значения CustomFieldStringType, где 1 и 3 значение это

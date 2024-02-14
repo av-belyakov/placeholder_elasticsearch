@@ -9,6 +9,7 @@ package datamodels
 type CustomerFields interface {
 	Set(oneStructField interface{}, twoStructField interface{})
 	Get() (fieldNameOne string, valueOne int, fieldNameTwo string, valueTwo string)
+	//UnmarshalJSON(data []byte) error
 }
 
 // ResponseMessageFromMispToTheHave содержит ответ для TheHive получаемый от MISP
@@ -38,6 +39,10 @@ type MainMessageTheHive struct {
 // Source - источник
 type SourceMessageTheHive struct {
 	Source string `json:"source" bson:"source"`
+}
+
+type CustomFields struct {
+	CustomFields map[string]CustomerFields `json:"customFields" bson:"customFields"`
 }
 
 type CustomFieldStringType struct {

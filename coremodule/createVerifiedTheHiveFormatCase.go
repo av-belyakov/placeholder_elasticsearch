@@ -26,8 +26,10 @@ func NewVerifiedTheHiveFormatCase(
 		eventObject  datamodels.EventCaseObject         = datamodels.EventCaseObject{}
 		eventDetails datamodels.EventCaseDetails        = datamodels.EventCaseDetails{}
 
-		eventObjectCustomFields  map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
-		eventDetailsCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		//eventObjectCustomFields  map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		//eventDetailsCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		eventObjectCustomFields  datamodels.CustomFields = datamodels.CustomFields{}
+		eventDetailsCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 	)
 
 	//******************* Основные обработчики для Event **********************

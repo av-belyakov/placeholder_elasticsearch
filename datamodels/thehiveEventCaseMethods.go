@@ -258,12 +258,21 @@ func (e *EventCaseDetails) SetAnyImpactStatus(i interface{}) {
 	e.ImpactStatus = fmt.Sprint(i)
 }
 
-func (e *EventCaseDetails) GetCustomFields() map[string]CustomerFields {
+/*
+	func (e *EventCaseDetails) GetCustomFields() map[string]CustomerFields {
+		return e.CustomFields
+	}
+*/
+func (e *EventCaseDetails) GetCustomFields() CustomFields {
 	return e.CustomFields
 }
 
 // SetValueCustomFields устанавливает STRING значение для поля CustomFields
-func (e *EventCaseDetails) SetValueCustomFields(v map[string]CustomerFields) {
+/*func (e *EventCaseDetails) SetValueCustomFields(v map[string]CustomerFields) {
+	e.CustomFields = v
+}*/
+// SetValueCustomFields устанавливает STRING значение для поля CustomFields
+func (e *EventCaseDetails) SetValueCustomFields(v CustomFields) {
 	e.CustomFields = v
 }
 
@@ -658,12 +667,23 @@ func (e *EventCaseObject) SetAnyTags(i interface{}) {
 	e.Tags = append(e.Tags, fmt.Sprint(i))
 }
 
-func (e *EventCaseObject) GetCustomFields() map[string]CustomerFields {
+/*
+	func (e *EventCaseObject) GetCustomFields() map[string]CustomerFields {
+		return e.CustomFields
+	}
+
+// SetValueCustomFields устанавливает STRING значение для поля CustomFields
+
+	func (e *EventCaseObject) SetValueCustomFields(v map[string]CustomerFields) {
+		e.CustomFields = v
+	}
+*/
+func (e *EventCaseObject) GetCustomFields() CustomFields {
 	return e.CustomFields
 }
 
 // SetValueCustomFields устанавливает STRING значение для поля CustomFields
-func (e *EventCaseObject) SetValueCustomFields(v map[string]CustomerFields) {
+func (e *EventCaseObject) SetValueCustomFields(v CustomFields) {
 	e.CustomFields = v
 }
 
@@ -716,11 +736,26 @@ func (eo EventCaseObject) ToStringBeautiful(num int) string {
 	return strB.String()
 }
 
-func CustomFieldsToStringBeautiful(l map[string]CustomerFields, num int) string {
+/*
+	func CustomFieldsToStringBeautiful(l map[string]CustomerFields, num int) string {
+		strB := strings.Builder{}
+		ws := supportingfunctions.GetWhitespace(num + 2)
+
+		for k, v := range l {
+			strB.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k))
+
+			nameOne, dataOne, nameTwo, dataTwo := v.Get()
+			strB.WriteString(fmt.Sprintf("%s%s: %d\n", ws, nameOne, dataOne))
+			strB.WriteString(fmt.Sprintf("%s%s: %s\n", ws, nameTwo, dataTwo))
+		}
+		return strB.String()
+	}
+*/
+func CustomFieldsToStringBeautiful(l CustomFields, num int) string {
 	strB := strings.Builder{}
 	ws := supportingfunctions.GetWhitespace(num + 2)
 
-	for k, v := range l {
+	for k, v := range l.CustomFields {
 		strB.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k))
 
 		nameOne, dataOne, nameTwo, dataTwo := v.Get()

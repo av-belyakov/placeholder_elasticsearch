@@ -2,6 +2,7 @@ package mongodbinteractions
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"runtime"
 
@@ -118,6 +119,95 @@ func (w *wrappers) AddNewCase(
 	counting <- datamodels.DataCounterSettings{
 		DataType: "update count insert MongoDB",
 		DataMsg:  "subject_case",
+		Count:    1,
+	}
+}
+
+// AddNewCase добавляет новый кейс в БД
+func (w *wrappers) AddNewAlert(
+	data interface{},
+	logging chan<- datamodels.MessageLogging,
+	counting chan<- datamodels.DataCounterSettings,
+) {
+	qp := QueryParameters{
+		NameDB:         w.NameDB,
+		ConnectDB:      w.ConnDB,
+		CollectionName: "alert_collection",
+	}
+
+	obj, ok := data.(*datamodels.VerifiedTheHiveAlert)
+	if !ok {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.VerifiedTheHiveCase' %s:%d", f, l-1),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	//поиск схожего документа
+	currentData := datamodels.VerifiedTheHiveAlert{}
+	err := qp.FindOne(bson.D{
+		{Key: "source", Value: obj.GetSource()},
+		{Key: "event.rootId", Value: obj.GetEvent().GetRootId()},
+	}).Decode(&currentData)
+	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
+	}
+
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		//если похожего документа нет в БД
+		currentData = *obj
+	} else {
+		//если похожий документ есть, выполняем замену старых значений новыми
+		if _, err := currentData.GetEvent().ReplacingOldValues(*obj.GetEvent()); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("error replacing old values event '%s' %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+		if _, err := currentData.GetAlert().ReplacingOldValues(*obj.GetAlert()); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("error replacing old values alert '%s' %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+	}
+
+	if _, err := qp.InsertData([]interface{}{currentData}, []mongo.IndexModel{
+		{
+			Keys: bson.D{
+				{Key: "@id", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		}, {
+			Keys: bson.D{
+				{Key: "source", Value: 1},
+				{Key: "event.rootId", Value: 1},
+			},
+			Options: &options.IndexOptions{},
+		},
+	}); err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	//счетчик
+	counting <- datamodels.DataCounterSettings{
+		DataType: "update count insert MongoDB",
+		DataMsg:  "subject_alert",
 		Count:    1,
 	}
 }

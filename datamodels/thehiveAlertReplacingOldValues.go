@@ -64,14 +64,19 @@ func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHi
 
 			// для обработки поля "CustomFields"
 			if typeOfCurrentStruct.Field(i).Name == "CustomFields" {
-				currentCustomFields, okCurr := currentStruct.Field(i).Interface().(map[string]CustomerFields)
-				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string]CustomerFields)
+				//currentCustomFields, okCurr := currentStruct.Field(i).Interface().(map[string]CustomerFields)
+				currentCustomFields, okCurr := currentStruct.Field(i).Interface().(CustomFields)
+				//newCustomFields, okNew := newStruct.Field(j).Interface().(map[string]CustomerFields)
+				newCustomFields, okNew := newStruct.Field(j).Interface().(CustomFields)
 				if !okCurr || !okNew {
 					continue
 				}
 
-				for k, v := range newCustomFields {
+				/*for k, v := range newCustomFields {
 					currentCustomFields[k] = v
+				}*/
+				for k, v := range newCustomFields.CustomFields {
+					currentCustomFields.CustomFields[k] = v
 				}
 
 				am.SetValueCustomFields(currentCustomFields)

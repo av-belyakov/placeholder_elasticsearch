@@ -254,12 +254,21 @@ func (a *AlertMessageTheHiveAlert) SetAnyTags(i interface{}) {
 	a.Tags = append(a.Tags, fmt.Sprint(i))
 }
 
-func (a *AlertMessageTheHiveAlert) GetCustomFields() map[string]CustomerFields {
+/*func (a *AlertMessageTheHiveAlert) GetCustomFields() map[string]CustomerFields {
 	return a.CustomFields
 }
 
 // SetValueCustomFields устанавливает значение для поля CustomFields
 func (a *AlertMessageTheHiveAlert) SetValueCustomFields(v map[string]CustomerFields) {
+	a.CustomFields = v
+}*/
+
+func (a *AlertMessageTheHiveAlert) GetCustomFields() CustomFields {
+	return a.CustomFields
+}
+
+// SetValueCustomFields устанавливает значение для поля CustomFields
+func (a *AlertMessageTheHiveAlert) SetValueCustomFields(v CustomFields) {
 	a.CustomFields = v
 }
 

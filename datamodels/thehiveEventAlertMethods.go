@@ -635,12 +635,23 @@ func (e *EventAlertObject) SetSliceValueTags(v []string) {
 	e.Tags = v
 }
 
-func (e *EventAlertObject) GetCustomFields() map[string]CustomerFields {
+/*
+	func (e *EventAlertObject) GetCustomFields() map[string]CustomerFields {
+		return e.CustomFields
+	}
+
+// SetValueCustomFields устанавливает STRING значение для поля CustomFields
+
+	func (e *EventAlertObject) SetValueCustomFields(v map[string]CustomerFields) {
+		e.CustomFields = v
+	}
+*/
+func (e *EventAlertObject) GetCustomFields() CustomFields {
 	return e.CustomFields
 }
 
 // SetValueCustomFields устанавливает STRING значение для поля CustomFields
-func (e *EventAlertObject) SetValueCustomFields(v map[string]CustomerFields) {
+func (e *EventAlertObject) SetValueCustomFields(v CustomFields) {
 	e.CustomFields = v
 }
 

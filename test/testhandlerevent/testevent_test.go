@@ -18,8 +18,10 @@ var _ = Describe("Testevent", Ordered, func() {
 		eventObject  datamodels.EventCaseObject         = datamodels.EventCaseObject{}
 		eventDetails datamodels.EventCaseDetails        = datamodels.EventCaseDetails{}
 
-		eventObjectCustomFields  map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
-		eventDetailsCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		//eventObjectCustomFields  map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		//eventDetailsCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		eventObjectCustomFields  datamodels.CustomFields = datamodels.CustomFields{}
+		eventDetailsCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 
 		listHandlerEvent                    map[string][]func(interface{})
 		listHandlerEventDetails             map[string][]func(interface{})
@@ -188,7 +190,7 @@ var _ = Describe("Testevent", Ordered, func() {
 
 		It("Объект Event.object.customFields должен быть успешно заполнен", func() {
 			//event.object.customFields
-			Expect(len(anyEventObject.GetCustomFields())).Should(Equal(9))
+			Expect(len(anyEventObject.GetCustomFields().CustomFields)).Should(Equal(9))
 		})
 
 		It("Объект Event.details.customFields должен быть успешно заполнен", func() {
@@ -205,19 +207,19 @@ var _ = Describe("Testevent", Ordered, func() {
 
 		It("Объект Event.details.customFields должен быть успешно заполнен", func() {
 			//event.details.customFields
-			Expect(len(anyEventDetails.GetCustomFields())).Should(Equal(8))
+			Expect(len(anyEventDetails.GetCustomFields().CustomFields)).Should(Equal(8))
 		})
 
 		It("Должен быть выведен полный объект Event", func() {
 			fmt.Printf("---=== EVENT OBJECT ===---\n%v\v", anyEvent.Get())
 
 			fmt.Println("--------- Event.object.CustomFields ---------")
-			for k, v := range anyEvent.Get().Object.GetCustomFields() {
+			for k, v := range anyEvent.Get().Object.GetCustomFields().CustomFields {
 				fmt.Printf("%s\n%v\n", k, v)
 			}
 
 			fmt.Println("--------- Event.details.CustomFields ---------")
-			for k, v := range anyEvent.Get().Details.GetCustomFields() {
+			for k, v := range anyEvent.Get().Details.GetCustomFields().CustomFields {
 				fmt.Printf("%s\n%v\n", k, v)
 			}
 

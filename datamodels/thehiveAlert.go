@@ -18,9 +18,21 @@ type VerifiedTheHiveAlert struct {
 	Alert            AlertMessageTheHiveAlert `json:"alert" bson:"alert"`
 }
 
-func NewVerifiedTheHiveAlert() *VerifiedTheHiveCase {
-	return &VerifiedTheHiveCase{
+func NewVerifiedTheHiveAlert() *VerifiedTheHiveAlert {
+	return &VerifiedTheHiveAlert{
 		CreateTimestatmp: supportingfunctions.GetDateTimeFormatRFC3339(time.Now().UnixMilli()),
+		Event: EventMessageTheHiveAlert{
+			Object: EventAlertObject{
+				CustomFields: CustomFields{
+					CustomFields: make(map[string]CustomerFields),
+				},
+			},
+		},
+		Alert: AlertMessageTheHiveAlert{
+			CustomFields: CustomFields{
+				CustomFields: make(map[string]CustomerFields),
+			},
+		},
 	}
 }
 
