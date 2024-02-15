@@ -220,11 +220,8 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 					continue
 				}
 
-				/*for k, v := range newCustomFields {
+				for k, v := range newCustomFields {
 					currentCustomFields[k] = v
-				}*/
-				for k, v := range newCustomFields.CustomFields {
-					currentCustomFields.CustomFields[k] = v
 				}
 
 				o.SetValueCustomFields(currentCustomFields)

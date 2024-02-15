@@ -43,19 +43,8 @@ type SupportiveTtp struct {
 func NewSupportiveTtp() *SupportiveTtp {
 	return &SupportiveTtp{
 		listAcceptedFields: []string(nil),
-		ttpTmp: datamodels.TtpMessage{
-			OccurDate:            "1970-01-01T03:00:00+03:00",
-			UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
-			ExtraData: datamodels.ExtraDataTtpMessage{
-				Pattern: datamodels.PatternExtraData{
-					UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
-				},
-				PatternParent: datamodels.PatternExtraData{
-					UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
-				},
-			},
-		},
-		ttps: []datamodels.TtpMessage(nil),
+		ttpTmp:             *datamodels.NewTtpMessage(),
+		ttps:               []datamodels.TtpMessage(nil),
 	}
 }
 
@@ -83,26 +72,7 @@ func (sttp *SupportiveTtp) HandlerValue(fieldBranch string, i interface{}, f fun
 	if !isExist && sttp.isExistFieldBranch(fieldBranch) {
 		sttp.listAcceptedFields = []string(nil)
 		sttp.ttps = append(sttp.ttps, sttp.ttpTmp)
-		sttp.ttpTmp = datamodels.TtpMessage{
-			OccurDate:            "1970-01-01T03:00:00+03:00",
-			UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
-			ExtraData: datamodels.ExtraDataTtpMessage{
-				Pattern: datamodels.PatternExtraData{
-					UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
-					Platforms:            []string(nil),
-					PermissionsRequired:  []string(nil),
-					DataSources:          []string(nil),
-					Tactics:              []string(nil),
-				},
-				PatternParent: datamodels.PatternExtraData{
-					UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
-					Platforms:            []string(nil),
-					PermissionsRequired:  []string(nil),
-					DataSources:          []string(nil),
-					Tactics:              []string(nil),
-				},
-			},
-		}
+		sttp.ttpTmp = *datamodels.NewTtpMessage()
 	}
 
 	sttp.listAcceptedFields = append(sttp.listAcceptedFields, fieldBranch)

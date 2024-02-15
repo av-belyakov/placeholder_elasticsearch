@@ -27,6 +27,20 @@ func (ttpm *TtpMessage) GetOccurDate() string {
 	return ttpm.OccurDate
 }
 
+func NewTtpMessage() *TtpMessage {
+	return &TtpMessage{
+		OccurDate:            "1970-01-01T00:00:00+00:00",
+		UnderliningCreatedAt: "1970-01-01T00:00:00+00:00",
+		ExtraData: ExtraDataTtpMessage{
+			Pattern: *NewPatternExtraData(),
+		},
+	}
+}
+
+func (ttpm *TtpMessage) Get() *TtpMessage {
+	return ttpm
+}
+
 // SetValueOccurDate устанавливает дату в формате RFC3339
 func (ttpm *TtpMessage) SetValueOccurDate(v string) {
 	ttpm.OccurDate = v
@@ -161,6 +175,16 @@ func (tm *TtpMessage) GetPattern() *PatternExtraData {
 
 func (tm *TtpMessage) GetPatternParent() *PatternExtraData {
 	return &tm.ExtraData.PatternParent
+}
+
+func NewPatternExtraData() *PatternExtraData {
+	return &PatternExtraData{
+		UnderliningCreatedAt: "1970-01-01T00:00:00+00:00",
+		Platforms:            []string(nil),
+		PermissionsRequired:  []string(nil),
+		DataSources:          []string(nil),
+		Tactics:              []string(nil),
+	}
 }
 
 func (ped *PatternExtraData) GetRemoteSupport() bool {

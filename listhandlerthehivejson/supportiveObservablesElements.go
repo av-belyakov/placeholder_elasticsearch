@@ -21,13 +21,8 @@ func NewSupportiveObservables() *SupportiveObservables {
 	return &SupportiveObservables{
 		listAcceptedFields:        []string(nil),
 		listAcceptedFieldsReports: []string(nil),
-		observableTmp: datamodels.ObservableMessage{
-			StartDate:            "1970-01-01T03:00:00+03:00",
-			UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
-			UnderliningUpdatedAt: "1970-01-01T03:00:00+03:00",
-			Reports:              map[string]datamodels.ReportTaxonomies{},
-		},
-		observables: make([]datamodels.ObservableMessage, 0)}
+		observableTmp:             *datamodels.NewObservableMessage(),
+		observables:               []datamodels.ObservableMessage(nil)}
 }
 
 // GetObservables возвращает []datamodels.ObservableMessage, однако, метод

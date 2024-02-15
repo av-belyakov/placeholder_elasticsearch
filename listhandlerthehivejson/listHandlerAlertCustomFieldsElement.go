@@ -8,24 +8,24 @@ func NewListHandlerAlertCustomFieldsElement(customFields datamodels.CustomFields
 		//--------------- first-time ------------------
 		"event.object.customFields.first-time.order": {func(i interface{}) {
 			newCustomFieldsElement("first-time", "date", &customFields)
-			_, _, _, str := customFields.CustomFields["first-time"].Get()
-			customFields.CustomFields["first-time"].Set(i, str)
+			_, _, _, str := customFields["first-time"].Get()
+			customFields["first-time"].Set(i, str)
 		}},
 		"event.object.customFields.first-time.date": {func(i interface{}) {
 			newCustomFieldsElement("first-time", "date", &customFields)
-			_, order, _, _ := customFields.CustomFields["first-time"].Get()
-			customFields.CustomFields["first-time"].Set(order, i)
+			_, order, _, _ := customFields["first-time"].Get()
+			customFields["first-time"].Set(order, i)
 		}},
 		//--------------- last-time ------------------
 		"event.object.customFields.last-time.order": {func(i interface{}) {
 			newCustomFieldsElement("last-time", "date", &customFields)
-			_, _, _, str := customFields.CustomFields["last-time"].Get()
-			customFields.CustomFields["last-time"].Set(i, str)
+			_, _, _, str := customFields["last-time"].Get()
+			customFields["last-time"].Set(i, str)
 		}},
 		"event.object.customFields.last-time.date": {func(i interface{}) {
 			newCustomFieldsElement("last-time", "date", &customFields)
-			_, order, _, _ := customFields.CustomFields["last-time"].Get()
-			customFields.CustomFields["last-time"].Set(order, i)
+			_, order, _, _ := customFields["last-time"].Get()
+			customFields["last-time"].Set(order, i)
 		}},
 	}
 }

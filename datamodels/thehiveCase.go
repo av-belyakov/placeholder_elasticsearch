@@ -10,18 +10,18 @@ import (
 
 // VerifiedTheHiveCase объект представляет собой верифицированный 'кейс' TheHive
 type VerifiedTheHiveCase struct {
-	ID               string                  `json:"@id" bson:"@id"`
-	ElasticsearchID  string                  `json:"@es_id" bson:"@es_id"`
-	CreateTimestatmp string                  `json:"@timestamp" bson:"@timestamp"`
-	Source           string                  `json:"source" bson:"source"`
-	Event            EventMessageTheHiveCase `json:"event" bson:"event"`
+	ID              string                  `json:"@id" bson:"@id"`
+	ElasticsearchID string                  `json:"@es_id" bson:"@es_id"`
+	CreateTimestamp string                  `json:"@timestamp" bson:"@timestamp"`
+	Source          string                  `json:"source" bson:"source"`
+	Event           EventMessageTheHiveCase `json:"event" bson:"event"`
 	ObservablesMessageTheHive
 	TtpsMessageTheHive
 }
 
 func NewVerifiedTheHiveCase() *VerifiedTheHiveCase {
 	return &VerifiedTheHiveCase{
-		CreateTimestatmp: supportingfunctions.GetDateTimeFormatRFC3339(time.Now().UnixMilli()),
+		CreateTimestamp: supportingfunctions.GetDateTimeFormatRFC3339(time.Now().UnixMilli()),
 	}
 }
 
@@ -73,7 +73,7 @@ func (hcase *VerifiedTheHiveCase) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	strB := strings.Builder{}
-	strB.WriteString(fmt.Sprintf("%screateTimestatmp: '%s'\n", ws, hcase.CreateTimestatmp))
+	strB.WriteString(fmt.Sprintf("%screateTimestatmp: '%s'\n", ws, hcase.CreateTimestamp))
 	strB.WriteString(fmt.Sprintf("%ssource: '%s'\n", ws, hcase.Source))
 	strB.WriteString(fmt.Sprintf("%sevent:\n", ws))
 	strB.WriteString(hcase.Event.ToStringBeautiful(num + 1))

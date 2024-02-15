@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"placeholder_elasticsearch/supportingfunctions"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // NewResponseMessage формирует новый тип ResponseMessageFromMispToTheHave с предустановленными значениями
@@ -70,32 +72,50 @@ func (s SourceMessageTheHive) ToStringBeautiful(num int) string {
 	return fmt.Sprintf("source: '%s'\n", s.Source)
 }
 
-func (fields *CustomFields) Set(v map[string]CustomerFields) {
-	fields.CustomFields = v
+func (fields *CustomFields) Set(v CustomFields) {
+	if *fields == nil {
+		*fields = make(CustomFields)
+	}
+
+	for key, value := range v {
+		(*fields)[key] = value
+	}
 }
 
 func (fields *CustomFields) UnmarshalJSON(data []byte) error {
+	type tmpCustomFieldType map[string]*json.RawMessage
+
 	list := map[string]string{
-		"report":     "string",
-		"first-time": "date",
-		"last-time":  "date",
+		"attack-type":         "string",
+		"class-attack":        "string",
+		"event-source":        "string",
+		"external-letter":     "string",
+		"geoip":               "string",
+		"ncircc-class-attack": "string",
+		"ncircc-bulletin-id":  "string",
+		"inbox1":              "string",
+		"inner-letter":        "string",
+		"ir-name":             "string",
+		"id-soa":              "string",
+		"notification":        "string",
+		"sphere":              "string",
+		"state":               "string",
+		"report":              "string",
+		"first-time":          "date",
+		"last-time":           "date",
+		"b2mid":               "integer",
+		"is-incident":         "boolen",
+		"work-admin":          "boolen",
 	}
 
-	newResult := map[string]CustomerFields{}
-
-	type tmpType struct {
-		CustomFields map[string]*json.RawMessage
-	}
-	//list := map[string]*json.RawMessage{}
-	//tmp := map[string]CustomerFields{}
-	tmp := tmpType{}
+	tmp := tmpCustomFieldType{}
 	if err := json.Unmarshal(data, &tmp); err != nil {
 		return err
 	}
 
-	for k, v := range tmp.CustomFields {
-		fmt.Println("key:", k)
-
+	//newResult := make(map[string]CustomerFields, len(tmp.CustomFields))
+	newResult := make(CustomFields, len(tmp))
+	for k, v := range tmp {
 		name, ok := list[k]
 		if !ok {
 			continue
@@ -121,6 +141,93 @@ func (fields *CustomFields) UnmarshalJSON(data []byte) error {
 		case "integer":
 			custField := &CustomFieldIntegerType{}
 			if err := json.Unmarshal(*v, custField); err != nil {
+				return err
+			}
+
+			newResult[k] = custField
+
+		case "boolen":
+			custField := &CustomFieldBoolenType{}
+			if err := json.Unmarshal(*v, custField); err != nil {
+				return err
+			}
+
+			newResult[k] = custField
+		}
+	}
+
+	fields.Set(newResult)
+
+	return nil
+}
+
+func (fields *CustomFields) UnmarshalBSON(data []byte) error {
+	type tmpCustomFieldType map[string]*bson.Raw
+
+	list := map[string]string{
+		"attack-type":         "string",
+		"class-attack":        "string",
+		"event-source":        "string",
+		"external-letter":     "string",
+		"geoip":               "string",
+		"ncircc-class-attack": "string",
+		"ncircc-bulletin-id":  "string",
+		"inbox1":              "string",
+		"inner-letter":        "string",
+		"ir-name":             "string",
+		"id-soa":              "string",
+		"notification":        "string",
+		"sphere":              "string",
+		"state":               "string",
+		"report":              "string",
+		"first-time":          "date",
+		"last-time":           "date",
+		"b2mid":               "integer",
+		"is-incident":         "boolen",
+		"work-admin":          "boolen",
+	}
+
+	tmp := tmpCustomFieldType{}
+	if err := bson.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+
+	//newResult := make(map[string]CustomerFields, len(tmp.CustomFields))
+	newResult := make(CustomFields, len(tmp))
+	for k, v := range tmp {
+		name, ok := list[k]
+		if !ok {
+			continue
+		}
+
+		switch name {
+		case "string":
+			custField := &CustomFieldStringType{}
+			if err := bson.Unmarshal(*v, custField); err != nil {
+				return err
+			}
+
+			newResult[k] = custField
+
+		case "date":
+			custField := &CustomFieldDateType{}
+			if err := bson.Unmarshal(*v, custField); err != nil {
+				return err
+			}
+
+			newResult[k] = custField
+
+		case "integer":
+			custField := &CustomFieldIntegerType{}
+			if err := bson.Unmarshal(*v, custField); err != nil {
+				return err
+			}
+
+			newResult[k] = custField
+
+		case "boolen":
+			custField := &CustomFieldBoolenType{}
+			if err := bson.Unmarshal(*v, custField); err != nil {
 				return err
 			}
 
@@ -177,5 +284,20 @@ func (cf *CustomFieldIntegerType) Set(order, integer interface{}) {
 
 	if i, ok := integer.(int); ok {
 		cf.Integer = i
+	}
+}
+
+// Get возвращает значения CustomFieldBoolenType, где 1 и 3 значение это
+// наименование поля
+func (cf *CustomFieldBoolenType) Get() (string, int, string, string) {
+	return "order", cf.Order, "boolen", fmt.Sprint(cf.Boolean)
+}
+
+// Set устанавливает значения CustomFieldBoolenType
+func (cf *CustomFieldBoolenType) Set(order, boolen interface{}) {
+	cf.Order = supportingfunctions.ConversionAnyToInt(order)
+
+	if i, ok := boolen.(bool); ok {
+		cf.Boolean = i
 	}
 }

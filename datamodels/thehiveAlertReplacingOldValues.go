@@ -72,12 +72,12 @@ func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHi
 					continue
 				}
 
-				/*for k, v := range newCustomFields {
+				for k, v := range newCustomFields {
 					currentCustomFields[k] = v
-				}*/
-				for k, v := range newCustomFields.CustomFields {
-					currentCustomFields.CustomFields[k] = v
 				}
+				/*for k, v := range newCustomFields.CustomFields {
+					currentCustomFields.CustomFields[k] = v
+				}*/
 
 				am.SetValueCustomFields(currentCustomFields)
 				countReplacingFields++

@@ -23,6 +23,21 @@ func (o *ObservablesMessageTheHive) Set(v ObservableMessage) {
 	o.Observables = append(o.Observables, v)
 }
 
+func NewObservableMessage() *ObservableMessage {
+	return &ObservableMessage{
+		UnderliningCreatedAt: "1970-01-01T00:00:00+00:00",
+		UnderliningUpdatedAt: "1970-01-01T00:00:00+00:00",
+		StartDate:            "1970-01-01T00:00:00+00:00",
+		Tags:                 []string(nil),
+		Attachment:           *NewAttachmentData(),
+		Reports:              make(map[string]ReportTaxonomies),
+	}
+}
+
+func (o *ObservableMessage) Get() *ObservableMessage {
+	return o
+}
+
 func (o *ObservableMessage) GetIoc() bool {
 	return o.Ioc
 }
@@ -338,6 +353,11 @@ func (om ObservableMessage) ToStringBeautiful(num int) string {
 }
 
 // ****************** AttachmentData ********************
+
+func NewAttachmentData() *AttachmentData {
+	return &AttachmentData{Hashes: []string(nil)}
+}
+
 func (a *AttachmentData) GetSize() uint64 {
 	return a.Size
 }

@@ -14,12 +14,8 @@ type SupportiveAlertArtifacts struct {
 func NewSupportiveAlertArtifacts() *SupportiveAlertArtifacts {
 	return &SupportiveAlertArtifacts{
 		listAcceptedFields: []string(nil),
-		artifactTmp: datamodels.AlertArtifact{
-			CreatedAt: "1970-01-01T03:00:00+03:00",
-			UpdatedAt: "1970-01-01T03:00:00+03:00",
-			StartDate: "1970-01-01T03:00:00+03:00",
-		},
-		artifacts: []datamodels.AlertArtifact(nil),
+		artifactTmp:        *datamodels.NewAlertArtifact(),
+		artifacts:          []datamodels.AlertArtifact(nil),
 	}
 }
 

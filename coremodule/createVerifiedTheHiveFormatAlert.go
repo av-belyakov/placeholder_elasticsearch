@@ -19,14 +19,13 @@ func NewVerifiedTheHiveFormatAlert(
 	var (
 		rootId string
 
-		event        datamodels.EventMessageTheHiveAlert = datamodels.EventMessageTheHiveAlert{}
-		eventObject  datamodels.EventAlertObject         = datamodels.EventAlertObject{}
-		eventDetails datamodels.EventAlertDetails        = datamodels.EventAlertDetails{}
-		//eventObjectCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
-		eventObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
+		event        *datamodels.EventMessageTheHiveAlert = datamodels.NewEventMessageTheHiveAlert()
+		eventObject  *datamodels.EventAlertObject         = datamodels.NewEventAlertObject()
+		eventDetails *datamodels.EventAlertDetails        = datamodels.NewEventAlertDetails()
 
-		alert datamodels.AlertMessageTheHiveAlert = datamodels.AlertMessageTheHiveAlert{}
-		//alertObjectCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
+		alert *datamodels.AlertMessageTheHiveAlert = datamodels.NewAlertMessageTheHiveAlert()
+
+		eventObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 		alertObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 
 		//вспомогательный объект
@@ -34,22 +33,22 @@ func NewVerifiedTheHiveFormatAlert(
 	)
 
 	//финальный объект
-	verifiedAlert := datamodels.VerifiedTheHiveAlert{}
+	verifiedAlert := datamodels.NewVerifiedTheHiveAlert()
 
 	// ------ EVENT ------
-	listHandlerEvent := listhandlerthehivejson.NewListHandlerEventAlertElement(&event)
+	listHandlerEvent := listhandlerthehivejson.NewListHandlerEventAlertElement(event)
 
 	// ------ EVENT OBJECT ------
-	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventAlertObjectElement(&eventObject)
+	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventAlertObjectElement(eventObject)
 
 	// ------ EVENT OBJECT CUSTOMFIELDS ------
 	listHandlerEventObjectCustomFields := listhandlerthehivejson.NewListHandlerAlertCustomFieldsElement(eventObjectCustomFields)
 
 	// ------ EVENT DETAILS ------
-	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventAlertDetailsElement(&eventDetails)
+	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventAlertDetailsElement(eventDetails)
 
 	// ------ ALERT ------
-	listHandlerAlert := listhandlerthehivejson.NewListHandlerAlertElement(&alert)
+	listHandlerAlert := listhandlerthehivejson.NewListHandlerAlertElement(alert)
 
 	// ------ ALERT CUSTOMFIELDS ------
 	listHandlerAlertCustomFields := listhandlerthehivejson.NewListHandlerAlertCustomFieldsElement(alertObjectCustomFields)
@@ -151,14 +150,14 @@ func NewVerifiedTheHiveFormatAlert(
 			//Собираем объект Alert
 			eventObject.SetValueCustomFields(eventObjectCustomFields)
 
-			event.SetValueObject(eventObject)
-			event.SetValueDetails(eventDetails)
+			event.SetValueObject(*eventObject)
+			event.SetValueDetails(*eventDetails)
 
 			alert.SetValueCustomFields(alertObjectCustomFields)
 			alert.SetValueArtifacts(sa.GetArtifacts())
 
-			verifiedAlert.SetEvent(event)
-			verifiedAlert.SetAlert(alert)
+			verifiedAlert.SetEvent(*event)
+			verifiedAlert.SetAlert(*alert)
 
 			mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
 				Section: "handling alert",
@@ -182,5 +181,4 @@ func NewVerifiedTheHiveFormatAlert(
 			return
 		}
 	}
-
 }

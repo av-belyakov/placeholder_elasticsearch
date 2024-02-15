@@ -6,6 +6,16 @@ import (
 	"strings"
 )
 
+func NewAlertMessageTheHiveAlert() *AlertMessageTheHiveAlert {
+	return &AlertMessageTheHiveAlert{
+		CreatedAt:    "1970-01-01T00:00:00+00:00",
+		UpdatedAt:    "1970-01-01T00:00:00+00:00",
+		Tags:         []string(nil),
+		CustomFields: CustomFields{},
+		Artifacts:    []AlertArtifact(nil),
+	}
+}
+
 // Get возвращает объект типа AlertMessageTheHiveAlert
 func (a *AlertMessageTheHiveAlert) Get() *AlertMessageTheHiveAlert {
 	return a
@@ -254,15 +264,6 @@ func (a *AlertMessageTheHiveAlert) SetAnyTags(i interface{}) {
 	a.Tags = append(a.Tags, fmt.Sprint(i))
 }
 
-/*func (a *AlertMessageTheHiveAlert) GetCustomFields() map[string]CustomerFields {
-	return a.CustomFields
-}
-
-// SetValueCustomFields устанавливает значение для поля CustomFields
-func (a *AlertMessageTheHiveAlert) SetValueCustomFields(v map[string]CustomerFields) {
-	a.CustomFields = v
-}*/
-
 func (a *AlertMessageTheHiveAlert) GetCustomFields() CustomFields {
 	return a.CustomFields
 }
@@ -327,6 +328,15 @@ func (a *AlertMessageTheHiveAlert) ToStringBeautiful(num int) string {
 	}(a.Artifacts)))
 
 	return str.String()
+}
+
+func NewAlertArtifact() *AlertArtifact {
+	return &AlertArtifact{
+		CreatedAt: "1970-01-01T00:00:00+00:00",
+		UpdatedAt: "1970-01-01T00:00:00+00:00",
+		StartDate: "1970-01-01T00:00:00+00:00",
+		Tags:      []string(nil),
+	}
 }
 
 // Get возвращает объект типа AlertArtifact

@@ -123,7 +123,8 @@ func (w *wrappers) AddNewCase(
 	}
 }
 
-// AddNewCase добавляет новый кейс в БД
+// AddNewCase выполняет замену уже существующего объекта типа Alert
+// либо добавляет новый, если в БД нет объекта с заданными параметрами
 func (w *wrappers) AddNewAlert(
 	data interface{},
 	logging chan<- datamodels.MessageLogging,
@@ -164,7 +165,21 @@ func (w *wrappers) AddNewAlert(
 		//если похожего документа нет в БД
 		currentData = *obj
 	} else {
-		//если похожий документ есть, выполняем замену старых значений новыми
+		//если похожий документ есть, удаляем старый документ и выполняем
+		//замену старых значений в полученном из БД документе новыми значениями
+		if _, err := qp.DeleteManyData(
+			bson.D{{
+				Key:   "@id",
+				Value: bson.D{{Key: "$in", Value: []string{obj.GetID()}}}}},
+			options.Delete(),
+		); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
+				MsgType: "error",
+			}
+		}
+
 		if _, err := currentData.GetEvent().ReplacingOldValues(*obj.GetEvent()); err != nil {
 			_, f, l, _ := runtime.Caller(0)
 			logging <- datamodels.MessageLogging{
@@ -181,20 +196,20 @@ func (w *wrappers) AddNewAlert(
 		}
 	}
 
-	if _, err := qp.InsertData([]interface{}{currentData}, []mongo.IndexModel{
-		{
-			Keys: bson.D{
-				{Key: "@id", Value: 1},
-			},
-			Options: &options.IndexOptions{},
-		}, {
-			Keys: bson.D{
-				{Key: "source", Value: 1},
-				{Key: "event.rootId", Value: 1},
-			},
-			Options: &options.IndexOptions{},
-		},
-	}); err != nil {
+	if _, err := qp.InsertData([]interface{}{currentData},
+		[]mongo.IndexModel{
+			{
+				Keys: bson.D{
+					{Key: "@id", Value: 1},
+				},
+				Options: &options.IndexOptions{},
+			}, {
+				Keys: bson.D{
+					{Key: "source", Value: 1},
+					{Key: "event.rootId", Value: 1},
+				},
+				Options: &options.IndexOptions{},
+			}}); err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
 			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),

@@ -65,30 +65,29 @@ type EventAlertDetails struct {
 // Tags - теги
 // CustomFields - настраиваемые поля
 type EventAlertObject struct {
-	Follow          bool     `json:"follow" bson:"follow"`
-	Severity        uint64   `json:"severity" bson:"severity"`
-	Tlp             uint64   `json:"tlp" bson:"tlp"`
-	Pap             uint64   `json:"pap" bson:"pap"`
-	UnderliningId   string   `json:"_id" bson:"_id"`
-	Id              string   `json:"id" bson:"id"`
-	CreatedBy       string   `json:"createdBy" bson:"createdBy"`
-	UpdatedBy       string   `json:"updatedBy" bson:"updatedBy,omitempty"`
-	CreatedAt       string   `json:"createdAt" bson:"createdAt"`           //формат RFC3339
-	UpdatedAt       string   `json:"updatedAt" bson:"updatedAt,omitempty"` //формат RFC3339
-	UnderliningType string   `json:"_type" bson:"_type"`
-	Title           string   `json:"title" bson:"title"`
-	Description     string   `json:"description" bson:"description"`
-	Status          string   `json:"status" bson:"status,omitempty"`
-	Date            string   `json:"date" bson:"date"` //формат RFC3339
-	Type            string   `json:"type" bson:"type"`
-	ObjectType      string   `json:"objectType" bson:"objectType"`
-	Source          string   `json:"source" bson:"source"`
-	SourceRef       string   `json:"sourceRef" bson:"sourceRef"`
-	Case            string   `json:"case" bson:"case,omitempty"`
-	CaseTemplate    string   `json:"caseTemplate" bson:"caseTemplate,omitempty"`
-	Tags            []string `json:"tags" bson:"tags"`
-	CustomFields
-	//CustomFields    map[string]CustomerFields `json:"customFields" bson:"customFields"`
+	Follow          bool         `json:"follow" bson:"follow"`
+	Severity        uint64       `json:"severity" bson:"severity"`
+	Tlp             uint64       `json:"tlp" bson:"tlp"`
+	Pap             uint64       `json:"pap" bson:"pap"`
+	UnderliningId   string       `json:"_id" bson:"_id"`
+	Id              string       `json:"id" bson:"id"`
+	CreatedBy       string       `json:"createdBy" bson:"createdBy"`
+	UpdatedBy       string       `json:"updatedBy" bson:"updatedBy,omitempty"`
+	CreatedAt       string       `json:"createdAt" bson:"createdAt"`           //формат RFC3339
+	UpdatedAt       string       `json:"updatedAt" bson:"updatedAt,omitempty"` //формат RFC3339
+	UnderliningType string       `json:"_type" bson:"_type"`
+	Title           string       `json:"title" bson:"title"`
+	Description     string       `json:"description" bson:"description"`
+	Status          string       `json:"status" bson:"status,omitempty"`
+	Date            string       `json:"date" bson:"date"` //формат RFC3339
+	Type            string       `json:"type" bson:"type"`
+	ObjectType      string       `json:"objectType" bson:"objectType"`
+	Source          string       `json:"source" bson:"source"`
+	SourceRef       string       `json:"sourceRef" bson:"sourceRef"`
+	Case            string       `json:"case" bson:"case,omitempty"`
+	CaseTemplate    string       `json:"caseTemplate" bson:"caseTemplate,omitempty"`
+	Tags            []string     `json:"tags" bson:"tags"`
+	CustomFields    CustomFields `json:"customFields" bson:"customFields"`
 	//"artifacts" : [ ], думаю эти не надо, всегда пустые
 	//"similarCases" : [ ] думаю эти не надо, всегда пустые
 }

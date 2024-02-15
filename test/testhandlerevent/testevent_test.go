@@ -14,12 +14,10 @@ import (
 
 var _ = Describe("Testevent", Ordered, func() {
 	var (
-		event        datamodels.EventMessageTheHiveCase = datamodels.EventMessageTheHiveCase{}
-		eventObject  datamodels.EventCaseObject         = datamodels.EventCaseObject{}
-		eventDetails datamodels.EventCaseDetails        = datamodels.EventCaseDetails{}
+		event        *datamodels.EventMessageTheHiveCase = datamodels.NewEventMessageTheHiveCase()
+		eventObject  *datamodels.EventCaseObject         = datamodels.NewEventCaseObject()
+		eventDetails *datamodels.EventCaseDetails        = datamodels.NewEventCaseDetails()
 
-		//eventObjectCustomFields  map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
-		//eventDetailsCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
 		eventObjectCustomFields  datamodels.CustomFields = datamodels.CustomFields{}
 		eventDetailsCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 
@@ -33,16 +31,16 @@ var _ = Describe("Testevent", Ordered, func() {
 
 	BeforeAll(func() {
 		// ------ EVENT ------
-		listHandlerEvent = listhandlerthehivejson.NewListHandlerEventCaseElement(&event)
+		listHandlerEvent = listhandlerthehivejson.NewListHandlerEventCaseElement(event)
 
 		// ------ EVENT OBJECT ------
-		listHandlerEventObject = listhandlerthehivejson.NewListHandlerEventCaseObjectElement(&eventObject)
+		listHandlerEventObject = listhandlerthehivejson.NewListHandlerEventCaseObjectElement(eventObject)
 
 		// ------ EVENT OBJECT CUSTOMFIELDS ------
 		listHandlerEventObjectCustomFields = listhandlerthehivejson.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
 
 		// ------ EVENT DETAILS ------
-		listHandlerEventDetails = listhandlerthehivejson.NewListHandlerEventCaseDetailsElement(&eventDetails)
+		listHandlerEventDetails = listhandlerthehivejson.NewListHandlerEventCaseDetailsElement(eventDetails)
 
 		// ------ EVENT DETAILS CUSTOMFIELDS ------
 		listHandlerEventDetailsCustomFields = listhandlerthehivejson.NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields)
@@ -141,8 +139,8 @@ var _ = Describe("Testevent", Ordered, func() {
 			eventObject.SetValueCustomFields(eventObjectCustomFields)
 			eventDetails.SetValueCustomFields(eventDetailsCustomFields)
 
-			event.SetValueObject(eventObject)
-			event.SetValueDetails(eventDetails)
+			event.SetValueObject(*eventObject)
+			event.SetValueDetails(*eventDetails)
 		})
 
 		It("Объект Event должен быть успешно заполнен", func() {
@@ -190,7 +188,7 @@ var _ = Describe("Testevent", Ordered, func() {
 
 		It("Объект Event.object.customFields должен быть успешно заполнен", func() {
 			//event.object.customFields
-			Expect(len(anyEventObject.GetCustomFields().CustomFields)).Should(Equal(9))
+			Expect(len(anyEventObject.GetCustomFields())).Should(Equal(9))
 		})
 
 		It("Объект Event.details.customFields должен быть успешно заполнен", func() {
@@ -207,19 +205,19 @@ var _ = Describe("Testevent", Ordered, func() {
 
 		It("Объект Event.details.customFields должен быть успешно заполнен", func() {
 			//event.details.customFields
-			Expect(len(anyEventDetails.GetCustomFields().CustomFields)).Should(Equal(8))
+			Expect(len(anyEventDetails.GetCustomFields())).Should(Equal(8))
 		})
 
 		It("Должен быть выведен полный объект Event", func() {
-			fmt.Printf("---=== EVENT OBJECT ===---\n%v\v", anyEvent.Get())
+			fmt.Printf("---=== EVENT OBJECT ===---\n%v\v", anyEvent.Get().ToStringBeautiful(0))
 
 			fmt.Println("--------- Event.object.CustomFields ---------")
-			for k, v := range anyEvent.Get().Object.GetCustomFields().CustomFields {
+			for k, v := range anyEvent.Get().Object.GetCustomFields() {
 				fmt.Printf("%s\n%v\n", k, v)
 			}
 
 			fmt.Println("--------- Event.details.CustomFields ---------")
-			for k, v := range anyEvent.Get().Details.GetCustomFields().CustomFields {
+			for k, v := range anyEvent.Get().Details.GetCustomFields() {
 				fmt.Printf("%s\n%v\n", k, v)
 			}
 

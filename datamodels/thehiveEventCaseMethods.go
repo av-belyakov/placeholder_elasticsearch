@@ -7,6 +7,14 @@ import (
 	"placeholder_elasticsearch/supportingfunctions"
 )
 
+func NewEventMessageTheHiveCase() *EventMessageTheHiveCase {
+	return &EventMessageTheHiveCase{
+		StartDate: "1970-01-01T00:00:00+00:00",
+		Details:   *NewEventCaseDetails(),
+		Object:    *NewEventCaseObject(),
+	}
+}
+
 // Get возвращает объект типа EventMessageTheHiveCase
 func (e *EventMessageTheHiveCase) Get() *EventMessageTheHiveCase {
 	return e
@@ -183,6 +191,13 @@ func (em EventMessageTheHiveCase) ToStringBeautiful(num int) string {
 
 //****************** EventCaseDetails ******************
 
+func NewEventCaseDetails() *EventCaseDetails {
+	return &EventCaseDetails{
+		EndDate:      "1970-01-01T00:00:00+00:00",
+		CustomFields: CustomFields{},
+	}
+}
+
 func (e *EventCaseDetails) Get() *EventCaseDetails {
 	return e
 }
@@ -258,11 +273,6 @@ func (e *EventCaseDetails) SetAnyImpactStatus(i interface{}) {
 	e.ImpactStatus = fmt.Sprint(i)
 }
 
-/*
-	func (e *EventCaseDetails) GetCustomFields() map[string]CustomerFields {
-		return e.CustomFields
-	}
-*/
 func (e *EventCaseDetails) GetCustomFields() CustomFields {
 	return e.CustomFields
 }
@@ -292,6 +302,17 @@ func (ed EventCaseDetails) ToStringBeautiful(num int) string {
 }
 
 //****************** EventCaseObject ******************
+
+func NewEventCaseObject() *EventCaseObject {
+	return &EventCaseObject{
+		StartDate:    "1970-01-01T00:00:00+00:00",
+		EndDate:      "1970-01-01T00:00:00+00:00",
+		CreatedAt:    "1970-01-01T00:00:00+00:00",
+		UpdatedAt:    "1970-01-01T00:00:00+00:00",
+		Tags:         []string(nil),
+		CustomFields: CustomFields{},
+	}
+}
 
 func (e *EventCaseObject) Get() *EventCaseObject {
 	return e
@@ -736,26 +757,11 @@ func (eo EventCaseObject) ToStringBeautiful(num int) string {
 	return strB.String()
 }
 
-/*
-	func CustomFieldsToStringBeautiful(l map[string]CustomerFields, num int) string {
-		strB := strings.Builder{}
-		ws := supportingfunctions.GetWhitespace(num + 2)
-
-		for k, v := range l {
-			strB.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k))
-
-			nameOne, dataOne, nameTwo, dataTwo := v.Get()
-			strB.WriteString(fmt.Sprintf("%s%s: %d\n", ws, nameOne, dataOne))
-			strB.WriteString(fmt.Sprintf("%s%s: %s\n", ws, nameTwo, dataTwo))
-		}
-		return strB.String()
-	}
-*/
 func CustomFieldsToStringBeautiful(l CustomFields, num int) string {
 	strB := strings.Builder{}
 	ws := supportingfunctions.GetWhitespace(num + 2)
 
-	for k, v := range l.CustomFields {
+	for k, v := range l {
 		strB.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k))
 
 		nameOne, dataOne, nameTwo, dataTwo := v.Get()

@@ -22,25 +22,23 @@ func NewVerifiedTheHiveFormatCase(
 		//Финальный объект
 		verifiedCase *datamodels.VerifiedTheHiveCase = datamodels.NewVerifiedTheHiveCase()
 
-		event        datamodels.EventMessageTheHiveCase = datamodels.EventMessageTheHiveCase{}
-		eventObject  datamodels.EventCaseObject         = datamodels.EventCaseObject{}
-		eventDetails datamodels.EventCaseDetails        = datamodels.EventCaseDetails{}
+		event        *datamodels.EventMessageTheHiveCase = datamodels.NewEventMessageTheHiveCase()
+		eventObject  *datamodels.EventCaseObject         = datamodels.NewEventCaseObject()
+		eventDetails *datamodels.EventCaseDetails        = datamodels.NewEventCaseDetails()
 
-		//eventObjectCustomFields  map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
-		//eventDetailsCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
 		eventObjectCustomFields  datamodels.CustomFields = datamodels.CustomFields{}
 		eventDetailsCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 	)
 
 	//******************* Основные обработчики для Event **********************
 	// ------ EVENT ------
-	listHandlerEvent := listhandlerthehivejson.NewListHandlerEventCaseElement(&event)
+	listHandlerEvent := listhandlerthehivejson.NewListHandlerEventCaseElement(event)
 	// ------ EVENT OBJECT ------
-	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventCaseObjectElement(&eventObject)
+	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventCaseObjectElement(eventObject)
 	// ------ EVENT OBJECT CUSTOMFIELDS ------
 	listHandlerEventObjectCustomFields := listhandlerthehivejson.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
 	// ------ EVENT DETAILS ------
-	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventCaseDetailsElement(&eventDetails)
+	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventCaseDetailsElement(eventDetails)
 	// ------ EVENT DETAILS CUSTOMFIELDS ------
 	listHandlerEventDetailsCustomFields := listhandlerthehivejson.NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields)
 
@@ -179,12 +177,12 @@ func NewVerifiedTheHiveFormatCase(
 			//Собираем объект Event
 			eventObject.SetValueCustomFields(eventObjectCustomFields)
 			eventDetails.SetValueCustomFields(eventDetailsCustomFields)
-			event.SetValueObject(eventObject)
-			event.SetValueDetails(eventDetails)
+			event.SetValueObject(*eventObject)
+			event.SetValueDetails(*eventDetails)
 
 			//проверяем объек на наличие пустых полей которые должны
 			//содержать дату и время
-			checkDatetimeFieldsEventObject(&event)
+			checkDatetimeFieldsEventObject(event)
 
 			//собираем объект observables
 			observables := datamodels.NewObservablesMessageTheHive()
@@ -194,7 +192,7 @@ func NewVerifiedTheHiveFormatCase(
 			ttps := datamodels.NewTtpsMessageTheHive()
 			ttps.SetTtps(sttp.GetTtps())
 
-			verifiedCase.SetEvent(event)
+			verifiedCase.SetEvent(*event)
 			verifiedCase.SetObservables(*observables)
 			verifiedCase.SetTtps(*ttps)
 

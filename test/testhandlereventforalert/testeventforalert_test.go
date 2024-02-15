@@ -15,16 +15,14 @@ import (
 
 var _ = Describe("Testeventforalert", Ordered, func() {
 	var (
-		event        datamodels.EventMessageTheHiveAlert = datamodels.EventMessageTheHiveAlert{}
-		eventObject  datamodels.EventAlertObject         = datamodels.EventAlertObject{}
-		eventDetails datamodels.EventAlertDetails        = datamodels.EventAlertDetails{}
+		event        *datamodels.EventMessageTheHiveAlert = datamodels.NewEventMessageTheHiveAlert()
+		eventObject  *datamodels.EventAlertObject         = datamodels.NewEventAlertObject()
+		eventDetails *datamodels.EventAlertDetails        = datamodels.NewEventAlertDetails()
 
-		alert datamodels.AlertMessageTheHiveAlert = datamodels.AlertMessageTheHiveAlert{}
+		alert *datamodels.AlertMessageTheHiveAlert = datamodels.NewAlertMessageTheHiveAlert()
 
 		sa listhandlerthehivejson.SupportiveAlertArtifacts = *listhandlerthehivejson.NewSupportiveAlertArtifacts()
 
-		//eventObjectCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
-		//alertObjectCustomFields map[string]datamodels.CustomerFields = make(map[string]datamodels.CustomerFields)
 		eventObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 		alertObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 
@@ -38,24 +36,24 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 		listHandlerAlertCustomFields map[string][]func(interface{})
 		listHandlerAlertArtifacts    map[string][]func(interface{})
 
-		verifiedTheHiveAlert datamodels.VerifiedTheHiveAlert = datamodels.VerifiedTheHiveAlert{}
+		verifiedTheHiveAlert *datamodels.VerifiedTheHiveAlert = datamodels.NewVerifiedTheHiveAlert()
 	)
 
 	BeforeAll(func() {
 		// ------ EVENT ------
-		listHandlerEvent = listhandlerthehivejson.NewListHandlerEventAlertElement(&event)
+		listHandlerEvent = listhandlerthehivejson.NewListHandlerEventAlertElement(event)
 
 		// ------ EVENT OBJECT ------
-		listHandlerEventObject = listhandlerthehivejson.NewListHandlerEventAlertObjectElement(&eventObject)
+		listHandlerEventObject = listhandlerthehivejson.NewListHandlerEventAlertObjectElement(eventObject)
 
 		// ------ EVENT OBJECT CUSTOMFIELDS ------
 		listHandlerEventObjectCustomFields = listhandlerthehivejson.NewListHandlerAlertCustomFieldsElement(eventObjectCustomFields)
 
 		// ------ EVENT DETAILS ------
-		listHandlerEventDetails = listhandlerthehivejson.NewListHandlerEventAlertDetailsElement(&eventDetails)
+		listHandlerEventDetails = listhandlerthehivejson.NewListHandlerEventAlertDetailsElement(eventDetails)
 
 		// ------ ALERT ------
-		listHandlerAlert = listhandlerthehivejson.NewListHandlerAlertElement(&alert)
+		listHandlerAlert = listhandlerthehivejson.NewListHandlerAlertElement(alert)
 
 		// ------ ALERT CUSTOMFIELDS ------
 		listHandlerAlertCustomFields = listhandlerthehivejson.NewListHandlerAlertCustomFieldsElement(alertObjectCustomFields)
@@ -199,8 +197,8 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 
 			eventObject.SetValueCustomFields(eventObjectCustomFields)
 
-			event.SetValueObject(eventObject)
-			event.SetValueDetails(eventDetails)
+			event.SetValueObject(*eventObject)
+			event.SetValueDetails(*eventDetails)
 
 			alert.SetValueCustomFields(alertObjectCustomFields)
 			alert.SetValueArtifacts(sa.GetArtifacts())
@@ -209,8 +207,8 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			verifiedTheHiveAlert.SetElasticsearchID("3883f8f9-839r983hf848g8h-f84")
 			verifiedTheHiveAlert.SetSource("GCM")
 			verifiedTheHiveAlert.SetCreateTimestatmp("2024-02-06T15:37:52+03:00")
-			verifiedTheHiveAlert.SetEvent(event)
-			verifiedTheHiveAlert.SetAlert(alert)
+			verifiedTheHiveAlert.SetEvent(*event)
+			verifiedTheHiveAlert.SetAlert(*alert)
 		})
 
 		It("Объект Event должен быть успешно заполнен", func() {
@@ -267,7 +265,7 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 		})
 
 		It("Объект Event.object.customFields должен быть успешно заполнен", func() {
-			anyEventCustomFields := eventObject.GetCustomFields().CustomFields
+			anyEventCustomFields := eventObject.GetCustomFields()
 
 			Expect(len(anyEventCustomFields)).Should(Equal(2))
 
@@ -301,12 +299,12 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 		It("Объект Alert.customFields должен быть успешно заполнен", func() {
 			anyCustomField := alert.Get().GetCustomFields()
 
-			Expect(len(anyCustomField.CustomFields)).Should(Equal(2))
+			Expect(len(anyCustomField)).Should(Equal(2))
 
-			_, _, _, firstTime := anyCustomField.CustomFields["first-time"].Get()
+			_, _, _, firstTime := anyCustomField["first-time"].Get()
 			Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
 
-			_, _, _, lastTime := anyCustomField.CustomFields["last-time"].Get()
+			_, _, _, lastTime := anyCustomField["last-time"].Get()
 			Expect(lastTime).Should(Equal("2024-02-06T15:20:30+03:00"))
 		})
 
@@ -408,15 +406,13 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 					"'Webhook:send=ES'",
 				},
 				CustomFields: datamodels.CustomFields{
-					CustomFields: map[string]datamodels.CustomerFields{
-						"first-time": &datamodels.CustomFieldDateType{
-							Order: 0,
-							Date:  "2024-02-06T15:20:30+03:00",
-						},
-						"last-time": &datamodels.CustomFieldDateType{
-							Order: 0,
-							Date:  "2024-02-06T15:20:30+03:00",
-						},
+					"first-time": &datamodels.CustomFieldDateType{
+						Order: 0,
+						Date:  "2024-02-06T15:20:30+03:00",
+					},
+					"last-time": &datamodels.CustomFieldDateType{
+						Order: 0,
+						Date:  "2024-02-06T15:20:30+03:00",
 					},
 				},
 				/*map[string]datamodels.CustomerFields{
@@ -482,16 +478,14 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 					"misp:Payload delivery=\"email-src\"",
 				},
 				CustomFields: datamodels.CustomFields{
-					CustomFields: map[string]datamodels.CustomerFields{
-						"first-time": &datamodels.CustomFieldDateType{
-							Order: 0,
-							Date:  "2024-02-06T15:20:30+03:00",
-						},
-						//замена
-						"last-time": &datamodels.CustomFieldDateType{
-							Order: 0,
-							Date:  "2024-02-07T22:48:13+03:00",
-						},
+					"first-time": &datamodels.CustomFieldDateType{
+						Order: 0,
+						Date:  "2024-02-06T15:20:30+03:00",
+					},
+					//замена
+					"last-time": &datamodels.CustomFieldDateType{
+						Order: 0,
+						Date:  "2024-02-07T22:48:13+03:00",
 					},
 				},
 				/*map[string]datamodels.CustomerFields{
@@ -563,8 +557,8 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			Expect(len(oldStruct.Object.GetTags())).Should(Equal(4))
 
 			customFields := oldStruct.Object.GetCustomFields()
-			_, _, _, firstTime := customFields.CustomFields["first-time"].Get()
-			_, _, _, lastTime := customFields.CustomFields["last-time"].Get()
+			_, _, _, firstTime := customFields["first-time"].Get()
+			_, _, _, lastTime := customFields["last-time"].Get()
 			//НЕ меняется
 			Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
 			//меняется
@@ -594,15 +588,13 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 				"'Webhook:send=ES'",
 			},
 			CustomFields: datamodels.CustomFields{
-				CustomFields: map[string]datamodels.CustomerFields{
-					"first-time": &datamodels.CustomFieldDateType{
-						Order: 0,
-						Date:  "2024-01-01T05:22:30+03:00",
-					},
-					"last-time": &datamodels.CustomFieldDateType{
-						Order: 0,
-						Date:  "2024-01-17T00:18:13+03:00",
-					},
+				"first-time": &datamodels.CustomFieldDateType{
+					Order: 0,
+					Date:  "2024-01-01T05:22:30+03:00",
+				},
+				"last-time": &datamodels.CustomFieldDateType{
+					Order: 0,
+					Date:  "2024-01-17T00:18:13+03:00",
 				},
 			},
 			/*map[string]datamodels.CustomerFields{
@@ -683,16 +675,14 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 				"APPA:Direction=\"inbound\"",
 			},
 			CustomFields: datamodels.CustomFields{
-				CustomFields: map[string]datamodels.CustomerFields{
-					//замена
-					"first-time": &datamodels.CustomFieldDateType{
-						Order: 0,
-						Date:  "2024-01-22T15:13:10+03:00",
-					},
-					"last-time": &datamodels.CustomFieldDateType{
-						Order: 0,
-						Date:  "2024-01-17T00:18:13+03:00",
-					},
+				//замена
+				"first-time": &datamodels.CustomFieldDateType{
+					Order: 0,
+					Date:  "2024-01-22T15:13:10+03:00",
+				},
+				"last-time": &datamodels.CustomFieldDateType{
+					Order: 0,
+					Date:  "2024-01-17T00:18:13+03:00",
 				},
 			},
 			/*map[string]datamodels.CustomerFields{
@@ -786,8 +776,8 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			Expect(len(oldStruct.GetTags())).Should(Equal(4))
 
 			customFields := oldStruct.GetCustomFields()
-			_, _, _, firstTime := customFields.CustomFields["first-time"].Get()
-			_, _, _, lastTime := customFields.CustomFields["last-time"].Get()
+			_, _, _, firstTime := customFields["first-time"].Get()
+			_, _, _, lastTime := customFields["last-time"].Get()
 			//меняется
 			Expect(firstTime).Should(Equal("2024-01-22T15:13:10+03:00"))
 			//НЕ меняется
@@ -825,8 +815,8 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 				Expect(len(v.GetTags())).Should(Equal(5))
 
 				customFields := oldStruct.GetCustomFields()
-				_, _, _, firstTime := customFields.CustomFields["first-time"].Get()
-				_, _, _, lastTime := customFields.CustomFields["last-time"].Get()
+				_, _, _, firstTime := customFields["first-time"].Get()
+				_, _, _, lastTime := customFields["last-time"].Get()
 				//меняется
 				Expect(firstTime).Should(Equal("2024-01-22T15:13:10+03:00"))
 				//НЕ меняется

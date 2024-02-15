@@ -41,9 +41,7 @@ type SourceMessageTheHive struct {
 	Source string `json:"source" bson:"source"`
 }
 
-type CustomFields struct {
-	CustomFields map[string]CustomerFields `json:"customFields" bson:"customFields"`
-}
+type CustomFields map[string]CustomerFields
 
 type CustomFieldStringType struct {
 	Order  int    `json:"order" bson:"order"`
@@ -58,4 +56,9 @@ type CustomFieldDateType struct {
 type CustomFieldIntegerType struct {
 	Order   int `json:"order" bson:"order"`
 	Integer int `json:"integer" bson:"integer"`
+}
+
+type CustomFieldBoolenType struct {
+	Order   int  `json:"order" bson:"order"`
+	Boolean bool `json:"boolen" bson:"boolen"`
 }

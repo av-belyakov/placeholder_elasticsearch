@@ -105,16 +105,6 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 			//"source": "gcm", "event.rootId": "~85917298816"
 			Expect(err).ShouldNot(HaveOccurred())
 
-			//****************************************************
-			// Я не мог взять тип datamodels.VerifiedTheHiveCase
-			// так как при декодировании документа из MongoDB
-			// возникают какие то трудности с полями event.object.customFields и
-			// event.object.customFields возможно из-за определения этих
-			// полей как interfece CustomerFields
-			// Для текущего типа хватит и такой реализации
-			// однако в далбнейшем этот вопрос придется решать
-			//****************************************************
-
 			list := []string(nil)
 
 			for cur.Next(context.Background()) {
@@ -153,7 +143,6 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 			).Decode(&result)
 
 			if errors.Is(err, mongo.ErrNoDocuments) {
-				fmt.Println("Document not found")
 				Expect(0).Should(Equal(0))
 			} else {
 				Expect(err).ShouldNot(HaveOccurred())
@@ -163,44 +152,45 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 
 	Context("Тест 5. Проверка обновления типа VerifiedTheHiveAlert", func() {
 		verifiedObject := datamodels.VerifiedTheHiveAlert{
-			ID:               "6b3be7fe-94a5-2133-a923-70b2a445f0ab",
-			CreateTimestatmp: "2024-01-31T16:17:22+03:00",
-			Source:           "GCM",
+			ID:              "6b3be7fe-94a5-2133-a923-70b2a445f0ab",
+			CreateTimestamp: "2024-01-31T16:17:22+03:00",
+			Source:          "GCM",
 			Event: datamodels.EventMessageTheHiveAlert{
-				Base:           false,
+				Base:           true,
 				StartDate:      "2024-02-06T15:20:30+03:00",
 				RootId:         "~84625227848",
 				ObjectId:       "~4192",
 				ObjectType:     "alert",
 				Organisation:   "GCM",
 				OrganisationId: "~4192",
-				Operation:      "new",
+				Operation:      "UPDATE___UPDATE",
 				RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
 				Details: datamodels.EventAlertDetails{
 					SourceRef:   "TSK-8MSK-6-ZPM-240206-1215999",
-					Title:       "222",
-					Description: "111",
+					Title:       "title test replacing",
+					Description: "description test replacing",
 					Tags: []string{
 						"ATs:reason=\"INFO Controlled FGS\"",
 						"Sensor:id=\"8030066\"",
+						"geoip:new=VB",
 					},
 				},
 				Object: datamodels.EventAlertObject{
-					Severity:        1,
-					Tlp:             1,
-					Pap:             1,
+					Severity:        2,
+					Tlp:             3,
+					Pap:             4,
 					UnderliningId:   "~85455464790",
 					Id:              "~85455464790",
-					CreatedBy:       "ddddd",
+					CreatedBy:       "test_replacing@example.net",
 					CreatedAt:       "1970-01-01T03:00:00+03:00",
 					UpdatedAt:       "1970-01-01T03:00:00+03:00",
-					UnderliningType: "aalllert",
-					Title:           "vbb er3",
-					Description:     "any more",
-					Status:          "None",
+					UnderliningType: "ALERT test replacing",
+					Title:           "title test replacing",
+					Description:     "test replacing description",
+					Status:          "Update",
 					Date:            "2024-02-06T15:37:52+03:00",
 					Type:            "snort_alert",
-					ObjectType:      "",
+					ObjectType:      "SNORT test replacing 111111",
 					Source:          "zsiеmSystems",
 					SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
 					Case:            "alert",
@@ -208,79 +198,57 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 					Tags: []string{
 						"'Sensor:id=\"8030012\"'",
 						"'Webhook:send=ES'",
+						"Ast:FFF",
 					},
 					CustomFields: datamodels.CustomFields{
-						CustomFields: map[string]datamodels.CustomerFields{
-							"first-time": &datamodels.CustomFieldDateType{
-								Order: 0,
-								Date:  "2024-02-06T15:20:30+03:00",
-							},
-							"last-time": &datamodels.CustomFieldDateType{
-								Order: 0,
-								Date:  "2024-02-06T15:20:30+03:00",
-							},
-						},
-					},
-					/*map[string]datamodels.CustomerFields{
 						"first-time": &datamodels.CustomFieldDateType{
 							Order: 0,
 							Date:  "2024-02-06T15:20:30+03:00",
 						},
 						"last-time": &datamodels.CustomFieldDateType{
-							Order: 0,
-							Date:  "2024-02-06T15:20:30+03:00",
+							Order: 1,
+							Date:  "2024-01-11T11:11:31+03:00",
 						},
-					},*/
+					},
 				},
 			},
 			Alert: datamodels.AlertMessageTheHiveAlert{
-				Follow:    false,
-				Tlp:       2,
-				Severity:  2,
-				Date:      "1970-01-01T03:00:00+03:00",
-				CreatedAt: "2024-02-07T11:11:11+03:00",
-				// UpdatedAt: ,
+				Follow:          false,
+				Tlp:             2,
+				Severity:        2,
+				Date:            "1970-01-01T03:00:00+03:00",
+				CreatedAt:       "2024-02-22T22:22:22+03:00",
+				UpdatedAt:       "2024-02-23T22:23:24+03:00",
 				UpdatedBy:       "webhook@cloud.gcm",
 				UnderliningId:   "~88026357960",
-				Status:          "New",
-				Type:            "snort",
-				UnderliningType: "__Snort",
-				Description:     "free alerts",
-				CaseTemplate:    "sonr",
+				Status:          "NewUpdate",
+				Type:            "SNORT",
+				UnderliningType: "ALERT_Snort",
+				Description:     "free alerts test replacing",
+				CaseTemplate:    "sNOrt",
 				SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
 				Tags: []string{
 					"Sensor:id=\"8030105\"",
 					"ATs:reason=\"Редко встречающиеся признаки ВПО\"",
 					"'Webhook:send=ES'",
+					"Ats:test=replacing",
 				},
 				CustomFields: datamodels.CustomFields{
-					CustomFields: map[string]datamodels.CustomerFields{
-						"first-time": &datamodels.CustomFieldDateType{
-							Order: 0,
-							Date:  "2024-01-01T05:22:30+03:00",
-						},
-						"last-time": &datamodels.CustomFieldDateType{
-							Order: 0,
-							Date:  "2024-01-17T00:18:13+03:00",
-						},
-					},
-				},
-				/*map[string]datamodels.CustomerFields{
 					"first-time": &datamodels.CustomFieldDateType{
 						Order: 0,
-						Date:  "2024-01-01T05:22:30+03:00",
+						Date:  "2024-01-03T03:33:33+03:00",
 					},
 					"last-time": &datamodels.CustomFieldDateType{
 						Order: 0,
 						Date:  "2024-01-17T00:18:13+03:00",
 					},
-				},*/
+				},
 				Artifacts: []datamodels.AlertArtifact{
 					{
-						Ioc:              false,
+						Ioc:              true,
 						Sighted:          false,
 						IgnoreSimilarity: true,
-						Tlp:              1,
+						Tlp:              3,
 						UnderliningId:    "~84302220012",
 						Id:               "~84302220012",
 						CreatedAt:        "2024-01-26T13:02:01+03:00",
@@ -289,12 +257,13 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 						CreatedBy: "friman@email.net",
 						UpdatedBy: "friman@email.net",
 						Data:      "63.5656 89.12",
-						DataType:  "coordinates",
-						Message:   "Any message",
+						DataType:  "coordinates test replacing",
+						Message:   "Any message test replacing",
 						Tags: []string{
 							"Sensor:id=\"1111111\"",
 							"geoip:country=CH",
 							"'Webhook:send=ES'",
+							"'Webhook:SEND=RT'",
 						},
 					},
 					{
@@ -309,7 +278,7 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 						StartDate: "2024-01-04T19:32:01+03:00",
 						CreatedBy: "example@email.net",
 						UpdatedBy: "example@email.net",
-						Data:      "5.63.123.99",
+						Data:      "115.115.115.115",
 						DataType:  "ipaddr",
 						Message:   "ffdffd fdg",
 						Tags: []string{
@@ -327,8 +296,7 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 
 			collection := conn.Database(NameDB).Collection("alert_collection")
 			opts := options.FindOne()
-			//currentData := datamodels.VerifiedTheHiveAlert{}
-			currentData := *datamodels.NewVerifiedTheHiveAlert()
+			currentData := datamodels.NewVerifiedTheHiveAlert()
 			err = collection.FindOne(
 				context.TODO(),
 				bson.D{
@@ -336,35 +304,235 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 					{Key: "event.rootId", Value: verifiedObject.GetEvent().GetRootId()},
 				},
 				opts,
-			).Decode(&currentData)
+			).Decode(currentData)
 
-			fmt.Println("_________________ Result Test 5. __________________")
-			fmt.Println(currentData.ToStringBeautiful(0))
+			fmt.Println("ERROR decode:", err)
+
+			//fmt.Println("_________________ Result Test 5. __________________")
+			//fmt.Println(currentData.ToStringBeautiful(0))
 
 			if errors.Is(err, mongo.ErrNoDocuments) {
 				//если похожего документа нет в БД
-				currentData = verifiedObject
+				currentData = &verifiedObject
 			} else {
 				//если похожий документ есть, выполняем замену старых значений новыми
 				_, err = currentData.GetEvent().ReplacingOldValues(*verifiedObject.GetEvent())
 				_, err = currentData.GetAlert().ReplacingOldValues(*verifiedObject.GetAlert())
 
+				_, err = collection.DeleteMany(
+					context.TODO(),
+					bson.D{{
+						Key:   "@id",
+						Value: bson.D{{Key: "$in", Value: []string{currentData.GetID()}}}}},
+					options.Delete())
 			}
 
-			_, err = collection.InsertMany(context.TODO(), []interface{}{currentData}) /*[]mongo.IndexModel{
-				{
-					Keys: bson.D{
-						{Key: "@id", Value: 1},
+			_, err = collection.InsertMany(context.TODO(), []interface{}{currentData})
+
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+	})
+
+	Context("Тест 6. Проверка обновления типа VerifiedTheHiveAlert", func() {
+		verifiedObject := datamodels.VerifiedTheHiveCase{
+			ID:              "6b3be7fe-94a5-2133-a923-70b2a445f0ab",
+			CreateTimestamp: "2024-01-31T16:17:22+03:00",
+			Source:          "GCM",
+			Event: datamodels.EventMessageTheHiveCase{
+				Base: false,
+				//StartDate      string           `json:"startDate" bson:"startDate"` //в формате RFC3339
+				RootId:         "~2778345496",
+				Organisation:   "RCM_DFO",
+				OrganisationId: "~4136",
+				ObjectId:       "~2778345496",
+				ObjectType:     "case",
+				Operation:      "New",
+				RequestId:      "219560ec6156d5fb:7296c75a:18cf0a8f2c3:-8000:459828",
+				Details: datamodels.EventCaseDetails{
+					EndDate:          "2024-01-31T16:17:15+03:00",
+					ResolutionStatus: "TruePositive",
+					Summary:          "Сведения о компьютерной атаке доведены до ответственных лиц.",
+					Status:           "Resolved",
+					ImpactStatus:     "NoImpact",
+					CustomFields: datamodels.CustomFields{
+						"first-time": &datamodels.CustomFieldDateType{
+							Order: 0,
+							Date:  "2024-01-12T12:41:05+03:00",
+						},
+						"last-time": &datamodels.CustomFieldDateType{
+							Order: 10,
+							Date:  "2024-01-12T12:41:19+03:00",
+						},
+						"geoip": &datamodels.CustomFieldStringType{
+							Order:  0,
+							String: "Нидерланды",
+						},
+						"id-soa": &datamodels.CustomFieldStringType{
+							Order:  2,
+							String: "220041",
+						},
 					},
-					Options: &options.IndexOptions{},
-				}, {
-					Keys: bson.D{
-						{Key: "source", Value: 1},
-						{Key: "event.rootId", Value: 1},
-					},
-					Options: &options.IndexOptions{},
 				},
-			}*/
+				Object: datamodels.EventCaseObject{
+					Flag:      false,
+					CaseId:    15795,
+					Severity:  3,
+					Tlp:       1,
+					Pap:       2,
+					StartDate: "2024-01-31T16:16:42+03:00",
+					//EndDate          string       `json:"endDate" bson:"endDate"`     //формат RFC3339
+					CreatedAt:        "2024-01-31T16:16:42+03:00",
+					UpdatedAt:        "2024-01-31T16:17:15+03:00",
+					UnderliningId:    "~2778345496",
+					Id:               "~2778345496",
+					CreatedBy:        "zsiem@rcm.lcl",
+					UpdatedBy:        "zsiem@rcm.lcl",
+					UnderliningType:  "case",
+					Title:            "Атаки типа Local File Inclusion",
+					Description:      "системы: Заслон-Пост",
+					ImpactStatus:     "NoImpact",
+					ResolutionStatus: "TruePositive",
+					Status:           "Resolved",
+					Summary:          "Сведения о компьютерной атаке доведены до ответственных лиц.",
+					Owner:            "zsiem@rcm.lcl",
+					Tags: []string{
+						"NCIRCC:attack=\"Попытки эксплуатации уязвимости\"",
+						"Sensor:name=\"Правительство Республики Саха (Якутия)\"",
+						"Sensor:id=\"310078\"",
+					},
+					CustomFields: datamodels.CustomFields{
+						"geoip": &datamodels.CustomFieldStringType{
+							Order:  0,
+							String: "RU",
+						},
+						"id-soa": &datamodels.CustomFieldStringType{
+							Order:  2,
+							String: "33374",
+						},
+					},
+				},
+			},
+		}
+		verifiedObject.Observables = []datamodels.ObservableMessage{
+			{
+				Ioc:                  false,
+				Sighted:              true,
+				IgnoreSimilarity:     false,
+				Tlp:                  2,
+				UnderliningCreatedAt: "2023-04-16T17:03:39+03:00",
+				UnderliningUpdatedAt: "2023-04-16T17:03:39+03:00",
+				StartDate:            "2023-04-16T17:03:39+03:00",
+				UnderliningCreatedBy: "a.feoktistov@cloud.rcm",
+				//UnderliningUpdatedBy: "",
+				UnderliningId:   "~89444416",
+				UnderliningType: "Observable",
+				Data:            "690006:192.168.128.46",
+				DataType:        "ip_home",
+				Message:         "Download a piece of traffic",
+				Tags: []string{
+					"snort",
+				},
+				Attachment: datamodels.AttachmentData{
+					Size: 59963,
+					Id:   "geee2333",
+				},
+				Reports: map[string]datamodels.ReportTaxonomies{
+					"one": datamodels.ReportTaxonomies{
+						Taxonomies: []datamodels.Taxonomy{
+							{
+								Level:     "red",
+								Namespace: "all host",
+								Value:     "anymore",
+							},
+						},
+					},
+				},
+			},
+		}
+		verifiedObject.Ttp = []datamodels.TtpMessage{
+			{
+				OccurDate:            "2023-04-20T18:22:00+03:00",
+				UnderliningCreatedAt: "2023-07-11T17:02:00+03:00",
+				UnderliningId:        "~212127944",
+				UnderliningCreatedBy: "a.feoktistov@cloud.rcm",
+				PatternId:            "T1190",
+				Tactic:               "initial-access",
+				ExtraData: datamodels.ExtraDataTtpMessage{
+					Pattern: datamodels.PatternExtraData{
+						RemoteSupport:        false,
+						Revoked:              true,
+						UnderliningCreatedAt: "2023-03-27T12:46:20+03:00",
+						UnderliningCreatedBy: "admin@thehive.local",
+						UnderliningId:        "~118880",
+						UnderliningType:      "Pattern",
+						Description:          "Adversaries may attempt to exploit",
+						Detection:            "logs for abnormal",
+						Name:                 "Exploit Public-Facing Application",
+						PatternId:            "T1190",
+						PatternType:          "attack-pattern",
+						URL:                  "https://attack.mitre.org/techniques/T1190",
+						Version:              "2.4",
+						Platforms: []string{
+							"Windows",
+							"Linux",
+						},
+						PermissionsRequired: []string{},
+						DataSources: []string{
+							"Network Traffic: Network Traffic Content",
+						},
+						Tactics: []string{
+							"initial-access",
+						},
+					},
+				},
+			},
+		}
+
+		It("Должно быть выполнено успешное добавление или обновление", func() {
+			var err error
+
+			collection := conn.Database(NameDB).Collection("case_test_collection")
+			opts := options.FindOne()
+			currentData := datamodels.NewVerifiedTheHiveCase()
+			err = collection.FindOne(
+				context.TODO(),
+				bson.D{
+					{Key: "source", Value: verifiedObject.GetSource()},
+					{Key: "event.rootId", Value: verifiedObject.GetEvent().GetRootId()},
+				},
+				opts,
+			).Decode(currentData)
+
+			fmt.Println("ERROR decode:", err)
+
+			fmt.Println("_________________ Result Test 6. __________________")
+			fmt.Println(currentData.ToStringBeautiful(0))
+
+			if errors.Is(err, mongo.ErrNoDocuments) {
+				//если похожего документа нет в БД
+				currentData = &verifiedObject
+			} else {
+				//***************************************
+				//*
+				//* Для того чтобы продолжить тестирование
+				//* необходимо сделать метод ReplacingOldValues
+				//* для datamodels.EventMessageTheHiveCase,
+				//* datamodels.ObservableMessage и datamodels.TtpMessage
+				//*
+				//***************************************
+				//если похожий документ есть, выполняем замену старых значений новыми
+				_, err = currentData.GetEvent().ReplacingOldValues(*verifiedObject.GetEvent())
+				_, err = currentData.GetAlert().ReplacingOldValues(*verifiedObject.GetAlert())
+
+				_, err = collection.DeleteMany(
+					context.TODO(),
+					bson.D{{
+						Key:   "@id",
+						Value: bson.D{{Key: "$in", Value: []string{currentData.GetID()}}}}},
+					options.Delete())
+			}
+
+			_, err = collection.InsertMany(context.TODO(), []interface{}{currentData})
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})

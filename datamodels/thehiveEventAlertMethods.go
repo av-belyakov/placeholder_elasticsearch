@@ -7,6 +7,14 @@ import (
 	"placeholder_elasticsearch/supportingfunctions"
 )
 
+func NewEventMessageTheHiveAlert() *EventMessageTheHiveAlert {
+	return &EventMessageTheHiveAlert{
+		StartDate: "1970-01-01T00:00:00+00:00",
+		Details:   *NewEventAlertDetails(),
+		Object:    *NewEventAlertObject(),
+	}
+}
+
 // Get возвращает объект типа EventMessageTheHiveCase
 func (e *EventMessageTheHiveAlert) Get() *EventMessageTheHiveAlert {
 	return e
@@ -183,6 +191,10 @@ func (e *EventMessageTheHiveAlert) ToStringBeautiful(num int) string {
 
 //****************** EventAlertDetails ******************
 
+func NewEventAlertDetails() *EventAlertDetails {
+	return &EventAlertDetails{Tags: []string(nil)}
+}
+
 func (e *EventAlertDetails) Get() *EventAlertDetails {
 	return e
 }
@@ -270,6 +282,15 @@ func (e *EventAlertDetails) ToStringBeautiful(num int) string {
 }
 
 //****************** EventAlertObject ******************
+
+func NewEventAlertObject() *EventAlertObject {
+	return &EventAlertObject{
+		CreatedAt:    "1970-01-01T00:00:00+00:00",
+		UpdatedAt:    "1970-01-01T00:00:00+00:00",
+		Tags:         []string(nil),
+		CustomFields: CustomFields{},
+	}
+}
 
 func (e *EventAlertObject) Get() *EventAlertObject {
 	return e
@@ -635,17 +656,6 @@ func (e *EventAlertObject) SetSliceValueTags(v []string) {
 	e.Tags = v
 }
 
-/*
-	func (e *EventAlertObject) GetCustomFields() map[string]CustomerFields {
-		return e.CustomFields
-	}
-
-// SetValueCustomFields устанавливает STRING значение для поля CustomFields
-
-	func (e *EventAlertObject) SetValueCustomFields(v map[string]CustomerFields) {
-		e.CustomFields = v
-	}
-*/
 func (e *EventAlertObject) GetCustomFields() CustomFields {
 	return e.CustomFields
 }
