@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-// ReplacingOldValues заменяет старые значения структуры EventMessageTheHiveAlert
+// ReplacingOldValues заменяет старые значения структуры EventMessageForEsAlert
 // новыми значениями. Изменяемые поля:
 // Base - основа
 // StartDate - начальная дата
@@ -18,7 +18,7 @@ import (
 // RequestId - уникальный идентификатор запроса
 // Details - детальная информация о событии
 // Object - объект события
-func (e *EventMessageTheHiveAlert) ReplacingOldValues(element EventMessageTheHiveAlert) (int, error) {
+func (e *EventMessageForEsAlert) ReplacingOldValues(element EventMessageForEsAlert) (int, error) {
 	var (
 		err                  error
 		countReplacingFields int
@@ -82,13 +82,15 @@ DONE:
 	return countReplacingFields, err
 }
 
-// ReplacingOldValues заменяет старые значения структуры EventAlertDetails
+// ReplacingOldValues заменяет старые значения структуры EventMessageForEsAlertDetails
 // новыми значениями. Изменяемые поля:
 // SourceRef - ссылка
 // Title - заголовок
 // Description - описание
-// Tags - список тегов
-func (d *EventAlertDetails) ReplacingOldValues(element EventAlertDetails) int {
+// GeoIp - сюда помещаются теги относящиеся к географическому позиционированию
+// SensorId - сюда помещаются теги относящиеся к номерам сигнатур
+// Reasons - сюда помещаются теги относящиеся к причине возникновения события
+func (d *EventMessageForEsAlertDetails) ReplacingOldValues(element EventMessageForEsAlertDetails) int {
 	var countReplacingFields int
 
 	currentStruct := reflect.ValueOf(d).Elem()
@@ -104,10 +106,26 @@ func (d *EventAlertDetails) ReplacingOldValues(element EventAlertDetails) int {
 			}
 
 			// для обработки поля "Tags"
+			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
-					currentStruct.Field(i).Set(list)
-					countReplacingFields++
+
+				/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				*
+				* 	Эта часть еще не проверялась, надо выполнить тесты
+				*
+				 */
+
+				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]string)
+				if !okNew {
+					continue
+				}
+
+				for key, value := range newCustomFields {
+					for _, v := range value {
+						if d.SetValueTags(key, v) {
+							countReplacingFields++
+						}
+					}
 				}
 
 				continue
@@ -134,7 +152,7 @@ func (d *EventAlertDetails) ReplacingOldValues(element EventAlertDetails) int {
 	return countReplacingFields
 }
 
-// ReplacingOldValues заменяет старые значения структуры EventAlertObject
+// ReplacingOldValues заменяет старые значения структуры EventMessageForEsAlertObject
 // новыми значениями. Изменяемые поля:
 // Follow - следовать
 // Tlp - tlp
@@ -159,9 +177,11 @@ func (d *EventAlertDetails) ReplacingOldValues(element EventAlertDetails) int {
 // Case - кейс
 // CaseTemplate - шаблон обращения
 // ObjectType - тип объекта
-// Tags - теги
+// GeoIp - сюда помещаются теги относящиеся к географическому позиционированию
+// SensorId - сюда помещаются теги относящиеся к номерам сигнатур
+// Reasons - сюда помещаются теги относящиеся к причине возникновения события
 // CustomFields - настраиваемые поля
-func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
+func (o *EventMessageForEsAlertObject) ReplacingOldValues(element EventMessageForEsAlertObject) int {
 	var countReplacingFields int
 
 	currentStruct := reflect.ValueOf(o).Elem()
@@ -177,10 +197,26 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 			}
 
 			// для обработки поля "Tags"
+			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
-					currentStruct.Field(i).Set(list)
-					countReplacingFields++
+
+				/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				*
+				* 	Эта часть еще не проверялась, надо выполнить тесты
+				*
+				 */
+
+				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]string)
+				if !okNew {
+					continue
+				}
+
+				for key, value := range newCustomFields {
+					for _, v := range value {
+						if o.SetValueTags(key, v) {
+							countReplacingFields++
+						}
+					}
 				}
 
 				continue

@@ -6,48 +6,32 @@ import (
 	"strings"
 )
 
-func NewAlertMessageTheHiveAlert() *AlertMessageTheHiveAlert {
-	return &AlertMessageTheHiveAlert{
+func NewAlertMessageForEsAlert() *AlertMessageForEsAlert {
+	return &AlertMessageForEsAlert{
 		CreatedAt:    "1970-01-01T00:00:00+00:00",
 		UpdatedAt:    "1970-01-01T00:00:00+00:00",
-		Tags:         []string(nil),
+		Tags:         make(map[string][]string),
 		CustomFields: CustomFields{},
-		Artifacts:    []AlertArtifact(nil),
+		Artifacts:    make(map[string]ArtifactForEsAlert),
 	}
 }
 
-// Get возвращает объект типа AlertMessageTheHiveAlert
-func (a *AlertMessageTheHiveAlert) Get() *AlertMessageTheHiveAlert {
+// Get возвращает объект типа AlertMessageForEsAlert
+func (a *AlertMessageForEsAlert) Get() *AlertMessageForEsAlert {
 	return a
 }
 
-func (a *AlertMessageTheHiveAlert) GetFollow() bool {
-	return a.Follow
-}
-
-// SetValueFollow устанавливает BOOL значение для поля Follow
-func (a *AlertMessageTheHiveAlert) SetValueFollow(v bool) {
-	a.Follow = v
-}
-
-// SetAnyFollow устанавливает ЛЮБОЕ значение для поля Follow
-func (a *AlertMessageTheHiveAlert) SetAnyFollow(i interface{}) {
-	if v, ok := i.(bool); ok {
-		a.Follow = v
-	}
-}
-
-func (a *AlertMessageTheHiveAlert) GetTlp() uint64 {
+func (a *AlertMessageForEsAlert) GetTlp() uint64 {
 	return a.Tlp
 }
 
 // SetValueTlp устанавливает UINT64 значение для поля Tlp
-func (a *AlertMessageTheHiveAlert) SetValueTlp(v uint64) {
+func (a *AlertMessageForEsAlert) SetValueTlp(v uint64) {
 	a.Tlp = v
 }
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
-func (a *AlertMessageTheHiveAlert) SetAnyTlp(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyTlp(i interface{}) {
 	if v, ok := i.(float64); ok {
 		a.Tlp = uint64(v)
 
@@ -65,236 +49,218 @@ func (a *AlertMessageTheHiveAlert) SetAnyTlp(i interface{}) {
 	}
 }
 
-func (a *AlertMessageTheHiveAlert) GetSeverity() uint64 {
-	return a.Severity
-}
-
-// SetValueSeverity устанавливает UINT64 значение для поля Severity
-func (a *AlertMessageTheHiveAlert) SetValueSeverity(v uint64) {
-	a.Severity = v
-}
-
-// SetAnySeverity устанавливает ЛЮБОЕ значение для поля Severity
-func (a *AlertMessageTheHiveAlert) SetAnySeverity(i interface{}) {
-	if v, ok := i.(float64); ok {
-		a.Severity = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(float64); ok {
-		a.Severity = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(uint64); ok {
-		a.Severity = v
-	}
-}
-
-func (a *AlertMessageTheHiveAlert) GetDate() string {
+func (a *AlertMessageForEsAlert) GetDate() string {
 	return a.Date
 }
 
 // SetValueDate устанавливает значение в формате RFC3339 для поля Date
-func (a *AlertMessageTheHiveAlert) SetValueDate(v string) {
+func (a *AlertMessageForEsAlert) SetValueDate(v string) {
 	a.Date = v
 }
 
 // SetAnyDate устанавливает ЛЮБОЕ значение для поля Date
-func (a *AlertMessageTheHiveAlert) SetAnyDate(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyDate(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	a.Date = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (a *AlertMessageTheHiveAlert) GetCreatedAt() string {
+func (a *AlertMessageForEsAlert) GetCreatedAt() string {
 	return a.CreatedAt
 }
 
 // SetValueCreatedAt устанавливает значение в формате RFC3339 для поля CreatedAt
-func (a *AlertMessageTheHiveAlert) SetValueCreatedAt(v string) {
+func (a *AlertMessageForEsAlert) SetValueCreatedAt(v string) {
 	a.CreatedAt = v
 }
 
 // SetAnyCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
-func (a *AlertMessageTheHiveAlert) SetAnyCreatedAt(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyCreatedAt(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	a.CreatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (a *AlertMessageTheHiveAlert) GetUpdatedAt() string {
+func (a *AlertMessageForEsAlert) GetUpdatedAt() string {
 	return a.UpdatedAt
 }
 
 // SetValueUpdatedAt устанавливает значение в формате RFC3339 для поля UpdatedAt
-func (a *AlertMessageTheHiveAlert) SetValueUpdatedAt(v string) {
+func (a *AlertMessageForEsAlert) SetValueUpdatedAt(v string) {
 	a.UpdatedAt = v
 }
 
 // SetAnyUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
-func (a *AlertMessageTheHiveAlert) SetAnyUpdatedAt(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyUpdatedAt(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	a.UpdatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (a *AlertMessageTheHiveAlert) GetUpdatedBy() string {
+func (a *AlertMessageForEsAlert) GetUpdatedBy() string {
 	return a.UpdatedBy
 }
 
 // SetValueUpdatedBy устанавливает STRING значение для поля UpdatedBy
-func (a *AlertMessageTheHiveAlert) SetValueUpdatedBy(v string) {
+func (a *AlertMessageForEsAlert) SetValueUpdatedBy(v string) {
 	a.UpdatedBy = v
 }
 
 // SetAnyUpdatedBy устанавливает ЛЮБОЕ значение для поля UpdatedBy
-func (a *AlertMessageTheHiveAlert) SetAnyUpdatedBy(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyUpdatedBy(i interface{}) {
 	a.UpdatedBy = fmt.Sprint(i)
 }
 
-func (a *AlertMessageTheHiveAlert) GetUnderliningId() string {
+func (a *AlertMessageForEsAlert) GetUnderliningId() string {
 	return a.UnderliningId
 }
 
 // SetValueUnderliningId устанавливает STRING значение для поля UnderliningId
-func (a *AlertMessageTheHiveAlert) SetValueUnderliningId(v string) {
+func (a *AlertMessageForEsAlert) SetValueUnderliningId(v string) {
 	a.UnderliningId = v
 }
 
 // SetAnyUnderliningId устанавливает ЛЮБОЕ значение для поля UnderliningId
-func (a *AlertMessageTheHiveAlert) SetAnyUnderliningId(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyUnderliningId(i interface{}) {
 	a.UnderliningId = fmt.Sprint(i)
 }
 
-func (a *AlertMessageTheHiveAlert) GetStatus() string {
+func (a *AlertMessageForEsAlert) GetStatus() string {
 	return a.Status
 }
 
 // SetValueStatus устанавливает STRING значение для поля Status
-func (a *AlertMessageTheHiveAlert) SetValueStatus(v string) {
+func (a *AlertMessageForEsAlert) SetValueStatus(v string) {
 	a.Status = v
 }
 
 // SetAnyStatus устанавливает ЛЮБОЕ значение для поля Status
-func (a *AlertMessageTheHiveAlert) SetAnyStatus(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyStatus(i interface{}) {
 	a.Status = fmt.Sprint(i)
 }
 
-func (a *AlertMessageTheHiveAlert) GetType() string {
+func (a *AlertMessageForEsAlert) GetType() string {
 	return a.Type
 }
 
 // SetValueType устанавливает STRING значение для поля Type
-func (a *AlertMessageTheHiveAlert) SetValueType(v string) {
+func (a *AlertMessageForEsAlert) SetValueType(v string) {
 	a.Type = v
 }
 
 // SetAnyType устанавливает ЛЮБОЕ значение для поля Type
-func (a *AlertMessageTheHiveAlert) SetAnyType(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyType(i interface{}) {
 	a.Type = fmt.Sprint(i)
 }
 
-func (a *AlertMessageTheHiveAlert) GetUnderliningType() string {
+func (a *AlertMessageForEsAlert) GetUnderliningType() string {
 	return a.UnderliningType
 }
 
 // SetValueUnderliningType устанавливает STRING значение для поля UnderliningType
-func (a *AlertMessageTheHiveAlert) SetValueUnderliningType(v string) {
+func (a *AlertMessageForEsAlert) SetValueUnderliningType(v string) {
 	a.UnderliningType = v
 }
 
 // SetAnyUnderliningType устанавливает ЛЮБОЕ значение для поля UnderliningType
-func (a *AlertMessageTheHiveAlert) SetAnyUnderliningType(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyUnderliningType(i interface{}) {
 	a.UnderliningType = fmt.Sprint(i)
 }
 
-func (a *AlertMessageTheHiveAlert) GetDescription() string {
+func (a *AlertMessageForEsAlert) GetDescription() string {
 	return a.Description
 }
 
 // SetValueDescription устанавливает STRING значение для поля Description
-func (a *AlertMessageTheHiveAlert) SetValueDescription(v string) {
+func (a *AlertMessageForEsAlert) SetValueDescription(v string) {
 	a.Description = v
 }
 
 // SetAnyDescription устанавливает ЛЮБОЕ значение для поля Description
-func (a *AlertMessageTheHiveAlert) SetAnyDescription(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyDescription(i interface{}) {
 	a.Description = fmt.Sprint(i)
 }
 
-func (a *AlertMessageTheHiveAlert) GetCaseTemplate() string {
+func (a *AlertMessageForEsAlert) GetCaseTemplate() string {
 	return a.CaseTemplate
 }
 
 // SetValueCaseTemplate устанавливает STRING значение для поля CaseTemplate
-func (a *AlertMessageTheHiveAlert) SetValueCaseTemplate(v string) {
+func (a *AlertMessageForEsAlert) SetValueCaseTemplate(v string) {
 	a.CaseTemplate = v
 }
 
 // SetAnyCaseTemplate устанавливает ЛЮБОЕ значение для поля CaseTemplate
-func (a *AlertMessageTheHiveAlert) SetAnyCaseTemplate(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnyCaseTemplate(i interface{}) {
 	a.CaseTemplate = fmt.Sprint(i)
 }
 
-func (a *AlertMessageTheHiveAlert) GetSourceRef() string {
+func (a *AlertMessageForEsAlert) GetSourceRef() string {
 	return a.SourceRef
 }
 
 // SetValueSourceRef устанавливает STRING значение для поля SourceRef
-func (a *AlertMessageTheHiveAlert) SetValueSourceRef(v string) {
+func (a *AlertMessageForEsAlert) SetValueSourceRef(v string) {
 	a.SourceRef = v
 }
 
 // SetAnySourceRef устанавливает ЛЮБОЕ значение для поля SourceRef
-func (a *AlertMessageTheHiveAlert) SetAnySourceRef(i interface{}) {
+func (a *AlertMessageForEsAlert) SetAnySourceRef(i interface{}) {
 	a.SourceRef = fmt.Sprint(i)
 }
 
-func (a *AlertMessageTheHiveAlert) GetTags() []string {
+func (a *AlertMessageForEsAlert) GetTags() map[string][]string {
 	return a.Tags
 }
 
-// SetValueTags устанавливает STRING значение для поля Tags
-func (a *AlertMessageTheHiveAlert) SetValueTags(v string) {
-	a.Tags = append(a.Tags, v)
+// SetValueTags добаляет значение в Tags по ключу
+func (a *AlertMessageForEsAlert) SetValueTags(k, v string) bool {
+	if _, ok := a.Tags[k]; !ok {
+		a.Tags[k] = []string(nil)
+	}
+
+	for _, value := range a.Tags[k] {
+		if v == value {
+			return false
+		}
+	}
+
+	a.Tags[k] = append(a.Tags[k], v)
+
+	return true
 }
 
 // SetAnyTags устанавливает ЛЮБОЕ значение для поля Tags
-func (a *AlertMessageTheHiveAlert) SetAnyTags(i interface{}) {
-	a.Tags = append(a.Tags, fmt.Sprint(i))
+func (a *AlertMessageForEsAlert) SetAnyTags(k string, i interface{}) bool {
+	return a.SetValueTags(k, fmt.Sprint(i))
 }
 
-func (a *AlertMessageTheHiveAlert) GetCustomFields() CustomFields {
+func (a *AlertMessageForEsAlert) GetCustomFields() CustomFields {
 	return a.CustomFields
 }
 
 // SetValueCustomFields устанавливает значение для поля CustomFields
-func (a *AlertMessageTheHiveAlert) SetValueCustomFields(v CustomFields) {
+func (a *AlertMessageForEsAlert) SetValueCustomFields(v CustomFields) {
 	a.CustomFields = v
 }
 
-func (a *AlertMessageTheHiveAlert) GetArtifacts() []AlertArtifact {
+func (a *AlertMessageForEsAlert) GetArtifacts() map[string]ArtifactForEsAlert {
 	return a.Artifacts
 }
 
 // SetArtifacts устанавливает значение для поля Artifacts
-func (a *AlertMessageTheHiveAlert) SetValueArtifacts(v []AlertArtifact) {
+func (a *AlertMessageForEsAlert) SetValueArtifacts(v map[string]ArtifactForEsAlert) {
 	a.Artifacts = v
 }
 
 // AddValueArtifact устанавливает значение для поля Artifacts
-func (a *AlertMessageTheHiveAlert) AddValueArtifact(v AlertArtifact) {
-	a.Artifacts = append(a.Artifacts, v)
+func (a *AlertMessageForEsAlert) AddValueArtifact(k string, v ArtifactForEsAlert) {
+	a.Artifacts[k] = v
 }
 
-func (a *AlertMessageTheHiveAlert) ToStringBeautiful(num int) string {
+func (a *AlertMessageForEsAlert) ToStringBeautiful(num int) string {
 	str := strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str.WriteString(fmt.Sprintf("%sfollow: '%t'\n", ws, a.Follow))
 	str.WriteString(fmt.Sprintf("%stlp: '%d'\n", ws, a.Tlp))
-	str.WriteString(fmt.Sprintf("%sseverity: '%d'\n", ws, a.Severity))
 	str.WriteString(fmt.Sprintf("%sdate: '%s'\n", ws, a.Date))
 	str.WriteString(fmt.Sprintf("%screatedAt: '%s'\n", ws, a.CreatedAt))
 	str.WriteString(fmt.Sprintf("%supdatedAt: '%s'\n", ws, a.UpdatedAt))
@@ -306,14 +272,13 @@ func (a *AlertMessageTheHiveAlert) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%sdescription: '%s'\n", ws, a.Description))
 	str.WriteString(fmt.Sprintf("%scaseTemplate: '%s'\n", ws, a.CaseTemplate))
 	str.WriteString(fmt.Sprintf("%ssourceRef: '%s'\n", ws, a.SourceRef))
-	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulSlice(num, a.Tags)))
+	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulMapSlice(num, a.Tags)))
 	str.WriteString(fmt.Sprintf("%scustomFields: \n%s", ws, CustomFieldsToStringBeautiful(a.CustomFields, num)))
-	str.WriteString(fmt.Sprintf("%sartifact: \n%s", ws, func(l []AlertArtifact) string {
+	str.WriteString(fmt.Sprintf("%sartifact: \n%s", ws, func(l map[string]ArtifactForEsAlert) string {
 		str := strings.Builder{}
-		ws := supportingfunctions.GetWhitespace(num + 1)
 
 		for k, v := range l {
-			str.WriteString(fmt.Sprintf("%s%d.\n", ws, k+1))
+			str.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k))
 			str.WriteString(v.ToStringBeautiful(num + 2))
 		}
 		return str.String()
@@ -322,79 +287,46 @@ func (a *AlertMessageTheHiveAlert) ToStringBeautiful(num int) string {
 	return str.String()
 }
 
-func NewAlertArtifact() *AlertArtifact {
-	return &AlertArtifact{
+func NewArtifactForEsAlert() *ArtifactForEsAlert {
+	return &ArtifactForEsAlert{
 		CreatedAt: "1970-01-01T00:00:00+00:00",
-		UpdatedAt: "1970-01-01T00:00:00+00:00",
 		StartDate: "1970-01-01T00:00:00+00:00",
-		Tags:      []string(nil),
+		Tags:      make(map[string][]string),
 	}
 }
 
-// Get возвращает объект типа AlertArtifact
-func (a *AlertArtifact) Get() *AlertArtifact {
+// Get возвращает объект типа ArtifactForEsAlert
+func (a *ArtifactForEsAlert) Get() *ArtifactForEsAlert {
 	return a
 }
 
-func (a *AlertArtifact) GetIoc() bool {
+func (a *ArtifactForEsAlert) GetIoc() bool {
 	return a.Ioc
 }
 
 // SetValueIoc устанавливает BOOL значение для поля Ioc
-func (a *AlertArtifact) SetValueIoc(v bool) {
+func (a *ArtifactForEsAlert) SetValueIoc(v bool) {
 	a.Ioc = v
 }
 
 // SetAnyIoc устанавливает ЛЮБОЕ значение для поля Ioc
-func (a *AlertArtifact) SetAnyIoc(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyIoc(i interface{}) {
 	if v, ok := i.(bool); ok {
 		a.Ioc = v
 	}
 }
 
-func (a *AlertArtifact) GetSighted() bool {
-	return a.Sighted
-}
-
-// SetValueSighted устанавливает BOOL значение для поля Sighted
-func (a *AlertArtifact) SetValueSighted(v bool) {
-	a.Sighted = v
-}
-
-// SetAnySighted устанавливает ЛЮБОЕ значение для поля Sighted
-func (a *AlertArtifact) SetAnySighted(i interface{}) {
-	if v, ok := i.(bool); ok {
-		a.Sighted = v
-	}
-}
-
-func (a *AlertArtifact) GetIgnoreSimilarity() bool {
-	return a.IgnoreSimilarity
-}
-
-// SetValueIgnoreSimilarity устанавливает BOOL значение для поля IgnoreSimilarity
-func (a *AlertArtifact) SetValueIgnoreSimilarity(v bool) {
-	a.IgnoreSimilarity = v
-}
-
-// SetAnyIgnoreSimilarity устанавливает ЛЮБОЕ значение для поля IgnoreSimilarity
-func (a *AlertArtifact) SetAnyIgnoreSimilarity(i interface{}) {
-	if v, ok := i.(bool); ok {
-		a.IgnoreSimilarity = v
-	}
-}
-
-func (a *AlertArtifact) GetTlp() uint64 {
+func (a *ArtifactForEsAlert) GetTlp() uint64 {
 	return a.Tlp
 }
 
 // SetValueTlp устанавливает UINT64 значение для поля Tlp
-func (a *AlertArtifact) SetValueTlp(v uint64) {
+func (a *ArtifactForEsAlert) SetValueTlp(v uint64) {
 	a.Tlp = v
 }
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
-func (a *AlertArtifact) SetAnyTlp(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyTlp(i interface{}) {
 	if v, ok := i.(float32); ok {
 		a.Tlp = uint64(v)
 
@@ -412,198 +344,177 @@ func (a *AlertArtifact) SetAnyTlp(i interface{}) {
 	}
 }
 
-func (a *AlertArtifact) GetUnderliningId() string {
+func (a *ArtifactForEsAlert) GetUnderliningId() string {
 	return a.UnderliningId
 }
 
 // SetValueUnderliningId устанавливает STRING значение для поля UnderliningId
-func (a *AlertArtifact) SetValueUnderliningId(v string) {
+func (a *ArtifactForEsAlert) SetValueUnderliningId(v string) {
 	a.UnderliningId = v
 }
 
 // SetAnyUnderliningId устанавливает ЛЮБОЕ значение для поля UnderliningId
-func (a *AlertArtifact) SetAnyUnderliningId(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyUnderliningId(i interface{}) {
 	a.UnderliningId = fmt.Sprint(i)
 }
 
-func (a *AlertArtifact) GetId() string {
+func (a *ArtifactForEsAlert) GetId() string {
 	return a.Id
 }
 
 // SetValueId устанавливает STRING значение для поля Id
-func (a *AlertArtifact) SetValueId(v string) {
+func (a *ArtifactForEsAlert) SetValueId(v string) {
 	a.Id = v
 }
 
 // SetAnyId устанавливает ЛЮБОЕ значение для поля Id
-func (a *AlertArtifact) SetAnyId(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyId(i interface{}) {
 	a.Id = fmt.Sprint(i)
 }
 
-func (a *AlertArtifact) GetUnderliningType() string {
+func (a *ArtifactForEsAlert) GetUnderliningType() string {
 	return a.UnderliningType
 }
 
 // SetValueUnderliningType устанавливает STRING значение для поля UnderliningType
-func (a *AlertArtifact) SetValueUnderliningType(v string) {
+func (a *ArtifactForEsAlert) SetValueUnderliningType(v string) {
 	a.UnderliningType = v
 }
 
 // SetAnyUnderliningType устанавливает ЛЮБОЕ значение для поля UnderliningType
-func (a *AlertArtifact) SetAnyUnderliningType(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyUnderliningType(i interface{}) {
 	a.UnderliningType = fmt.Sprint(i)
 }
 
-func (a *AlertArtifact) GetCreatedAt() string {
+func (a *ArtifactForEsAlert) GetCreatedAt() string {
 	return a.CreatedAt
 }
 
 // SetValueCreatedAt устанавливает значение в формате RFC3339 для поля CreatedAt
-func (a *AlertArtifact) SetValueCreatedAt(v string) {
+func (a *ArtifactForEsAlert) SetValueCreatedAt(v string) {
 	a.CreatedAt = v
 }
 
 // SetAnyCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
-func (a *AlertArtifact) SetAnyCreatedAt(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyCreatedAt(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	a.CreatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (a *AlertArtifact) GetUpdatedAt() string {
-	return a.UpdatedAt
-}
-
-// SetValueUpdatedAt устанавливает значение  в формате RFC3339 для поля UpdatedAt
-func (a *AlertArtifact) SetValueUpdatedAt(v string) {
-	a.UpdatedAt = v
-}
-
-// SetAnyUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
-func (a *AlertArtifact) SetAnyUpdatedAt(i interface{}) {
-	tmp := supportingfunctions.ConversionAnyToInt(i)
-	a.UpdatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
-}
-
-func (a *AlertArtifact) GetStartDate() string {
+func (a *ArtifactForEsAlert) GetStartDate() string {
 	return a.StartDate
 }
 
 // SetValueStartDate устанавливает значение  в формате RFC3339 для поля StartDate
-func (a *AlertArtifact) SetValueStartDate(v string) {
+func (a *ArtifactForEsAlert) SetValueStartDate(v string) {
 	a.StartDate = v
 }
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
-func (a *AlertArtifact) SetAnyStartDate(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyStartDate(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	a.StartDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (a *AlertArtifact) GetCreatedBy() string {
+func (a *ArtifactForEsAlert) GetCreatedBy() string {
 	return a.CreatedBy
 }
 
 // SetValueCreatedBy устанавливает STRING значение для поля CreatedBy
-func (a *AlertArtifact) SetValueCreatedBy(v string) {
+func (a *ArtifactForEsAlert) SetValueCreatedBy(v string) {
 	a.CreatedBy = v
 }
 
 // SetAnyCreatedBy устанавливает ЛЮБОЕ значение для поля CreatedBy
-func (a *AlertArtifact) SetAnyCreatedBy(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyCreatedBy(i interface{}) {
 	a.CreatedBy = fmt.Sprint(i)
 }
 
-func (a *AlertArtifact) GetUpdatedBy() string {
-	return a.UpdatedBy
-}
-
-// SetValueUpdatedBy устанавливает STRING значение для поля UpdatedBy
-func (a *AlertArtifact) SetValueUpdatedBy(v string) {
-	a.UpdatedBy = v
-}
-
-// SetAnyUpdatedBy устанавливает ЛЮБОЕ значение для поля UpdatedBy
-func (a *AlertArtifact) SetAnyUpdatedBy(i interface{}) {
-	a.UpdatedBy = fmt.Sprint(i)
-}
-
-func (a *AlertArtifact) GetData() string {
+func (a *ArtifactForEsAlert) GetData() string {
 	return a.Data
 }
 
 // SetValueData устанавливает STRING значение для поля Data
-func (a *AlertArtifact) SetValueData(v string) {
+func (a *ArtifactForEsAlert) SetValueData(v string) {
 	a.Data = v
 }
 
 // SetAnyData устанавливает ЛЮБОЕ значение для поля Data
-func (a *AlertArtifact) SetAnyData(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyData(i interface{}) {
 	a.Data = fmt.Sprint(i)
 }
 
-func (a *AlertArtifact) GetDataType() string {
+func (a *ArtifactForEsAlert) GetDataType() string {
 	return a.DataType
 }
 
 // SetValueDataType устанавливает STRING значение для поля DataType
-func (a *AlertArtifact) SetValueDataType(v string) {
+func (a *ArtifactForEsAlert) SetValueDataType(v string) {
 	a.DataType = v
 }
 
 // SetAnyDataType устанавливает ЛЮБОЕ значение для поля DataType
-func (a *AlertArtifact) SetAnyDataType(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyDataType(i interface{}) {
 	a.DataType = fmt.Sprint(i)
 }
 
-func (a *AlertArtifact) GetMessage() string {
+func (a *ArtifactForEsAlert) GetMessage() string {
 	return a.Message
 }
 
 // SetValueMessage устанавливает STRING значение для поля Message
-func (a *AlertArtifact) SetValueMessage(v string) {
+func (a *ArtifactForEsAlert) SetValueMessage(v string) {
 	a.Message = v
 }
 
 // SetAnyMessage устанавливает ЛЮБОЕ значение для поля Message
-func (a *AlertArtifact) SetAnyMessage(i interface{}) {
+func (a *ArtifactForEsAlert) SetAnyMessage(i interface{}) {
 	a.Message = fmt.Sprint(i)
 }
 
-func (a *AlertArtifact) GetTags() []string {
+func (a *ArtifactForEsAlert) GetTags() map[string][]string {
 	return a.Tags
 }
 
-// SetValueTags устанавливает STRING значение для поля Tags
-func (a *AlertArtifact) SetValueTags(v string) {
-	a.Tags = append(a.Tags, v)
+// SetValueTags добаляет значение в Tags по ключу
+func (a *ArtifactForEsAlert) SetValueTags(k, v string) bool {
+	if _, ok := a.Tags[k]; !ok {
+		a.Tags[k] = []string(nil)
+	}
+
+	for _, value := range a.Tags[k] {
+		if v == value {
+			return false
+		}
+	}
+
+	a.Tags[k] = append(a.Tags[k], v)
+
+	return true
 }
 
 // SetAnyTags устанавливает ЛЮБОЕ значение для поля Tags
-func (a *AlertArtifact) SetAnyTags(i interface{}) {
-	a.Tags = append(a.Tags, fmt.Sprint(i))
+func (a *ArtifactForEsAlert) SetAnyTags(k string, i interface{}) bool {
+	return a.SetValueTags(k, fmt.Sprint(i))
 }
 
-func (a *AlertArtifact) ToStringBeautiful(num int) string {
+func (a *ArtifactForEsAlert) ToStringBeautiful(num int) string {
 	str := strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
 
 	str.WriteString(fmt.Sprintf("%sioc: '%t'\n", ws, a.Ioc))
-	str.WriteString(fmt.Sprintf("%ssighted: '%t'\n", ws, a.Sighted))
-	str.WriteString(fmt.Sprintf("%signoreSimilarity: '%t'\n", ws, a.IgnoreSimilarity))
 	str.WriteString(fmt.Sprintf("%stlp: '%d'\n", ws, a.Tlp))
 	str.WriteString(fmt.Sprintf("%sunderliningId: '%s'\n", ws, a.UnderliningId))
 	str.WriteString(fmt.Sprintf("%sid: '%s'\n", ws, a.Id))
 	str.WriteString(fmt.Sprintf("%sunderliningType: '%s'\n", ws, a.UnderliningType))
 	str.WriteString(fmt.Sprintf("%screatedAt: '%s'\n", ws, a.CreatedAt))
-	str.WriteString(fmt.Sprintf("%supdatedAt: '%s'\n", ws, a.UpdatedAt))
 	str.WriteString(fmt.Sprintf("%sstartDate: '%s'\n", ws, a.StartDate))
 	str.WriteString(fmt.Sprintf("%screatedBy: '%s'\n", ws, a.CreatedBy))
-	str.WriteString(fmt.Sprintf("%supdatedBy: '%s'\n", ws, a.UpdatedBy))
 	str.WriteString(fmt.Sprintf("%sdata: '%s'\n", ws, a.Data))
 	str.WriteString(fmt.Sprintf("%sdataType: '%s'\n", ws, a.DataType))
 	str.WriteString(fmt.Sprintf("%smessage: '%s'\n", ws, a.Message))
-	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulSlice(num, a.Tags)))
+	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulMapSlice(num, a.Tags)))
 
 	return str.String()
 }

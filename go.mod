@@ -4,7 +4,6 @@ go 1.21.4
 
 require (
 	github.com/av-belyakov/simplelogger v0.0.0-20231113085635-45b8e06e6063
-	github.com/elastic/go-elasticsearch v0.0.0
 	github.com/elastic/go-elasticsearch/v8 v8.11.1
 	github.com/google/uuid v1.5.0
 	github.com/mitchellh/mapstructure v1.5.0

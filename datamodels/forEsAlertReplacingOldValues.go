@@ -1,14 +1,10 @@
 package datamodels
 
-import (
-	"reflect"
-)
+import "reflect"
 
-// ReplacingOldValues заменяет старые значения структуры AlertMessageTheHiveAlert
+// ReplacingOldValues заменяет старые значения структуры AlertMessageForEsAlert
 // новыми значениями. Изменяемые поля:
-// Follow - следовать
 // Tlp - номер группы разделяющие общие цели
-// Severity - строгость
 // Date - дата (формат RFC3339)
 // CreatedAt - дата создания (формат RFC3339)
 // UpdatedAt - дата обновления (формат RFC3339)
@@ -22,8 +18,8 @@ import (
 // SourceRef - ссылка на источник
 // Tags - теги
 // CustomFields - настраиваемые поля
-// Artifacts - артифакты
-func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHiveAlert) (int, error) {
+// Artifacts - артефакты
+func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAlert) (int, error) {
 	var (
 		err                  error
 		countReplacingFields int
@@ -42,10 +38,26 @@ func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHi
 			}
 
 			// для обработки поля "Tags"
+			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
-					currentStruct.Field(i).Set(list)
-					countReplacingFields++
+
+				/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				*
+				* 	Эта часть еще не проверялась, надо выполнить тесты
+				*
+				 */
+
+				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]string)
+				if !okNew {
+					continue
+				}
+
+				for key, value := range newCustomFields {
+					for _, v := range value {
+						if o.SetValueTags(key, v) {
+							countReplacingFields++
+						}
+					}
 				}
 
 				continue
@@ -73,7 +85,20 @@ func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHi
 			//Значения данного поля обновляются если есть совпадение в
 			//полях 'id' или '_id' между новым артефактом и тем который
 			//уже имеется.
-			if typeOfCurrentStruct.Field(i).Name == "Artifacts" {
+
+			//********************************************************
+			//
+			// Ныжно выполнить следующие действия:
+			// 1. Проверить как отрабатывает обработчик для
+			//   if typeOfCurrentStruct.Field(i).Name == "Tags"
+			// 2. Написать обработку для ArtifactForEsAlert
+			// 3. Написать обработчики из группы listHandler... для
+			//   обработки и формирования типов AlertMessageForEsAlert
+			//   и EventMessageForEsAlert
+			//
+			//********************************************************
+
+			/*if typeOfCurrentStruct.Field(i).Name == "Artifacts" {
 				currentCustomFields, okCurr := currentStruct.Field(i).Interface().([]AlertArtifact)
 				newCustomFields, okNew := newStruct.Field(j).Interface().([]AlertArtifact)
 				if !okCurr || !okNew {
@@ -100,7 +125,7 @@ func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHi
 				}
 
 				continue
-			}
+			}*/
 
 			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
 				if !currentStruct.Field(i).CanSet() {
@@ -123,7 +148,7 @@ func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHi
 	return countReplacingFields, err
 }
 
-// ReplacingOldValues заменяет старые значения структуры AlertArtifact
+// ReplacingOldValues заменяет старые значения структуры ArtifactForEsAlert
 // новыми значениями. Изменяемые поля:
 // Ioc - индикатор компрометации
 // Sighted - видящий
@@ -141,7 +166,7 @@ func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHi
 // DataType - тип данных
 // Message - сообщение
 // Tags - список тегов
-func (a *AlertArtifact) ReplacingOldValues(element AlertArtifact) int {
+func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int {
 	var countReplacingFields int
 
 	currentStruct := reflect.ValueOf(a).Elem()
@@ -157,10 +182,26 @@ func (a *AlertArtifact) ReplacingOldValues(element AlertArtifact) int {
 			}
 
 			// для обработки поля "Tags"
+			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
-					currentStruct.Field(i).Set(list)
-					countReplacingFields++
+
+				/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				*
+				* 	Эта часть еще не проверялась, надо выполнить тесты
+				*
+				 */
+
+				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]string)
+				if !okNew {
+					continue
+				}
+
+				for key, value := range newCustomFields {
+					for _, v := range value {
+						if o.SetValueTags(key, v) {
+							countReplacingFields++
+						}
+					}
 				}
 
 				continue

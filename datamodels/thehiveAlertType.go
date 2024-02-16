@@ -17,7 +17,7 @@ package datamodels
 // SourceRef - ссылка на источник
 // Tags - теги
 // CustomFields - настраиваемые поля
-// Artifacts - артифакты
+// Artifacts - артефакты
 type AlertMessageTheHiveAlert struct {
 	Follow          bool            `json:"follow" bson:"follow"`
 	Tlp             uint64          `json:"tlp" bson:"tlp"`
@@ -38,7 +38,7 @@ type AlertMessageTheHiveAlert struct {
 	Artifacts       []AlertArtifact `json:"artifact" bson:"artifact"`
 }
 
-// AlertArtifact содержит артифакт к алерту
+// AlertArtifact содержит артефакт к алерту
 // Ioc - индикатор компрометации
 // Sighted - видящий
 // IgnoreSimilarity - игнорировать похожие

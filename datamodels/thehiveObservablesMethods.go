@@ -323,15 +323,7 @@ func (om ObservableMessage) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%smessage: '%s'\n", ws, om.Message))
 	str.WriteString(fmt.Sprintf("%ssighted: '%v'\n", ws, om.Sighted))
 	str.WriteString(fmt.Sprintf("%sstartDate: '%s'\n", ws, om.StartDate))
-	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, func(l []string) string {
-		var str strings.Builder = strings.Builder{}
-		ws := supportingfunctions.GetWhitespace(num + 1)
-
-		for k, v := range l {
-			str.WriteString(fmt.Sprintf("%s%d. '%s'\n", ws, k+1, v))
-		}
-		return str.String()
-	}(om.Tags)))
+	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulSlice(num, om.Tags)))
 	str.WriteString(fmt.Sprintf("%stlp: '%d'\n", ws, om.Tlp))
 	str.WriteString(fmt.Sprintf("%sreports: \n%s", ws, func(l map[string]ReportTaxonomies) string {
 		var str strings.Builder = strings.Builder{}

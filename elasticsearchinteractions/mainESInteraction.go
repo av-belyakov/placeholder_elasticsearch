@@ -103,6 +103,16 @@ func HandlerElasticSearch(
 
 						использовать для сравнения методы ReplacingOldValues
 						для datamodels.NewVerifiedTheHiveAlert()
+
+						Тут нужно сделать запрос на получение документа для
+						дольнейшего сравнения ивыполнить ТЕСТИРОВАНИЕ
+
+						поиск в Elasticsearch
+						res, err = hsd.client.Search(
+							hsd.client.Search.WithContext(context.Background()),
+							hsd.client.Search.WithIndex(index...),
+							hsd.client.Search.WithBody(query),
+						)
 					*/
 
 				}

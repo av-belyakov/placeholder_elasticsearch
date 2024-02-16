@@ -728,15 +728,7 @@ func (eo EventCaseObject) ToStringBeautiful(num int) string {
 	strB.WriteString(fmt.Sprintf("%sendDate: '%s'\n", ws, eo.EndDate))
 	strB.WriteString(fmt.Sprintf("%simpactStatus: '%s'\n", ws, eo.ImpactStatus))
 	strB.WriteString(fmt.Sprintf("%sresolutionStatus: '%s'\n", ws, eo.ResolutionStatus))
-	strB.WriteString(fmt.Sprintf("%stags: \n%s", ws, func(l []string) string {
-		str := strings.Builder{}
-		ws := supportingfunctions.GetWhitespace(num + 1)
-
-		for k, v := range l {
-			strB.WriteString(fmt.Sprintf("%s%d. '%s'\n", ws, k+1, v))
-		}
-		return str.String()
-	}(eo.Tags)))
+	strB.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulSlice(num, eo.Tags)))
 	strB.WriteString(fmt.Sprintf("%sflag: '%v'\n", ws, eo.Flag))
 	strB.WriteString(fmt.Sprintf("%stlp: '%d'\n", ws, eo.Tlp))
 	strB.WriteString(fmt.Sprintf("%spap: '%d'\n", ws, eo.Pap))
@@ -754,19 +746,5 @@ func (eo EventCaseObject) ToStringBeautiful(num int) string {
 		return str.String()
 	}(eo.Permissions)))*/
 
-	return strB.String()
-}
-
-func CustomFieldsToStringBeautiful(l CustomFields, num int) string {
-	strB := strings.Builder{}
-	ws := supportingfunctions.GetWhitespace(num + 2)
-
-	for k, v := range l {
-		strB.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k))
-
-		nameOne, dataOne, nameTwo, dataTwo := v.Get()
-		strB.WriteString(fmt.Sprintf("%s%s: %d\n", ws, nameOne, dataOne))
-		strB.WriteString(fmt.Sprintf("%s%s: %s\n", ws, nameTwo, dataTwo))
-	}
 	return strB.String()
 }

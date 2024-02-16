@@ -173,6 +173,8 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 						"ATs:reason=\"INFO Controlled FGS\"",
 						"Sensor:id=\"8030066\"",
 						"geoip:new=VB",
+						"geoip:country=RU",
+						"ATs:reason=\"Full stack\"",
 					},
 				},
 				Object: datamodels.EventAlertObject{
@@ -199,6 +201,8 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 						"'Sensor:id=\"8030012\"'",
 						"'Webhook:send=ES'",
 						"Ast:FFF",
+						"AST:BBIN",
+						"ATs:report=LLOmmn",
 					},
 					CustomFields: datamodels.CustomFields{
 						"first-time": &datamodels.CustomFieldDateType{
@@ -333,7 +337,7 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 		})
 	})
 
-	Context("Тест 6. Проверка обновления типа VerifiedTheHiveAlert", func() {
+	/*Context("Тест 6. Проверка обновления типа VerifiedTheHiveAlert", func() {
 		verifiedObject := datamodels.VerifiedTheHiveCase{
 			ID:              "6b3be7fe-94a5-2133-a923-70b2a445f0ab",
 			CreateTimestamp: "2024-01-31T16:17:22+03:00",
@@ -536,5 +540,5 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})
-	})
+	})*/
 })

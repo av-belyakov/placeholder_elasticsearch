@@ -2,172 +2,171 @@ package datamodels
 
 import (
 	"fmt"
-	"strings"
-
 	"placeholder_elasticsearch/supportingfunctions"
+	"strings"
 )
 
-func NewEventMessageTheHiveAlert() *EventMessageTheHiveAlert {
-	return &EventMessageTheHiveAlert{
+func NewEventMessageForEsAlert() *EventMessageForEsAlert {
+	return &EventMessageForEsAlert{
 		StartDate: "1970-01-01T00:00:00+00:00",
-		Details:   *NewEventAlertDetails(),
-		Object:    *NewEventAlertObject(),
+		Details:   *NewEventMessageForEsAlertDetails(),
+		Object:    *NewEventMessageForEsAlertObject(),
 	}
 }
 
-// Get возвращает объект типа EventMessageTheHiveCase
-func (e *EventMessageTheHiveAlert) Get() *EventMessageTheHiveAlert {
+// Get возвращает объект типа EventMessageForEsAlert
+func (e *EventMessageForEsAlert) Get() *EventMessageForEsAlert {
 	return e
 }
 
-func (e *EventMessageTheHiveAlert) GetBase() bool {
+func (e *EventMessageForEsAlert) GetBase() bool {
 	return e.Base
 }
 
 // SetValueBase устанавливает BOOL значение для поля Base
-func (e *EventMessageTheHiveAlert) SetValueBase(v bool) {
+func (e *EventMessageForEsAlert) SetValueBase(v bool) {
 	e.Base = v
 }
 
 // SetAnyBase устанавливает ЛЮБОЕ значение для поля Base
-func (e *EventMessageTheHiveAlert) SetAnyBase(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyBase(i interface{}) {
 	if v, ok := i.(bool); ok {
 		e.Base = v
 	}
 }
 
-func (e *EventMessageTheHiveAlert) GetStartDate() string {
+func (e *EventMessageForEsAlert) GetStartDate() string {
 	return e.StartDate
 }
 
 // SetValueStartDate устанавливает значение в формате RFC3339 для поля StartDate
-func (e *EventMessageTheHiveAlert) SetValueStartDate(v string) {
+func (e *EventMessageForEsAlert) SetValueStartDate(v string) {
 	e.StartDate = v
 }
 
 // SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
-func (e *EventMessageTheHiveAlert) SetAnyStartDate(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyStartDate(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	e.StartDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (e *EventMessageTheHiveAlert) GetRootId() string {
+func (e *EventMessageForEsAlert) GetRootId() string {
 	return e.RootId
 }
 
 // SetValueRootId устанавливает STRING значение для поля RootId
-func (e *EventMessageTheHiveAlert) SetValueRootId(v string) {
+func (e *EventMessageForEsAlert) SetValueRootId(v string) {
 	e.RootId = v
 }
 
 // SetAnyRootId устанавливает ЛЮБОЕ значение для поля RootId
-func (e *EventMessageTheHiveAlert) SetAnyRootId(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyRootId(i interface{}) {
 	e.RootId = fmt.Sprint(i)
 }
 
-func (e *EventMessageTheHiveAlert) GetOrganisation() string {
+func (e *EventMessageForEsAlert) GetOrganisation() string {
 	return e.Organisation
 }
 
 // SetValueOrganisation устанавливает STRING значение для поля Organisation
-func (e *EventMessageTheHiveAlert) SetValueOrganisation(v string) {
+func (e *EventMessageForEsAlert) SetValueOrganisation(v string) {
 	e.Organisation = v
 }
 
 // SetAnyOrganisation устанавливает ЛЮБОЕ значение для поля Organisation
-func (e *EventMessageTheHiveAlert) SetAnyOrganisation(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyOrganisation(i interface{}) {
 	e.Organisation = fmt.Sprint(i)
 }
 
-func (e *EventMessageTheHiveAlert) GetOrganisationId() string {
+func (e *EventMessageForEsAlert) GetOrganisationId() string {
 	return e.OrganisationId
 }
 
 // SetValueOrganisationId устанавливает STRING значение для поля OrganisationId
-func (e *EventMessageTheHiveAlert) SetValueOrganisationId(v string) {
+func (e *EventMessageForEsAlert) SetValueOrganisationId(v string) {
 	e.OrganisationId = v
 }
 
 // SetAnyOrganisationId устанавливает ЛЮБОЕ значение для поля OrganisationId
-func (e *EventMessageTheHiveAlert) SetAnyOrganisationId(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyOrganisationId(i interface{}) {
 	e.OrganisationId = fmt.Sprint(i)
 }
 
-func (e *EventMessageTheHiveAlert) GetObjectId() string {
+func (e *EventMessageForEsAlert) GetObjectId() string {
 	return e.ObjectId
 }
 
 // SetValueObjectId устанавливает STRING значение для поля ObjectId
-func (e *EventMessageTheHiveAlert) SetValueObjectId(v string) {
+func (e *EventMessageForEsAlert) SetValueObjectId(v string) {
 	e.ObjectId = v
 }
 
 // SetAnyObjectId устанавливает ЛЮБОЕ значение для поля ObjectId
-func (e *EventMessageTheHiveAlert) SetAnyObjectId(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyObjectId(i interface{}) {
 	e.ObjectId = fmt.Sprint(i)
 }
 
-func (e *EventMessageTheHiveAlert) GetObjectType() string {
+func (e *EventMessageForEsAlert) GetObjectType() string {
 	return e.ObjectType
 }
 
 // SetValueObjectType устанавливает STRING значение для поля ObjectType
-func (e *EventMessageTheHiveAlert) SetValueObjectType(v string) {
+func (e *EventMessageForEsAlert) SetValueObjectType(v string) {
 	e.ObjectType = v
 }
 
 // SetAnyObjectType устанавливает ЛЮБОЕ значение для поля ObjectType
-func (e *EventMessageTheHiveAlert) SetAnyObjectType(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyObjectType(i interface{}) {
 	e.ObjectType = fmt.Sprint(i)
 }
 
-func (e *EventMessageTheHiveAlert) GetOperation() string {
+func (e *EventMessageForEsAlert) GetOperation() string {
 	return e.Operation
 }
 
 // SetValueOperation устанавливает STRING значение для поля Operation
-func (e *EventMessageTheHiveAlert) SetValueOperation(v string) {
+func (e *EventMessageForEsAlert) SetValueOperation(v string) {
 	e.Operation = v
 }
 
 // SetAnyOperation устанавливает ЛЮБОЕ значение для поля Operation
-func (e *EventMessageTheHiveAlert) SetAnyOperation(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyOperation(i interface{}) {
 	e.Operation = fmt.Sprint(i)
 }
 
-func (e *EventMessageTheHiveAlert) GetRequestId() string {
+func (e *EventMessageForEsAlert) GetRequestId() string {
 	return e.RequestId
 }
 
 // SetValueRequestId устанавливает STRING значение для поля RequestId
-func (e *EventMessageTheHiveAlert) SetValueRequestId(v string) {
+func (e *EventMessageForEsAlert) SetValueRequestId(v string) {
 	e.RequestId = v
 }
 
 // SetAnyRequestId устанавливает ЛЮБОЕ значение для поля RequestId
-func (e *EventMessageTheHiveAlert) SetAnyRequestId(i interface{}) {
+func (e *EventMessageForEsAlert) SetAnyRequestId(i interface{}) {
 	e.RequestId = fmt.Sprint(i)
 }
 
-func (e *EventMessageTheHiveAlert) GetDetails() EventAlertDetails {
+func (e *EventMessageForEsAlert) GetDetails() EventMessageForEsAlertDetails {
 	return e.Details
 }
 
-// SetValueDetails устанавливает значение типа EventDetails для поля Details
-func (e *EventMessageTheHiveAlert) SetValueDetails(v EventAlertDetails) {
+// SetValueDetails устанавливает значение типа EventMessageForEsAlertDetails для поля Details
+func (e *EventMessageForEsAlert) SetValueDetails(v EventMessageForEsAlertDetails) {
 	e.Details = v
 }
 
-func (e *EventMessageTheHiveAlert) GetObject() EventAlertObject {
+func (e *EventMessageForEsAlert) GetObject() EventMessageForEsAlertObject {
 	return e.Object
 }
 
-// SetValueObject устанавливает значение типа EventObject для поля Object
-func (e *EventMessageTheHiveAlert) SetValueObject(v EventAlertObject) {
+// SetValueObject устанавливает значение типа EventMessageForEsAlertObject для поля Object
+func (e *EventMessageForEsAlert) SetValueObject(v EventMessageForEsAlertObject) {
 	e.Object = v
 }
 
-func (e *EventMessageTheHiveAlert) ToStringBeautiful(num int) string {
+func (e *EventMessageForEsAlert) ToStringBeautiful(num int) string {
 	str := strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
@@ -191,76 +190,88 @@ func (e *EventMessageTheHiveAlert) ToStringBeautiful(num int) string {
 
 //****************** EventAlertDetails ******************
 
-func NewEventAlertDetails() *EventAlertDetails {
-	return &EventAlertDetails{Tags: []string(nil)}
+func NewEventMessageForEsAlertDetails() *EventMessageForEsAlertDetails {
+	return &EventMessageForEsAlertDetails{Tags: make(map[string][]string)}
 }
 
-func (e *EventAlertDetails) Get() *EventAlertDetails {
+func (e *EventMessageForEsAlertDetails) Get() *EventMessageForEsAlertDetails {
 	return e
 }
 
-func (e *EventAlertDetails) GetSourceRef() string {
+func (e *EventMessageForEsAlertDetails) GetSourceRef() string {
 	return e.SourceRef
 }
 
 // SetValueSourceRef устанавливает STRING значение для поля SourceRef
-func (e *EventAlertDetails) SetValueSourceRef(v string) {
+func (e *EventMessageForEsAlertDetails) SetValueSourceRef(v string) {
 	e.SourceRef = v
 }
 
 // SetAnySourceRef устанавливает ЛЮБОЕ значение для поля SourceRef
-func (e *EventAlertDetails) SetAnySourceRef(i interface{}) {
+func (e *EventMessageForEsAlertDetails) SetAnySourceRef(i interface{}) {
 	e.SourceRef = fmt.Sprint(i)
 }
 
-func (e *EventAlertDetails) GetTitle() string {
+func (e *EventMessageForEsAlertDetails) GetTitle() string {
 	return e.Title
 }
 
 // SetValueTitle устанавливает STRING значение для поля Title
-func (e *EventAlertDetails) SetValueTitle(v string) {
+func (e *EventMessageForEsAlertDetails) SetValueTitle(v string) {
 	e.Title = v
 }
 
 // SetAnyTitle устанавливает ЛЮБОЕ значение для поля Title
-func (e *EventAlertDetails) SetAnyTitle(i interface{}) {
+func (e *EventMessageForEsAlertDetails) SetAnyTitle(i interface{}) {
 	e.Title = fmt.Sprint(i)
 }
 
-func (e *EventAlertDetails) GetDescription() string {
+func (e *EventMessageForEsAlertDetails) GetDescription() string {
 	return e.Description
 }
 
 // SetValueDescription устанавливает STRING значение для поля Description
-func (e *EventAlertDetails) SetValueDescription(v string) {
+func (e *EventMessageForEsAlertDetails) SetValueDescription(v string) {
 	e.Description = v
 }
 
 // SetAny устанавливает ЛЮБОЕ значение для поля Description
-func (e *EventAlertDetails) SetAnyDescription(i interface{}) {
+func (e *EventMessageForEsAlertDetails) SetAnyDescription(i interface{}) {
 	e.Description = fmt.Sprint(i)
 }
 
-func (e *EventAlertDetails) GetTags() []string {
+func (e *EventMessageForEsAlertDetails) GetTags() map[string][]string {
 	return e.Tags
 }
 
-// SetValueTags устанавливает STRING значение для поля Tags
-func (e *EventAlertDetails) SetValueTags(v string) {
-	e.Tags = append(e.Tags, v)
+// SetValueTags добаляет значение в Tags по ключу
+func (e *EventMessageForEsAlertDetails) SetValueTags(k, v string) bool {
+	if _, ok := e.Tags[k]; !ok {
+		e.Tags[k] = []string(nil)
+	}
+
+	for _, value := range e.Tags[k] {
+		if v == value {
+			return false
+		}
+	}
+
+	e.Tags[k] = append(e.Tags[k], v)
+
+	return true
 }
 
 // SetAnyTags устанавливает ЛЮБОЕ значение для поля Tags
-func (e *EventAlertDetails) SetAnyTags(i interface{}) {
-	e.Tags = append(e.Tags, fmt.Sprint(i))
+func (e *EventMessageForEsAlertDetails) SetAnyTags(k string, i interface{}) bool {
+	return e.SetValueTags(k, fmt.Sprint(i))
 }
 
-// SetSliceValueTags устанавливает []STRING значение для поля Tags
-func (e *EventAlertDetails) SetSliceValueTags(v []string) {
+// SetSliceValueTags устанавливает ma[string][]STRING значение для поля Tags
+func (e *EventMessageForEsAlertDetails) SetSliceValueTags(v map[string][]string) {
 	e.Tags = v
 }
 
-func (e *EventAlertDetails) ToStringBeautiful(num int) string {
+func (e *EventMessageForEsAlertDetails) ToStringBeautiful(num int) string {
 	str := strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
@@ -268,53 +279,53 @@ func (e *EventAlertDetails) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%ssourceRef: '%s'\n", ws, e.SourceRef))
 	str.WriteString(fmt.Sprintf("%stitle: '%s'\n", ws, e.Title))
 	str.WriteString(fmt.Sprintf("%sdescription: '%s'\n", ws, e.Description))
-	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulSlice(num, e.Tags)))
+	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulMapSlice(num, e.Tags)))
 
 	return str.String()
 }
 
 //****************** EventAlertObject ******************
 
-func NewEventAlertObject() *EventAlertObject {
-	return &EventAlertObject{
+func NewEventMessageForEsAlertObject() *EventMessageForEsAlertObject {
+	return &EventMessageForEsAlertObject{
 		CreatedAt:    "1970-01-01T00:00:00+00:00",
 		UpdatedAt:    "1970-01-01T00:00:00+00:00",
-		Tags:         []string(nil),
+		Tags:         make(map[string][]string),
 		CustomFields: CustomFields{},
 	}
 }
 
-func (e *EventAlertObject) Get() *EventAlertObject {
+func (e *EventMessageForEsAlertObject) Get() *EventMessageForEsAlertObject {
 	return e
 }
 
-func (e *EventAlertObject) GetFollow() bool {
+func (e *EventMessageForEsAlertObject) GetFollow() bool {
 	return e.Follow
 }
 
 // SetValueFollow устанавливает BOOL значение для поля Follow
-func (e *EventAlertObject) SetValueFollow(v bool) {
+func (e *EventMessageForEsAlertObject) SetValueFollow(v bool) {
 	e.Follow = v
 }
 
 // SetAnyFollow устанавливает ЛЮБОЕ значение для поля Follow
-func (e *EventAlertObject) SetAnyFollow(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyFollow(i interface{}) {
 	if v, ok := i.(bool); ok {
 		e.Follow = v
 	}
 }
 
-func (e *EventAlertObject) GetSeverity() uint64 {
+func (e *EventMessageForEsAlertObject) GetSeverity() uint64 {
 	return e.Severity
 }
 
 // SetValueSeverity устанавливает INT значение для поля Severity
-func (e *EventAlertObject) SetValueSeverity(v uint64) {
+func (e *EventMessageForEsAlertObject) SetValueSeverity(v uint64) {
 	e.Severity = v
 }
 
 // SetAnySeverity устанавливает ЛЮБОЕ значение для поля Severity
-func (e *EventAlertObject) SetAnySeverity(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnySeverity(i interface{}) {
 	if v, ok := i.(float32); ok {
 		e.Severity = uint64(v)
 
@@ -332,17 +343,17 @@ func (e *EventAlertObject) SetAnySeverity(i interface{}) {
 	}
 }
 
-func (e *EventAlertObject) GetTlp() uint64 {
+func (e *EventMessageForEsAlertObject) GetTlp() uint64 {
 	return e.Tlp
 }
 
 // SetValueTlp устанавливает INT значение для поля Tlp
-func (e *EventAlertObject) SetValueTlp(v uint64) {
+func (e *EventMessageForEsAlertObject) SetValueTlp(v uint64) {
 	e.Tlp = v
 }
 
 // SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
-func (e *EventAlertObject) SetAnyTlp(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyTlp(i interface{}) {
 	if v, ok := i.(float32); ok {
 		e.Tlp = uint64(v)
 
@@ -360,17 +371,17 @@ func (e *EventAlertObject) SetAnyTlp(i interface{}) {
 	}
 }
 
-func (e *EventAlertObject) GetPap() uint64 {
+func (e *EventMessageForEsAlertObject) GetPap() uint64 {
 	return e.Pap
 }
 
 // SetValuePap устанавливает INT значение для поля Pap
-func (e *EventAlertObject) SetValuePap(v uint64) {
+func (e *EventMessageForEsAlertObject) SetValuePap(v uint64) {
 	e.Pap = v
 }
 
 // SetAnyPap устанавливает ЛЮБОЕ значение для поля Pap
-func (e *EventAlertObject) SetAnyPap(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyPap(i interface{}) {
 	if v, ok := i.(float32); ok {
 		e.Pap = uint64(v)
 
@@ -388,276 +399,283 @@ func (e *EventAlertObject) SetAnyPap(i interface{}) {
 	}
 }
 
-func (e *EventAlertObject) GetUnderliningId() string {
+func (e *EventMessageForEsAlertObject) GetUnderliningId() string {
 	return e.UnderliningId
 }
 
 // SetValueUnderliningId устанавливает STRING значение для поля UnderliningId
-func (e *EventAlertObject) SetValueUnderliningId(v string) {
+func (e *EventMessageForEsAlertObject) SetValueUnderliningId(v string) {
 	e.UnderliningId = v
 }
 
 // SetAnyUnderliningId устанавливает ЛЮБОЕ значение для поля UnderliningId
-func (e *EventAlertObject) SetAnyUnderliningId(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyUnderliningId(i interface{}) {
 	e.UnderliningId = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetId() string {
+func (e *EventMessageForEsAlertObject) GetId() string {
 	return e.Id
 }
 
 // SetValueId устанавливает STRING значение для поля Id
-func (e *EventAlertObject) SetValueId(v string) {
+func (e *EventMessageForEsAlertObject) SetValueId(v string) {
 	e.Id = v
 }
 
 // SetAnyId устанавливает ЛЮБОЕ значение для поля Id
-func (e *EventAlertObject) SetAnyId(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyId(i interface{}) {
 	e.Id = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetCreatedBy() string {
+func (e *EventMessageForEsAlertObject) GetCreatedBy() string {
 	return e.CreatedBy
 }
 
 // SetValueCreatedBy устанавливает STRING значение для поля CreatedBy
-func (e *EventAlertObject) SetValueCreatedBy(v string) {
+func (e *EventMessageForEsAlertObject) SetValueCreatedBy(v string) {
 	e.CreatedBy = v
 }
 
 // SetAnyCreatedBy устанавливает ЛЮБОЕ значение для поля CreatedBy
-func (e *EventAlertObject) SetAnyCreatedBy(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyCreatedBy(i interface{}) {
 	e.CreatedBy = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetUpdatedBy() string {
+func (e *EventMessageForEsAlertObject) GetUpdatedBy() string {
 	return e.UpdatedBy
 }
 
 // SetValueUpdatedBy устанавливает STRING значение для поля UpdatedBy
-func (e *EventAlertObject) SetValueUpdatedBy(v string) {
+func (e *EventMessageForEsAlertObject) SetValueUpdatedBy(v string) {
 	e.UpdatedBy = v
 }
 
 // SetAnyUpdatedBy устанавливает ЛЮБОЕ значение для поля UpdatedBy
-func (e *EventAlertObject) SetAnyUpdatedBy(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyUpdatedBy(i interface{}) {
 	e.UpdatedBy = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetCreatedAt() string {
+func (e *EventMessageForEsAlertObject) GetCreatedAt() string {
 	return e.CreatedAt
 }
 
 // SetValueCreatedAt устанавливает значение в формате RFC3339 для поля CreatedAt
-func (e *EventAlertObject) SetValueCreatedAt(v string) {
+func (e *EventMessageForEsAlertObject) SetValueCreatedAt(v string) {
 	e.CreatedAt = v
 }
 
 // SetAnyCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
-func (e *EventAlertObject) SetAnyCreatedAt(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyCreatedAt(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	e.CreatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (e *EventAlertObject) GetUpdatedAt() string {
+func (e *EventMessageForEsAlertObject) GetUpdatedAt() string {
 	return e.UpdatedAt
 }
 
 // SetValueUpdatedAt устанавливает значение  в формате RFC3339 для поля UpdatedAt
-func (e *EventAlertObject) SetValueUpdatedAt(v string) {
+func (e *EventMessageForEsAlertObject) SetValueUpdatedAt(v string) {
 	e.UpdatedAt = v
 }
 
 // SetAnyUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
-func (e *EventAlertObject) SetAnyUpdatedAt(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyUpdatedAt(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	e.UpdatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (e *EventAlertObject) GetUnderliningType() string {
+func (e *EventMessageForEsAlertObject) GetUnderliningType() string {
 	return e.UnderliningType
 }
 
 // SetValueUnderliningType устанавливает STRING значение для поля UnderliningType
-func (e *EventAlertObject) SetValueUnderliningType(v string) {
+func (e *EventMessageForEsAlertObject) SetValueUnderliningType(v string) {
 	e.UnderliningType = v
 }
 
 // SetAnyUnderliningType устанавливает ЛЮБОЕ значение для поля UnderliningType
-func (e *EventAlertObject) SetAnyUnderliningType(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyUnderliningType(i interface{}) {
 	e.UnderliningType = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetTitle() string {
+func (e *EventMessageForEsAlertObject) GetTitle() string {
 	return e.Title
 }
 
 // SetValueTitle устанавливает STRING значение для поля Title
-func (e *EventAlertObject) SetValueTitle(v string) {
+func (e *EventMessageForEsAlertObject) SetValueTitle(v string) {
 	e.Title = v
 }
 
 // SetAnyTitle устанавливает ЛЮБОЕ значение для поля Title
-func (e *EventAlertObject) SetAnyTitle(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyTitle(i interface{}) {
 	e.Title = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetDescription() string {
+func (e *EventMessageForEsAlertObject) GetDescription() string {
 	return e.Description
 }
 
 // SetValueDescription устанавливает STRING значение для поля Description
-func (e *EventAlertObject) SetValueDescription(v string) {
+func (e *EventMessageForEsAlertObject) SetValueDescription(v string) {
 	e.Description = v
 }
 
 // SetAnyDescription устанавливает ЛЮБОЕ значение для поля Description
-func (e *EventAlertObject) SetAnyDescription(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyDescription(i interface{}) {
 	e.Description = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetStatus() string {
+func (e *EventMessageForEsAlertObject) GetStatus() string {
 	return e.Status
 }
 
 // SetValueStatus устанавливает STRING значение для поля Status
-func (e *EventAlertObject) SetValueStatus(v string) {
+func (e *EventMessageForEsAlertObject) SetValueStatus(v string) {
 	e.Status = v
 }
 
 // SetAnyStatus устанавливает ЛЮБОЕ значение для поля Status
-func (e *EventAlertObject) SetAnyStatus(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyStatus(i interface{}) {
 	e.Status = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetDate() string {
+func (e *EventMessageForEsAlertObject) GetDate() string {
 	return e.Date
 }
 
 // SetValueDate устанавливает значение в формате RFC3339 для поля Date
-func (e *EventAlertObject) SetValueDate(v string) {
+func (e *EventMessageForEsAlertObject) SetValueDate(v string) {
 	e.Date = v
 }
 
 // SetAnyDate устанавливает ЛЮБОЕ значение для поля Date
-func (e *EventAlertObject) SetAnyDate(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyDate(i interface{}) {
 	tmp := supportingfunctions.ConversionAnyToInt(i)
 	e.Date = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
-func (e *EventAlertObject) GetType() string {
+func (e *EventMessageForEsAlertObject) GetType() string {
 	return e.Type
 }
 
 // SetValueType устанавливает STRING значение для поля Type
-func (e *EventAlertObject) SetValueType(v string) {
+func (e *EventMessageForEsAlertObject) SetValueType(v string) {
 	e.Type = v
 }
 
 // SetAnyType устанавливает ЛЮБОЕ значение для поля Type
-func (e *EventAlertObject) SetAnyType(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyType(i interface{}) {
 	e.Type = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetObjectType() string {
+func (e *EventMessageForEsAlertObject) GetObjectType() string {
 	return e.ObjectType
 }
 
 // SetValueObjectType устанавливает STRING значение для поля ObjectType
-func (e *EventAlertObject) SetValueObjectType(v string) {
+func (e *EventMessageForEsAlertObject) SetValueObjectType(v string) {
 	e.ObjectType = v
 }
 
 // SetAnyObjectType устанавливает ЛЮБОЕ значение для поля ObjectType
-func (e *EventAlertObject) SetAnyObjectType(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyObjectType(i interface{}) {
 	e.ObjectType = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetSource() string {
+func (e *EventMessageForEsAlertObject) GetSource() string {
 	return e.Source
 }
 
 // SetValueSource устанавливает STRING значение для поля Source
-func (e *EventAlertObject) SetValueSource(v string) {
+func (e *EventMessageForEsAlertObject) SetValueSource(v string) {
 	e.Source = v
 }
 
 // SetAnySource устанавливает ЛЮБОЕ значение для поля Source
-func (e *EventAlertObject) SetAnySource(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnySource(i interface{}) {
 	e.Source = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetSourceRef() string {
+func (e *EventMessageForEsAlertObject) GetSourceRef() string {
 	return e.SourceRef
 }
 
 // SetValueSourceRef устанавливает STRING значение для поля SourceRef
-func (e *EventAlertObject) SetValueSourceRef(v string) {
+func (e *EventMessageForEsAlertObject) SetValueSourceRef(v string) {
 	e.SourceRef = v
 }
 
 // SetAnySourceRef устанавливает ЛЮБОЕ значение для поля SourceRef
-func (e *EventAlertObject) SetAnySourceRef(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnySourceRef(i interface{}) {
 	e.SourceRef = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetCase() string {
+func (e *EventMessageForEsAlertObject) GetCase() string {
 	return e.Case
 }
 
 // SetValueCase устанавливает STRING значение для поля Case
-func (e *EventAlertObject) SetValueCase(v string) {
+func (e *EventMessageForEsAlertObject) SetValueCase(v string) {
 	e.Case = v
 }
 
 // SetAnyCase устанавливает ЛЮБОЕ значение для поля Case
-func (e *EventAlertObject) SetAnyCase(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyCase(i interface{}) {
 	e.Case = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetCaseTemplate() string {
+func (e *EventMessageForEsAlertObject) GetCaseTemplate() string {
 	return e.CaseTemplate
 }
 
 // SetValueCaseTemplate устанавливает STRING значение для поля CaseTemplate
-func (e *EventAlertObject) SetValueCaseTemplate(v string) {
+func (e *EventMessageForEsAlertObject) SetValueCaseTemplate(v string) {
 	e.CaseTemplate = v
 }
 
 // SetAnyCaseTemplate устанавливает ЛЮБОЕ значение для поля CaseTemplate
-func (e *EventAlertObject) SetAnyCaseTemplate(i interface{}) {
+func (e *EventMessageForEsAlertObject) SetAnyCaseTemplate(i interface{}) {
 	e.CaseTemplate = fmt.Sprint(i)
 }
 
-func (e *EventAlertObject) GetTags() []string {
+func (e *EventMessageForEsAlertObject) GetTags() map[string][]string {
 	return e.Tags
 }
 
-// SetValueTags устанавливает STRING значение для поля Tags
-func (e *EventAlertObject) SetValueTags(v string) {
-	e.Tags = append(e.Tags, v)
+// SetValueTags добаляет значение в Tags по ключу
+func (e *EventMessageForEsAlertObject) SetValueTags(k, v string) bool {
+	if _, ok := e.Tags[k]; !ok {
+		e.Tags[k] = []string(nil)
+	}
+
+	for _, value := range e.Tags[k] {
+		if v == value {
+			return false
+		}
+	}
+
+	e.Tags[k] = append(e.Tags[k], v)
+
+	return true
 }
 
 // SetAnyTags устанавливает ЛЮБОЕ значение для поля Tags
-func (e *EventAlertObject) SetAnyTags(i interface{}) {
-	e.Tags = append(e.Tags, fmt.Sprint(i))
+func (e *EventMessageForEsAlertObject) SetAnyTags(k string, i interface{}) bool {
+	return e.SetValueTags(k, fmt.Sprint(i))
 }
 
-// SetSliceValueTags устанавливает []STRING значение для поля Tags
-func (e *EventAlertObject) SetSliceValueTags(v []string) {
-	e.Tags = v
-}
-
-func (e *EventAlertObject) GetCustomFields() CustomFields {
+func (e *EventMessageForEsAlertObject) GetCustomFields() CustomFields {
 	return e.CustomFields
 }
 
 // SetValueCustomFields устанавливает STRING значение для поля CustomFields
-func (e *EventAlertObject) SetValueCustomFields(v CustomFields) {
+func (e *EventMessageForEsAlertObject) SetValueCustomFields(v CustomFields) {
 	e.CustomFields = v
 }
 
-func (e *EventAlertObject) ToStringBeautiful(num int) string {
+func (e *EventMessageForEsAlertObject) ToStringBeautiful(num int) string {
 	str := strings.Builder{}
 
 	ws := supportingfunctions.GetWhitespace(num)
@@ -683,7 +701,7 @@ func (e *EventAlertObject) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%ssourceRef: '%s'\n", ws, e.SourceRef))
 	str.WriteString(fmt.Sprintf("%scase: '%s'\n", ws, e.Case))
 	str.WriteString(fmt.Sprintf("%scaseTemplate: '%s'\n", ws, e.CaseTemplate))
-	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulSlice(num, e.Tags)))
+	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulMapSlice(num, e.Tags)))
 	str.WriteString(fmt.Sprintf("%scustomFields: \n%s", ws, CustomFieldsToStringBeautiful(e.CustomFields, num)))
 
 	return str.String()
