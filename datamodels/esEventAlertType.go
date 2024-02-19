@@ -30,19 +30,18 @@ type EventMessageForEsAlert struct {
 // SourceRef - ссылка
 // Title - заголовок
 // Description - описание
-// Tags - теги
+// Tags - теги после обработки
+// TagsAll - все теги
 type EventMessageForEsAlertDetails struct {
 	SourceRef   string              `json:"sourceRef" bson:"sourceRef"`
 	Title       string              `json:"title" bson:"title"`
 	Description string              `json:"description" bson:"description"`
 	Tags        map[string][]string `json:"tags" bson:"tags"`
+	TagsAll     []string            `json:"tagsAll" bson:"tagsAll"`
 }
 
 // EventMessageForEsAlertObject объект события
-// Follow - следовать
 // Tlp - tlp
-// Pap - pap
-// Severity - строгость
 // UnderliningId - уникальный идентификатор
 // Id - уникальный идентификатор
 // CreatedBy - кем создан
@@ -62,13 +61,11 @@ type EventMessageForEsAlertDetails struct {
 // Case - кейс
 // CaseTemplate - шаблон обращения
 // ObjectType - тип объекта
-// Tags - теги
+// Tags - теги после обработки
+// TagsAll - все теги
 // CustomFields - настраиваемые поля
 type EventMessageForEsAlertObject struct {
-	Follow          bool                `json:"follow,omitempty" bson:"follow,omitempty"`
-	Severity        uint64              `json:"severity,omitempty" bson:"severity,omitempty"`
 	Tlp             uint64              `json:"tlp" bson:"tlp"`
-	Pap             uint64              `json:"pap,omitempty" bson:"pap,omitempty"`
 	UnderliningId   string              `json:"_id" bson:"_id"`
 	Id              string              `json:"id" bson:"id"`
 	CreatedBy       string              `json:"createdBy" bson:"createdBy"`
@@ -87,6 +84,7 @@ type EventMessageForEsAlertObject struct {
 	Case            string              `json:"case,omitempty" bson:"case,omitempty"`
 	CaseTemplate    string              `json:"caseTemplate,omitempty" bson:"caseTemplate,omitempty"`
 	Tags            map[string][]string `json:"tags" bson:"tags"`
+	TagsAll         []string            `json:"tagsAll" bson:"tagsAll"`
 	CustomFields    CustomFields        `json:"customFields" bson:"customFields"`
 	//"artifacts" : [ ], думаю эти не надо, всегда пустые
 	//"similarCases" : [ ] думаю эти не надо, всегда пустые

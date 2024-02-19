@@ -1,8 +1,13 @@
-package listhandlerthehivejson
+package listhandlercommon
 
-import "placeholder_elasticsearch/datamodels"
+import (
+	"fmt"
+	"strings"
 
-// newCustomFieldsElement данный метод, на основании значения objType
+	"placeholder_elasticsearch/datamodels"
+)
+
+// NewCustomFieldsElement данный метод, на основании значения objType
 // определяет ссылку на какой пользовательский тип datamodels.CustomFieldStringType,
 // datamodels.CustomFieldDateType или datamodels.CustomFieldIntegerType добавить
 // добавить к map[string]datamodels.CustomerFields. Это сделанно для того что бы
@@ -10,7 +15,7 @@ import "placeholder_elasticsearch/datamodels"
 // Например, нужен тип с полями order int и string типа string, а в другой раз
 // тип с полями date string и order int.
 // func newCustomFieldsElement(elem, objType string, customFields *map[string]datamodels.CustomerFields) {
-func newCustomFieldsElement(elem, objType string, customFields *datamodels.CustomFields) {
+func NewCustomFieldsElement(elem, objType string, customFields *datamodels.CustomFields) {
 	if _, ok := (*customFields)[elem]; !ok {
 		switch objType {
 		case "string":
@@ -27,4 +32,37 @@ func newCustomFieldsElement(elem, objType string, customFields *datamodels.Custo
 			(*customFields)[elem] = &datamodels.CustomFieldStringType{}
 		}
 	}
+}
+
+// HandlerTag выполняет обработку тегов, разделяя тег на его тип и значение
+func HandlerTag(i interface{}) (key, value string) {
+	isExistValidTag := func(item string) bool {
+		validListTags := []string{
+			"geo",
+			"geoip",
+			"reason",
+			"sensor",
+			"misp",
+			"ioc",
+		}
+
+		for _, v := range validListTags {
+			if strings.Contains(item, v) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	tag := strings.ToLower(fmt.Sprint(i))
+
+	if isExistValidTag(tag) && strings.Contains(tag, "=") {
+		elements := strings.Split(tag, "=")
+		if len(elements) > 1 {
+			return elements[0], elements[1]
+		}
+	}
+
+	return tag, ""
 }

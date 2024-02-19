@@ -191,7 +191,10 @@ func (e *EventMessageForEsAlert) ToStringBeautiful(num int) string {
 //****************** EventAlertDetails ******************
 
 func NewEventMessageForEsAlertDetails() *EventMessageForEsAlertDetails {
-	return &EventMessageForEsAlertDetails{Tags: make(map[string][]string)}
+	return &EventMessageForEsAlertDetails{
+		Tags:    make(map[string][]string),
+		TagsAll: []string(nil),
+	}
 }
 
 func (e *EventMessageForEsAlertDetails) Get() *EventMessageForEsAlertDetails {
@@ -271,6 +274,20 @@ func (e *EventMessageForEsAlertDetails) SetSliceValueTags(v map[string][]string)
 	e.Tags = v
 }
 
+func (a *EventMessageForEsAlertDetails) GetTagsAll() []string {
+	return a.TagsAll
+}
+
+// SetValueTagsAll добавляет значение STRING в список поля TagsAll
+func (a *EventMessageForEsAlertDetails) SetValueTagsAll(v string) {
+	a.TagsAll = append(a.TagsAll, v)
+}
+
+// SetAnyTagsAll добавляет ЛЮБОЕ значение в список поля TagsAll
+func (a *EventMessageForEsAlertDetails) SetAnyTagsAll(i interface{}) {
+	a.TagsAll = append(a.TagsAll, fmt.Sprint(i))
+}
+
 func (e *EventMessageForEsAlertDetails) ToStringBeautiful(num int) string {
 	str := strings.Builder{}
 
@@ -280,6 +297,7 @@ func (e *EventMessageForEsAlertDetails) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%stitle: '%s'\n", ws, e.Title))
 	str.WriteString(fmt.Sprintf("%sdescription: '%s'\n", ws, e.Description))
 	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulMapSlice(num, e.Tags)))
+	str.WriteString(fmt.Sprintf("%stagsAll: \n%s", ws, ToStringBeautifulSlice(num, e.TagsAll)))
 
 	return str.String()
 }
@@ -291,56 +309,13 @@ func NewEventMessageForEsAlertObject() *EventMessageForEsAlertObject {
 		CreatedAt:    "1970-01-01T00:00:00+00:00",
 		UpdatedAt:    "1970-01-01T00:00:00+00:00",
 		Tags:         make(map[string][]string),
+		TagsAll:      []string(nil),
 		CustomFields: CustomFields{},
 	}
 }
 
 func (e *EventMessageForEsAlertObject) Get() *EventMessageForEsAlertObject {
 	return e
-}
-
-func (e *EventMessageForEsAlertObject) GetFollow() bool {
-	return e.Follow
-}
-
-// SetValueFollow устанавливает BOOL значение для поля Follow
-func (e *EventMessageForEsAlertObject) SetValueFollow(v bool) {
-	e.Follow = v
-}
-
-// SetAnyFollow устанавливает ЛЮБОЕ значение для поля Follow
-func (e *EventMessageForEsAlertObject) SetAnyFollow(i interface{}) {
-	if v, ok := i.(bool); ok {
-		e.Follow = v
-	}
-}
-
-func (e *EventMessageForEsAlertObject) GetSeverity() uint64 {
-	return e.Severity
-}
-
-// SetValueSeverity устанавливает INT значение для поля Severity
-func (e *EventMessageForEsAlertObject) SetValueSeverity(v uint64) {
-	e.Severity = v
-}
-
-// SetAnySeverity устанавливает ЛЮБОЕ значение для поля Severity
-func (e *EventMessageForEsAlertObject) SetAnySeverity(i interface{}) {
-	if v, ok := i.(float32); ok {
-		e.Severity = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(float64); ok {
-		e.Severity = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(uint64); ok {
-		e.Severity = v
-	}
 }
 
 func (e *EventMessageForEsAlertObject) GetTlp() uint64 {
@@ -368,34 +343,6 @@ func (e *EventMessageForEsAlertObject) SetAnyTlp(i interface{}) {
 
 	if v, ok := i.(uint64); ok {
 		e.Tlp = v
-	}
-}
-
-func (e *EventMessageForEsAlertObject) GetPap() uint64 {
-	return e.Pap
-}
-
-// SetValuePap устанавливает INT значение для поля Pap
-func (e *EventMessageForEsAlertObject) SetValuePap(v uint64) {
-	e.Pap = v
-}
-
-// SetAnyPap устанавливает ЛЮБОЕ значение для поля Pap
-func (e *EventMessageForEsAlertObject) SetAnyPap(i interface{}) {
-	if v, ok := i.(float32); ok {
-		e.Pap = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(float64); ok {
-		e.Pap = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(uint64); ok {
-		e.Pap = v
 	}
 }
 
@@ -666,6 +613,20 @@ func (e *EventMessageForEsAlertObject) SetAnyTags(k string, i interface{}) bool 
 	return e.SetValueTags(k, fmt.Sprint(i))
 }
 
+func (a *EventMessageForEsAlertObject) GetTagsAll() []string {
+	return a.TagsAll
+}
+
+// SetValueTagsAll добавляет значение STRING в список поля TagsAll
+func (a *EventMessageForEsAlertObject) SetValueTagsAll(v string) {
+	a.TagsAll = append(a.TagsAll, v)
+}
+
+// SetAnyTagsAll добавляет ЛЮБОЕ значение в список поля TagsAll
+func (a *EventMessageForEsAlertObject) SetAnyTagsAll(i interface{}) {
+	a.TagsAll = append(a.TagsAll, fmt.Sprint(i))
+}
+
 func (e *EventMessageForEsAlertObject) GetCustomFields() CustomFields {
 	return e.CustomFields
 }
@@ -687,10 +648,7 @@ func (e *EventMessageForEsAlertObject) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%screatedAt: '%s'\n", ws, e.CreatedAt))
 	str.WriteString(fmt.Sprintf("%supdatedAt: '%s'\n", ws, e.UpdatedAt))
 	str.WriteString(fmt.Sprintf("%s_type: '%s'\n", ws, e.UnderliningType))
-	str.WriteString(fmt.Sprintf("%sfollow: '%t'\n", ws, e.Follow))
-	str.WriteString(fmt.Sprintf("%sseverity: '%d'\n", ws, e.Severity))
 	str.WriteString(fmt.Sprintf("%stlp: '%d'\n", ws, e.Tlp))
-	str.WriteString(fmt.Sprintf("%spap: '%d'\n", ws, e.Pap))
 	str.WriteString(fmt.Sprintf("%stitle: '%s'\n", ws, e.Title))
 	str.WriteString(fmt.Sprintf("%sdescription: '%s'\n", ws, e.Description))
 	str.WriteString(fmt.Sprintf("%sstatus: '%s'\n", ws, e.Status))
@@ -702,6 +660,7 @@ func (e *EventMessageForEsAlertObject) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%scase: '%s'\n", ws, e.Case))
 	str.WriteString(fmt.Sprintf("%scaseTemplate: '%s'\n", ws, e.CaseTemplate))
 	str.WriteString(fmt.Sprintf("%stags: \n%s", ws, ToStringBeautifulMapSlice(num, e.Tags)))
+	str.WriteString(fmt.Sprintf("%stagsAll: \n%s", ws, ToStringBeautifulSlice(num, e.TagsAll)))
 	str.WriteString(fmt.Sprintf("%scustomFields: \n%s", ws, CustomFieldsToStringBeautiful(e.CustomFields, num)))
 
 	return str.String()

@@ -47,17 +47,28 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 				*
 				 */
 
-				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]string)
+				newTags, okNew := newStruct.Field(j).Interface().(map[string][]string)
 				if !okNew {
 					continue
 				}
 
-				for key, value := range newCustomFields {
+				for key, value := range newTags {
 					for _, v := range value {
-						if o.SetValueTags(key, v) {
+						if am.SetValueTags(key, v) {
 							countReplacingFields++
 						}
 					}
+				}
+
+				continue
+			}
+
+			// для обработки поля "TagsAll"
+			//**************************
+			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
+				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+					currentStruct.Field(i).Set(list)
+					countReplacingFields++
 				}
 
 				continue
@@ -82,50 +93,27 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 			}
 
 			// для обработки поля "Artifacts"
-			//Значения данного поля обновляются если есть совпадение в
-			//полях 'id' или '_id' между новым артефактом и тем который
-			//уже имеется.
-
-			//********************************************************
-			//
-			// Ныжно выполнить следующие действия:
-			// 1. Проверить как отрабатывает обработчик для
-			//   if typeOfCurrentStruct.Field(i).Name == "Tags"
-			// 2. Написать обработку для ArtifactForEsAlert
-			// 3. Написать обработчики из группы listHandler... для
-			//   обработки и формирования типов AlertMessageForEsAlert
-			//   и EventMessageForEsAlert
-			//
-			//********************************************************
-
-			/*if typeOfCurrentStruct.Field(i).Name == "Artifacts" {
-				currentCustomFields, okCurr := currentStruct.Field(i).Interface().([]AlertArtifact)
-				newCustomFields, okNew := newStruct.Field(j).Interface().([]AlertArtifact)
-				if !okCurr || !okNew {
+			if typeOfCurrentStruct.Field(i).Name == "Artifacts" {
+				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]ArtifactForEsAlert)
+				if !okNew {
 					continue
 				}
 
-				for _, v := range newCustomFields {
-					var isExist bool
+				for key, value := range newCustomFields {
+					currentArtifacts, ok := am.GetKeyArtifacts(key)
+					if !ok {
+						am.SetKeyArtifacts(key, value)
 
-					for key, value := range currentCustomFields {
-						if v.GetId() == value.GetId() || v.GetUnderliningId() == value.GetUnderliningId() {
-							countReplacingFields += currentCustomFields[key].ReplacingOldValues(*v.Get())
-							isExist = true
-
-							break
-						}
+						continue
 					}
 
-					if !isExist {
-						currentCustomFields = append(currentCustomFields, v)
-					}
-
-					am.SetValueArtifacts(currentCustomFields)
+					modifiedArtifacts, num := comparisonListsArtifacts(currentArtifacts, value)
+					countReplacingFields += num
+					am.SetKeyArtifacts(key, modifiedArtifacts)
 				}
 
 				continue
-			}*/
+			}
 
 			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
 				if !currentStruct.Field(i).CanSet() {
@@ -191,17 +179,28 @@ func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int 
 				*
 				 */
 
-				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]string)
+				newTags, okNew := newStruct.Field(j).Interface().(map[string][]string)
 				if !okNew {
 					continue
 				}
 
-				for key, value := range newCustomFields {
+				for key, value := range newTags {
 					for _, v := range value {
-						if o.SetValueTags(key, v) {
+						if a.SetValueTags(key, v) {
 							countReplacingFields++
 						}
 					}
+				}
+
+				continue
+			}
+
+			// для обработки поля "TagsAll"
+			//**************************
+			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
+				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+					currentStruct.Field(i).Set(list)
+					countReplacingFields++
 				}
 
 				continue
@@ -226,4 +225,29 @@ func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int 
 	}
 
 	return countReplacingFields
+}
+
+// comparisonListsArtifacts объединяет два списка
+func comparisonListsArtifacts(currentArtifacts, newArtifacts []ArtifactForEsAlert) (modifay []ArtifactForEsAlert, countReplacingFields int) {
+	modifay = make([]ArtifactForEsAlert, len(currentArtifacts))
+
+	for _, value := range newArtifacts {
+		var isExist bool
+
+		for k, v := range currentArtifacts {
+			if value.GetId() == v.GetId() || value.GetUnderliningId() == v.GetUnderliningId() {
+				isExist = true
+				countReplacingFields += currentArtifacts[k].ReplacingOldValues(value)
+				modifay = append(modifay, currentArtifacts[k])
+
+				break
+			}
+		}
+
+		if !isExist {
+			modifay = append(modifay, value)
+		}
+	}
+
+	return modifay, countReplacingFields
 }

@@ -2,11 +2,13 @@ package coremodule
 
 import (
 	"fmt"
+	"strings"
+
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
+	"placeholder_elasticsearch/listhandlercommon"
 	"placeholder_elasticsearch/listhandlerthehivejson"
 	"placeholder_elasticsearch/mongodbinteractions"
-	"strings"
 )
 
 func NewVerifiedTheHiveFormatAlert(
@@ -42,7 +44,7 @@ func NewVerifiedTheHiveFormatAlert(
 	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventAlertObjectElement(eventObject)
 
 	// ------ EVENT OBJECT CUSTOMFIELDS ------
-	listHandlerEventObjectCustomFields := listhandlerthehivejson.NewListHandlerAlertCustomFieldsElement(eventObjectCustomFields)
+	listHandlerEventObjectCustomFields := listhandlercommon.NewListHandlerAlertCustomFieldsElement(eventObjectCustomFields)
 
 	// ------ EVENT DETAILS ------
 	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventAlertDetailsElement(eventDetails)
@@ -51,7 +53,7 @@ func NewVerifiedTheHiveFormatAlert(
 	listHandlerAlert := listhandlerthehivejson.NewListHandlerAlertElement(alert)
 
 	// ------ ALERT CUSTOMFIELDS ------
-	listHandlerAlertCustomFields := listhandlerthehivejson.NewListHandlerAlertCustomFieldsElement(alertObjectCustomFields)
+	listHandlerAlertCustomFields := listhandlercommon.NewListHandlerAlertCustomFieldsElement(alertObjectCustomFields)
 
 	// ------ ALERT ARTIFACTS ------
 	listHandlerAlertArtifacts := listhandlerthehivejson.NewListHandlerAlertArtifactsElement(&sa)

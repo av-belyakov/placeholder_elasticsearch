@@ -115,17 +115,28 @@ func (d *EventMessageForEsAlertDetails) ReplacingOldValues(element EventMessageF
 				*
 				 */
 
-				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]string)
+				newTags, okNew := newStruct.Field(j).Interface().(map[string][]string)
 				if !okNew {
 					continue
 				}
 
-				for key, value := range newCustomFields {
+				for key, value := range newTags {
 					for _, v := range value {
 						if d.SetValueTags(key, v) {
 							countReplacingFields++
 						}
 					}
+				}
+
+				continue
+			}
+
+			// для обработки поля "TagsAll"
+			//**************************
+			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
+				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+					currentStruct.Field(i).Set(list)
+					countReplacingFields++
 				}
 
 				continue
@@ -206,17 +217,28 @@ func (o *EventMessageForEsAlertObject) ReplacingOldValues(element EventMessageFo
 				*
 				 */
 
-				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]string)
+				newTags, okNew := newStruct.Field(j).Interface().(map[string][]string)
 				if !okNew {
 					continue
 				}
 
-				for key, value := range newCustomFields {
+				for key, value := range newTags {
 					for _, v := range value {
 						if o.SetValueTags(key, v) {
 							countReplacingFields++
 						}
 					}
+				}
+
+				continue
+			}
+
+			// для обработки поля "TagsAll"
+			//**************************
+			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
+				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+					currentStruct.Field(i).Set(list)
+					countReplacingFields++
 				}
 
 				continue
