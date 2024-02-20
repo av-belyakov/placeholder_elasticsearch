@@ -43,7 +43,7 @@ func ToStringBeautifulMapSlice(num int, m map[string][]string) string {
 	str := strings.Builder{}
 
 	for k, v := range m {
-		str.WriteString(fmt.Sprintf("%s%s\n", supportingfunctions.GetWhitespace(num+1), k))
+		str.WriteString(fmt.Sprintf("%s'%s'\n", supportingfunctions.GetWhitespace(num+1), k))
 		for key, value := range v {
 			str.WriteString(fmt.Sprintf("%s%d. %s\n", supportingfunctions.GetWhitespace(num+2), key+1, value))
 		}
@@ -57,11 +57,11 @@ func CustomFieldsToStringBeautiful(l CustomFields, num int) string {
 	ws := supportingfunctions.GetWhitespace(num + 2)
 
 	for k, v := range l {
-		strB.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), k))
+		strB.WriteString(fmt.Sprintf("%s'%s':\n", supportingfunctions.GetWhitespace(num+1), k))
 
 		nameOne, dataOne, nameTwo, dataTwo := v.Get()
-		strB.WriteString(fmt.Sprintf("%s%s: %d\n", ws, nameOne, dataOne))
-		strB.WriteString(fmt.Sprintf("%s%s: %s\n", ws, nameTwo, dataTwo))
+		strB.WriteString(fmt.Sprintf("%s'%s': %d\n", ws, nameOne, dataOne))
+		strB.WriteString(fmt.Sprintf("%s'%s': %s\n", ws, nameTwo, dataTwo))
 	}
 
 	return strB.String()

@@ -82,11 +82,11 @@ func (va *VerifiedTheHiveAlert) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	strB := strings.Builder{}
-	strB.WriteString(fmt.Sprintf("%screateTimestatmp: '%s'\n", ws, va.CreateTimestamp))
-	strB.WriteString(fmt.Sprintf("%ssource: '%s'\n", ws, va.Source))
-	strB.WriteString(fmt.Sprintf("%sevent:\n", ws))
+	strB.WriteString(fmt.Sprintf("%s'createTimestatmp': '%s'\n", ws, va.CreateTimestamp))
+	strB.WriteString(fmt.Sprintf("%s'source': '%s'\n", ws, va.Source))
+	strB.WriteString(fmt.Sprintf("%s'event':\n", ws))
 	strB.WriteString(va.Event.ToStringBeautiful(num + 1))
-	strB.WriteString(fmt.Sprintf("%salert:\n", ws))
+	strB.WriteString(fmt.Sprintf("%s'alert':\n", ws))
 	strB.WriteString(va.Alert.ToStringBeautiful(num + 1))
 
 	return strB.String()

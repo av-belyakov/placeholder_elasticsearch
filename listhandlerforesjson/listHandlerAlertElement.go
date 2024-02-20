@@ -22,6 +22,10 @@ func NewListHandlerAlertElement(alert *datamodels.AlertMessageForEsAlert) map[st
 		"alert.tags": {
 			func(i interface{}) {
 				key, value := listhandlercommon.HandlerTag(i)
+				if value == "" {
+					return
+				}
+
 				alert.SetAnyTags(key, value)
 			},
 			alert.SetAnyTagsAll},

@@ -42,9 +42,9 @@ func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{
 		a.listAcceptedFields = []string(nil)
 		a.artifacts = append(a.artifacts, a.artifactTmp)
 		a.artifactTmp = datamodels.AlertArtifact{
-			CreatedAt: "1970-01-01T03:00:00+03:00",
-			UpdatedAt: "1970-01-01T03:00:00+03:00",
-			StartDate: "1970-01-01T03:00:00+03:00",
+			CreatedAt: "1970-01-01T00:00:00+00:00",
+			UpdatedAt: "1970-01-01T00:00:00+00:00",
+			StartDate: "1970-01-01T00:00:00+00:00",
 		}
 	}
 

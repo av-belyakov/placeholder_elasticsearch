@@ -1,25 +1,17 @@
 package listhandlerforesjson
 
-import "placeholder_elasticsearch/datamodels"
+import (
+	"fmt"
 
-/*
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-Здесь надо поправить вспомогательный тип исходя из того что
-должен использоватся тип AlertMessageForEsAlert где немного
-другая структура в Tags и Artifacts
-
-Tags            map[string][]string
-Artifacts       map[string][]ArtifactForEsAlert
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-*/
+	"placeholder_elasticsearch/datamodels"
+)
 
 // SupportiveAlertArtifacts вспомогательный тип для для обработки alert.artifacts
 type SupportiveAlertArtifacts struct {
+	currentKey         string
 	listAcceptedFields []string
-	artifactTmp        datamodels.AlertArtifact
-	artifacts          []datamodels.AlertArtifact
+	artifactTmp        datamodels.ArtifactForEsAlert
+	artifacts          map[string][]datamodels.ArtifactForEsAlert
 }
 
 // NewSupportiveObservables формирует вспомогательный объект для обработки
@@ -27,38 +19,44 @@ type SupportiveAlertArtifacts struct {
 func NewSupportiveAlertArtifacts() *SupportiveAlertArtifacts {
 	return &SupportiveAlertArtifacts{
 		listAcceptedFields: []string(nil),
-		artifactTmp:        *datamodels.NewAlertArtifact(),
-		artifacts:          []datamodels.AlertArtifact(nil),
+		artifactTmp:        *datamodels.NewArtifactForEsAlert(),
+		artifacts:          make(map[string][]datamodels.ArtifactForEsAlert),
 	}
 }
 
-// GetArtifacts возвращает []datamodels.AlertArtifact, однако, метод
+// GetArtifacts возвращает map[string][]datamodels.AlertArtifact, однако, метод
 // выполняет еще очень важное действие, перемещает содержимое из a.artifactTmp в
-// список a.artifacts, так как artifacts автоматически пополняется только при
+// a.artifacts, так как artifacts автоматически пополняется только при
 // совпадении значений в listAcceptedFields. Соответственно при завершении
 // JSON объекта, последние добавленные значения остаются artifactTmp
-func (a *SupportiveAlertArtifacts) GetArtifacts() []datamodels.AlertArtifact {
+func (a *SupportiveAlertArtifacts) GetArtifacts() map[string][]datamodels.ArtifactForEsAlert {
 	a.listAcceptedFields = []string(nil)
-	a.artifacts = append(a.artifacts, a.artifactTmp)
+	a.artifacts[a.currentKey] = append(a.artifacts[a.currentKey], a.artifactTmp)
 
 	return a.artifacts
 }
 
 // GetArtifactTmp возвращает временный объект artifact
-func (a *SupportiveAlertArtifacts) GetArtifactTmp() *datamodels.AlertArtifact {
+func (a *SupportiveAlertArtifacts) GetArtifactTmp() *datamodels.ArtifactForEsAlert {
 	return &a.artifactTmp
 }
 
 func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{}, f func(interface{})) {
+	if fieldBranch == "alert.artifacts.dataType" {
+		a.currentKey = fmt.Sprint(i)
+		a.artifacts[a.currentKey] = []datamodels.ArtifactForEsAlert(nil)
+	}
+
 	//если поле повторяется то считается что это уже новый объект
 	if fieldBranch != "alert.artifacts.tags" && a.isExistFieldBranch(fieldBranch) {
 		a.listAcceptedFields = []string(nil)
-		a.artifacts = append(a.artifacts, a.artifactTmp)
-		a.artifactTmp = datamodels.AlertArtifact{
-			CreatedAt: "1970-01-01T03:00:00+03:00",
-			UpdatedAt: "1970-01-01T03:00:00+03:00",
-			StartDate: "1970-01-01T03:00:00+03:00",
+
+		if _, ok := a.artifacts[a.currentKey]; !ok {
+			a.artifacts[a.currentKey] = []datamodels.ArtifactForEsAlert(nil)
 		}
+
+		a.artifacts[a.currentKey] = append(a.artifacts[a.currentKey], a.artifactTmp)
+		a.artifactTmp = *datamodels.NewArtifactForEsAlert()
 	}
 
 	a.listAcceptedFields = append(a.listAcceptedFields, fieldBranch)

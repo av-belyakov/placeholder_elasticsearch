@@ -13,6 +13,10 @@ func NewListHandlerEventAlertDetailsElement(details *datamodels.EventMessageForE
 		"event.details.tags": {
 			func(i interface{}) {
 				key, value := listhandlercommon.HandlerTag(i)
+				if value == "" {
+					return
+				}
+
 				details.SetAnyTags(key, value)
 			},
 			details.SetAnyTagsAll,

@@ -16,14 +16,14 @@ type VerifiedForEsAlert struct {
 	CreateTimestamp string                 `json:"@timestamp" bson:"@timestamp"`
 	Source          string                 `json:"source" bson:"source"`
 	Event           EventMessageForEsAlert `json:"event" bson:"event"`
-	// Alert           AlertMessageTheHiveAlert `json:"alert" bson:"alert"`
+	Alert           AlertMessageForEsAlert `json:"alert" bson:"alert"`
 }
 
-func NewVerifiedForEsAlert() *VerifiedTheHiveAlert {
-	return &VerifiedTheHiveAlert{
+func NewVerifiedForEsAlert() *VerifiedForEsAlert {
+	return &VerifiedForEsAlert{
 		CreateTimestamp: supportingfunctions.GetDateTimeFormatRFC3339(time.Now().UnixMilli()),
-		Event:           *NewEventMessageTheHiveAlert(),
-		Alert:           *NewAlertMessageTheHiveAlert(),
+		Event:           *NewEventMessageForEsAlert(),
+		Alert:           *NewAlertMessageForEsAlert(),
 	}
 }
 
@@ -71,26 +71,24 @@ func (va *VerifiedForEsAlert) SetEvent(event EventMessageForEsAlert) {
 	va.Event = event
 }
 
-/*
-func (va *VerifiedForEsAlert) GetAlert() *AlertMessageTheHiveAlert {
+func (va *VerifiedForEsAlert) GetAlert() *AlertMessageForEsAlert {
 	return &va.Alert
 }
 
-func (va *VerifiedForEsAlert) SetAlert(alert AlertMessageTheHiveAlert) {
+func (va *VerifiedForEsAlert) SetAlert(alert AlertMessageForEsAlert) {
 	va.Alert = alert
 }
-*/
 
 func (va *VerifiedForEsAlert) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	strB := strings.Builder{}
-	strB.WriteString(fmt.Sprintf("%screateTimestatmp: '%s'\n", ws, va.CreateTimestamp))
-	strB.WriteString(fmt.Sprintf("%ssource: '%s'\n", ws, va.Source))
-	strB.WriteString(fmt.Sprintf("%sevent:\n", ws))
+	strB.WriteString(fmt.Sprintf("%s'createTimestatmp': '%s'\n", ws, va.CreateTimestamp))
+	strB.WriteString(fmt.Sprintf("%s'source': '%s'\n", ws, va.Source))
+	strB.WriteString(fmt.Sprintf("%s'event':\n", ws))
 	strB.WriteString(va.Event.ToStringBeautiful(num + 1))
-	strB.WriteString(fmt.Sprintf("%salert:\n", ws))
-	//strB.WriteString(va.Alert.ToStringBeautiful(num + 1))
+	strB.WriteString(fmt.Sprintf("%s'alert':\n", ws))
+	strB.WriteString(va.Alert.ToStringBeautiful(num + 1))
 
 	return strB.String()
 }

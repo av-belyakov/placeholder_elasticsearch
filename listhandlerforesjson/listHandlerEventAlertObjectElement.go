@@ -28,8 +28,11 @@ func NewListHandlerEventAlertObjectElement(object *datamodels.EventMessageForEsA
 		"event.object.tags": {
 			func(i interface{}) {
 				key, value := listhandlercommon.HandlerTag(i)
-				object.SetAnyTags(key, value)
+				if value == "" {
+					return
+				}
 
+				object.SetAnyTags(key, value)
 			},
 			object.SetAnyTagsAll},
 	}

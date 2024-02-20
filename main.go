@@ -230,12 +230,6 @@ func init() {
 		_ = sl.WriteLoggingData(warning, "warning")
 	}
 
-	//инициализируем модуль временного хранения информации
-	storageApp = memorytemporarystorage.NewTemporaryStorage()
-
-	//добавляем время инициализации счетчика хранения
-	storageApp.SetStartTimeDataCounter(time.Now())
-
 	commOpt := confApp.GetCommonApp()
 	host := fmt.Sprintf("%s:%d", commOpt.Zabbix.NetworkHost, commOpt.Zabbix.NetworkPort)
 
@@ -271,6 +265,12 @@ func main() {
 
 	appVersion := supportingfunctions.GetAppVersion(appName)
 	log.Printf("Placeholder_Elasticsearch application, version %s is running. Application status is '%s'\n", appVersion, appStatus)
+
+	//инициализируем модуль временного хранения информации
+	storageApp = memorytemporarystorage.NewTemporaryStorage()
+
+	//добавляем время инициализации счетчика хранения
+	storageApp.SetStartTimeDataCounter(time.Now())
 
 	//взаимодействие с Zabbix
 	go interactionZabbix(confApp, hz, sl, iz)

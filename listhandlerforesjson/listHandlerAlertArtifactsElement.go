@@ -1,5 +1,7 @@
 package listhandlerforesjson
 
+import "placeholder_elasticsearch/listhandlercommon"
+
 func NewListHandlerAlertArtifactsElement(saa *SupportiveAlertArtifacts) map[string][]func(interface{}) {
 	return map[string][]func(interface{}){
 		//--- ioc ---
@@ -8,22 +10,6 @@ func NewListHandlerAlertArtifactsElement(saa *SupportiveAlertArtifacts) map[stri
 				"alert.artifacts.ioc",
 				i,
 				saa.GetArtifactTmp().SetAnyIoc,
-			)
-		}},
-		//--- sighted ---
-		"alert.artifacts.sighted": {func(i interface{}) {
-			saa.HandlerValue(
-				"alert.artifacts.sighted",
-				i,
-				saa.GetArtifactTmp().SetAnySighted,
-			)
-		}},
-		//--- ignoreSimilarity ---
-		"alert.artifacts.ignoreSimilarity": {func(i interface{}) {
-			saa.HandlerValue(
-				"alert.artifacts.ignoreSimilarity",
-				i,
-				saa.GetArtifactTmp().SetAnyIgnoreSimilarity,
 			)
 		}},
 		//--- tlp ---
@@ -66,14 +52,6 @@ func NewListHandlerAlertArtifactsElement(saa *SupportiveAlertArtifacts) map[stri
 				saa.GetArtifactTmp().SetAnyCreatedAt,
 			)
 		}},
-		//--- updatedAt ---
-		"alert.artifacts.updatedAt": {func(i interface{}) {
-			saa.HandlerValue(
-				"alert.artifacts.updatedAt",
-				i,
-				saa.GetArtifactTmp().SetAnyUpdatedAt,
-			)
-		}},
 		//--- startDate ---
 		"alert.artifacts.startDate": {func(i interface{}) {
 			saa.HandlerValue(
@@ -88,14 +66,6 @@ func NewListHandlerAlertArtifactsElement(saa *SupportiveAlertArtifacts) map[stri
 				"alert.artifacts.createdBy",
 				i,
 				saa.GetArtifactTmp().SetAnyCreatedBy,
-			)
-		}},
-		//--- updatedBy ---
-		"alert.artifacts.updatedBy": {func(i interface{}) {
-			saa.HandlerValue(
-				"alert.artifacts.updatedBy",
-				i,
-				saa.GetArtifactTmp().SetAnyUpdatedBy,
 			)
 		}},
 		//--- data ---
@@ -123,12 +93,21 @@ func NewListHandlerAlertArtifactsElement(saa *SupportiveAlertArtifacts) map[stri
 			)
 		}},
 		//--- tags ---
-		"alert.artifacts.tags": {func(i interface{}) {
-			saa.HandlerValue(
-				"alert.artifacts.tags",
-				i,
-				saa.GetArtifactTmp().SetAnyTags,
-			)
-		}},
+		"alert.artifacts.tags": {
+			func(i interface{}) {
+				saa.HandlerValue(
+					"alert.artifacts.tags",
+					i,
+					func(i interface{}) {
+						key, value := listhandlercommon.HandlerTag(i)
+						if value == "" {
+							return
+						}
+
+						saa.GetArtifactTmp().SetAnyTags(key, value)
+					},
+				)
+			},
+			saa.GetArtifactTmp().SetAnyTagsAll},
 	}
 }

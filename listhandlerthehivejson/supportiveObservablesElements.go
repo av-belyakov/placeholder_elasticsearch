@@ -51,9 +51,9 @@ func (o *SupportiveObservables) HandlerValue(fieldBranch string, i interface{}, 
 		o.previousFieldReports = ""
 		o.observables = append(o.observables, o.observableTmp)
 		o.observableTmp = datamodels.ObservableMessage{
-			StartDate:            "1970-01-01T03:00:00+03:00",
-			UnderliningCreatedAt: "1970-01-01T03:00:00+03:00",
-			UnderliningUpdatedAt: "1970-01-01T03:00:00+03:00",
+			StartDate:            "1970-01-01T00:00:00+00:00",
+			UnderliningCreatedAt: "1970-01-01T00:00:00+00:00",
+			UnderliningUpdatedAt: "1970-01-01T00:00:00+00:00",
 			Reports:              map[string]datamodels.ReportTaxonomies{},
 		}
 	}
