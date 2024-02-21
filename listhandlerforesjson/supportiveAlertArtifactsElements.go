@@ -33,6 +33,9 @@ func (a *SupportiveAlertArtifacts) GetArtifacts() map[string][]datamodels.Artifa
 	a.listAcceptedFields = []string(nil)
 	a.artifacts[a.currentKey] = append(a.artifacts[a.currentKey], a.artifactTmp)
 
+	a.currentKey = ""
+	a.artifactTmp = *datamodels.NewArtifactForEsAlert()
+
 	return a.artifacts
 }
 

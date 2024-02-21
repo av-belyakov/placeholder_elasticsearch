@@ -37,7 +37,7 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 		listHandlerAlertCustomFields map[string][]func(interface{})
 		listHandlerAlertArtifacts    map[string][]func(interface{})
 
-		verifiedTheHiveAlert *datamodels.VerifiedForEsAlert = datamodels.NewVerifiedForEsAlert()
+		VerifiedForEsAlert *datamodels.VerifiedForEsAlert = datamodels.NewVerifiedForEsAlert()
 	)
 
 	BeforeAll(func() {
@@ -204,12 +204,12 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			alert.SetValueCustomFields(alertObjectCustomFields)
 			alert.SetValueArtifacts(sa.GetArtifacts())
 
-			verifiedTheHiveAlert.SetID("fhe78f838f88fg488398f8e3")
-			verifiedTheHiveAlert.SetElasticsearchID("3883f8f9-839r983hf848g8h-f84")
-			verifiedTheHiveAlert.SetSource("GCM")
-			verifiedTheHiveAlert.SetCreateTimestatmp("2024-02-06T15:37:52+03:00")
-			verifiedTheHiveAlert.SetEvent(*event)
-			verifiedTheHiveAlert.SetAlert(*alert)
+			VerifiedForEsAlert.SetID("fhe78f838f88fg488398f8e3")
+			VerifiedForEsAlert.SetElasticsearchID("3883f8f9-839r983hf848g8h-f84")
+			VerifiedForEsAlert.SetSource("GCM")
+			VerifiedForEsAlert.SetCreateTimestatmp("2024-02-06T15:37:52+03:00")
+			VerifiedForEsAlert.SetEvent(*event)
+			VerifiedForEsAlert.SetAlert(*alert)
 		})
 
 		It("Объект Event должен быть успешно заполнен", func() {
@@ -345,10 +345,10 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 		})
 
 		It("Должен быть полностью заполнен объект verifiedTheHiveAlert", func() {
-			verified := verifiedTheHiveAlert.Get()
+			verified := VerifiedForEsAlert.Get()
 
-			fmt.Println("---=== VERIFEDFORESALERT ===---")
-			fmt.Println(verified.ToStringBeautiful(0))
+			//fmt.Println("---=== VERIFEDFORESALERT ===---")
+			//fmt.Println(verified.ToStringBeautiful(0))
 
 			Expect(verified.GetID()).Should(Equal("fhe78f838f88fg488398f8e3"))
 			Expect(verified.GetElasticsearchID()).Should(Equal("3883f8f9-839r983hf848g8h-f84"))
@@ -560,8 +560,8 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			//меняется
 			Expect(lastTime).Should(Equal("2024-02-07T22:48:13+03:00"))
 
-			fmt.Println("---=== EventMessageForEsAlert ===---")
-			fmt.Println(oldStruct.ToStringBeautiful(0))
+			//fmt.Println("---=== EventMessageForEsAlert ===---")
+			//fmt.Println(oldStruct.ToStringBeautiful(0))
 		})
 	})
 
@@ -718,8 +718,8 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 						CreatedAt:     "2024-01-27T22:17:17+03:00",
 						StartDate:     "2024-01-26T13:02:01+03:00",
 						CreatedBy:     "friman@email.net",
-						Data:          "55.89.12.11",
-						DataType:      "ip address",
+						Data:          "89.12 11.53",
+						DataType:      "coordinates",
 						Message:       "funy description",
 						Tags: map[string][]string{
 							"sensor:id":     {"43522"},
@@ -732,6 +732,7 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 						},
 					},
 				},
+				//добавление
 				"ip_home": {
 					{
 						Ioc:           false,
@@ -742,7 +743,7 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 						StartDate:     "2024-01-04T19:32:01+03:00",
 						CreatedBy:     "example@email.net",
 						Data:          "5.63.123.99",
-						DataType:      "ipaddr",
+						DataType:      "ip_home",
 						Message:       "ffdffd fdg",
 						Tags: map[string][]string{
 							"geoip:country": {"RU"},
@@ -753,22 +754,41 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 						},
 					},
 				},
+				"ipaddr": {
+					//добавление
+					{
+						Ioc:           true,
+						Tlp:           3,
+						UnderliningId: "~502221144",
+						Id:            "~502221144",
+						CreatedAt:     "2024-02-06T13:12:01+03:00",
+						StartDate:     "2024-01-04T19:32:01+03:00",
+						CreatedBy:     "fooe@email.net",
+						Data:          "89.6.33.41",
+						DataType:      "ipaddr",
+						Message:       "fast message",
+						Tags: map[string][]string{
+							"sensor:id":     {"8999"},
+							"geoip:country": {"KZ"},
+						},
+						TagsAll: []string{
+							"Sensor:id=\"8999\"",
+							"geoip:country=KZ",
+							"'Webhook:send=ES'",
+						},
+					},
+				},
 			},
 		}
 		It("Ряд полей в AlertMessageForEsAlert должны быть успешно заменены", func() {
 			num, err := oldStruct.ReplacingOldValues(newStruct)
 
-			/*
-
-				Этот тест не отрабатывает нормально, надо смотреть подробнее
-				в чем причина
-
-
-			*/
-
 			Expect(err).ShouldNot(HaveOccurred())
 			//кол-во замененных полей
 			Expect(num).Should(Equal(18))
+
+			fmt.Println("---=== AlertMessageForEsAlert ===---")
+			fmt.Println(oldStruct.ToStringBeautiful(0))
 
 			//Alert
 			//меняется
@@ -804,18 +824,18 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			Expect(len(oldStruct.GetArtifacts())).Should(Equal(3))
 			coordinates, ok := oldStruct.GetArtifacts()["coordinates"]
 			Expect(ok).Should(BeTrue())
-			Expect(len(coordinates)).Should(Equal(3))
+			Expect(len(coordinates)).Should(Equal(2))
 			Expect(coordinates[0].GetIoc()).Should(BeTrue())
-			Expect(coordinates[0].GetTlp()).Should(Equal(3))
+			Expect(coordinates[0].GetTlp()).Should(Equal(uint64(3)))
 			Expect(coordinates[0].GetCreatedAt()).Should(Equal("2024-01-27T22:17:17+03:00"))
 			Expect(coordinates[0].GetData()).Should(Equal("63.5656 89.1211"))
 			Expect(coordinates[0].GetMessage()).Should(Equal("Any message"))
 			Expect(len(coordinates[0].GetTags())).Should(Equal(2))
-			Expect(len(coordinates[0].GetTagsAll())).Should(Equal(4))
+			Expect(len(coordinates[0].GetTagsAll())).Should(Equal(5))
 			Expect(coordinates[1].GetIoc()).ShouldNot(BeTrue())
-			Expect(coordinates[1].GetTlp()).Should(Equal(1))
+			Expect(coordinates[1].GetTlp()).Should(Equal(uint64(1)))
 			Expect(coordinates[1].GetCreatedAt()).Should(Equal("2024-01-27T22:17:17+03:00"))
-			Expect(coordinates[1].GetData()).Should(Equal("55.89.12.11"))
+			Expect(coordinates[1].GetData()).Should(Equal("89.12 11.53"))
 			Expect(coordinates[1].GetMessage()).Should(Equal("funy description"))
 			Expect(len(coordinates[1].GetTags())).Should(Equal(2))
 			Expect(len(coordinates[1].GetTagsAll())).Should(Equal(3))
@@ -828,11 +848,11 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			ipHome, ok := oldStruct.GetArtifacts()["ip_home"]
 			Expect(ok).Should(BeTrue())
 			Expect(ipHome[0].GetData()).Should(Equal("5.63.123.99"))
-			Expect(len(ipHome[0].GetTags())).Should(Equal(2))
-			Expect(len(ipHome[0].GetTagsAll())).Should(Equal(3))
+			Expect(len(ipHome[0].GetTags())).Should(Equal(1))
+			Expect(len(ipHome[0].GetTagsAll())).Should(Equal(2))
 
-			fmt.Println("---=== AlertMessageForEsAlert ===---")
-			fmt.Println(oldStruct.ToStringBeautiful(0))
+			//fmt.Println("---=== AlertMessageForEsAlert ===---")
+			//fmt.Println(oldStruct.ToStringBeautiful(0))
 		})
 	})
 })

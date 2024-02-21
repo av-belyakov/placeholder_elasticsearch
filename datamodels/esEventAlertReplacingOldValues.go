@@ -108,13 +108,6 @@ func (d *EventMessageForEsAlertDetails) ReplacingOldValues(element EventMessageF
 			// для обработки поля "Tags"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-
-				/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				*
-				* 	Эта часть еще не проверялась, надо выполнить тесты
-				*
-				 */
-
 				newTags, okNew := newStruct.Field(j).Interface().(map[string][]string)
 				if !okNew {
 					continue
@@ -210,13 +203,6 @@ func (o *EventMessageForEsAlertObject) ReplacingOldValues(element EventMessageFo
 			// для обработки поля "Tags"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-
-				/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				*
-				* 	Эта часть еще не проверялась, надо выполнить тесты
-				*
-				 */
-
 				newTags, okNew := newStruct.Field(j).Interface().(map[string][]string)
 				if !okNew {
 					continue

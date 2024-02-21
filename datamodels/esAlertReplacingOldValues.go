@@ -1,6 +1,8 @@
 package datamodels
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // ReplacingOldValues заменяет старые значения структуры AlertMessageForEsAlert
 // новыми значениями. Изменяемые поля:
@@ -40,13 +42,6 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 			// для обработки поля "Tags"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-
-				/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				*
-				* 	Эта часть еще не проверялась, надо выполнить тесты
-				*
-				 */
-
 				newTags, okNew := newStruct.Field(j).Interface().(map[string][]string)
 				if !okNew {
 					continue
@@ -172,13 +167,6 @@ func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int 
 			// для обработки поля "Tags"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-
-				/* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-				*
-				* 	Эта часть еще не проверялась, надо выполнить тесты
-				*
-				 */
-
 				newTags, okNew := newStruct.Field(j).Interface().(map[string][]string)
 				if !okNew {
 					continue
@@ -228,8 +216,8 @@ func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int 
 }
 
 // comparisonListsArtifacts объединяет два списка
-func comparisonListsArtifacts(currentArtifacts, newArtifacts []ArtifactForEsAlert) (modifay []ArtifactForEsAlert, countReplacingFields int) {
-	modifay = make([]ArtifactForEsAlert, len(currentArtifacts))
+func comparisonListsArtifacts(currentArtifacts, newArtifacts []ArtifactForEsAlert) ([]ArtifactForEsAlert, int) {
+	var countReplacingFields int
 
 	for _, value := range newArtifacts {
 		var isExist bool
@@ -238,16 +226,15 @@ func comparisonListsArtifacts(currentArtifacts, newArtifacts []ArtifactForEsAler
 			if value.GetId() == v.GetId() || value.GetUnderliningId() == v.GetUnderliningId() {
 				isExist = true
 				countReplacingFields += currentArtifacts[k].ReplacingOldValues(value)
-				modifay = append(modifay, currentArtifacts[k])
 
 				break
 			}
 		}
 
 		if !isExist {
-			modifay = append(modifay, value)
+			currentArtifacts = append(currentArtifacts, value)
 		}
 	}
 
-	return modifay, countReplacingFields
+	return currentArtifacts, countReplacingFields
 }

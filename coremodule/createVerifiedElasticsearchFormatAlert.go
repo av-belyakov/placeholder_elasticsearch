@@ -5,62 +5,60 @@ import (
 	"strings"
 
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/listhandlercommon"
-	"placeholder_elasticsearch/listhandlerthehivejson"
-	"placeholder_elasticsearch/mongodbinteractions"
+	"placeholder_elasticsearch/listhandlerforesjson"
 )
 
-func NewVerifiedTheHiveFormatAlert(
+func NewVerifiedElasticsearchFormatAlert(
 	input <-chan datamodels.ChanOutputDecodeJSON,
 	done <-chan bool,
-	mongodbm *mongodbinteractions.MongoDBModule,
+	esm *elasticsearchinteractions.ElasticSearchModule,
 	logging chan<- datamodels.MessageLogging,
 ) {
 	var (
 		rootId string
 
-		event        *datamodels.EventMessageTheHiveAlert = datamodels.NewEventMessageTheHiveAlert()
-		eventObject  *datamodels.EventAlertObject         = datamodels.NewEventAlertObject()
-		eventDetails *datamodels.EventAlertDetails        = datamodels.NewEventAlertDetails()
+		event        *datamodels.EventMessageForEsAlert        = datamodels.NewEventMessageForEsAlert()
+		eventObject  *datamodels.EventMessageForEsAlertObject  = datamodels.NewEventMessageForEsAlertObject()
+		eventDetails *datamodels.EventMessageForEsAlertDetails = datamodels.NewEventMessageForEsAlertDetails()
 
-		alert *datamodels.AlertMessageTheHiveAlert = datamodels.NewAlertMessageTheHiveAlert()
+		alert *datamodels.AlertMessageForEsAlert = datamodels.NewAlertMessageForEsAlert()
+
+		sa listhandlerforesjson.SupportiveAlertArtifacts = *listhandlerforesjson.NewSupportiveAlertArtifacts()
 
 		eventObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
 		alertObjectCustomFields datamodels.CustomFields = datamodels.CustomFields{}
-
-		//вспомогательный объект
-		sa listhandlerthehivejson.SupportiveAlertArtifacts = *listhandlerthehivejson.NewSupportiveAlertArtifacts()
 	)
 
-	//финальный объект
-	verifiedAlert := datamodels.NewVerifiedTheHiveAlert()
+	// финальный объект
+	verifiedAlert := datamodels.NewVerifiedForEsAlert()
 
 	// ------ EVENT ------
-	listHandlerEvent := listhandlerthehivejson.NewListHandlerEventAlertElement(event)
+	listHandlerEvent := listhandlerforesjson.NewListHandlerEventAlertElement(event)
 
 	// ------ EVENT OBJECT ------
-	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventAlertObjectElement(eventObject)
+	listHandlerEventObject := listhandlerforesjson.NewListHandlerEventAlertObjectElement(eventObject)
 
 	// ------ EVENT OBJECT CUSTOMFIELDS ------
 	listHandlerEventObjectCustomFields := listhandlercommon.NewListHandlerAlertCustomFieldsElement(eventObjectCustomFields)
 
 	// ------ EVENT DETAILS ------
-	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventAlertDetailsElement(eventDetails)
+	listHandlerEventDetails := listhandlerforesjson.NewListHandlerEventAlertDetailsElement(eventDetails)
 
 	// ------ ALERT ------
-	listHandlerAlert := listhandlerthehivejson.NewListHandlerAlertElement(alert)
+	listHandlerAlert := listhandlerforesjson.NewListHandlerAlertElement(alert)
 
 	// ------ ALERT CUSTOMFIELDS ------
 	listHandlerAlertCustomFields := listhandlercommon.NewListHandlerAlertCustomFieldsElement(alertObjectCustomFields)
 
 	// ------ ALERT ARTIFACTS ------
-	listHandlerAlertArtifacts := listhandlerthehivejson.NewListHandlerAlertArtifactsElement(&sa)
+	listHandlerAlertArtifacts := listhandlerforesjson.NewListHandlerAlertArtifactsElement(&sa)
 
 	for {
 		select {
 		case data := <-input:
 			var handlerIsExist bool
-
 			verifiedAlert.SetID(data.UUID)
 
 			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
@@ -74,8 +72,6 @@ func NewVerifiedTheHiveFormatAlert(
 			//************ Обработчики для Event ************
 			//event element
 			if lf, ok := listHandlerEvent[data.FieldBranch]; ok {
-				handlerIsExist = true
-
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -83,8 +79,6 @@ func NewVerifiedTheHiveFormatAlert(
 
 			//event.object element
 			if lf, ok := listHandlerEventObject[data.FieldBranch]; ok {
-				handlerIsExist = true
-
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -92,8 +86,6 @@ func NewVerifiedTheHiveFormatAlert(
 
 			//event.object.customFields element
 			if lf, ok := listHandlerEventObjectCustomFields[data.FieldBranch]; ok {
-				handlerIsExist = true
-
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -101,8 +93,6 @@ func NewVerifiedTheHiveFormatAlert(
 
 			//event.details element
 			if lf, ok := listHandlerEventDetails[data.FieldBranch]; ok {
-				handlerIsExist = true
-
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -111,8 +101,6 @@ func NewVerifiedTheHiveFormatAlert(
 			//************ Обработчики для Alert ************
 			//alert element
 			if lf, ok := listHandlerAlert[data.FieldBranch]; ok {
-				handlerIsExist = true
-
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -120,8 +108,6 @@ func NewVerifiedTheHiveFormatAlert(
 
 			//alert.customFields
 			if lf, ok := listHandlerAlertCustomFields[data.FieldBranch]; ok {
-				handlerIsExist = true
-
 				for _, f := range lf {
 					f(data.Value)
 				}
@@ -130,8 +116,6 @@ func NewVerifiedTheHiveFormatAlert(
 			//alert.artifacts
 			if strings.Contains(data.FieldBranch, "alert.artifacts.") {
 				if lf, ok := listHandlerAlertArtifacts[data.FieldBranch]; ok {
-					handlerIsExist = true
-
 					for _, f := range lf {
 						f(data.Value)
 					}
@@ -159,7 +143,7 @@ func NewVerifiedTheHiveFormatAlert(
 			verifiedAlert.SetEvent(*event)
 			verifiedAlert.SetAlert(*alert)
 
-			mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
+			esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
 				Section: "handling alert",
 				Command: "add new alert",
 				Data:    verifiedAlert.Get(),

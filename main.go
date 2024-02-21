@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -82,6 +83,7 @@ func loggingHandler(
 	iz chan<- string,
 	sl simplelogger.SimpleLoggerSettings,
 	logging <-chan datamodels.MessageLogging) {
+
 	for msg := range logging {
 		_ = sl.WriteLoggingData(msg.MsgData, msg.MsgType)
 
@@ -130,6 +132,7 @@ func counterHandler(
 
 // interactionZabbix осуществляет взаимодействие с Zabbix
 func interactionZabbix(
+	ctx context.Context,
 	confApp confighandler.ConfigApp,
 	hz *zabbixinteractions.HandlerZabbixConnection,
 	sl simplelogger.SimpleLoggerSettings,
@@ -139,6 +142,9 @@ func interactionZabbix(
 
 	for {
 		select {
+		case <-ctx.Done():
+			return
+
 		case <-t:
 			if !co.Zabbix.IsTransmit {
 				continue
@@ -273,7 +279,8 @@ func main() {
 	storageApp.SetStartTimeDataCounter(time.Now())
 
 	//взаимодействие с Zabbix
-	go interactionZabbix(confApp, hz, sl, iz)
+	ctxZabbix, closeZabbix := context.WithCancel(context.Background())
+	go interactionZabbix(ctxZabbix, confApp, hz, sl, iz)
 
 	//вывод данных счетчика
 	go counterHandler(iz, storageApp, counting)
@@ -311,6 +318,14 @@ func main() {
 		MsgType: "info",
 	}
 
+	ctxCoreHandler, closeCoreHandler := context.WithCancel(context.Background())
+	defer func() {
+		close(counting)
+		close(logging)
+
+		closeZabbix()
+		closeCoreHandler()
+	}()
 	core := coremodule.NewCoreHandler(storageApp, logging, counting)
-	core.CoreHandler(lrcase, lralert, natsModule, esModule, mongodbModule)
+	core.CoreHandler(ctxCoreHandler, lrcase, lralert, natsModule, esModule, mongodbModule)
 }

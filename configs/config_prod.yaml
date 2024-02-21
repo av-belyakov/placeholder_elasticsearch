@@ -9,9 +9,9 @@ ElasticSearch:
   user: "writer"
   passwd: "XxZqesYXuk8C"
   prefix_case:
-  index_case: "module_placeholder_elasticsearch_thehive_case"
+  index_case: "module_placeholder_case"
   prefix_alert: ""
-  index_alert: "module_placeholder_elasticsearch_thehive_alert"
+  index_alert: "module_placeholder_alert"
 MongoDB:
   host: "172.10.11.2"
   port: 27017

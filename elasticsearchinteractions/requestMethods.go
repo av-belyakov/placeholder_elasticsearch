@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"runtime"
 	"strings"
+	"time"
 
 	"placeholder_elasticsearch/datamodels"
 
@@ -84,6 +85,21 @@ func (hsd handlerSendData) deleteDocument(index []string, query *strings.Reader)
 	return countDoc, err
 }
 
+// searchDocument выполняет поиск документов соответствующих параметрам заданным в запросе
+func (hsd handlerSendData) searchDocument(index []string, query *strings.Reader) (*esapi.Response, error) {
+	res, err := hsd.client.Search(
+		hsd.client.Search.WithContext(context.Background()),
+		hsd.client.Search.WithIndex(index...),
+		hsd.client.Search.WithBody(query),
+	)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		return nil, fmt.Errorf("'%v' %s:%d", err, f, l-1)
+	}
+
+	return res, err
+}
+
 // replacementDocumentCase выполняет замену документа, но только в рамках одного индекса
 func (hsd handlerSendData) replacementDocumentCase(
 	data interface{},
@@ -101,6 +117,9 @@ func (hsd handlerSendData) replacementDocumentCase(
 
 		return
 	}
+
+	t := time.Now()
+	index = fmt.Sprintf("%s_%d_%d", index, t.Year(), int(t.Month()))
 
 	queryDelete := strings.NewReader(
 		fmt.Sprintf(
@@ -148,4 +167,60 @@ func (hsd handlerSendData) replacementDocumentCase(
 		DataMsg:  "subject_case",
 		Count:    1,
 	}
+}
+
+// replacementDocumentAlert выполняет замену документа, но только в рамках одного индекса
+func (hsd handlerSendData) replacementDocumentAlert(
+	data interface{},
+	index string,
+	logging chan<- datamodels.MessageLogging,
+	counting chan<- datamodels.DataCounterSettings,
+) {
+	obj, ok := data.(*datamodels.VerifiedTheHiveAlert)
+	if !ok {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.VerifiedTheHiveCase' %s:%d", f, l-1),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	t := time.Now()
+	month := int(t.Month())
+	indexCurrent := fmt.Sprintf("%s_%s_%d_%d", index, obj.GetSource(), t.Year(), month)
+
+	indexBefore := fmt.Sprintf("%s_%s_%d_%d", index, obj.GetSource(), t.Year(), month-1)
+	if month == 1 {
+		indexBefore = fmt.Sprintf("%s_%s_%d_%d", index, obj.GetSource(), t.Year()-1, 12)
+	}
+
+	/*
+
+		Здесь нужно выполнить обновление и замену документа получаемого
+		из БД. При этом надо учитывать что документ должен кластся в
+		тот индекс, который соответствует определенному источнику (GCM, RCM)
+
+	*/
+
+	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", obj.GetSource(), obj.GetEvent().GetRootId()))
+	res, err := hsd.searchDocument(
+		[]string{
+			indexCurrent,
+			indexBefore,
+		}, queryCurrent)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
+			MsgType: "error",
+		}
+
+		return
+	}
+	/*
+		Обработать результат из res
+	*/
+
 }

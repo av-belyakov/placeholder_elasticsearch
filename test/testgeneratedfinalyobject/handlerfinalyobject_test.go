@@ -169,7 +169,11 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 	Context("Тест 4. Получаем валидированный финальный объект", func() {
 		It("Должен быть получен валидный объект", func() {
 			esSettings := <-esModule.ChanInputModule
-			verifiedObject := esSettings.VerifiedObject.Get()
+
+			data, ok := esSettings.Data.(datamodels.VerifiedTheHiveCase)
+			Expect(ok).Should(BeTrue())
+
+			verifiedObject := data.Get()
 
 			//fmt.Println("func 'NewVerifiedTheHiveFormat' is STOPPED")
 			//fmt.Println("------------------ VerifiedObject RESULT ----------------")
