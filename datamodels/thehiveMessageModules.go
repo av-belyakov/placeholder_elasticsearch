@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"placeholder_elasticsearch/supportingfunctions"
-
 	"go.mongodb.org/mongo-driver/bson"
+
+	"placeholder_elasticsearch/supportingfunctions"
 )
 
 // NewResponseMessage формирует новый тип ResponseMessageFromMispToTheHave с предустановленными значениями

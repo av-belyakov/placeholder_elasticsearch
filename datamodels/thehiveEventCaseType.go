@@ -1,29 +1,17 @@
 package datamodels
 
+import (
+	commonevent "placeholder_elasticsearch/datamodels/commonevent"
+	commonobjectevent "placeholder_elasticsearch/datamodels/commonobjectevent"
+)
+
 // EventMessageTheHiveCase сообщение с информацией о событии
-// Operation - операция
-// ObjectId - уникальный идентификатор объекта
-// ObjectType - тип объекта
-// Base - основа
-// StartDate - начальная дата
-// RootId - главный уникальный идентификатор
-// RequestId - уникальный идентификатор запроса
-// EventDetails - детальная информация о событии
+// Details - детальная информация о событии
 // Object - объект события
-// OrganisationId - уникальный идентификатор организации
-// Organisation - наименование организации
 type EventMessageTheHiveCase struct {
-	Base           bool             `json:"base" bson:"base"`
-	StartDate      string           `json:"startDate" bson:"startDate"` //в формате RFC3339
-	RootId         string           `json:"rootId" bson:"rootId"`
-	Organisation   string           `json:"organisation" bson:"organisation"`
-	OrganisationId string           `json:"organisationId" bson:"organisationId"`
-	ObjectId       string           `json:"objectId" bson:"objectId"`
-	ObjectType     string           `json:"objectType" bson:"objectType"`
-	Operation      string           `json:"operation" bson:"operation"`
-	RequestId      string           `json:"requestId" bson:"requestId"`
-	Details        EventCaseDetails `json:"details" bson:"details"`
-	Object         EventCaseObject  `json:"object" bson:"object"`
+	commonevent.CommonEventType
+	Details EventCaseDetails `json:"details" bson:"details"`
+	Object  EventCaseObject  `json:"object" bson:"object"`
 }
 
 // EventDetails детальная информация о событии
@@ -43,57 +31,10 @@ type EventCaseDetails struct {
 }
 
 // EventObject объект события
-// UnderliningId - уникальный идентификатор
-// Id - уникальный идентификатор
-// CreatedBy - кем создан
-// UpdatedBy - кем обновлен
-// CreatedAt - дата создания
-// UpdatedAt - дата обновления
-// UnderliningType - тип
-// CaseId - уникальный идентификатор дела
-// Title - заголовок
-// Description - описание
-// Severity - строгость
-// StartDate - начальная дата
-// EndDate - конечная дата
-// ImpactStatus - краткое описание воздействия
-// ResolutionStatus - статус разрешения
 // Tags - список тегов
-// Flag - флаг
-// Tlp - tlp
-// Pap - pap
-// Status - статус
-// Summary - резюме
-// Owner - владелец
 // CustomFields - настраиваемые поля
-// Stats - статистика
-// Permissions - разрешения
 type EventCaseObject struct {
-	Flag             bool         `json:"flag" bson:"flag"`
-	CaseId           uint64       `json:"caseId" bson:"caseId"`
-	Severity         uint64       `json:"severity" bson:"severity"`
-	Tlp              uint64       `json:"tlp" bson:"tlp"`
-	Pap              uint64       `json:"pap" bson:"pap"`
-	StartDate        string       `json:"startDate" bson:"startDate"` //формат RFC3339
-	EndDate          string       `json:"endDate" bson:"endDate"`     //формат RFC3339
-	CreatedAt        string       `json:"createdAt" bson:"createdAt"` //формат RFC3339
-	UpdatedAt        string       `json:"updatedAt" bson:"updatedAt"` //формат RFC3339
-	UnderliningId    string       `json:"_id" bson:"_id"`
-	Id               string       `json:"id" bson:"id"`
-	CreatedBy        string       `json:"createdBy" bson:"createdBy"`
-	UpdatedBy        string       `json:"updatedBy" bson:"updatedBy"`
-	UnderliningType  string       `json:"_type" bson:"_type"`
-	Title            string       `json:"title" bson:"title"`
-	Description      string       `json:"description" bson:"description"`
-	ImpactStatus     string       `json:"impactStatus" bson:"impactStatus"`
-	ResolutionStatus string       `json:"resolutionStatus" bson:"resolutionStatus"`
-	Status           string       `json:"status" bson:"status"`
-	Summary          string       `json:"summary" bson:"summary"`
-	Owner            string       `json:"owner" bson:"owner"`
-	Tags             []string     `json:"tags" bson:"tags"`
-	CustomFields     CustomFields `json:"customFields" bson:"customFields"`
-	//данное поле редко используемое, думаю пока оно не требует реализации
-	//Stats            map[string]interface{} `json:"stats"`
-	//данное поле редко используемое, думаю пока оно не требует реализации
-	//Permissions  []string              `json:"permissions"`
+	commonobjectevent.CommonEventCaseObject
+	Tags         []string     `json:"tags" bson:"tags"`
+	CustomFields CustomFields `json:"customFields" bson:"customFields"`
 }

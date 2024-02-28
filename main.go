@@ -112,7 +112,7 @@ func counterHandler(
 		case "update count insert MongoDB":
 			storageApp.SetInsertMongoDBDataCounter(data.Count)
 		case "update count insert Elasticserach":
-			storageApp.SetInsertElasticsearchDataCounter(data.Count)
+			storageApp.SetInsertElasticsearchDataCounter(data.DataMsg, data.Count)
 		}
 
 		d, h, m, s := supportingfunctions.GetDifference(storageApp.GetStartTimeDataCounter(), time.Now())
@@ -120,7 +120,9 @@ func counterHandler(
 		patternReciveEvents := fmt.Sprintf("принято: %d", storageApp.GetAcceptedEventsDataCounter())
 		patternRuleIsOk := fmt.Sprintf("соответствие правилам: %d", storageApp.GetEventsMeetRulesDataCounter())
 		patternInsertMongoDB := fmt.Sprintf("добавлено в MongoDB: %d", storageApp.GetInsertMongoDBDataCounter())
-		patternInsertES := fmt.Sprintf("добавлено в Elasticsearch: %d", storageApp.GetInsertElasticsearchDataCounter())
+
+		num, _ := storageApp.GetInsertElasticsearchDataCounter(data.DataMsg)
+		patternInsertES := fmt.Sprintf("добавлено в Elasticsearch: %d", num)
 		patternTime := fmt.Sprintf("со старта приложения: дней %d, часов %d, минут %d, секунд %d", d, h, m, s)
 		msg := fmt.Sprintf("подписка-'%s', %s, %s, %s, %s %s", data.DataMsg, patternReciveEvents, patternRuleIsOk, patternInsertMongoDB, patternInsertES, patternTime)
 

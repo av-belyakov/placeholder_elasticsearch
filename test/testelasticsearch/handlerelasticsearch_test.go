@@ -1,163 +1,191 @@
 package testelasticsearch_test
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
-	"placeholder_elasticsearch/datamodels"
+	"io"
+	"net/http"
 	"strings"
+	"time"
 
-	"github.com/elastic/go-elasticsearch/v8"
+	//"github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v8/esapi"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	//"placeholder_elasticsearch/test/testelasticsearch"
+
+	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/elasticsearchinteractions"
+	"placeholder_elasticsearch/test/testelasticsearch"
 )
+
+func GetVerifiedForEsAlert(res *esapi.Response) (datamodels.ElasticsearchPatternVerifiedForEsAlert, error) {
+	mp := datamodels.ElasticsearchPatternVerifiedForEsAlert{}
+	err := json.NewDecoder(res.Body).Decode(&mp)
+	if err != nil {
+		if err != io.EOF {
+			return mp, err
+		}
+	}
+
+	return mp, nil
+}
 
 var _ = Describe("Handlerelasticsearch", Ordered, func() {
 	var (
-		errES    error
-		esClient *elasticsearch.Client
+		Host   string = "datahook.cloud.gcm"
+		Port   int    = 9200
+		User   string = "writer"
+		Passwd string = "XxZqesYXuk8C"
 	)
 
-	BeforeAll(func() {
-		//инициализируем клиента Elasticsearch
-		esClient, errES = elasticsearch.NewClient(elasticsearch.Config{
-			Addresses: []string{fmt.Sprintf("http://%s:%d", "datahook.cloud.gcm", 9200)},
-			Username:  "writer",
-			Password:  "XxZqesYXuk8C",
+	/*Context("Тест 1. Поиск, обновление и удаление индексов с Events", func() {
+		var (
+			index                      string = "module_placeholder_case"
+			indexCurrent, indexPattern string
+			source                     string = "gcm"
+			rootId                     string = "~84625227848"
+			queryCurrent               *strings.Reader
+			hsd                        elasticsearchinteractions.HandlerSendData
+
+			newVerifiedForEsAlert *datamodels.VerifiedForEsAlert = datamodels.NewVerifiedForEsAlert()
+			verifiedForEsAlert    *datamodels.VerifiedTheHiveCase //= datamodels.NewVerifiedFor
+
+			errConn error
+		)
+	})*/
+
+	Context("Тест 2. Поиск, обновление и удаление индексов с Alerts", func() {
+		var (
+			index                      string = "module_placeholder_alert"
+			indexCurrent, indexPattern string
+			source                     string = "gcm"
+			rootId                     string = "~84625227848"
+			queryCurrent               *strings.Reader
+			hsd                        elasticsearchinteractions.HandlerSendData
+
+			newVerifiedForEsAlert *datamodels.VerifiedForEsAlert = datamodels.NewVerifiedForEsAlert()
+			verifiedForEsAlert    *datamodels.VerifiedForEsAlert = datamodels.NewVerifiedForEsAlert()
+
+			errConn error
+		)
+
+		verifiedForEsAlert.SetSource(source)
+		verifiedForEsAlert.SetID("jf99r3u9rtt045059y9h49yh9fef93")
+		verifiedForEsAlert.SetCreateTimestatmp("2024-02-06T15:37:52+03:00")
+		verifiedForEsAlert.SetEvent(testelasticsearch.EventForEsAlertTestOne)
+		verifiedForEsAlert.SetAlert(testelasticsearch.AlertForEsAlertTestOne)
+
+		newVerifiedForEsAlert.SetSource(source)
+		newVerifiedForEsAlert.SetID("jf99r3u9rtt045059y9h49yh9fef93")
+		newVerifiedForEsAlert.SetCreateTimestatmp("2024-02-06T15:37:52+03:00")
+		newVerifiedForEsAlert.SetEvent(testelasticsearch.EventForEsAlertTestTwo)
+		newVerifiedForEsAlert.SetAlert(testelasticsearch.AlertForEsAlertTestTwo)
+
+		BeforeAll(func() {
+			t := time.Now()
+			month := int(t.Month())
+
+			indexPattern = fmt.Sprintf("module_placeholder_alert_%s_%d", source, t.Year())
+			indexCurrent = fmt.Sprintf("%s_%s_%d_%d", index, source, t.Year(), month)
+
+			hsd = elasticsearchinteractions.HandlerSendData{
+				Settings: elasticsearchinteractions.SettingsHandler{
+					Port:   Port,
+					Host:   Host,
+					User:   User,
+					Passwd: Passwd,
+				},
+			}
+
+			errConn = hsd.New()
+
+			queryCurrent = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId))
 		})
-	})
 
-	Context("Тест 1. Проверка подключения к СУБД Elasticsearch", func() {
-		It("При подключени к СУБД ошибок быть не должно", func() {
-			Expect(errES).ShouldNot(HaveOccurred())
+		It("При подключении не должно быть ошибок", func() {
+			//fmt.Println("indexCurrent:", indexCurrent)
+			//fmt.Println("indexBefore:", indexBefore)
+			//fmt.Println("queryCurrent:", queryCurrent)
+
+			Expect(errConn).ShouldNot(HaveOccurred())
 		})
-	})
 
-	Context("Тест 2. Выполнение запросов к СУБД", func() {
-		It("Запрос на получения документа по source и event.rootId не должен вызывать ошибок, должен быть получен результат", func() {
-			//"test_module_placeholder_elasticsearch_case_2024_1"
-
-			source := "rcmsr"
-			rootId := "~1682026696"
-
-			query := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId))
-			res, err := esClient.Search(
-				esClient.Search.WithContext(context.Background()),
-				esClient.Search.WithIndex("module_placeholder_elasticsearch_thehive_case_2024_2"),
-				esClient.Search.WithBody(query),
-			)
-
+		It("Запросы должны быть обработаны без ошибок", func() {
+			indexes, err := hsd.GetExistingIndexes(indexPattern)
 			Expect(err).ShouldNot(HaveOccurred())
 
-			decEs := datamodels.ElasticsearchResponseCase{}
-			errJsonDecode := json.NewDecoder(res.Body).Decode(&decEs)
-
-			fmt.Println("Total:", decEs.Options.Total.Value)
-
-			Expect(errJsonDecode).ShouldNot(HaveOccurred())
-			Expect(decEs.Options.Total.Value).Should(Equal(2))
-		})
-
-		It("Запрос на получения документа только по event.rootId не должен вызывать ошибок, должен быть получен результат", func() {
-			//"test_module_placeholder_elasticsearch_case_2024_1"
-
-			query := strings.NewReader(`
-			{"query": {
-				"bool": {
-					"must": [
-        				{ "match": { "event.rootId": "~1682026696" }}]
-					}
-				}
-			}`)
-			res, err := esClient.Search(
-				esClient.Search.WithContext(context.Background()),
-				esClient.Search.WithIndex("module_placeholder_elasticsearch_thehive_case_2024_2"),
-				esClient.Search.WithBody(query),
-			)
-
+			b, err := json.Marshal(verifiedForEsAlert.Get())
 			Expect(err).ShouldNot(HaveOccurred())
 
-			r := map[string]interface{}{}
-			errJsonDecode := json.NewDecoder(res.Body).Decode(&r)
-			Expect(errJsonDecode).ShouldNot(HaveOccurred())
+			fmt.Println("INDEXES:", indexes)
 
-			//var isExist bool
-			//fmt.Println("Read response message:")
-			//fmt.Println(r)
-			//for k, v := range r {
-			//	if k == "found" {
-			//		if tmp, ok := v.(bool); ok {
-			//			isExist = tmp
-			//		}
-			//	}
-			//				fmt.Println(k, ":", v)
-			//}
-			//for k, v := range r {
-			//	if k == "hits" {
-			//		fmt.Printf("%s: %v\n", k, v)
-			//	}
-			//}
+			if len(indexes) == 0 {
+				//ЭТО ВЫПОЛЯЕТСЯ ТОЛЬКО КОГДА ПОХОЖИЙ ИНДЕКС НЕ НАЙДЕН
 
-			Expect(len(r)).Should(Equal(4))
-		})
+				res, err := hsd.InsertDocument(indexCurrent, b)
+				Expect(err).ShouldNot(HaveOccurred())
 
-		It("При запросе по всем индексам не должно быть ошибок", func() {
-			//"test_module_placeholder_elasticsearch_case_2024_1"
+				fmt.Println("Status Code:", res.Status())
+				Expect(res.StatusCode).Should(Equal(http.StatusCreated))
+			} else {
+				res, errSearch := hsd.SearchDocument(indexes, queryCurrent)
+				Expect(errSearch).ShouldNot(HaveOccurred())
 
-			query := strings.NewReader(`
-			{"query": {
-				"bool": {
-					"must": [
-						{ "match": { "source": "rcmsr" }},
-        				{ "match": { "event.rootId": "~1682026696" }}]
+				fmt.Println("======================= Response ======================")
+				fmt.Println("||| Status:", res.Status())
+
+				if res.StatusCode == http.StatusOK {
+					//при наличие похожего индекса его замена
+					object, err := GetVerifiedForEsAlert(res)
+					Expect(err).ShouldNot(HaveOccurred())
+
+					updateVerified := datamodels.NewVerifiedForEsAlert()
+					for _, v := range object.Hits.Hits {
+						num, err := updateVerified.Event.ReplacingOldValues(v.Source.Event)
+						Expect(err).ShouldNot(HaveOccurred())
+						fmt.Println("EVENT Replacing:", num)
+
+						num, err = updateVerified.Alert.ReplacingOldValues(v.Source.Alert)
+						Expect(err).ShouldNot(HaveOccurred())
+						fmt.Println("ALERT Replacing:", num)
 					}
-				}
-			}`)
-			res, err := esClient.Search(
-				esClient.Search.WithContext(context.Background()),
-				//esClient.Search.WithIndex("_all"),
-				esClient.Search.WithIndex("module_placeholder_elasticsearch_thehive_case_2024_1"),
-				esClient.Search.WithBody(query),
-			)
 
-			Expect(err).ShouldNot(HaveOccurred())
+					num, err := updateVerified.Event.ReplacingOldValues(newVerifiedForEsAlert.Event)
+					Expect(err).ShouldNot(HaveOccurred())
+					fmt.Println("EVENT Replacing:", num)
 
-			decEs := datamodels.ElasticsearchResponseCase{}
-			errJsonDecode := json.NewDecoder(res.Body).Decode(&decEs)
+					num, err = updateVerified.Alert.ReplacingOldValues(newVerifiedForEsAlert.Alert)
+					Expect(err).ShouldNot(HaveOccurred())
+					fmt.Println("ALERT Replacing:", num)
 
-			fmt.Println("Total value:", decEs.Options.Total.Value)
-			fmt.Println("MaxScore:", decEs.Options.MaxScore)
+					fmt.Println("_____ UPDATE OLD DATA ______")
+					fmt.Println(updateVerified.ToStringBeautiful(0))
 
-			if decEs.Options.Total.Value > 0 {
-				fmt.Println("Hits:")
-				for k, v := range decEs.Options.Hits {
-					fmt.Printf("%d.\n", k)
-					fmt.Println("_id:", v.ID)
-					fmt.Println("index:", v.Index)
-					//fmt.Println("source:", v.Source)
+					nvbyte, err := json.Marshal(updateVerified)
+					Expect(err).ShouldNot(HaveOccurred())
 
-					if _, err := esClient.Delete("module_placeholder_elasticsearch_thehive_case_2024_1", v.ID); err != nil {
-						fmt.Println("DELETE error:", err)
-					}
+					res, err := hsd.UpdateDocument(
+						indexCurrent,
+						indexPattern,
+						queryCurrent,
+						nvbyte,
+					)
+					fmt.Println("Status Code:", res.Status())
+
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(res.StatusCode).Should(Equal(http.StatusCreated))
+				} else {
+					//ВЫПОЛНЯЕТСЯ ТОГДА КОГДА ДОКУМЕНТ НЕ НАЙДЕН
+
+					res, err = hsd.InsertDocument(indexCurrent, b)
+					Expect(err).ShouldNot(HaveOccurred())
+
+					fmt.Println("Status Code:", res.Status())
+					Expect(res.StatusCode).Should(Equal(http.StatusCreated))
 				}
 			}
 
-			Expect(errJsonDecode).ShouldNot(HaveOccurred())
-			//Expect(len(des)).Should(Equal(4))
+			Expect(true).Should(BeTrue())
 		})
-
-		/*It("Запрос на поиск документа не должен вызывать ошибок", func ()  {
-			res, err := esClient.Search()
-			Expect(err).ShouldNot(HaveOccurred())
-		})*/
 	})
-
-	/*
-		Context("", func ()  {
-			It("", func ()  {
-
-			})
-		})
-	*/
 })

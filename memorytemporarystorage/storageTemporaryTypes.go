@@ -17,7 +17,7 @@ type DataCounterStorage struct {
 	eventsDoNotMeetRules int
 	eventsMeetRules      int
 	insertMongoDB        int
-	insertElasticsearch  int
+	insertElasticsearch  map[string]int
 	startTime            time.Time
 	sync.Mutex
 }

@@ -59,7 +59,9 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				chansOut := supportingfunctions.CreateChannelDuplication[datamodels.ChanOutputDecodeJSON](chanOutputDecodeJson, 2)
 				chansDone := supportingfunctions.CreateChannelDuplication[bool](chanDecodeJsonDone, 2)
 
+				//используется для хранения в MongoDB
 				go NewVerifiedTheHiveFormatAlert(chansOut[0], chansDone[0], mdbModule, settings.logging)
+				//используется для хранения в Elasticsearch
 				go NewVerifiedElasticsearchFormatAlert(chansOut[1], chansDone[1], esModule, settings.logging)
 			}
 		}

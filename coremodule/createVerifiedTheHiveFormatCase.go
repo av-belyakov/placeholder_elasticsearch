@@ -236,26 +236,26 @@ func searchEventSource(fieldBranch string, value interface{}) (string, bool) {
 
 func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHiveCase) {
 	if e.GetStartDate() == "" {
-		e.SetValueStartDate("1970-01-01T03:00:00+03:00")
+		e.SetValueStartDate("1970-01-01T00:00:00+00:00")
 	}
 
 	if e.Details.GetEndDate() == "" {
-		e.Details.SetValueEndDate("1970-01-01T03:00:00+03:00")
+		e.Details.SetValueEndDate("1970-01-01T00:00:00+00:00")
 	}
 
 	if e.Object.GetStartDate() == "" {
-		e.Object.SetValueStartDate("1970-01-01T03:00:00+03:00")
+		e.Object.SetValueStartDate("1970-01-01T00:00:00+00:00")
 	}
 
 	if e.Object.GetEndDate() == "" {
-		e.Object.SetValueEndDate("1970-01-01T03:00:00+03:00")
+		e.Object.SetValueEndDate("1970-01-01T00:00:00+00:00")
 	}
 
 	if e.Object.GetCreatedAt() == "" {
-		e.Object.SetValueCreatedAt("1970-01-01T03:00:00+03:00")
+		e.Object.SetValueCreatedAt("1970-01-01T00:00:00+00:00")
 	}
 
 	if e.Object.GetUpdatedAt() == "" {
-		e.Object.SetValueUpdatedAt("1970-01-01T03:00:00+03:00")
+		e.Object.SetValueUpdatedAt("1970-01-01T00:00:00+00:00")
 	}
 }

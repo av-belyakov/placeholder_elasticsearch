@@ -9,6 +9,8 @@ import (
 	. "github.com/onsi/gomega"
 
 	"placeholder_elasticsearch/datamodels"
+	commonevent "placeholder_elasticsearch/datamodels/commonevent"
+	commonobjectevent "placeholder_elasticsearch/datamodels/commonobjectevent"
 	"placeholder_elasticsearch/listhandlercommon"
 	"placeholder_elasticsearch/listhandlerthehivejson"
 	testing "placeholder_elasticsearch/test"
@@ -352,8 +354,8 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 		It("Должен быть полностью заполнен объект verifiedTheHiveAlert", func() {
 			verified := verifiedTheHiveAlert.Get()
 
-			fmt.Println("---=== VERIFEDTHEHIVEALERT ===---")
-			fmt.Println(verified.ToStringBeautiful(0))
+			//fmt.Println("---=== VERIFEDTHEHIVEALERT ===---")
+			//fmt.Println(verified.ToStringBeautiful(0))
 
 			Expect(verified.GetID()).Should(Equal("fhe78f838f88fg488398f8e3"))
 			Expect(verified.GetElasticsearchID()).Should(Equal("3883f8f9-839r983hf848g8h-f84"))
@@ -364,15 +366,17 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 
 	Context("Тест 2. Проверка замены старых значений EventMessageTheHiveAlert объекта, новыми значениями, если они отличаются", func() {
 		oldStruct := datamodels.EventMessageTheHiveAlert{
-			Base:           false,
-			StartDate:      "2024-02-06T15:20:30+03:00",
-			RootId:         "~84625227848",
-			ObjectId:       "~4192",
-			ObjectType:     "alert",
-			Organisation:   "GCM",
-			OrganisationId: "~4192",
-			Operation:      "new",
-			RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			CommonEventType: commonevent.CommonEventType{
+				Base:           false,
+				StartDate:      "2024-02-06T15:20:30+03:00",
+				RootId:         "~84625227848",
+				ObjectId:       "~4192",
+				ObjectType:     "alert",
+				Organisation:   "GCM",
+				OrganisationId: "~4192",
+				Operation:      "new",
+				RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			},
 			Details: datamodels.EventAlertDetails{
 				SourceRef:   "TSK-8MSK-6-ZPM-240206-1215999",
 				Title:       "222",
@@ -383,25 +387,27 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 				},
 			},
 			Object: datamodels.EventAlertObject{
-				Severity:        1,
-				Tlp:             1,
-				Pap:             1,
-				UnderliningId:   "~85455464790",
-				Id:              "~85455464790",
-				CreatedBy:       "ddddd",
-				CreatedAt:       "1970-01-01T03:00:00+03:00",
-				UpdatedAt:       "1970-01-01T03:00:00+03:00",
-				UnderliningType: "aalllert",
-				Title:           "vbb er3",
-				Description:     "any more",
-				Status:          "None",
-				Date:            "2024-02-06T15:37:52+03:00",
-				Type:            "snort_alert",
-				ObjectType:      "",
-				Source:          "zsiеmSystems",
-				SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
-				Case:            "alert",
-				CaseTemplate:    "alert_snort",
+				Severity: 1,
+				Pap:      1,
+				CommonEventAlertObject: commonobjectevent.CommonEventAlertObject{
+					Tlp:             1,
+					UnderliningId:   "~85455464790",
+					Id:              "~85455464790",
+					CreatedBy:       "ddddd",
+					CreatedAt:       "1970-01-01T03:00:00+03:00",
+					UpdatedAt:       "1970-01-01T03:00:00+03:00",
+					UnderliningType: "aalllert",
+					Title:           "vbb er3",
+					Description:     "any more",
+					Status:          "None",
+					Date:            "2024-02-06T15:37:52+03:00",
+					Type:            "snort_alert",
+					ObjectType:      "",
+					Source:          "zsiеmSystems",
+					SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
+					Case:            "alert",
+					CaseTemplate:    "alert_snort",
+				},
 				Tags: []string{
 					"'Sensor:id=\"8030012\"'",
 					"'Webhook:send=ES'",
@@ -430,15 +436,17 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 		}
 
 		newStruct := datamodels.EventMessageTheHiveAlert{
-			Base:           true,                       //замена
-			StartDate:      "2024-02-13T5:12:24+03:00", //замена
-			RootId:         "~84625227848",
-			ObjectId:       "~4192",
-			ObjectType:     "ALERT",   //замена
-			Organisation:   "GCM-MSK", //замена
-			OrganisationId: "~419211", //замена
-			Operation:      "update",  //замена
-			RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			CommonEventType: commonevent.CommonEventType{
+				Base:           true,                        //замена
+				StartDate:      "2024-02-13T05:12:24+03:00", //замена
+				RootId:         "~84625227848",
+				ObjectId:       "~4192",
+				ObjectType:     "ALERT",   //замена
+				Organisation:   "GCM-MSK", //замена
+				OrganisationId: "~419211", //замена
+				Operation:      "update",  //замена
+				RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			},
 			Details: datamodels.EventAlertDetails{
 				SourceRef:   "TSK-8MSK-6-ZPM-240206-1215999",
 				Title:       "протоколы: **smtp/tcp**",            //замена
@@ -453,25 +461,27 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 				},
 			},
 			Object: datamodels.EventAlertObject{
-				Severity:        1,
-				Tlp:             1,
-				Pap:             1,
-				UnderliningId:   "~85455464790",
-				Id:              "~85455464790",
-				CreatedBy:       "d.zablotsky@cloud.gcm",       //замена
-				CreatedAt:       "2024-02-10T23:25:14+03:00",   //замена
-				UpdatedAt:       "2024-02-06T15:15:14+03:00",   //замена
-				UnderliningType: "ALERT",                       //замена
-				Title:           "Атака направлена **внутрь**", //замена
-				Description:     "Вирусное заражение",          //замена
-				Status:          "None",
-				Date:            "2024-02-06T15:37:52+03:00",
-				Type:            "snort_alert",
-				ObjectType:      "",
-				Source:          "zsiеmSystems",
-				SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
-				Case:            "alert",
-				CaseTemplate:    "Alert_Snort", //замена
+				Severity: 1,
+				Pap:      1,
+				CommonEventAlertObject: commonobjectevent.CommonEventAlertObject{
+					Tlp:             1,
+					UnderliningId:   "~85455464790",
+					Id:              "~85455464790",
+					CreatedBy:       "d.zablotsky@cloud.gcm",       //замена
+					CreatedAt:       "2024-02-10T23:25:14+03:00",   //замена
+					UpdatedAt:       "2024-02-06T15:15:14+03:00",   //замена
+					UnderliningType: "ALERT",                       //замена
+					Title:           "Атака направлена **внутрь**", //замена
+					Description:     "Вирусное заражение",          //замена
+					Status:          "None",
+					Date:            "2024-02-06T15:37:52+03:00",
+					Type:            "snort_alert",
+					ObjectType:      "",
+					Source:          "zsiеmSystems",
+					SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
+					Case:            "alert",
+					CaseTemplate:    "Alert_Snort", //замена
+				},
 				//замена
 				Tags: []string{
 					"'Webhook:send=ES'",
@@ -513,7 +523,7 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			//меняется
 			Expect(oldStruct.GetBase()).Should(BeTrue())
 			//меняется
-			Expect(oldStruct.GetStartDate()).Should(Equal("2024-02-13T5:12:24+03:00"))
+			Expect(oldStruct.GetStartDate()).Should(Equal("2024-02-13T05:12:24+03:00"))
 			//НЕ меняется
 			Expect(oldStruct.GetObjectId()).Should(Equal("~4192"))
 			//меняется
@@ -564,6 +574,10 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
 			//меняется
 			Expect(lastTime).Should(Equal("2024-02-07T22:48:13+03:00"))
+
+			fmt.Println("---=== VERIFEDTHEHIVEALERT ===---")
+			fmt.Println(oldStruct.ToStringBeautiful(0))
+			Expect(true).Should(BeTrue())
 		})
 	})
 

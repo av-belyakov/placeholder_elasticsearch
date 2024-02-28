@@ -9,6 +9,8 @@ import (
 	. "github.com/onsi/gomega"
 
 	"placeholder_elasticsearch/datamodels"
+	commonevent "placeholder_elasticsearch/datamodels/commonevent"
+	commonobjectevent "placeholder_elasticsearch/datamodels/commonobjectevent"
 	"placeholder_elasticsearch/listhandlercommon"
 	"placeholder_elasticsearch/listhandlerforesjson"
 	testing "placeholder_elasticsearch/test"
@@ -359,15 +361,17 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 
 	Context("Тест 2. Проверка замены старых значений EventMessageForEsAlert объекта, новыми значениями, если они отличаются", func() {
 		oldStruct := datamodels.EventMessageForEsAlert{
-			Base:           false,
-			StartDate:      "2024-02-06T15:20:30+03:00",
-			RootId:         "~84625227848",
-			ObjectId:       "~4192",
-			ObjectType:     "alert",
-			Organisation:   "GCM",
-			OrganisationId: "~4192",
-			Operation:      "new",
-			RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			CommonEventType: commonevent.CommonEventType{
+				Base:           false,
+				StartDate:      "2024-02-06T15:20:30+03:00",
+				RootId:         "~84625227848",
+				ObjectId:       "~4192",
+				ObjectType:     "alert",
+				Organisation:   "GCM",
+				OrganisationId: "~4192",
+				Operation:      "new",
+				RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			},
 			Details: datamodels.EventMessageForEsAlertDetails{
 				SourceRef:   "TSK-8MSK-6-ZPM-240206-1215999",
 				Title:       "222",
@@ -382,23 +386,25 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 				},
 			},
 			Object: datamodels.EventMessageForEsAlertObject{
-				Tlp:             1,
-				UnderliningId:   "~85455464790",
-				Id:              "~85455464790",
-				CreatedBy:       "ddddd",
-				CreatedAt:       "1970-01-01T03:00:00+03:00",
-				UpdatedAt:       "1970-01-01T03:00:00+03:00",
-				UnderliningType: "aalllert",
-				Title:           "vbb er3",
-				Description:     "any more",
-				Status:          "None",
-				Date:            "2024-02-06T15:37:52+03:00",
-				Type:            "snort_alert",
-				ObjectType:      "",
-				Source:          "zsiеmSystems",
-				SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
-				Case:            "alert",
-				CaseTemplate:    "alert_snort",
+				CommonEventAlertObject: commonobjectevent.CommonEventAlertObject{
+					Tlp:             1,
+					UnderliningId:   "~85455464790",
+					Id:              "~85455464790",
+					CreatedBy:       "ddddd",
+					CreatedAt:       "1970-01-01T03:00:00+03:00",
+					UpdatedAt:       "1970-01-01T03:00:00+03:00",
+					UnderliningType: "aalllert",
+					Title:           "vbb er3",
+					Description:     "any more",
+					Status:          "None",
+					Date:            "2024-02-06T15:37:52+03:00",
+					Type:            "snort_alert",
+					ObjectType:      "",
+					Source:          "zsiеmSystems",
+					SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
+					Case:            "alert",
+					CaseTemplate:    "alert_snort",
+				},
 				Tags: map[string][]string{
 					"sensor:id": {"8030012"},
 				},
@@ -420,15 +426,17 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 		}
 
 		newStruct := datamodels.EventMessageForEsAlert{
-			Base:           true,                       //замена
-			StartDate:      "2024-02-13T5:12:24+03:00", //замена
-			RootId:         "~84625227848",
-			ObjectId:       "~4192",
-			ObjectType:     "ALERT",   //замена
-			Organisation:   "GCM-MSK", //замена
-			OrganisationId: "~419211", //замена
-			Operation:      "update",  //замена
-			RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			CommonEventType: commonevent.CommonEventType{
+				Base:           true,                        //замена
+				StartDate:      "2024-02-13T05:12:24+03:00", //замена
+				RootId:         "~84625227848",
+				ObjectId:       "~4192",
+				ObjectType:     "ALERT",   //замена
+				Organisation:   "GCM-MSK", //замена
+				OrganisationId: "~419211", //замена
+				Operation:      "update",  //замена
+				RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+			},
 			Details: datamodels.EventMessageForEsAlertDetails{
 				SourceRef:   "TSK-8MSK-6-ZPM-240206-1215999",
 				Title:       "протоколы: **smtp/tcp**",            //замена
@@ -453,23 +461,25 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 				},
 			},
 			Object: datamodels.EventMessageForEsAlertObject{
-				Tlp:             1,
-				UnderliningId:   "~85455464790",
-				Id:              "~85455464790",
-				CreatedBy:       "d.zablotsky@cloud.gcm",       //замена
-				CreatedAt:       "2024-02-10T23:25:14+03:00",   //замена
-				UpdatedAt:       "2024-02-06T15:15:14+03:00",   //замена
-				UnderliningType: "ALERT",                       //замена
-				Title:           "Атака направлена **внутрь**", //замена
-				Description:     "Вирусное заражение",          //замена
-				Status:          "None",
-				Date:            "2024-02-06T15:37:52+03:00",
-				Type:            "snort_alert",
-				ObjectType:      "",
-				Source:          "zsiеmSystems",
-				SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
-				Case:            "alert",
-				CaseTemplate:    "Alert_Snort", //замена
+				CommonEventAlertObject: commonobjectevent.CommonEventAlertObject{
+					Tlp:             1,
+					UnderliningId:   "~85455464790",
+					Id:              "~85455464790",
+					CreatedBy:       "d.zablotsky@cloud.gcm",       //замена
+					CreatedAt:       "2024-02-10T23:25:14+03:00",   //замена
+					UpdatedAt:       "2024-02-06T15:15:14+03:00",   //замена
+					UnderliningType: "ALERT",                       //замена
+					Title:           "Атака направлена **внутрь**", //замена
+					Description:     "Вирусное заражение",          //замена
+					Status:          "None",
+					Date:            "2024-02-06T15:37:52+03:00",
+					Type:            "snort_alert",
+					ObjectType:      "",
+					Source:          "zsiеmSystems",
+					SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
+					Case:            "alert",
+					CaseTemplate:    "Alert_Snort", //замена
+				},
 				//замена
 				Tags: map[string][]string{
 					"sensor:id":             {"8030105"},
@@ -501,10 +511,13 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			//кол-во замененных полей
 			Expect(num).Should(Equal(23))
 
+			fmt.Println("---=== EventMessageForEsAlert ===---")
+			fmt.Println(oldStruct.ToStringBeautiful(0))
+
 			//меняется
 			Expect(oldStruct.GetBase()).Should(BeTrue())
 			//меняется
-			Expect(oldStruct.GetStartDate()).Should(Equal("2024-02-13T5:12:24+03:00"))
+			Expect(oldStruct.GetStartDate()).Should(Equal("2024-02-13T05:12:24+03:00"))
 			//НЕ меняется
 			Expect(oldStruct.GetObjectId()).Should(Equal("~4192"))
 			//меняется
@@ -559,9 +572,6 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
 			//меняется
 			Expect(lastTime).Should(Equal("2024-02-07T22:48:13+03:00"))
-
-			//fmt.Println("---=== EventMessageForEsAlert ===---")
-			//fmt.Println(oldStruct.ToStringBeautiful(0))
 		})
 	})
 
@@ -787,8 +797,8 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			//кол-во замененных полей
 			Expect(num).Should(Equal(18))
 
-			fmt.Println("---=== AlertMessageForEsAlert ===---")
-			fmt.Println(oldStruct.ToStringBeautiful(0))
+			//fmt.Println("---=== AlertMessageForEsAlert ===---")
+			//fmt.Println(oldStruct.ToStringBeautiful(0))
 
 			//Alert
 			//меняется

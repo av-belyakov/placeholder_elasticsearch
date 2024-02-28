@@ -11,7 +11,9 @@ var cst CommonStorageTemporary
 func NewTemporaryStorage() *CommonStorageTemporary {
 	once.Do(func() {
 		cst = CommonStorageTemporary{
-			dataCounter: DataCounterStorage{},
+			dataCounter: DataCounterStorage{
+				insertElasticsearch: make(map[string]int),
+			},
 		}
 
 		//go checkTimeDelete(&cst)
@@ -134,15 +136,28 @@ func (cst *CommonStorageTemporary) SetInsertMongoDBDataCounter(num int) {
 	cst.dataCounter.insertMongoDB += num
 }
 
-// GetInsertElasticsearchDataCounter возвращает сетчик вставленных в Elasticsearch документов
-func (cst *CommonStorageTemporary) GetInsertElasticsearchDataCounter() int {
+// GetAllInsertElasticsearchDataCounter возвращает сетчик вставленных в Elasticsearch документов
+func (cst *CommonStorageTemporary) GetAllInsertElasticsearchDataCounter() map[string]int {
 	return cst.dataCounter.insertElasticsearch
 }
 
+// GetInsertElasticsearchDataCounter возвращает сетчик вставленных в Elasticsearch документов
+func (cst *CommonStorageTemporary) GetInsertElasticsearchDataCounter(item string) (int, bool) {
+	if v, ok := cst.dataCounter.insertElasticsearch[item]; ok {
+		return v, true
+	}
+
+	return 0, false
+}
+
 // SetInsertElasticsearchDataCounter увеличивает сетчик вставленных в Elasticsearch документов
-func (cst *CommonStorageTemporary) SetInsertElasticsearchDataCounter(num int) {
+func (cst *CommonStorageTemporary) SetInsertElasticsearchDataCounter(item string, num int) {
 	cst.dataCounter.Lock()
 	defer cst.dataCounter.Unlock()
 
-	cst.dataCounter.insertElasticsearch += num
+	if _, ok := cst.dataCounter.insertElasticsearch[item]; !ok {
+		cst.dataCounter.insertElasticsearch[item] = 0
+	}
+
+	cst.dataCounter.insertElasticsearch[item] += num
 }

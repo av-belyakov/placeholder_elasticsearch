@@ -7,15 +7,7 @@ import (
 
 // ReplacingOldValues заменяет старые значения структуры EventMessageTheHiveAlert
 // новыми значениями. Изменяемые поля:
-// Base - основа
-// StartDate - начальная дата
-// RootId - главный уникальный идентификатор
-// ObjectId - уникальный идентификатор объекта
-// ObjectType - тип объекта
-// Organisation - наименование организации
-// OrganisationId - уникальный идентификатор организации
-// Operation - операция
-// RequestId - уникальный идентификатор запроса
+// CommonEventType
 // Details - детальная информация о событии
 // Object - объект события
 func (e *EventMessageTheHiveAlert) ReplacingOldValues(element EventMessageTheHiveAlert) (int, error) {
@@ -37,17 +29,21 @@ DONE:
 				continue
 			}
 
-			if typeOfCurrentStruct.Field(i).Name == "RootId" {
-				if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
-					curRootId := currentStruct.Field(i).String()
-					newRootId := newStruct.Field(i).String()
-					err = fmt.Errorf("the values of the 'rootId' field in the compared objects do not match, current rootId = '%s', new rootId = '%s'", curRootId, newRootId)
+			// для обработки общих полей
+			//**************************
+			if typeOfCurrentStruct.Field(i).Name == "CommonEventType" {
+				num, errC := e.CommonEventType.ReplacingOldValues(*element.CommonEventType.Get())
+				if errC != nil {
+					err = errC
 
 					break DONE
 				}
+
+				countReplacingFields += num
 			}
 
 			//для обработки поля "Details"
+			//****************************
 			if typeOfCurrentStruct.Field(i).Name == "Details" {
 				countReplacingFields += e.Details.ReplacingOldValues(element.GetDetails())
 
@@ -55,26 +51,11 @@ DONE:
 			}
 
 			//для обработки поля "Object"
+			//***************************
 			if typeOfCurrentStruct.Field(i).Name == "Object" {
 				countReplacingFields += e.Object.ReplacingOldValues(element.GetObject())
 
 				continue
-			}
-
-			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
-				if !currentStruct.Field(i).CanSet() {
-					continue
-				}
-
-				if str, ok := newStruct.Field(j).Interface().(string); ok {
-					//не обновлять текущие значения новыми пустыми значениями
-					if str == "" {
-						continue
-					}
-				}
-
-				currentStruct.Field(i).Set(newStruct.Field(j))
-				countReplacingFields++
 			}
 		}
 	}
@@ -104,6 +85,7 @@ func (d *EventAlertDetails) ReplacingOldValues(element EventAlertDetails) int {
 			}
 
 			// для обработки поля "Tags"
+			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
 				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
@@ -137,28 +119,8 @@ func (d *EventAlertDetails) ReplacingOldValues(element EventAlertDetails) int {
 // ReplacingOldValues заменяет старые значения структуры EventAlertObject
 // новыми значениями. Изменяемые поля:
 // Follow - следовать
-// Tlp - tlp
 // Pap - pap
 // Severity - строгость
-// UnderliningId - уникальный идентификатор
-// Id - уникальный идентификатор
-// CreatedBy - кем создан
-// UpdatedBy - кем обновлен
-// CreatedAt - дата создания (формат RFC3339)
-// UpdatedAt - дата обновления (формат RFC3339)
-// UnderliningType - тип
-// Title - заголовок
-// Description - описание
-// Tags - список тегов
-// Status - статус
-// CustomFields - настраиваемые поля
-// Date - дата (формат RFC3339)
-// Type - тип
-// Source - источник
-// SourceRef - ссылка на источник
-// Case - кейс
-// CaseTemplate - шаблон обращения
-// ObjectType - тип объекта
 // Tags - теги
 // CustomFields - настраиваемые поля
 func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
@@ -176,7 +138,16 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 				continue
 			}
 
+			// для обработки общих полей
+			//**************************
+			if typeOfCurrentStruct.Field(i).Name == "CommonEventAlertObject" {
+				countReplacingFields += o.CommonEventAlertObject.ReplacingOldValues(*element.CommonEventAlertObject.Get())
+
+				continue
+			}
+
 			// для обработки поля "Tags"
+			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
 				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
@@ -187,6 +158,7 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 			}
 
 			//для обработки поля "CustomFields"
+			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "CustomFields" {
 				currentCustomFields, okCurr := currentStruct.Field(i).Interface().(CustomFields)
 				newCustomFields, okNew := newStruct.Field(j).Interface().(CustomFields)
@@ -204,6 +176,9 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 				continue
 			}
 
+			//обработка полей содержащихся в EventAlertObject
+			//и не относящихся к вышеперечисленым значениям
+			//***********************************************
 			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
 				if !currentStruct.Field(i).CanSet() {
 					continue
@@ -218,6 +193,10 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 
 				currentStruct.Field(i).Set(newStruct.Field(j))
 				countReplacingFields++
+
+				fmt.Println("func 'EventAlertObject', Field name:", typeOfCurrentStruct.Field(i).Name, " Value:", newStruct.Field(j))
+				fmt.Println("func 'EventAlertObject', countReplacingFields:", countReplacingFields)
+
 			}
 		}
 	}

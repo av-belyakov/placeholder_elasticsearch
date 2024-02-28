@@ -2,8 +2,9 @@ package datamodels
 
 import (
 	"fmt"
-	"placeholder_elasticsearch/supportingfunctions"
 	"strings"
+
+	"placeholder_elasticsearch/supportingfunctions"
 )
 
 func NewAlertMessageTheHiveAlert() *AlertMessageTheHiveAlert {

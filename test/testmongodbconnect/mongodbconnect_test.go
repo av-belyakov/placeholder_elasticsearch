@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"placeholder_elasticsearch/datamodels"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -13,7 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	//"placeholder_elasticsearch/test/testmongodbconnect"
+
+	"placeholder_elasticsearch/datamodels"
+	commonevent "placeholder_elasticsearch/datamodels/commonevent"
+	commonobjectevent "placeholder_elasticsearch/datamodels/commonobjectevent"
 )
 
 var _ = Describe("Mongodbconnect", Ordered, func() {
@@ -156,15 +158,17 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 			CreateTimestamp: "2024-01-31T16:17:22+03:00",
 			Source:          "GCM",
 			Event: datamodels.EventMessageTheHiveAlert{
-				Base:           true,
-				StartDate:      "2024-02-06T15:20:30+03:00",
-				RootId:         "~84625227848",
-				ObjectId:       "~4192",
-				ObjectType:     "alert",
-				Organisation:   "GCM",
-				OrganisationId: "~4192",
-				Operation:      "UPDATE___UPDATE",
-				RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+				CommonEventType: commonevent.CommonEventType{
+					Base:           true,
+					StartDate:      "2024-02-06T15:20:30+03:00",
+					RootId:         "~84625227848",
+					ObjectId:       "~4192",
+					ObjectType:     "alert",
+					Organisation:   "GCM",
+					OrganisationId: "~4192",
+					Operation:      "UPDATE___UPDATE",
+					RequestId:      "55994d44f3b276c1:6483e5ec:18d786c2f83:-8000:138497",
+				},
 				Details: datamodels.EventAlertDetails{
 					SourceRef:   "TSK-8MSK-6-ZPM-240206-1215999",
 					Title:       "title test replacing",
@@ -178,25 +182,27 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 					},
 				},
 				Object: datamodels.EventAlertObject{
-					Severity:        2,
-					Tlp:             3,
-					Pap:             4,
-					UnderliningId:   "~85455464790",
-					Id:              "~85455464790",
-					CreatedBy:       "test_replacing@example.net",
-					CreatedAt:       "1970-01-01T03:00:00+03:00",
-					UpdatedAt:       "1970-01-01T03:00:00+03:00",
-					UnderliningType: "ALERT test replacing",
-					Title:           "title test replacing",
-					Description:     "test replacing description",
-					Status:          "Update",
-					Date:            "2024-02-06T15:37:52+03:00",
-					Type:            "snort_alert",
-					ObjectType:      "SNORT test replacing 111111",
-					Source:          "zsiеmSystems",
-					SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
-					Case:            "alert",
-					CaseTemplate:    "alert_snort",
+					Severity: 2,
+					Pap:      4,
+					CommonEventAlertObject: commonobjectevent.CommonEventAlertObject{
+						Tlp:             3,
+						UnderliningId:   "~85455464790",
+						Id:              "~85455464790",
+						CreatedBy:       "test_replacing@example.net",
+						CreatedAt:       "1970-01-01T03:00:00+03:00",
+						UpdatedAt:       "1970-01-01T03:00:00+03:00",
+						UnderliningType: "ALERT test replacing",
+						Title:           "title test replacing",
+						Description:     "test replacing description",
+						Status:          "Update",
+						Date:            "2024-02-06T15:37:52+03:00",
+						Type:            "snort_alert",
+						ObjectType:      "SNORT test replacing 111111",
+						Source:          "zsiеmSystems",
+						SourceRef:       "TSK-8MSK-6-ZPM-240206-1215999",
+						Case:            "alert",
+						CaseTemplate:    "alert_snort",
+					},
 					Tags: []string{
 						"'Sensor:id=\"8030012\"'",
 						"'Webhook:send=ES'",

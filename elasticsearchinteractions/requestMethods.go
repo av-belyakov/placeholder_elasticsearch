@@ -8,24 +8,23 @@ import (
 	"net/http"
 	"runtime"
 	"strings"
-	"time"
 
 	"placeholder_elasticsearch/datamodels"
 
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
 
-// insertDocument добавляет новый документ в заданный индекс
-func (hsd handlerSendData) insertDocument(index string, b []byte) (*esapi.Response, error) {
+// InsertDocument добавляет новый документ в заданный индекс
+func (hsd HandlerSendData) InsertDocument(index string, b []byte) (*esapi.Response, error) {
 	var res *esapi.Response
 
-	if hsd.client == nil {
+	if hsd.Client == nil {
 		_, f, l, _ := runtime.Caller(0)
 		return res, fmt.Errorf("'the client parameters for connecting to the Elasticsearch database are not set correctly' %s:%d", f, l-1)
 	}
 
 	buf := bytes.NewReader(b)
-	res, err := hsd.client.Index(index, buf)
+	res, err := hsd.Client.Index(index, buf)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
@@ -48,19 +47,19 @@ func (hsd handlerSendData) insertDocument(index string, b []byte) (*esapi.Respon
 	return res, nil
 }
 
-// deleteDocument выполняет поиск и удаление документов соответствующих
+// DeleteDocument выполняет поиск и удаление документов соответствующих
 // параметрам заданным в запросе
-func (hsd handlerSendData) deleteDocument(index []string, query *strings.Reader) (int, error) {
+func (hsd HandlerSendData) DeleteDocument(index []string, query *strings.Reader) (int, error) {
 	var (
 		err      error
 		countDoc int
 		res      *esapi.Response
 	)
 
-	res, err = hsd.client.Search(
-		hsd.client.Search.WithContext(context.Background()),
-		hsd.client.Search.WithIndex(index...),
-		hsd.client.Search.WithBody(query),
+	res, err = hsd.Client.Search(
+		hsd.Client.Search.WithContext(context.Background()),
+		hsd.Client.Search.WithIndex(index...),
+		hsd.Client.Search.WithBody(query),
 	)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -76,7 +75,7 @@ func (hsd handlerSendData) deleteDocument(index []string, query *strings.Reader)
 	if decEs.Options.Total.Value > 0 {
 		countDoc = decEs.Options.Total.Value
 		for _, v := range decEs.Options.Hits {
-			if _, errDel := hsd.client.Delete(v.Index, v.ID); errDel != nil {
+			if _, errDel := hsd.Client.Delete(v.Index, v.ID); errDel != nil {
 				err = fmt.Errorf("%v, %v", err, errDel)
 			}
 		}
@@ -85,12 +84,12 @@ func (hsd handlerSendData) deleteDocument(index []string, query *strings.Reader)
 	return countDoc, err
 }
 
-// searchDocument выполняет поиск документов соответствующих параметрам заданным в запросе
-func (hsd handlerSendData) searchDocument(index []string, query *strings.Reader) (*esapi.Response, error) {
-	res, err := hsd.client.Search(
-		hsd.client.Search.WithContext(context.Background()),
-		hsd.client.Search.WithIndex(index...),
-		hsd.client.Search.WithBody(query),
+// SearchDocument выполняет поиск документов соответствующих параметрам заданным в запросе
+func (hsd HandlerSendData) SearchDocument(index []string, query *strings.Reader) (*esapi.Response, error) {
+	res, err := hsd.Client.Search(
+		hsd.Client.Search.WithContext(context.Background()),
+		hsd.Client.Search.WithIndex(index...),
+		hsd.Client.Search.WithBody(query),
 	)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -100,127 +99,62 @@ func (hsd handlerSendData) searchDocument(index []string, query *strings.Reader)
 	return res, err
 }
 
-// replacementDocumentCase выполняет замену документа, но только в рамках одного индекса
-func (hsd handlerSendData) replacementDocumentCase(
-	data interface{},
-	index string,
-	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) {
-	obj, ok := data.(*datamodels.VerifiedTheHiveCase)
-	if !ok {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.VerifiedTheHiveCase' %s:%d", f, l-1),
-			MsgType: "error",
-		}
+// UpdateDocument выполняет поиск и обновление документов соответствующих
+// параметрам заданным в запросе
+func (hsd HandlerSendData) UpdateDocument(index, pattern string, query *strings.Reader, document []byte) (*esapi.Response, error) {
+	var (
+		res *esapi.Response
+		err error
+	)
 
-		return
-	}
-
-	t := time.Now()
-	index = fmt.Sprintf("%s_%d_%d", index, t.Year(), int(t.Month()))
-
-	queryDelete := strings.NewReader(
-		fmt.Sprintf(
-			"{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}",
-			obj.GetSource(),
-			obj.GetEvent().GetRootId(),
-		))
-
-	countDel, err := hsd.deleteDocument([]string{index}, queryDelete)
+	indexes, err := hsd.GetExistingIndexes(pattern)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
-			MsgType: "error",
-		}
-	}
-	if countDel > 0 {
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("a total of '%d' data has been deleted that corresponds to the parameters: source = '%s' and event.rootId = '%s'", countDel, obj.GetSource(), obj.GetEvent().GetRootId()),
-			MsgType: "warning",
-		}
+		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
-	b, err := json.Marshal(data)
+	if len(indexes) == 0 {
+		_, f, l, _ := runtime.Caller(0)
+		return res, fmt.Errorf("'no index was found according to the specified template '%s'' %s:%d", pattern, f, l-1)
+	}
+
+	_, err = hsd.DeleteDocument(indexes, query)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
+		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
-	_, err = hsd.insertDocument(index, b)
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
-	}
-
-	//счетчик
-	counting <- datamodels.DataCounterSettings{
-		DataType: "update count insert Elasticserach",
-		DataMsg:  "subject_case",
-		Count:    1,
-	}
+	return hsd.InsertDocument(index, document)
 }
 
-// replacementDocumentAlert выполняет замену документа, но только в рамках одного индекса
-func (hsd handlerSendData) replacementDocumentAlert(
-	data interface{},
-	index string,
-	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) {
-	obj, ok := data.(*datamodels.VerifiedTheHiveAlert)
-	if !ok {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.VerifiedTheHiveCase' %s:%d", f, l-1),
-			MsgType: "error",
-		}
+// GetExistingIndexes выполняет проверку наличия индексов соответствующих
+// определенному шаблону и возвращает список наименований тндексов
+// подходящих под заданный шаблон
+func (hsd HandlerSendData) GetExistingIndexes(pattern string) ([]string, error) {
+	listIndexes := []string(nil)
+	msg := []struct {
+		Index string `json:"index"`
+	}(nil)
 
-		return
-	}
-
-	t := time.Now()
-	month := int(t.Month())
-	indexCurrent := fmt.Sprintf("%s_%s_%d_%d", index, obj.GetSource(), t.Year(), month)
-
-	indexBefore := fmt.Sprintf("%s_%s_%d_%d", index, obj.GetSource(), t.Year(), month-1)
-	if month == 1 {
-		indexBefore = fmt.Sprintf("%s_%s_%d_%d", index, obj.GetSource(), t.Year()-1, 12)
-	}
-
-	/*
-
-		Здесь нужно выполнить обновление и замену документа получаемого
-		из БД. При этом надо учитывать что документ должен кластся в
-		тот индекс, который соответствует определенному источнику (GCM, RCM)
-
-	*/
-
-	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", obj.GetSource(), obj.GetEvent().GetRootId()))
-	res, err := hsd.searchDocument(
-		[]string{
-			indexCurrent,
-			indexBefore,
-		}, queryCurrent)
+	res, err := hsd.Client.Cat.Indices(
+		hsd.Client.Cat.Indices.WithContext(context.TODO()),
+		hsd.Client.Cat.Indices.WithFormat("json"),
+	)
 	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
-			MsgType: "error",
+		return nil, err
+	}
+
+	if err = json.NewDecoder(res.Body).Decode(&msg); err != nil {
+		return nil, err
+	}
+
+	for _, v := range msg {
+		if !strings.Contains(v.Index, pattern) {
+			continue
 		}
 
-		return
+		listIndexes = append(listIndexes, v.Index)
 	}
-	/*
-		Обработать результат из res
-	*/
 
+	return listIndexes, err
 }

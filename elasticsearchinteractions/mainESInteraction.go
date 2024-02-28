@@ -24,30 +24,30 @@ type ElasticSearchModule struct {
 	ChanOutputModule chan interface{}
 }
 
-type handlerSendData struct {
-	client   *elasticsearch.Client
-	settings settingsHandler
+type HandlerSendData struct {
+	Client   *elasticsearch.Client
+	Settings SettingsHandler
 }
 
-type settingsHandler struct {
-	port   int
-	host   string
-	user   string
-	passwd string
+type SettingsHandler struct {
+	Port   int
+	Host   string
+	User   string
+	Passwd string
 }
 
-func (h *handlerSendData) New() error {
+func (h *HandlerSendData) New() error {
 	es, err := elasticsearch.NewClient(elasticsearch.Config{
-		Addresses: []string{fmt.Sprintf("http://%s:%d", h.settings.host, h.settings.port)},
-		Username:  h.settings.user,
-		Password:  h.settings.passwd,
+		Addresses: []string{fmt.Sprintf("http://%s:%d", h.Settings.Host, h.Settings.Port)},
+		Username:  h.Settings.User,
+		Password:  h.Settings.Passwd,
 	})
 
 	if err != nil {
 		return err
 	}
 
-	h.client = es
+	h.Client = es
 
 	return nil
 }
@@ -63,12 +63,12 @@ func HandlerElasticSearch(
 		ChanOutputModule: make(chan interface{}),
 	}
 
-	hsd := handlerSendData{
-		settings: settingsHandler{
-			port:   conf.Port,
-			host:   conf.Host,
-			user:   conf.User,
-			passwd: conf.Passwd,
+	hsd := HandlerSendData{
+		Settings: SettingsHandler{
+			Port:   conf.Port,
+			Host:   conf.Host,
+			User:   conf.User,
+			Passwd: conf.Passwd,
 		},
 	}
 
@@ -85,33 +85,14 @@ func HandlerElasticSearch(
 				if data.Command == "add new case" {
 					index := fmt.Sprintf("%s%s", conf.PrefixCase, conf.IndexCase)
 
-					go hsd.replacementDocumentCase(data.Data, index, logging, counting)
+					go hsd.ReplacementDocumentCase(data.Data, index, logging, counting)
 				}
 
 			case "handling alert":
 				if data.Command == "add new alert" {
-					fmt.Println(data.Data)
+					index := fmt.Sprintf("%s%s", conf.PrefixAlert, conf.IndexAlert)
 
-					/*
-						Тут должна быть обработка полученных от модуля core
-						verifiedAlert.Get(),
-						при этом нужно выполнять update объекта в СУБД
-						который совпадает с полученным объектом
-
-						использовать для сравнения методы ReplacingOldValues
-						для datamodels.NewVerifiedTheHiveAlert()
-
-						Тут нужно сделать запрос на получение документа для
-						дольнейшего сравнения ивыполнить ТЕСТИРОВАНИЕ
-
-						поиск в Elasticsearch
-						res, err = hsd.client.Search(
-							hsd.client.Search.WithContext(context.Background()),
-							hsd.client.Search.WithIndex(index...),
-							hsd.client.Search.WithBody(query),
-						)
-					*/
-
+					go hsd.ReplacementDocumentAlert(data.Data, index, logging, counting)
 				}
 			}
 		}

@@ -4,149 +4,24 @@ import (
 	"fmt"
 	"strings"
 
+	commonevent "placeholder_elasticsearch/datamodels/commonevent"
+	commonobjectevent "placeholder_elasticsearch/datamodels/commonobjectevent"
 	"placeholder_elasticsearch/supportingfunctions"
 )
 
 func NewEventMessageTheHiveAlert() *EventMessageTheHiveAlert {
 	return &EventMessageTheHiveAlert{
-		StartDate: "1970-01-01T00:00:00+00:00",
-		Details:   *NewEventAlertDetails(),
-		Object:    *NewEventAlertObject(),
+		CommonEventType: commonevent.CommonEventType{
+			StartDate: "1970-01-01T00:00:00+00:00",
+		},
+		Details: *NewEventAlertDetails(),
+		Object:  *NewEventAlertObject(),
 	}
 }
 
 // Get возвращает объект типа EventMessageTheHiveCase
 func (e *EventMessageTheHiveAlert) Get() *EventMessageTheHiveAlert {
 	return e
-}
-
-func (e *EventMessageTheHiveAlert) GetBase() bool {
-	return e.Base
-}
-
-// SetValueBase устанавливает BOOL значение для поля Base
-func (e *EventMessageTheHiveAlert) SetValueBase(v bool) {
-	e.Base = v
-}
-
-// SetAnyBase устанавливает ЛЮБОЕ значение для поля Base
-func (e *EventMessageTheHiveAlert) SetAnyBase(i interface{}) {
-	if v, ok := i.(bool); ok {
-		e.Base = v
-	}
-}
-
-func (e *EventMessageTheHiveAlert) GetStartDate() string {
-	return e.StartDate
-}
-
-// SetValueStartDate устанавливает значение в формате RFC3339 для поля StartDate
-func (e *EventMessageTheHiveAlert) SetValueStartDate(v string) {
-	e.StartDate = v
-}
-
-// SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
-func (e *EventMessageTheHiveAlert) SetAnyStartDate(i interface{}) {
-	tmp := supportingfunctions.ConversionAnyToInt(i)
-	e.StartDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
-}
-
-func (e *EventMessageTheHiveAlert) GetRootId() string {
-	return e.RootId
-}
-
-// SetValueRootId устанавливает STRING значение для поля RootId
-func (e *EventMessageTheHiveAlert) SetValueRootId(v string) {
-	e.RootId = v
-}
-
-// SetAnyRootId устанавливает ЛЮБОЕ значение для поля RootId
-func (e *EventMessageTheHiveAlert) SetAnyRootId(i interface{}) {
-	e.RootId = fmt.Sprint(i)
-}
-
-func (e *EventMessageTheHiveAlert) GetOrganisation() string {
-	return e.Organisation
-}
-
-// SetValueOrganisation устанавливает STRING значение для поля Organisation
-func (e *EventMessageTheHiveAlert) SetValueOrganisation(v string) {
-	e.Organisation = v
-}
-
-// SetAnyOrganisation устанавливает ЛЮБОЕ значение для поля Organisation
-func (e *EventMessageTheHiveAlert) SetAnyOrganisation(i interface{}) {
-	e.Organisation = fmt.Sprint(i)
-}
-
-func (e *EventMessageTheHiveAlert) GetOrganisationId() string {
-	return e.OrganisationId
-}
-
-// SetValueOrganisationId устанавливает STRING значение для поля OrganisationId
-func (e *EventMessageTheHiveAlert) SetValueOrganisationId(v string) {
-	e.OrganisationId = v
-}
-
-// SetAnyOrganisationId устанавливает ЛЮБОЕ значение для поля OrganisationId
-func (e *EventMessageTheHiveAlert) SetAnyOrganisationId(i interface{}) {
-	e.OrganisationId = fmt.Sprint(i)
-}
-
-func (e *EventMessageTheHiveAlert) GetObjectId() string {
-	return e.ObjectId
-}
-
-// SetValueObjectId устанавливает STRING значение для поля ObjectId
-func (e *EventMessageTheHiveAlert) SetValueObjectId(v string) {
-	e.ObjectId = v
-}
-
-// SetAnyObjectId устанавливает ЛЮБОЕ значение для поля ObjectId
-func (e *EventMessageTheHiveAlert) SetAnyObjectId(i interface{}) {
-	e.ObjectId = fmt.Sprint(i)
-}
-
-func (e *EventMessageTheHiveAlert) GetObjectType() string {
-	return e.ObjectType
-}
-
-// SetValueObjectType устанавливает STRING значение для поля ObjectType
-func (e *EventMessageTheHiveAlert) SetValueObjectType(v string) {
-	e.ObjectType = v
-}
-
-// SetAnyObjectType устанавливает ЛЮБОЕ значение для поля ObjectType
-func (e *EventMessageTheHiveAlert) SetAnyObjectType(i interface{}) {
-	e.ObjectType = fmt.Sprint(i)
-}
-
-func (e *EventMessageTheHiveAlert) GetOperation() string {
-	return e.Operation
-}
-
-// SetValueOperation устанавливает STRING значение для поля Operation
-func (e *EventMessageTheHiveAlert) SetValueOperation(v string) {
-	e.Operation = v
-}
-
-// SetAnyOperation устанавливает ЛЮБОЕ значение для поля Operation
-func (e *EventMessageTheHiveAlert) SetAnyOperation(i interface{}) {
-	e.Operation = fmt.Sprint(i)
-}
-
-func (e *EventMessageTheHiveAlert) GetRequestId() string {
-	return e.RequestId
-}
-
-// SetValueRequestId устанавливает STRING значение для поля RequestId
-func (e *EventMessageTheHiveAlert) SetValueRequestId(v string) {
-	e.RequestId = v
-}
-
-// SetAnyRequestId устанавливает ЛЮБОЕ значение для поля RequestId
-func (e *EventMessageTheHiveAlert) SetAnyRequestId(i interface{}) {
-	e.RequestId = fmt.Sprint(i)
 }
 
 func (e *EventMessageTheHiveAlert) GetDetails() EventAlertDetails {
@@ -172,15 +47,7 @@ func (e *EventMessageTheHiveAlert) ToStringBeautiful(num int) string {
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str.WriteString(fmt.Sprintf("%s'operation': '%s'\n", ws, e.Operation))
-	str.WriteString(fmt.Sprintf("%s'objectId': '%s'\n", ws, e.ObjectId))
-	str.WriteString(fmt.Sprintf("%s'objectType': '%s'\n", ws, e.ObjectType))
-	str.WriteString(fmt.Sprintf("%s'base': '%v'\n", ws, e.Base))
-	str.WriteString(fmt.Sprintf("%s'startDate': '%s'\n", ws, e.StartDate))
-	str.WriteString(fmt.Sprintf("%s'rootId': '%s'\n", ws, e.RootId))
-	str.WriteString(fmt.Sprintf("%s'requestId': '%s'\n", ws, e.RequestId))
-	str.WriteString(fmt.Sprintf("%s'organisationId': '%s'\n", ws, e.OrganisationId))
-	str.WriteString(fmt.Sprintf("%s'organisation': '%s'\n", ws, e.Organisation))
+	str.WriteString(e.CommonEventType.ToStringBeautiful(num))
 	str.WriteString(fmt.Sprintf("%s'details':\n", ws))
 	str.WriteString(e.Details.ToStringBeautiful(num + 1))
 	str.WriteString(fmt.Sprintf("%s'object':\n", ws))
@@ -277,8 +144,10 @@ func (e *EventAlertDetails) ToStringBeautiful(num int) string {
 
 func NewEventAlertObject() *EventAlertObject {
 	return &EventAlertObject{
-		CreatedAt:    "1970-01-01T00:00:00+00:00",
-		UpdatedAt:    "1970-01-01T00:00:00+00:00",
+		CommonEventAlertObject: commonobjectevent.CommonEventAlertObject{
+			CreatedAt: "1970-01-01T00:00:00+00:00",
+			UpdatedAt: "1970-01-01T00:00:00+00:00",
+		},
 		Tags:         []string(nil),
 		CustomFields: CustomFields{},
 	}
@@ -683,8 +552,6 @@ func (e *EventAlertObject) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%s'sourceRef': '%s'\n", ws, e.SourceRef))
 	str.WriteString(fmt.Sprintf("%s'case': '%s'\n", ws, e.Case))
 	str.WriteString(fmt.Sprintf("%s'caseTemplate': '%s'\n", ws, e.CaseTemplate))
-	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulSlice(num, e.Tags)))
-	str.WriteString(fmt.Sprintf("%s'customFields': \n%s", ws, CustomFieldsToStringBeautiful(e.CustomFields, num)))
 
 	return str.String()
 }
