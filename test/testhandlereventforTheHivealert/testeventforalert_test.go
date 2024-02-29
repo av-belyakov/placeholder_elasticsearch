@@ -9,6 +9,8 @@ import (
 	. "github.com/onsi/gomega"
 
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/datamodels/commonalert"
+	"placeholder_elasticsearch/datamodels/commonalertartifact"
 	commonevent "placeholder_elasticsearch/datamodels/commonevent"
 	commonobjectevent "placeholder_elasticsearch/datamodels/commonobjectevent"
 	"placeholder_elasticsearch/listhandlercommon"
@@ -520,6 +522,9 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			//кол-во замененных полей
 			Expect(num).Should(Equal(18))
 
+			//fmt.Println("---=== VERIFEDTHEHIVEALERT ===---")
+			//fmt.Println(oldStruct.ToStringBeautiful(0))
+
 			//меняется
 			Expect(oldStruct.GetBase()).Should(BeTrue())
 			//меняется
@@ -575,28 +580,28 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			//меняется
 			Expect(lastTime).Should(Equal("2024-02-07T22:48:13+03:00"))
 
-			fmt.Println("---=== VERIFEDTHEHIVEALERT ===---")
-			fmt.Println(oldStruct.ToStringBeautiful(0))
 			Expect(true).Should(BeTrue())
 		})
 	})
 
 	Context("Тест 3. Проверка замены старых значений AlertMessageTheHiveAlert объекта, новыми значениями, если они отличаются", func() {
 		oldStruct := datamodels.AlertMessageTheHiveAlert{
-			Follow:    false,
-			Tlp:       2,
-			Severity:  2,
-			Date:      "1970-01-01T03:00:00+03:00",
-			CreatedAt: "2024-02-07T11:11:11+03:00",
-			// UpdatedAt: ,
-			UpdatedBy:       "webhook@cloud.gcm",
-			UnderliningId:   "~88026357960",
-			Status:          "New",
-			Type:            "snort",
-			UnderliningType: "__Snort",
-			Description:     "free alerts",
-			CaseTemplate:    "sonr",
-			SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
+			Follow: false,
+			CommonAlertType: commonalert.CommonAlertType{
+				Tlp:       2,
+				Date:      "1970-01-01T03:00:00+03:00",
+				CreatedAt: "2024-02-07T11:11:11+03:00",
+				// UpdatedAt: ,
+				UpdatedBy:       "webhook@cloud.gcm",
+				UnderliningId:   "~88026357960",
+				Status:          "New",
+				Type:            "snort",
+				UnderliningType: "__Snort",
+				Description:     "free alerts",
+				CaseTemplate:    "sonr",
+				SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
+			},
+			Severity: 2,
 			Tags: []string{
 				"Sensor:id=\"8030105\"",
 				"ATs:reason=\"Редко встречающиеся признаки ВПО\"",
@@ -624,20 +629,22 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			},*/
 			Artifacts: []datamodels.AlertArtifact{
 				{
-					Ioc:              false,
+					CommonArtifactType: commonalertartifact.CommonArtifactType{
+						Ioc:           false,
+						Tlp:           1,
+						UnderliningId: "~84302220012",
+						Id:            "~84302220012",
+						CreatedAt:     "2024-01-26T13:02:01+03:00",
+						//UpdatedAt: ,
+						StartDate: "2024-01-26T13:02:01+03:00",
+						CreatedBy: "friman@email.net",
+						Data:      "63.5656 89.12",
+						DataType:  "coordinates",
+						Message:   "Any message",
+					},
 					Sighted:          false,
 					IgnoreSimilarity: true,
-					Tlp:              1,
-					UnderliningId:    "~84302220012",
-					Id:               "~84302220012",
-					CreatedAt:        "2024-01-26T13:02:01+03:00",
-					//UpdatedAt: ,
-					StartDate: "2024-01-26T13:02:01+03:00",
-					CreatedBy: "friman@email.net",
-					UpdatedBy: "friman@email.net",
-					Data:      "63.5656 89.12",
-					DataType:  "coordinates",
-					Message:   "Any message",
+					UpdatedBy:        "friman@email.net",
 					Tags: []string{
 						"Sensor:id=\"1111111\"",
 						"geoip:country=CH",
@@ -645,20 +652,22 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 					},
 				},
 				{
-					Ioc:              true,
+					CommonArtifactType: commonalertartifact.CommonArtifactType{
+						Ioc:           true,
+						Tlp:           2,
+						UnderliningId: "~306522241",
+						Id:            "~306522241",
+						CreatedAt:     "2024-01-16T03:32:01+03:00",
+						//UpdatedAt: ,
+						StartDate: "2024-01-04T19:32:01+03:00",
+						CreatedBy: "example@email.net",
+						Data:      "5.63.123.99",
+						DataType:  "ipaddr",
+						Message:   "ffdffd fdg",
+					},
 					Sighted:          false,
 					IgnoreSimilarity: true,
-					Tlp:              2,
-					UnderliningId:    "~306522241",
-					Id:               "~306522241",
-					CreatedAt:        "2024-01-16T03:32:01+03:00",
-					//UpdatedAt: ,
-					StartDate: "2024-01-04T19:32:01+03:00",
-					CreatedBy: "example@email.net",
-					UpdatedBy: "example@email.net",
-					Data:      "5.63.123.99",
-					DataType:  "ipaddr",
-					Message:   "ffdffd fdg",
+					UpdatedBy:        "example@email.net",
 					Tags: []string{
 						"Sensor:id=\"3411\"",
 						"geoip:country=RU",
@@ -669,20 +678,22 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 		}
 
 		newStruct := datamodels.AlertMessageTheHiveAlert{
-			Follow:          true, //замена
-			Tlp:             3,    //замена
-			Severity:        4,    //замена
-			Date:            "1970-01-01T03:00:00+03:00",
-			CreatedAt:       "2024-02-10T10:00:41+03:00", //замена
-			UpdatedAt:       "2024-02-11T12:34:48+03:00", //замена
-			UpdatedBy:       "webexample@cloud.gcm",      //замена
-			UnderliningId:   "~88026357960",
-			Status:          "Update",       //замена
-			Type:            "snort_alert",  //замена
-			UnderliningType: "snort_alert",  //замена
-			Description:     "free alerts!", //замена
-			CaseTemplate:    "snort",        //замена
-			SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
+			Follow: true, //замена
+			CommonAlertType: commonalert.CommonAlertType{
+				Tlp:             3, //замена
+				Date:            "1970-01-01T03:00:00+03:00",
+				CreatedAt:       "2024-02-10T10:00:41+03:00", //замена
+				UpdatedAt:       "2024-02-11T12:34:48+03:00", //замена
+				UpdatedBy:       "webexample@cloud.gcm",      //замена
+				UnderliningId:   "~88026357960",
+				Status:          "Update",       //замена
+				Type:            "snort_alert",  //замена
+				UnderliningType: "snort_alert",  //замена
+				Description:     "free alerts!", //замена
+				CaseTemplate:    "snort",        //замена
+				SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
+			},
+			Severity: 4, //замена
 			//замена
 			Tags: []string{
 				"ATs:reason=\"Редко встречающиеся признаки ВПО\"",
@@ -713,20 +724,22 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			},*/
 			Artifacts: []datamodels.AlertArtifact{
 				{
-					Ioc:              true,  //замена
-					Sighted:          true,  //замена
-					IgnoreSimilarity: false, //замена
-					Tlp:              3,     //замена
-					UnderliningId:    "",    //НЕ замена
-					Id:               "~84302220012",
-					CreatedAt:        "2024-01-27T22:17:17+03:00", //замена
+					CommonArtifactType: commonalertartifact.CommonArtifactType{
+						Ioc:           true, //замена
+						Tlp:           3,    //замена
+						UnderliningId: "",   //НЕ замена
+						Id:            "~84302220012",
+						CreatedAt:     "2024-01-27T22:17:17+03:00", //замена
+						StartDate:     "2024-01-26T13:02:01+03:00",
+						CreatedBy:     "friman@email.net",
+						Data:          "63.5656 89.1211", //замена
+						DataType:      "coordinates",
+						Message:       "Any message",
+					},
+					Sighted:          true,                        //замена
+					IgnoreSimilarity: false,                       //замена
 					UpdatedAt:        "2024-02-01T02:00:47+03:00", //замена
-					StartDate:        "2024-01-26T13:02:01+03:00",
-					CreatedBy:        "friman@email.net",
-					UpdatedBy:        "grintman@email.net", //замена
-					Data:             "63.5656 89.1211",    //замена
-					DataType:         "coordinates",
-					Message:          "Any message",
+					UpdatedBy:        "grintman@email.net",        //замена
 					//замена
 					Tags: []string{
 						"Sensor:id=\"12345667\"",
@@ -736,20 +749,22 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 					},
 				},
 				{
-					Ioc:              false,
+					CommonArtifactType: commonalertartifact.CommonArtifactType{
+						Ioc:           false,
+						Tlp:           1,
+						UnderliningId: "~7344456683",
+						Id:            "~7344456683",
+						CreatedAt:     "2024-01-17T13:12:01+03:00",
+						StartDate:     "2024-01-04T19:32:01+03:00",
+						CreatedBy:     "example@email.net",
+						Data:          "5.63.123.99",
+						DataType:      "ipaddr",
+						Message:       "ffdffd fdg",
+					},
 					Sighted:          false,
 					IgnoreSimilarity: true,
-					Tlp:              1,
-					UnderliningId:    "~7344456683",
-					Id:               "~7344456683",
-					CreatedAt:        "2024-01-17T13:12:01+03:00",
 					UpdatedAt:        "2024-02-14T29:13:11+03:00",
-					StartDate:        "2024-01-04T19:32:01+03:00",
-					CreatedBy:        "example@email.net",
 					UpdatedBy:        "vbbbba@email.net",
-					Data:             "5.63.123.99",
-					DataType:         "ipaddr",
-					Message:          "ffdffd fdg",
 					Tags: []string{
 						"geoip:country=RU",
 						"'Webhook:send=ES'",
@@ -763,6 +778,9 @@ var _ = Describe("Testeventforalert", Ordered, func() {
 			Expect(err).ShouldNot(HaveOccurred())
 			//кол-во замененных полей
 			Expect(num).Should(Equal(22))
+
+			fmt.Println("---=== AlertMessageTheHiveAlert ===---")
+			fmt.Println(oldStruct.ToStringBeautiful(0))
 
 			//Alert
 			//меняется

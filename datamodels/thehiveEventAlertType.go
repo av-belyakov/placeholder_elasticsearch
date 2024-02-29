@@ -9,9 +9,9 @@ import (
 // Details - детальная информация о событии
 // Object - объект события
 type EventMessageTheHiveAlert struct {
-	commonevent.CommonEventType
-	Details EventAlertDetails `json:"details" bson:"details"`
-	Object  EventAlertObject  `json:"object" bson:"object"`
+	commonevent.CommonEventType                   //`bson:"-"`
+	Details                     EventAlertDetails `json:"details" bson:"details"`
+	Object                      EventAlertObject  `json:"object" bson:"object"`
 }
 
 // EventAlertDetails детальная информация о событии

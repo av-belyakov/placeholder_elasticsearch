@@ -201,34 +201,6 @@ func (e *EventAlertObject) SetAnySeverity(i interface{}) {
 	}
 }
 
-func (e *EventAlertObject) GetTlp() uint64 {
-	return e.Tlp
-}
-
-// SetValueTlp устанавливает INT значение для поля Tlp
-func (e *EventAlertObject) SetValueTlp(v uint64) {
-	e.Tlp = v
-}
-
-// SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
-func (e *EventAlertObject) SetAnyTlp(i interface{}) {
-	if v, ok := i.(float32); ok {
-		e.Tlp = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(float64); ok {
-		e.Tlp = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(uint64); ok {
-		e.Tlp = v
-	}
-}
-
 func (e *EventAlertObject) GetPap() uint64 {
 	return e.Pap
 }
@@ -255,247 +227,6 @@ func (e *EventAlertObject) SetAnyPap(i interface{}) {
 	if v, ok := i.(uint64); ok {
 		e.Pap = v
 	}
-}
-
-func (e *EventAlertObject) GetUnderliningId() string {
-	return e.UnderliningId
-}
-
-// SetValueUnderliningId устанавливает STRING значение для поля UnderliningId
-func (e *EventAlertObject) SetValueUnderliningId(v string) {
-	e.UnderliningId = v
-}
-
-// SetAnyUnderliningId устанавливает ЛЮБОЕ значение для поля UnderliningId
-func (e *EventAlertObject) SetAnyUnderliningId(i interface{}) {
-	e.UnderliningId = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetId() string {
-	return e.Id
-}
-
-// SetValueId устанавливает STRING значение для поля Id
-func (e *EventAlertObject) SetValueId(v string) {
-	e.Id = v
-}
-
-// SetAnyId устанавливает ЛЮБОЕ значение для поля Id
-func (e *EventAlertObject) SetAnyId(i interface{}) {
-	e.Id = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetCreatedBy() string {
-	return e.CreatedBy
-}
-
-// SetValueCreatedBy устанавливает STRING значение для поля CreatedBy
-func (e *EventAlertObject) SetValueCreatedBy(v string) {
-	e.CreatedBy = v
-}
-
-// SetAnyCreatedBy устанавливает ЛЮБОЕ значение для поля CreatedBy
-func (e *EventAlertObject) SetAnyCreatedBy(i interface{}) {
-	e.CreatedBy = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetUpdatedBy() string {
-	return e.UpdatedBy
-}
-
-// SetValueUpdatedBy устанавливает STRING значение для поля UpdatedBy
-func (e *EventAlertObject) SetValueUpdatedBy(v string) {
-	e.UpdatedBy = v
-}
-
-// SetAnyUpdatedBy устанавливает ЛЮБОЕ значение для поля UpdatedBy
-func (e *EventAlertObject) SetAnyUpdatedBy(i interface{}) {
-	e.UpdatedBy = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetCreatedAt() string {
-	return e.CreatedAt
-}
-
-// SetValueCreatedAt устанавливает значение в формате RFC3339 для поля CreatedAt
-func (e *EventAlertObject) SetValueCreatedAt(v string) {
-	e.CreatedAt = v
-}
-
-// SetAnyCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
-func (e *EventAlertObject) SetAnyCreatedAt(i interface{}) {
-	tmp := supportingfunctions.ConversionAnyToInt(i)
-	e.CreatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
-}
-
-func (e *EventAlertObject) GetUpdatedAt() string {
-	return e.UpdatedAt
-}
-
-// SetValueUpdatedAt устанавливает значение  в формате RFC3339 для поля UpdatedAt
-func (e *EventAlertObject) SetValueUpdatedAt(v string) {
-	e.UpdatedAt = v
-}
-
-// SetAnyUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
-func (e *EventAlertObject) SetAnyUpdatedAt(i interface{}) {
-	tmp := supportingfunctions.ConversionAnyToInt(i)
-	e.UpdatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
-}
-
-func (e *EventAlertObject) GetUnderliningType() string {
-	return e.UnderliningType
-}
-
-// SetValueUnderliningType устанавливает STRING значение для поля UnderliningType
-func (e *EventAlertObject) SetValueUnderliningType(v string) {
-	e.UnderliningType = v
-}
-
-// SetAnyUnderliningType устанавливает ЛЮБОЕ значение для поля UnderliningType
-func (e *EventAlertObject) SetAnyUnderliningType(i interface{}) {
-	e.UnderliningType = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetTitle() string {
-	return e.Title
-}
-
-// SetValueTitle устанавливает STRING значение для поля Title
-func (e *EventAlertObject) SetValueTitle(v string) {
-	e.Title = v
-}
-
-// SetAnyTitle устанавливает ЛЮБОЕ значение для поля Title
-func (e *EventAlertObject) SetAnyTitle(i interface{}) {
-	e.Title = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetDescription() string {
-	return e.Description
-}
-
-// SetValueDescription устанавливает STRING значение для поля Description
-func (e *EventAlertObject) SetValueDescription(v string) {
-	e.Description = v
-}
-
-// SetAnyDescription устанавливает ЛЮБОЕ значение для поля Description
-func (e *EventAlertObject) SetAnyDescription(i interface{}) {
-	e.Description = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetStatus() string {
-	return e.Status
-}
-
-// SetValueStatus устанавливает STRING значение для поля Status
-func (e *EventAlertObject) SetValueStatus(v string) {
-	e.Status = v
-}
-
-// SetAnyStatus устанавливает ЛЮБОЕ значение для поля Status
-func (e *EventAlertObject) SetAnyStatus(i interface{}) {
-	e.Status = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetDate() string {
-	return e.Date
-}
-
-// SetValueDate устанавливает значение в формате RFC3339 для поля Date
-func (e *EventAlertObject) SetValueDate(v string) {
-	e.Date = v
-}
-
-// SetAnyDate устанавливает ЛЮБОЕ значение для поля Date
-func (e *EventAlertObject) SetAnyDate(i interface{}) {
-	tmp := supportingfunctions.ConversionAnyToInt(i)
-	e.Date = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
-}
-
-func (e *EventAlertObject) GetType() string {
-	return e.Type
-}
-
-// SetValueType устанавливает STRING значение для поля Type
-func (e *EventAlertObject) SetValueType(v string) {
-	e.Type = v
-}
-
-// SetAnyType устанавливает ЛЮБОЕ значение для поля Type
-func (e *EventAlertObject) SetAnyType(i interface{}) {
-	e.Type = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetObjectType() string {
-	return e.ObjectType
-}
-
-// SetValueObjectType устанавливает STRING значение для поля ObjectType
-func (e *EventAlertObject) SetValueObjectType(v string) {
-	e.ObjectType = v
-}
-
-// SetAnyObjectType устанавливает ЛЮБОЕ значение для поля ObjectType
-func (e *EventAlertObject) SetAnyObjectType(i interface{}) {
-	e.ObjectType = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetSource() string {
-	return e.Source
-}
-
-// SetValueSource устанавливает STRING значение для поля Source
-func (e *EventAlertObject) SetValueSource(v string) {
-	e.Source = v
-}
-
-// SetAnySource устанавливает ЛЮБОЕ значение для поля Source
-func (e *EventAlertObject) SetAnySource(i interface{}) {
-	e.Source = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetSourceRef() string {
-	return e.SourceRef
-}
-
-// SetValueSourceRef устанавливает STRING значение для поля SourceRef
-func (e *EventAlertObject) SetValueSourceRef(v string) {
-	e.SourceRef = v
-}
-
-// SetAnySourceRef устанавливает ЛЮБОЕ значение для поля SourceRef
-func (e *EventAlertObject) SetAnySourceRef(i interface{}) {
-	e.SourceRef = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetCase() string {
-	return e.Case
-}
-
-// SetValueCase устанавливает STRING значение для поля Case
-func (e *EventAlertObject) SetValueCase(v string) {
-	e.Case = v
-}
-
-// SetAnyCase устанавливает ЛЮБОЕ значение для поля Case
-func (e *EventAlertObject) SetAnyCase(i interface{}) {
-	e.Case = fmt.Sprint(i)
-}
-
-func (e *EventAlertObject) GetCaseTemplate() string {
-	return e.CaseTemplate
-}
-
-// SetValueCaseTemplate устанавливает STRING значение для поля CaseTemplate
-func (e *EventAlertObject) SetValueCaseTemplate(v string) {
-	e.CaseTemplate = v
-}
-
-// SetAnyCaseTemplate устанавливает ЛЮБОЕ значение для поля CaseTemplate
-func (e *EventAlertObject) SetAnyCaseTemplate(i interface{}) {
-	e.CaseTemplate = fmt.Sprint(i)
 }
 
 func (e *EventAlertObject) GetTags() []string {
@@ -531,27 +262,87 @@ func (e *EventAlertObject) ToStringBeautiful(num int) string {
 
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str.WriteString(fmt.Sprintf("%s'_id': '%s'\n", ws, e.UnderliningId))
-	str.WriteString(fmt.Sprintf("%s'id': '%s'\n", ws, e.Id))
-	str.WriteString(fmt.Sprintf("%s'createdBy': '%s'\n", ws, e.CreatedBy))
-	str.WriteString(fmt.Sprintf("%s'updatedBy': '%s'\n", ws, e.UpdatedBy))
-	str.WriteString(fmt.Sprintf("%s'createdAt': '%s'\n", ws, e.CreatedAt))
-	str.WriteString(fmt.Sprintf("%s'updatedAt': '%s'\n", ws, e.UpdatedAt))
-	str.WriteString(fmt.Sprintf("%s'_type': '%s'\n", ws, e.UnderliningType))
 	str.WriteString(fmt.Sprintf("%s'follow': '%t'\n", ws, e.Follow))
 	str.WriteString(fmt.Sprintf("%s'severity': '%d'\n", ws, e.Severity))
-	str.WriteString(fmt.Sprintf("%s'tlp': '%d'\n", ws, e.Tlp))
 	str.WriteString(fmt.Sprintf("%s'pap': '%d'\n", ws, e.Pap))
-	str.WriteString(fmt.Sprintf("%s'title': '%s'\n", ws, e.Title))
-	str.WriteString(fmt.Sprintf("%s'description': '%s'\n", ws, e.Description))
-	str.WriteString(fmt.Sprintf("%s'status': '%s'\n", ws, e.Status))
-	str.WriteString(fmt.Sprintf("%s'date': '%s'\n", ws, e.Date))
-	str.WriteString(fmt.Sprintf("%s'type': '%s'\n", ws, e.Type))
-	str.WriteString(fmt.Sprintf("%s'objectType': '%s'\n", ws, e.ObjectType))
-	str.WriteString(fmt.Sprintf("%s'source': '%s'\n", ws, e.Source))
-	str.WriteString(fmt.Sprintf("%s'sourceRef': '%s'\n", ws, e.SourceRef))
-	str.WriteString(fmt.Sprintf("%s'case': '%s'\n", ws, e.Case))
-	str.WriteString(fmt.Sprintf("%s'caseTemplate': '%s'\n", ws, e.CaseTemplate))
+	str.WriteString(e.CommonEventAlertObject.ToStringBeautiful(num))
+	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulSlice(num, e.Tags)))
+	str.WriteString(fmt.Sprintf("%s'customFields': \n%s", ws, CustomFieldsToStringBeautiful(e.CustomFields, num)))
 
 	return str.String()
 }
+
+/*func (e *EventMessageTheHiveAlert) MarshalBSON() ([]byte, error) {
+	return bson.Marshal(struct {
+		Base           bool              `bson:"base"`
+		StartDate      string            `bson:"startDate"` //в формате RFC3339
+		RootId         string            `bson:"rootId"`
+		Organisation   string            `bson:"organisation"`
+		OrganisationId string            `bson:"organisationId"`
+		ObjectId       string            `bson:"objectId"`
+		ObjectType     string            `bson:"objectType"`
+		Operation      string            `bson:"operation"`
+		RequestId      string            `bson:"requestId"`
+		Details        EventAlertDetails `bson:"details"`
+		Object         EventAlertObject  `bson:"object"`
+	}{
+		Base:           e.Base,
+		StartDate:      e.StartDate,
+		RootId:         e.RootId,
+		Organisation:   e.Organisation,
+		OrganisationId: e.OrganisationId,
+		ObjectId:       e.ObjectId,
+		ObjectType:     e.ObjectType,
+		Operation:      e.Operation,
+		RequestId:      e.RequestId,
+		Details:        e.Details,
+		Object:         e.Object,
+	})
+	struct {
+		Follow          bool         `bson:"follow"`
+		Severity        uint64       `bson:"severity"`
+		Tlp             uint64       `bson:"tlp"`
+		UnderliningId   string       `bson:"_id"`
+		Id              string       `bson:"id"`
+		CreatedBy       string       `bson:"createdBy"`
+		UpdatedBy       string       `bson:"updatedBy,omitempty"`
+		CreatedAt       string       `bson:"createdAt"`           //формат RFC3339
+		UpdatedAt       string       `bson:"updatedAt,omitempty"` //формат RFC3339
+		UnderliningType string       `bson:"_type"`
+		Title           string       `bson:"title"`
+		Description     string       `bson:"description"`
+		Status          string       `bson:"status"`
+		Date            string       `bson:"date"` //формат RFC3339
+		Type            string       `bson:"type"`
+		ObjectType      string       `bson:"objectType"`
+		Source          string       `bson:"source"`
+		SourceRef       string       `bson:"sourceRef"`
+		Case            string       `bson:"case,omitempty"`
+		CaseTemplate    string       `bson:"caseTemplate,omitempty"`
+		Tags            []string     `bson:"tags"`
+		CustomFields    CustomFields `bson:"customFields"`
+	}{
+		Follow:          e.Follow,
+		Severity:        e.Severity,
+		Tlp:             e.Tlp,
+		UnderliningId:   e.UnderliningId,
+		Id:              e.Id,
+		CreatedBy:       e.CreatedBy,
+		UpdatedBy:       e.UpdatedBy,
+		CreatedAt:       e.CreatedAt,
+		UpdatedAt:       e.UpdatedAt,
+		UnderliningType: e.UnderliningType,
+		Title:           e.Title,
+		Description:     e.Description,
+		Status:          e.Status,
+		Date:            e.Date,
+		Type:            e.Type,
+		ObjectType:      e.ObjectType,
+		Source:          e.Source,
+		SourceRef:       e.SourceRef,
+		Case:            e.Case,
+		CaseTemplate:    e.CaseTemplate,
+		Tags:            e.Tags,
+		CustomFields:    e.CustomFields,
+	}
+}*/

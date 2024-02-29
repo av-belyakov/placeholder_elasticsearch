@@ -6,19 +6,8 @@ import (
 
 // ReplacingOldValues заменяет старые значения структуры AlertMessageForEsAlert
 // новыми значениями. Изменяемые поля:
-// Tlp - номер группы разделяющие общие цели
-// Date - дата (формат RFC3339)
-// CreatedAt - дата создания (формат RFC3339)
-// UpdatedAt - дата обновления (формат RFC3339)
-// UpdatedBy - кем обновлен
-// UnderliningId - уникальный идентификатор
-// Status - статус
-// Type - тип
-// UnderliningType - тип
-// Description - описание
-// CaseTemplate - шаблон обращения
-// SourceRef - ссылка на источник
 // Tags - теги
+// TagsAll - все теги
 // CustomFields - настраиваемые поля
 // Artifacts - артефакты
 func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAlert) (int, error) {
@@ -36,6 +25,14 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 	for i := 0; i < currentStruct.NumField(); i++ {
 		for j := 0; j < newStruct.NumField(); j++ {
 			if typeOfCurrentStruct.Field(i).Name != typeOfNewStruct.Field(j).Name {
+				continue
+			}
+
+			// для обработки общих полей
+			//**************************
+			if typeOfCurrentStruct.Field(i).Name == "CommonAlertType" {
+				countReplacingFields += am.CommonAlertType.ReplacingOldValues(*element.CommonAlertType.Get())
+
 				continue
 			}
 
@@ -109,22 +106,6 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 
 				continue
 			}
-
-			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
-				if !currentStruct.Field(i).CanSet() {
-					continue
-				}
-
-				if str, ok := newStruct.Field(j).Interface().(string); ok {
-					//не обновлять текущие значения новыми пустыми значениями
-					if str == "" {
-						continue
-					}
-				}
-
-				currentStruct.Field(i).Set(newStruct.Field(j))
-				countReplacingFields++
-			}
 		}
 	}
 
@@ -133,22 +114,9 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 
 // ReplacingOldValues заменяет старые значения структуры ArtifactForEsAlert
 // новыми значениями. Изменяемые поля:
-// Ioc - индикатор компрометации
-// Sighted - видящий
-// IgnoreSimilarity - игнорировать похожие
-// Tlp - tlp
-// UnderliningId - уникальный идентификатор
-// Id - уникальный идентификатор
-// UnderliningType - тип
-// CreatedAt - время создания
-// CreatedBy - кем создан
-// StartDate - дата начала
-// UpdatedAt - время обновления
-// UpdatedBy - кем обновлен
-// Data - данные
-// DataType - тип данных
-// Message - сообщение
+// CommonArtifactType
 // Tags - список тегов
+// TahsAll - все теги
 func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int {
 	var countReplacingFields int
 
@@ -162,6 +130,12 @@ func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int 
 		for j := 0; j < newStruct.NumField(); j++ {
 			if typeOfCurrentStruct.Field(i).Name != typeOfNewStruct.Field(j).Name {
 				continue
+			}
+
+			// для обработки общих полей
+			//**************************
+			if typeOfCurrentStruct.Field(i).Name == "CommonArtifactType" {
+				countReplacingFields += a.CommonArtifactType.ReplacingOldValues(*element.CommonArtifactType.Get())
 			}
 
 			// для обработки поля "Tags"
@@ -192,22 +166,6 @@ func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int 
 				}
 
 				continue
-			}
-
-			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
-				if !currentStruct.Field(i).CanSet() {
-					continue
-				}
-
-				if str, ok := newStruct.Field(j).Interface().(string); ok {
-					//не обновлять текущие значения новыми пустыми значениями
-					if str == "" {
-						continue
-					}
-				}
-
-				currentStruct.Field(i).Set(newStruct.Field(j))
-				countReplacingFields++
 			}
 		}
 	}

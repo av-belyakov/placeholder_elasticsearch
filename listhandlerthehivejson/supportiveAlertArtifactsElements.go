@@ -1,6 +1,9 @@
 package listhandlerthehivejson
 
-import "placeholder_elasticsearch/datamodels"
+import (
+	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/datamodels/commonalertartifact"
+)
 
 // SupportiveAlertArtifacts вспомогательный тип для для обработки alert.artifacts
 type SupportiveAlertArtifacts struct {
@@ -42,9 +45,11 @@ func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{
 		a.listAcceptedFields = []string(nil)
 		a.artifacts = append(a.artifacts, a.artifactTmp)
 		a.artifactTmp = datamodels.AlertArtifact{
-			CreatedAt: "1970-01-01T00:00:00+00:00",
+			CommonArtifactType: commonalertartifact.CommonArtifactType{
+				CreatedAt: "1970-01-01T00:00:00+00:00",
+				StartDate: "1970-01-01T00:00:00+00:00",
+			},
 			UpdatedAt: "1970-01-01T00:00:00+00:00",
-			StartDate: "1970-01-01T00:00:00+00:00",
 		}
 	}
 

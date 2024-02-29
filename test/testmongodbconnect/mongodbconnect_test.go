@@ -14,6 +14,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/datamodels/commonalert"
+	"placeholder_elasticsearch/datamodels/commonalertartifact"
 	commonevent "placeholder_elasticsearch/datamodels/commonevent"
 	commonobjectevent "placeholder_elasticsearch/datamodels/commonobjectevent"
 )
@@ -68,7 +70,8 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 		})
 	})
 
-	Context("Тест 2. Отправка тестового запроса", func() {
+	//---==== CASE ====----
+	Context("Тест 2. Отправка тестового запроса для поисков Case", func() {
 		It("Не должно быть ошибки", func() {
 			collection := conn.Database(NameDB).Collection(CollectionName)
 
@@ -92,7 +95,7 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 		})
 	})
 
-	Context("Тест 3. Поиск объектов для дальнейшего удаления", func() {
+	Context("Тест 3. Поиск объектов Case для дальнейшего удаления", func() {
 		It("Некоторое количество объектов должно быть найдено", func() {
 			collection := conn.Database(NameDB).Collection(CollectionName)
 			opts := options.Find().SetAllowDiskUse(true).SetSort(bson.D{{Key: "@timestamp", Value: 1}})
@@ -133,6 +136,7 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 		})
 	})
 
+	//---==== ALERT ====----
 	Context("Тест 4. Поиск не существующего значения", func() {
 		It("Должна быть успешно обработана ошибка", func() {
 			collection := conn.Database(NameDB).Collection("alert_collection")
@@ -223,20 +227,22 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 				},
 			},
 			Alert: datamodels.AlertMessageTheHiveAlert{
-				Follow:          false,
-				Tlp:             2,
-				Severity:        2,
-				Date:            "1970-01-01T03:00:00+03:00",
-				CreatedAt:       "2024-02-22T22:22:22+03:00",
-				UpdatedAt:       "2024-02-23T22:23:24+03:00",
-				UpdatedBy:       "webhook@cloud.gcm",
-				UnderliningId:   "~88026357960",
-				Status:          "NewUpdate",
-				Type:            "SNORT",
-				UnderliningType: "ALERT_Snort",
-				Description:     "free alerts test replacing",
-				CaseTemplate:    "sNOrt",
-				SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
+				Follow: false,
+				CommonAlertType: commonalert.CommonAlertType{
+					Tlp:             2,
+					Date:            "1970-01-01T03:00:00+03:00",
+					CreatedAt:       "2024-02-22T22:22:22+03:00",
+					UpdatedAt:       "2024-02-23T22:23:24+03:00",
+					UpdatedBy:       "webhook@cloud.gcm",
+					UnderliningId:   "~88026357960",
+					Status:          "NewUpdate",
+					Type:            "SNORT",
+					UnderliningType: "ALERT_Snort",
+					Description:     "free alerts test replacing",
+					CaseTemplate:    "sNOrt",
+					SourceRef:       "TSK-8MSK-6-ZPM-240206-1216137",
+				},
+				Severity: 2,
 				Tags: []string{
 					"Sensor:id=\"8030105\"",
 					"ATs:reason=\"Редко встречающиеся признаки ВПО\"",
@@ -255,20 +261,22 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 				},
 				Artifacts: []datamodels.AlertArtifact{
 					{
-						Ioc:              true,
+						CommonArtifactType: commonalertartifact.CommonArtifactType{
+							Ioc:           true,
+							Tlp:           3,
+							UnderliningId: "~84302220012",
+							Id:            "~84302220012",
+							CreatedAt:     "2024-01-26T13:02:01+03:00",
+							//UpdatedAt: ,
+							StartDate: "2024-01-26T13:02:01+03:00",
+							CreatedBy: "friman@email.net",
+							Data:      "63.5656 89.12",
+							DataType:  "coordinates test replacing",
+							Message:   "Any message test replacing",
+						},
 						Sighted:          false,
 						IgnoreSimilarity: true,
-						Tlp:              3,
-						UnderliningId:    "~84302220012",
-						Id:               "~84302220012",
-						CreatedAt:        "2024-01-26T13:02:01+03:00",
-						//UpdatedAt: ,
-						StartDate: "2024-01-26T13:02:01+03:00",
-						CreatedBy: "friman@email.net",
-						UpdatedBy: "friman@email.net",
-						Data:      "63.5656 89.12",
-						DataType:  "coordinates test replacing",
-						Message:   "Any message test replacing",
+						UpdatedBy:        "friman@email.net",
 						Tags: []string{
 							"Sensor:id=\"1111111\"",
 							"geoip:country=CH",
@@ -277,20 +285,22 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 						},
 					},
 					{
-						Ioc:              true,
+						CommonArtifactType: commonalertartifact.CommonArtifactType{
+							Ioc:           true,
+							Tlp:           2,
+							UnderliningId: "~306522241",
+							Id:            "~306522241",
+							CreatedAt:     "2024-01-16T03:32:01+03:00",
+							//UpdatedAt: ,
+							StartDate: "2024-01-04T19:32:01+03:00",
+							CreatedBy: "example@email.net",
+							Data:      "115.115.115.115",
+							DataType:  "ipaddr",
+							Message:   "ffdffd fdg",
+						},
 						Sighted:          false,
 						IgnoreSimilarity: true,
-						Tlp:              2,
-						UnderliningId:    "~306522241",
-						Id:               "~306522241",
-						CreatedAt:        "2024-01-16T03:32:01+03:00",
-						//UpdatedAt: ,
-						StartDate: "2024-01-04T19:32:01+03:00",
-						CreatedBy: "example@email.net",
-						UpdatedBy: "example@email.net",
-						Data:      "115.115.115.115",
-						DataType:  "ipaddr",
-						Message:   "ffdffd fdg",
+						UpdatedBy:        "example@email.net",
 						Tags: []string{
 							"Sensor:id=\"3411\"",
 							"geoip:country=RU",
@@ -337,7 +347,7 @@ var _ = Describe("Mongodbconnect", Ordered, func() {
 					options.Delete())
 			}
 
-			_, err = collection.InsertMany(context.TODO(), []interface{}{currentData})
+			_, err = collection.InsertMany(context.TODO(), []interface{}{currentData.Get()})
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})
