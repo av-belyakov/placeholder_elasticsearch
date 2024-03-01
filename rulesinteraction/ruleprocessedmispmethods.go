@@ -17,9 +17,9 @@ import (
 func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error) {
 	lr := ListRule{
 		Rules: RuleOptions{
-			Pass:    []PassListAnd{},
-			Replace: []RuleReplace{},
-			Exclude: []RuleExclude{},
+			Pass:    []PassListAnd(nil),
+			Replace: []RuleReplace(nil),
+			Exclude: []RuleExclude(nil),
 		},
 	}
 
@@ -79,6 +79,10 @@ func (lr *ListRule) ReplacementRuleHandler(searchValueType, fieldName string, cu
 		}
 
 		return rv, nil
+	}
+
+	if lr.Rules.Replace == nil {
+		return currentValue, 0, nil
 	}
 
 	for k, v := range lr.Rules.Replace {
@@ -203,6 +207,11 @@ func (lr *ListRule) ExcludeRuleHandler(fieldName string, currentValue interface{
 	}
 
 	return false
+}
+
+// GetRuleReplace возвращает список правил типа Replace
+func (lr *ListRule) GetRuleReplace() []RuleReplace {
+	return lr.Rules.Replace
 }
 
 // GetRulePass возвращает список правил типа Pass

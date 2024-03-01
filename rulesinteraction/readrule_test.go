@@ -66,6 +66,9 @@ var _ = Describe("Readrule", Ordered, func() {
 			fmt.Println("new rule result:")
 			fmt.Println(printRuleResult(lr))
 
+			_, _, err := lr.ReplacementRuleHandler("string", "objectType", "dfff")
+			Expect(err).ShouldNot(HaveOccurred())
+
 			Expect(errGetRule).ShouldNot(HaveOccurred())
 		})
 	})

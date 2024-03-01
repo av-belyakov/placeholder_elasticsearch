@@ -127,7 +127,6 @@ func reflectAnySimpleType(
 	name interface{},
 	anyType interface{},
 	lr *rules.ListRule,
-	num int,
 	fieldBranch string,
 	id string) interface{} {
 
@@ -319,7 +318,7 @@ func reflectMap(
 			}
 
 		default:
-			nl[k] = reflectAnySimpleType(logging, chanOutMispFormat, k, v, lr, num, fbTmp, id)
+			nl[k] = reflectAnySimpleType(logging, chanOutMispFormat, k, v, lr, fbTmp, id)
 		}
 	}
 
@@ -364,7 +363,7 @@ func reflectSlice(
 			}
 
 		default:
-			nl = append(nl, reflectAnySimpleType(logging, chanOutMispFormat, k, v, lr, num, fieldBranch, id))
+			nl = append(nl, reflectAnySimpleType(logging, chanOutMispFormat, k, v, lr, fieldBranch, id))
 		}
 	}
 
