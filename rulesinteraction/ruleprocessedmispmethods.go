@@ -15,7 +15,13 @@ import (
 
 // NewListRule создает новый список правил
 func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error) {
-	lr := ListRule{}
+	lr := ListRule{
+		Rules: RuleOptions{
+			Pass:    []PassListAnd(nil),
+			Replace: []RuleReplace(nil),
+			Exclude: []RuleExclude(nil),
+		},
+	}
 
 	_, f, l, _ := runtime.Caller(0)
 	rootPath, err := getRootPath(rootDir)
