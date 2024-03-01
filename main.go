@@ -185,7 +185,7 @@ func readListRules(rootDir, dirName, fileName string) (*rules.ListRule, string, 
 	}
 
 	// проверяем наличие правил Pass или Passany
-	if len(lrcase.GetRulePass()) == 0 && !lrcase.GetRulePassany() {
+	if len(lr.GetRulePass()) == 0 && !lr.GetRulePassany() {
 		msg := "there are no rules for handling received from NATS or all rules have failed validation"
 		_, f, l, _ := runtime.Caller(0)
 		return lr, warning, fmt.Errorf(" '%s' %s:%d", msg, f, l-3)
