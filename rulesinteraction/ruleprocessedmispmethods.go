@@ -17,9 +17,9 @@ import (
 func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error) {
 	lr := ListRule{
 		Rules: RuleOptions{
-			Pass:    []PassListAnd(nil),
-			Replace: []RuleReplace(nil),
-			Exclude: []RuleExclude(nil),
+			Pass:    []PassListAnd{},
+			Replace: []RuleReplace{},
+			Exclude: []RuleExclude{},
 		},
 	}
 
