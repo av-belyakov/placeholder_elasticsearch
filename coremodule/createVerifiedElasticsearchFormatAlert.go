@@ -18,6 +18,8 @@ func NewVerifiedElasticsearchFormatAlert(
 ) {
 	var (
 		rootId string
+		// список не обработанных полей
+		listRawFields map[string]string = make(map[string]string)
 
 		event        *datamodels.EventMessageForEsAlert        = datamodels.NewEventMessageForEsAlert()
 		eventObject  *datamodels.EventMessageForEsAlertObject  = datamodels.NewEventMessageForEsAlertObject()
@@ -59,6 +61,7 @@ func NewVerifiedElasticsearchFormatAlert(
 		select {
 		case data := <-input:
 			var handlerIsExist bool
+
 			verifiedAlert.SetID(data.UUID)
 
 			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
@@ -122,12 +125,9 @@ func NewVerifiedElasticsearchFormatAlert(
 				}
 			}
 
-			// записываем в лог-файл поля, которые не были обработаны
-			if handlerIsExist {
-				logging <- datamodels.MessageLogging{
-					MsgData: fmt.Sprintf("event rootId: '%s', field: '%s', value: '%v'", rootId, data.FieldBranch, data.Value),
-					MsgType: "alert_raw_fields",
-				}
+			if !handlerIsExist {
+				// записываем в лог-файл поля, которые не были обработаны
+				listRawFields[data.FieldBranch] = fmt.Sprint(data.Value)
 			}
 
 		case <-done:
@@ -147,6 +147,14 @@ func NewVerifiedElasticsearchFormatAlert(
 				Section: "handling alert",
 				Command: "add new alert",
 				Data:    verifiedAlert.Get(),
+			}
+
+			// отправляем список полей которые не смогли обработать
+			if len(listRawFields) > 0 {
+				logging <- datamodels.MessageLogging{
+					MsgData: joinRawFieldsToString(listRawFields, "rootId", rootId),
+					MsgType: "alert_raw_fields",
+				}
 			}
 
 			// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования

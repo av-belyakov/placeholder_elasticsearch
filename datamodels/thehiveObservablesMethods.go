@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"placeholder_elasticsearch/datamodels/commonobservable"
 	"placeholder_elasticsearch/supportingfunctions"
 )
 
@@ -25,236 +26,19 @@ func (o *ObservablesMessageTheHive) Set(v ObservableMessage) {
 
 func NewObservableMessage() *ObservableMessage {
 	return &ObservableMessage{
-		UnderliningCreatedAt: "1970-01-01T00:00:00+00:00",
-		UnderliningUpdatedAt: "1970-01-01T00:00:00+00:00",
-		StartDate:            "1970-01-01T00:00:00+00:00",
-		Tags:                 []string(nil),
-		Attachment:           *NewAttachmentData(),
-		Reports:              make(map[string]ReportTaxonomies),
+		CommonObservableType: commonobservable.CommonObservableType{
+			UnderliningCreatedAt: "1970-01-01T00:00:00+00:00",
+			UnderliningUpdatedAt: "1970-01-01T00:00:00+00:00",
+			StartDate:            "1970-01-01T00:00:00+00:00",
+		},
+		Tags:       []string(nil),
+		Attachment: *NewAttachmentData(),
+		Reports:    make(map[string]ReportTaxonomies),
 	}
 }
 
 func (o *ObservableMessage) Get() *ObservableMessage {
 	return o
-}
-
-func (o *ObservableMessage) GetIoc() bool {
-	return o.Ioc
-}
-
-// SetValueIoc устанавливает BOOL значение для поля Ioc
-func (o *ObservableMessage) SetValueIoc(v bool) {
-	o.Ioc = v
-}
-
-// SetAnyIoc устанавливает ЛЮБОЕ значение для поля Ioc
-func (o *ObservableMessage) SetAnyIoc(i interface{}) {
-	if v, ok := i.(bool); ok {
-		o.Ioc = v
-	}
-}
-
-func (o *ObservableMessage) GetSighted() bool {
-	return o.Sighted
-}
-
-// SetValueSighted устанавливает BOOL значение для поля Sighted
-func (o *ObservableMessage) SetValueSighted(v bool) {
-	o.Sighted = v
-}
-
-// SetAnySighted устанавливает ЛЮБОЕ значение для поля Sighted
-func (o *ObservableMessage) SetAnySighted(i interface{}) {
-	if v, ok := i.(bool); ok {
-		o.Sighted = v
-	}
-}
-
-func (o *ObservableMessage) GetIgnoreSimilarity() bool {
-	return o.IgnoreSimilarity
-}
-
-// SetValueIgnoreSimilarity устанавливает BOOL значение для поля IgnoreSimilarity
-func (o *ObservableMessage) SetValueIgnoreSimilarity(v bool) {
-	o.IgnoreSimilarity = v
-}
-
-// SetAnyIgnoreSimilarity устанавливает ЛЮБОЕ значение для поля IgnoreSimilarity
-func (o *ObservableMessage) SetAnyIgnoreSimilarity(i interface{}) {
-	if v, ok := i.(bool); ok {
-		o.IgnoreSimilarity = v
-	}
-}
-
-func (o *ObservableMessage) GetTlp() uint64 {
-	return o.Tlp
-}
-
-// SetValueTlp устанавливает INT значение для поля Tlp
-func (o *ObservableMessage) SetValueTlp(v uint64) {
-	o.Tlp = v
-}
-
-// SetAnyTlp устанавливает ЛЮБОЕ значение для поля Tlp
-func (o *ObservableMessage) SetAnyTlp(i interface{}) {
-	if v, ok := i.(float32); ok {
-		o.Tlp = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(float64); ok {
-		o.Tlp = uint64(v)
-
-		return
-	}
-
-	if v, ok := i.(uint64); ok {
-		o.Tlp = v
-	}
-}
-
-func (o *ObservableMessage) GetUnderliningCreatedAt() string {
-	return o.UnderliningCreatedAt
-}
-
-// SetValueUnderliningCreatedAt устанавливает значение в формате RFC3339 для поля CreatedAt
-func (o *ObservableMessage) SetValueUnderliningCreatedAt(v string) {
-	o.UnderliningCreatedAt = v
-}
-
-// SetAnyUnderliningCreatedAt устанавливает ЛЮБОЕ значение для поля CreatedAt
-func (o *ObservableMessage) SetAnyUnderliningCreatedAt(i interface{}) {
-	tmp := supportingfunctions.ConversionAnyToInt(i)
-	o.UnderliningCreatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
-}
-
-func (o *ObservableMessage) GetUnderliningUpdatedAt() string {
-	return o.UnderliningUpdatedAt
-}
-
-// SetValueUnderliningUpdatedAt устанавливает значениев формате RFC3339 для поля UpdatedAt
-func (o *ObservableMessage) SetValueUnderliningUpdatedAt(v string) {
-	o.UnderliningUpdatedAt = v
-}
-
-// SetAnyUnderliningUpdatedAt устанавливает ЛЮБОЕ значение для поля UpdatedAt
-func (o *ObservableMessage) SetAnyUnderliningUpdatedAt(i interface{}) {
-	tmp := supportingfunctions.ConversionAnyToInt(i)
-	o.UnderliningUpdatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
-}
-
-func (o *ObservableMessage) GetStartDate() string {
-	return o.StartDate
-}
-
-// SetValueStartDate устанавливает значениев формате RFC3339 для поля StartDate
-func (o *ObservableMessage) SetValueStartDate(v string) {
-	o.StartDate = v
-}
-
-// SetAnyStartDate устанавливает ЛЮБОЕ значение для поля StartDate
-func (o *ObservableMessage) SetAnyStartDate(i interface{}) {
-	tmp := supportingfunctions.ConversionAnyToInt(i)
-	o.StartDate = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
-}
-
-func (o *ObservableMessage) GetUnderliningCreatedBy() string {
-	return o.UnderliningCreatedBy
-}
-
-// SetValueUnderliningCreatedBy устанавливает STRING значение для поля CreatedBy
-func (o *ObservableMessage) SetValueUnderliningCreatedBy(v string) {
-	o.UnderliningCreatedBy = v
-}
-
-// SetAnyUnderliningCreatedBy устанавливает ЛЮБОЕ значение для поля CreatedBy
-func (o *ObservableMessage) SetAnyUnderliningCreatedBy(i interface{}) {
-	o.UnderliningCreatedBy = fmt.Sprint(i)
-}
-
-func (o *ObservableMessage) GetUnderliningUpdatedBy() string {
-	return o.UnderliningUpdatedBy
-}
-
-// SetValueUnderliningUpdatedBy устанавливает STRING значение для поля UpdatedBy
-func (o *ObservableMessage) SetValueUnderliningUpdatedBy(v string) {
-	o.UnderliningUpdatedBy = v
-}
-
-// SetAnyUnderliningUpdatedBy устанавливает ЛЮБОЕ значение для поля UpdatedBy
-func (o *ObservableMessage) SetAnyUnderliningUpdatedBy(i interface{}) {
-	o.UnderliningUpdatedBy = fmt.Sprint(i)
-}
-
-func (o *ObservableMessage) GetUnderliningId() string {
-	return o.UnderliningId
-}
-
-// SetValueUnderliningId устанавливает STRING значение для поля UnderliningId
-func (o *ObservableMessage) SetValueUnderliningId(v string) {
-	o.UnderliningId = v
-}
-
-// SetAnyUnderliningId устанавливает ЛЮБОЕ значение для поля UnderliningId
-func (o *ObservableMessage) SetAnyUnderliningId(i interface{}) {
-	o.UnderliningId = fmt.Sprint(i)
-}
-
-func (o *ObservableMessage) GetUnderliningType() string {
-	return o.UnderliningType
-}
-
-// SetValueUnderliningType устанавливает STRING значение для поля UnderliningType
-func (o *ObservableMessage) SetValueUnderliningType(v string) {
-	o.UnderliningType = v
-}
-
-// SetAnyUnderliningType устанавливает ЛЮБОЕ значение для поля UnderliningType
-func (o *ObservableMessage) SetAnyUnderliningType(i interface{}) {
-	o.UnderliningType = fmt.Sprint(i)
-}
-
-func (o *ObservableMessage) GetData() string {
-	return o.Data
-}
-
-// SetValueData устанавливает STRING значение для поля Data
-func (o *ObservableMessage) SetValueData(v string) {
-	o.Data = v
-}
-
-// SetAnyData устанавливает ЛЮБОЕ значение для поля Data
-func (o *ObservableMessage) SetAnyData(i interface{}) {
-	o.Data = fmt.Sprint(i)
-}
-
-func (o *ObservableMessage) GetDataType() string {
-	return o.DataType
-}
-
-// SetValueDataType устанавливает STRING значение для поля DataType
-func (o *ObservableMessage) SetValueDataType(v string) {
-	o.DataType = v
-}
-
-// SetAnyDataType устанавливает ЛЮБОЕ значение для поля DataType
-func (o *ObservableMessage) SetAnyDataType(i interface{}) {
-	o.DataType = fmt.Sprint(i)
-}
-
-func (o *ObservableMessage) GetMessage() string {
-	return o.Message
-}
-
-// SetValueMessage устанавливает STRING значение для поля Message
-func (o *ObservableMessage) SetValueMessage(v string) {
-	o.Message = v
-}
-
-// SetAnyMessage устанавливает ЛЮБОЕ значение для поля Message
-func (o *ObservableMessage) SetAnyMessage(i interface{}) {
-	o.Message = fmt.Sprint(i)
 }
 
 func (o *ObservableMessage) GetTags() []string {
@@ -300,31 +84,9 @@ func (om ObservableMessage) ToStringBeautiful(num int) string {
 	var str strings.Builder = strings.Builder{}
 	ws := supportingfunctions.GetWhitespace(num)
 
-	str.WriteString(fmt.Sprintf("%s'_createdAt': '%s'\n", ws, om.UnderliningCreatedAt))
-	str.WriteString(fmt.Sprintf("%s'_createdBy': '%s'\n", ws, om.UnderliningCreatedBy))
-	str.WriteString(fmt.Sprintf("%s'_id': '%s'\n", ws, om.UnderliningId))
-	str.WriteString(fmt.Sprintf("%s'_type': '%s'\n", ws, om.UnderliningType))
-	str.WriteString(fmt.Sprintf("%s'_updatedAt': '%s'\n", ws, om.UnderliningUpdatedAt))
-	str.WriteString(fmt.Sprintf("%s'_updatedBy': '%s'\n", ws, om.UnderliningUpdatedBy))
-	str.WriteString(fmt.Sprintf("%s'data': '%s'\n", ws, om.Data))
-	str.WriteString(fmt.Sprintf("%s'dataType': '%s'\n", ws, om.DataType))
-	str.WriteString(fmt.Sprintf("%s'ignoreSimilarity': '%v'\n", ws, om.IgnoreSimilarity))
-	//данное поле редко используемое, думаю пока оно не требует реализации
-	/*str.WriteString(fmt.Sprintf("%sextraData: \n%s", ws, func(l map[string]interface{}) string {
-		var str strings.Builder = strings.Builds{}
-		ws := supportingfunctions.GetWhitespace(num + 1)
-
-		for k, v := range l {
-			str.WriteString(fmt.Sprintf("%s%s: '%v'\n", ws, k, v))
-		}
-		return str.String()
-	}(om.ExtraData)))*/
-	str.WriteString(fmt.Sprintf("%s'ioc': '%v'\n", ws, om.Ioc))
-	str.WriteString(fmt.Sprintf("%s'message': '%s'\n", ws, om.Message))
-	str.WriteString(fmt.Sprintf("%s'sighted': '%v'\n", ws, om.Sighted))
-	str.WriteString(fmt.Sprintf("%s'startDate': '%s'\n", ws, om.StartDate))
+	str.WriteString(om.CommonObservableType.ToStringBeautiful(num))
 	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulSlice(num, om.Tags)))
-	str.WriteString(fmt.Sprintf("%s'tlp': '%d'\n", ws, om.Tlp))
+	str.WriteString(fmt.Sprintf("%s'attachment': \n%s", ws, om.Attachment.ToStringBeautiful(num)))
 	str.WriteString(fmt.Sprintf("%s'reports': \n%s", ws, func(l map[string]ReportTaxonomies) string {
 		var str strings.Builder = strings.Builder{}
 		for key, value := range l {
@@ -432,6 +194,19 @@ func (a *AttachmentData) SetValueHashes(v string) {
 // SetAnyHashes устанавливает ЛЮБОЕ значение для поля Hashes
 func (a *AttachmentData) SetAnyHashes(i interface{}) {
 	a.Hashes = append(a.Hashes, fmt.Sprint(i))
+}
+
+func (a AttachmentData) ToStringBeautiful(num int) string {
+	var str strings.Builder = strings.Builder{}
+	ws := supportingfunctions.GetWhitespace(num)
+
+	str.WriteString(fmt.Sprintf("%s'size': '%d'\n", ws, a.Size))
+	str.WriteString(fmt.Sprintf("%s'id': '%s'\n", ws, a.Id))
+	str.WriteString(fmt.Sprintf("%s'name': '%s'\n", ws, a.Name))
+	str.WriteString(fmt.Sprintf("%s'contentType': '%s'\n", ws, a.ContentType))
+	str.WriteString(fmt.Sprintf("%s'hashes': \n%s", ws, ToStringBeautifulSlice(num, a.Hashes)))
+
+	return str.String()
 }
 
 // ********************* ReportTaxonomys *******************

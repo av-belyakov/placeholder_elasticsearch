@@ -19,6 +19,10 @@ func NewVerifiedTheHiveFormatCase(
 	logging chan<- datamodels.MessageLogging,
 ) {
 	var (
+		rootId string
+		//список не обработанных полей
+		listRawFields map[string]string = make(map[string]string)
+
 		//Финальный объект
 		verifiedCase *datamodels.VerifiedTheHiveCase = datamodels.NewVerifiedTheHiveCase()
 
@@ -53,10 +57,7 @@ func NewVerifiedTheHiveFormatCase(
 	for {
 		select {
 		case data := <-input:
-			var (
-				rootId         string
-				handlerIsExist bool
-			)
+			var handlerIsExist bool
 
 			verifiedCase.SetID(data.UUID)
 
@@ -165,12 +166,9 @@ func NewVerifiedTheHiveFormatCase(
 				}
 			}
 
-			// записываем в лог-файл поля, которые не были обработаны
-			if handlerIsExist {
-				logging <- datamodels.MessageLogging{
-					MsgData: fmt.Sprintf("event rootId: '%s', field: '%s', value: '%v'", rootId, data.FieldBranch, data.Value),
-					MsgType: "case_raw_fields",
-				}
+			if !handlerIsExist {
+				// записываем в лог-файл поля, которые не были обработаны
+				listRawFields[data.FieldBranch] = fmt.Sprint(data.Value)
 			}
 
 		case <-done:
@@ -206,6 +204,14 @@ func NewVerifiedTheHiveFormatCase(
 				Section: "handling case",
 				Command: "add new case",
 				Data:    verifiedCase.Get(),
+			}
+
+			//отправляем список полей которые не смогли обработать
+			if len(listRawFields) > 0 {
+				logging <- datamodels.MessageLogging{
+					MsgData: joinRawFieldsToString(listRawFields, "rootId", rootId),
+					MsgType: "case_raw_fields",
+				}
 			}
 
 			// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования

@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/datamodels/commonobservable"
 )
 
 // SupportiveObservables вспомогательный тип для для обработки observables
@@ -51,10 +52,12 @@ func (o *SupportiveObservables) HandlerValue(fieldBranch string, i interface{}, 
 		o.previousFieldReports = ""
 		o.observables = append(o.observables, o.observableTmp)
 		o.observableTmp = datamodels.ObservableMessage{
-			StartDate:            "1970-01-01T00:00:00+00:00",
-			UnderliningCreatedAt: "1970-01-01T00:00:00+00:00",
-			UnderliningUpdatedAt: "1970-01-01T00:00:00+00:00",
-			Reports:              map[string]datamodels.ReportTaxonomies{},
+			CommonObservableType: commonobservable.CommonObservableType{
+				StartDate:            "1970-01-01T00:00:00+00:00",
+				UnderliningCreatedAt: "1970-01-01T00:00:00+00:00",
+				UnderliningUpdatedAt: "1970-01-01T00:00:00+00:00",
+			},
+			Reports: map[string]datamodels.ReportTaxonomies{},
 		}
 	}
 

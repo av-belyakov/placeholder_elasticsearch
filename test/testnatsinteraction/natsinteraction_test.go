@@ -92,6 +92,7 @@ var _ = Describe("Natsinteraction", Ordered, func() {
 		})
 
 		nc.Subscribe("main_alertupdate", func(msg *nats.Msg) {
+			//nc.Subscribe("main_alertcreate", func(msg *nats.Msg) {
 			mnats.chanOutputNATS <- SettingsOutputChan{
 				MsgId:   uuid.NewString(),
 				MsgType: "alertupdate",

@@ -2,6 +2,9 @@ package coremodule
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"runtime"
 
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
@@ -11,6 +14,14 @@ import (
 	rules "placeholder_elasticsearch/rulesinteraction"
 	"placeholder_elasticsearch/supportingfunctions"
 )
+
+type shortEventSettings struct {
+	Event nameObjectType `json:"event"`
+}
+
+type nameObjectType struct {
+	ObjectType string `json:"objectType"`
+}
 
 type CoreHandlerSettings struct {
 	storageApp *memorytemporarystorage.CommonStorageTemporary
@@ -48,12 +59,28 @@ func (settings *CoreHandlerSettings) CoreHandler(
 			return
 
 		case data := <-natsChanReception:
-			switch data.SubjectType {
-			case "subject_case":
+			eventSettings := shortEventSettings{}
+
+			if err := json.Unmarshal(data.Data, &eventSettings); err != nil {
+				_, f, l, _ := runtime.Caller(0)
+				settings.logging <- datamodels.MessageLogging{
+					MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l+1),
+					MsgType: "error",
+				}
+
+				return
+			}
+
+			//switch data.SubjectType {
+			//case "subject_case":
+			//case "subject_alert":
+
+			switch eventSettings.Event.ObjectType {
+			case "case":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonCase.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)
 				go NewVerifiedTheHiveFormatCase(chanOutputDecodeJson, chanDecodeJsonDone, esModule, mdbModule, settings.logging)
 
-			case "subject_alert":
+			case "alert":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)
 
 				chansOut := supportingfunctions.CreateChannelDuplication[datamodels.ChanOutputDecodeJSON](chanOutputDecodeJson, 2)
@@ -63,6 +90,13 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				go NewVerifiedTheHiveFormatAlert(chansOut[0], chansDone[0], mdbModule, settings.logging)
 				//используется для хранения в Elasticsearch
 				go NewVerifiedElasticsearchFormatAlert(chansOut[1], chansDone[1], esModule, settings.logging)
+
+			default:
+				_, f, l, _ := runtime.Caller(0)
+				settings.logging <- datamodels.MessageLogging{
+					MsgData: fmt.Sprintf("'undefined type objectType' %s:%d", f, l+1),
+					MsgType: "error",
+				}
 			}
 		}
 	}
