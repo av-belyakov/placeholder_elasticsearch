@@ -227,7 +227,7 @@ func init() {
 	}
 
 	// инициализируем модуль чтения правил обработки Alerts поступающих через NATS
-	lrcase, warning, err = readListRules(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.FileAlert)
+	lralert, warning, err = readListRules(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.FileAlert)
 	if err != nil {
 		_ = sl.WriteLoggingData(fmt.Sprint(err), "error")
 
