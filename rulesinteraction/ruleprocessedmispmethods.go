@@ -81,6 +81,8 @@ func (lr *ListRule) ReplacementRuleHandler(searchValueType, fieldName string, cu
 		return rv, nil
 	}
 
+	fmt.Println("--- RULES", lr.Rules, " -----")
+
 	if lr.Rules.Replace == nil {
 		return currentValue, 0, nil
 	}
