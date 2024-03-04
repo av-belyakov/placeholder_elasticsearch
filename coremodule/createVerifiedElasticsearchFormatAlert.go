@@ -43,7 +43,7 @@ func NewVerifiedElasticsearchFormatAlert(
 	listHandlerEventObject := listhandlerforesjson.NewListHandlerEventAlertObjectElement(eventObject)
 
 	// ------ EVENT OBJECT CUSTOMFIELDS ------
-	listHandlerEventObjectCustomFields := listhandlercommon.NewListHandlerAlertCustomFieldsElement(eventObjectCustomFields)
+	listHandlerEventObjectCustomFields := listhandlercommon.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
 
 	// ------ EVENT DETAILS ------
 	listHandlerEventDetails := listhandlerforesjson.NewListHandlerEventAlertDetailsElement(eventDetails)
@@ -66,6 +66,8 @@ func NewVerifiedElasticsearchFormatAlert(
 
 			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
 				verifiedAlert.SetSource(source)
+
+				continue
 			}
 
 			if data.FieldBranch == "event.rootId" {

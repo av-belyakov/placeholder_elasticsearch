@@ -118,11 +118,13 @@ func (hsd HandlerSendData) UpdateDocument(index, pattern string, query *strings.
 		return res, fmt.Errorf("'no index was found according to the specified template '%s'' %s:%d", pattern, f, l-1)
 	}
 
-	_, err = hsd.DeleteDocument(indexes, query)
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
-	}
+	/*
+		_, err = hsd.DeleteDocument(indexes, query)
+		if err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
+		}
+	*/
 
 	return hsd.InsertDocument(index, document)
 }

@@ -44,7 +44,7 @@ func NewVerifiedTheHiveFormatAlert(
 	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventAlertObjectElement(eventObject)
 
 	// ------ EVENT OBJECT CUSTOMFIELDS ------
-	listHandlerEventObjectCustomFields := listhandlercommon.NewListHandlerAlertCustomFieldsElement(eventObjectCustomFields)
+	listHandlerEventObjectCustomFields := listhandlercommon.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
 
 	// ------ EVENT DETAILS ------
 	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventAlertDetailsElement(eventDetails)
@@ -67,6 +67,8 @@ func NewVerifiedTheHiveFormatAlert(
 
 			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
 				verifiedAlert.SetSource(source)
+
+				continue
 			}
 
 			if data.FieldBranch == "event.rootId" {
@@ -81,6 +83,8 @@ func NewVerifiedTheHiveFormatAlert(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//event.object element
@@ -90,6 +94,8 @@ func NewVerifiedTheHiveFormatAlert(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//event.object.customFields element
@@ -99,6 +105,8 @@ func NewVerifiedTheHiveFormatAlert(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//event.details element
@@ -108,6 +116,8 @@ func NewVerifiedTheHiveFormatAlert(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//************ Обработчики для Alert ************
@@ -118,6 +128,8 @@ func NewVerifiedTheHiveFormatAlert(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//alert.customFields
@@ -127,6 +139,8 @@ func NewVerifiedTheHiveFormatAlert(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//alert.artifacts
@@ -138,6 +152,8 @@ func NewVerifiedTheHiveFormatAlert(
 						f(data.Value)
 					}
 				}
+
+				continue
 			}
 
 			if !handlerIsExist {

@@ -159,6 +159,9 @@ func (o *CommonEventAlertObject) GetDescription() string {
 
 // SetValueDescription устанавливает STRING значение для поля Description
 func (o *CommonEventAlertObject) SetValueDescription(v string) {
+	v = strings.ReplaceAll(v, "\t", "")
+	v = strings.ReplaceAll(v, "\n", "")
+
 	o.Description = v
 }
 

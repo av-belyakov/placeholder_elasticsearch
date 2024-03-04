@@ -296,6 +296,9 @@ func (ped *PatternExtraData) GetDescription() string {
 
 // SetValueDescription устанавливает значение поля Description
 func (ped *PatternExtraData) SetValueDescription(v string) {
+	v = strings.ReplaceAll(v, "\t", "")
+	v = strings.ReplaceAll(v, "\n", "")
+
 	ped.Description = v
 }
 

@@ -162,6 +162,9 @@ func (a *CommonAlertType) GetDescription() string {
 
 // SetValueDescription устанавливает STRING значение для поля Description
 func (a *CommonAlertType) SetValueDescription(v string) {
+	v = strings.ReplaceAll(v, "\t", "")
+	v = strings.ReplaceAll(v, "\n", "")
+
 	a.Description = v
 }
 

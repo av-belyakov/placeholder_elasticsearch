@@ -63,6 +63,8 @@ func NewVerifiedTheHiveFormatCase(
 
 			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
 				verifiedCase.SetSource(source)
+
+				continue
 			}
 
 			if data.FieldBranch == "event.rootId" {
@@ -78,6 +80,8 @@ func NewVerifiedTheHiveFormatCase(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			// event.object element
@@ -87,6 +91,8 @@ func NewVerifiedTheHiveFormatCase(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			// event.object.customFields element
@@ -96,6 +102,8 @@ func NewVerifiedTheHiveFormatCase(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			// event.details element
@@ -105,6 +113,8 @@ func NewVerifiedTheHiveFormatCase(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			// event.details.customFields element
@@ -114,6 +124,8 @@ func NewVerifiedTheHiveFormatCase(
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//************************************************************************
@@ -137,6 +149,8 @@ func NewVerifiedTheHiveFormatCase(
 
 					}
 				}
+
+				continue
 			}
 
 			//для всех полей входящих в состав observables.reports
@@ -164,6 +178,8 @@ func NewVerifiedTheHiveFormatCase(
 
 					}
 				}
+
+				continue
 			}
 
 			if !handlerIsExist {

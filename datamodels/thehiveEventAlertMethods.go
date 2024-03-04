@@ -100,6 +100,9 @@ func (e *EventAlertDetails) GetDescription() string {
 
 // SetValueDescription устанавливает STRING значение для поля Description
 func (e *EventAlertDetails) SetValueDescription(v string) {
+	v = strings.ReplaceAll(v, "\t", "")
+	v = strings.ReplaceAll(v, "\n", "")
+
 	e.Description = v
 }
 
