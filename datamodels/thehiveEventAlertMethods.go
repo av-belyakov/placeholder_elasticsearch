@@ -152,6 +152,7 @@ func (e *EventAlertDetails) ToStringBeautiful(num int) string {
 func NewEventAlertObject() *EventAlertObject {
 	return &EventAlertObject{
 		CommonEventAlertObject: commonobjectevent.CommonEventAlertObject{
+			Date:      "1970-01-01T00:00:00+00:00",
 			CreatedAt: "1970-01-01T00:00:00+00:00",
 			UpdatedAt: "1970-01-01T00:00:00+00:00",
 		},

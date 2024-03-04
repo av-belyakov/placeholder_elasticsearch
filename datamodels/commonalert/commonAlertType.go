@@ -5,6 +5,7 @@ package commonalert
 // Date - дата (формат RFC3339)
 // CreatedAt - дата создания (формат RFC3339)
 // UpdatedAt - дата обновления (формат RFC3339)
+// CreatedBy - кем создан
 // UpdatedBy - кем обновлен
 // UnderliningId - уникальный идентификатор
 // Id - уникальный идентификатор
@@ -21,6 +22,7 @@ type CommonAlertType struct {
 	Date            string `json:"date" bson:"date"`           //формат RFC3339
 	CreatedAt       string `json:"createdAt" bson:"createdAt"` //формат RFC3339
 	UpdatedAt       string `json:"updatedAt" bson:"updatedAt"` //формат RFC3339
+	CreatedBy       string `json:"createdBy" bson:"createdBy"`
 	UpdatedBy       string `json:"updatedBy" bson:"updatedBy"`
 	UnderliningId   string `json:"_id" bson:"_id"`
 	Id              string `json:"id" bson:"id"`

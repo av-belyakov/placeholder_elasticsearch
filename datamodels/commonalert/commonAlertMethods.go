@@ -86,6 +86,20 @@ func (a *CommonAlertType) SetAnyUpdatedAt(i interface{}) {
 	a.UpdatedAt = supportingfunctions.GetDateTimeFormatRFC3339(int64(tmp))
 }
 
+func (a *CommonAlertType) GetCreateBy() string {
+	return a.CreatedBy
+}
+
+// SetValueCreateBy устанавливает STRING значение для поля CreateBy
+func (a *CommonAlertType) SetValueCreatedBy(v string) {
+	a.CreatedBy = v
+}
+
+// SetAnyCreatedBy устанавливает ЛЮБОЕ значение для поля CreatedBy
+func (a *CommonAlertType) SetAnyCreatedBy(i interface{}) {
+	a.CreatedBy = fmt.Sprint(i)
+}
+
 func (a *CommonAlertType) GetUpdatedBy() string {
 	return a.UpdatedBy
 }

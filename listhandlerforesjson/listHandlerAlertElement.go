@@ -11,6 +11,7 @@ func NewListHandlerAlertElement(alert *datamodels.AlertMessageForEsAlert) map[st
 		"alert.date":         {alert.SetAnyDate},
 		"alert.createdAt":    {alert.SetAnyCreatedAt},
 		"alert.updatedAt":    {alert.SetAnyUpdatedAt},
+		"alert.createdBy":    {alert.SetAnyCreatedBy},
 		"alert.updatedBy":    {alert.SetAnyUpdatedBy},
 		"alert.source":       {alert.SetAnySource},
 		"alert.title":        {alert.SetAnyTitle},

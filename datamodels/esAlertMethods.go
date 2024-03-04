@@ -12,6 +12,7 @@ import (
 func NewAlertMessageForEsAlert() *AlertMessageForEsAlert {
 	return &AlertMessageForEsAlert{
 		CommonAlertType: commonalert.CommonAlertType{
+			Date:      "1970-01-01T00:00:00+00:00",
 			CreatedAt: "1970-01-01T00:00:00+00:00",
 			UpdatedAt: "1970-01-01T00:00:00+00:00",
 		},
