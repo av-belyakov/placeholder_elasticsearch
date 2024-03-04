@@ -114,6 +114,20 @@ func (a *CommonAlertType) SetAnyUnderliningId(i interface{}) {
 	a.UnderliningId = fmt.Sprint(i)
 }
 
+func (a *CommonAlertType) GetId() string {
+	return a.Id
+}
+
+// SetValueId устанавливает STRING значение для поля Id
+func (a *CommonAlertType) SetValueId(v string) {
+	a.Id = v
+}
+
+// SetAnyId устанавливает ЛЮБОЕ значение для поля Id
+func (a *CommonAlertType) SetAnyId(i interface{}) {
+	a.Id = fmt.Sprint(i)
+}
+
 func (a *CommonAlertType) GetStatus() string {
 	return a.Status
 }
@@ -128,6 +142,20 @@ func (a *CommonAlertType) SetAnyStatus(i interface{}) {
 	a.Status = fmt.Sprint(i)
 }
 
+func (a *CommonAlertType) GetSource() string {
+	return a.Source
+}
+
+// SetValueSource устанавливает STRING значение для поля Source
+func (a *CommonAlertType) SetValueSource(v string) {
+	a.Source = v
+}
+
+// SetAnySource устанавливает ЛЮБОЕ значение для поля Source
+func (a *CommonAlertType) SetAnySource(i interface{}) {
+	a.Source = fmt.Sprint(i)
+}
+
 func (a *CommonAlertType) GetType() string {
 	return a.Type
 }
@@ -140,6 +168,20 @@ func (a *CommonAlertType) SetValueType(v string) {
 // SetAnyType устанавливает ЛЮБОЕ значение для поля Type
 func (a *CommonAlertType) SetAnyType(i interface{}) {
 	a.Type = fmt.Sprint(i)
+}
+
+func (a *CommonAlertType) GetTitle() string {
+	return a.Title
+}
+
+// SetValueTitle устанавливает STRING значение для поля Title
+func (a *CommonAlertType) SetValueTitle(v string) {
+	a.Title = v
+}
+
+// SetAnyTitle устанавливает ЛЮБОЕ значение для поля Title
+func (a *CommonAlertType) SetAnyTitle(i interface{}) {
+	a.Title = fmt.Sprint(i)
 }
 
 func (a *CommonAlertType) GetUnderliningType() string {
@@ -216,8 +258,11 @@ func (a *CommonAlertType) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%s'updatedAt': '%s'\n", ws, a.UpdatedAt))
 	str.WriteString(fmt.Sprintf("%s'updatedBy': '%s'\n", ws, a.UpdatedBy))
 	str.WriteString(fmt.Sprintf("%s'underliningId': '%s'\n", ws, a.UnderliningId))
+	str.WriteString(fmt.Sprintf("%s'id': '%s'\n", ws, a.Id))
 	str.WriteString(fmt.Sprintf("%s'status': '%s'\n", ws, a.Status))
+	str.WriteString(fmt.Sprintf("%s'source': '%s'\n", ws, a.Source))
 	str.WriteString(fmt.Sprintf("%s'type': '%s'\n", ws, a.Type))
+	str.WriteString(fmt.Sprintf("%s'title': '%s'\n", ws, a.Title))
 	str.WriteString(fmt.Sprintf("%s'underliningType': '%s'\n", ws, a.UnderliningType))
 	str.WriteString(fmt.Sprintf("%s'description': '%s'\n", ws, a.Description))
 	str.WriteString(fmt.Sprintf("%s'caseTemplate': '%s'\n", ws, a.CaseTemplate))
