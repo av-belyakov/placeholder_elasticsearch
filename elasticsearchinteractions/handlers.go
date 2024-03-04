@@ -196,7 +196,8 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	//при наличие искомого документа выполняем его замену
+	//*** при наличие искомого документа выполняем его замену ***
+	//***********************************************************
 	object, err := GetVerifiedForEsAlert(res)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -231,12 +232,14 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		}
 	}
 
+	//выполняем обновление объекта типа Event
 	num, errTmp := updateVerified.Event.ReplacingOldValues(*newDocument.GetEvent())
 	if errTmp != nil {
 		err = fmt.Errorf("%w event replacing error '%w'", err, errTmp)
 	}
 	countReplacingFields += num
 
+	//выполняем обновление объекта типа Alert
 	num, errTmp = updateVerified.Alert.ReplacingOldValues(*newDocument.GetAlert())
 	if errTmp != nil {
 		err = fmt.Errorf("%w alert replacing error '%w'", err, errTmp)
@@ -250,6 +253,23 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 			MsgType: "error",
 		}
 	}
+
+	//******** TEST ********
+	//только в рамках тестирования, отправка обновленного объекта
+	//в специальный файл
+	infoUpdate, err := json.MarshalIndent(updateVerified, "", "  ")
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
+	}
+	logging <- datamodels.MessageLogging{
+		MsgData: string(infoUpdate),
+		MsgType: "test_object_update",
+	}
+	//***********************
 
 	nvbyte, err := json.Marshal(updateVerified)
 	if err != nil {
