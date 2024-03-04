@@ -25,7 +25,7 @@ func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error)
 
 	rootPath, err := getRootPath(rootDir)
 	if err != nil {
-  _, f, l, _ = runtime.Caller(0)
+		_, f, l, _ := runtime.Caller(0)
 		return &lr, []string{}, fmt.Errorf("'%v' %s:%d", err, f, l+1)
 	}
 
@@ -34,12 +34,12 @@ func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error)
 
 	err = viper.ReadInConfig()
 	if err != nil {
-  _, f, l, _ = runtime.Caller(0)
+		_, f, l, _ := runtime.Caller(0)
 		return &lr, []string{}, fmt.Errorf("'%v' %s:%d", err, f, l+1)
 	}
 
 	if ok := viper.IsSet("RULES"); !ok {
-  _, f, l, _ = runtime.Caller(0)
+		_, f, l, _ := runtime.Caller(0)
 		return &lr, []string{}, fmt.Errorf("'the \"RULES\" property is missing in the file \"%s\"' %s:%d", fileName, f, l+1)
 	}
 
@@ -47,7 +47,7 @@ func NewListRule(rootDir, workDir, fileName string) (*ListRule, []string, error)
 		dc.Squash = true
 	})
 	if err != nil {
-  _, f, l, _ = runtime.Caller(0)
+		_, f, l, _ := runtime.Caller(0)
 		return &lr, []string{}, fmt.Errorf("'%v' %s:%d", err, f, l+1)
 	}
 
