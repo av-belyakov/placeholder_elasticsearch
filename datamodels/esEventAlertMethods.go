@@ -108,7 +108,11 @@ func (e *EventMessageForEsAlertDetails) SetValueDescription(v string) {
 
 // SetAny устанавливает ЛЮБОЕ значение для поля Description
 func (e *EventMessageForEsAlertDetails) SetAnyDescription(i interface{}) {
-	e.Description = fmt.Sprint(i)
+	str := fmt.Sprint(i)
+	str = strings.ReplaceAll(str, "\t", "")
+	str = strings.ReplaceAll(str, "\n", "")
+
+	e.Description = str
 }
 
 func (e *EventMessageForEsAlertDetails) GetTags() map[string][]string {

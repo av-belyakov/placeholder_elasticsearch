@@ -86,12 +86,12 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 
 			// для обработки поля "Artifacts"
 			if typeOfCurrentStruct.Field(i).Name == "Artifacts" {
-				newCustomFields, okNew := newStruct.Field(j).Interface().(map[string][]ArtifactForEsAlert)
+				newArtifact, okNew := newStruct.Field(j).Interface().(map[string][]ArtifactForEsAlert)
 				if !okNew {
 					continue
 				}
 
-				for key, value := range newCustomFields {
+				for key, value := range newArtifact {
 					currentArtifacts, ok := am.GetKeyArtifacts(key)
 					if !ok {
 						am.SetKeyArtifacts(key, value)

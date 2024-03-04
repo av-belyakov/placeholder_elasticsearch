@@ -296,7 +296,11 @@ func (e *CommonEventCaseObject) SetValueDescription(v string) {
 
 // SetAnyDescription устанавливает ЛЮБОЕ значение для поля Description
 func (e *CommonEventCaseObject) SetAnyDescription(i interface{}) {
-	e.Description = fmt.Sprint(i)
+	str := fmt.Sprint(i)
+	str = strings.ReplaceAll(str, "\t", "")
+	str = strings.ReplaceAll(str, "\n", "")
+
+	e.Description = str
 }
 
 func (e *CommonEventCaseObject) GetImpactStatus() string {

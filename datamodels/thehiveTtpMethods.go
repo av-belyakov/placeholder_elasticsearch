@@ -301,7 +301,11 @@ func (ped *PatternExtraData) SetValueDescription(v string) {
 
 // SetAnyDescription устанавливает ЛЮБОЕ значение для поля Description
 func (ped *PatternExtraData) SetAnyDescription(i interface{}) {
-	ped.Description = fmt.Sprint(i)
+	str := fmt.Sprint(i)
+	str = strings.ReplaceAll(str, "\t", "")
+	str = strings.ReplaceAll(str, "\n", "")
+
+	ped.Description = str
 }
 
 func (ped *PatternExtraData) GetName() string {

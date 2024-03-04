@@ -233,6 +233,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	}
 
 	//выполняем обновление объекта типа Event
+	updateVerified.SetSource(newDocument.GetSource())
 	num, errTmp := updateVerified.Event.ReplacingOldValues(*newDocument.GetEvent())
 	if errTmp != nil {
 		err = fmt.Errorf("%w event replacing error '%w'", err, errTmp)

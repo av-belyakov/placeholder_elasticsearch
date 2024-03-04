@@ -75,54 +75,82 @@ func NewVerifiedElasticsearchFormatAlert(
 			//************ Обработчики для Event ************
 			//event element
 			if lf, ok := listHandlerEvent[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//event.object element
 			if lf, ok := listHandlerEventObject[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//event.object.customFields element
 			if lf, ok := listHandlerEventObjectCustomFields[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//event.details element
 			if lf, ok := listHandlerEventDetails[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//************ Обработчики для Alert ************
 			//alert element
 			if lf, ok := listHandlerAlert[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//alert.customFields
 			if lf, ok := listHandlerAlertCustomFields[data.FieldBranch]; ok {
+				handlerIsExist = true
+
 				for _, f := range lf {
 					f(data.Value)
 				}
+
+				continue
 			}
 
 			//alert.artifacts
 			if strings.Contains(data.FieldBranch, "alert.artifacts.") {
+				handlerIsExist = true
+
 				if lf, ok := listHandlerAlertArtifacts[data.FieldBranch]; ok {
 					for _, f := range lf {
 						f(data.Value)
 					}
 				}
+
+				continue
 			}
 
 			if !handlerIsExist {

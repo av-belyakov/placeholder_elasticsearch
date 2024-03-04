@@ -167,7 +167,11 @@ func (a *CommonAlertType) SetValueDescription(v string) {
 
 // SetAnyDescription устанавливает ЛЮБОЕ значение для поля Description
 func (a *CommonAlertType) SetAnyDescription(i interface{}) {
-	a.Description = fmt.Sprint(i)
+	str := fmt.Sprint(i)
+	str = strings.ReplaceAll(str, "\t", "")
+	str = strings.ReplaceAll(str, "\n", "")
+
+	a.Description = str
 }
 
 func (a *CommonAlertType) GetCaseTemplate() string {
