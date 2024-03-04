@@ -1,7 +1,6 @@
 package datamodels
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -57,8 +56,6 @@ DONE:
 			}
 		}
 	}
-
-	fmt.Printf("func 'EventMessageForEsAlert', countReplacingFields = '%d'\n", countReplacingFields)
 
 	return countReplacingFields, err
 }
@@ -213,8 +210,6 @@ func (o *EventMessageForEsAlertObject) ReplacingOldValues(element EventMessageFo
 			}
 		}
 	}
-
-	fmt.Printf("func 'EventMessageForEsAlertObject', countReplacingFields = '%d'\n", countReplacingFields)
 
 	return countReplacingFields
 }

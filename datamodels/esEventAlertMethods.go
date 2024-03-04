@@ -177,6 +177,7 @@ func NewEventMessageForEsAlertObject() *EventMessageForEsAlertObject {
 		CommonEventAlertObject: commonobjectevent.CommonEventAlertObject{
 			CreatedAt: "1970-01-01T00:00:00+00:00",
 			UpdatedAt: "1970-01-01T00:00:00+00:00",
+			Date:      "1970-01-01T00:00:00+00:00",
 		},
 		Tags:         make(map[string][]string),
 		TagsAll:      []string(nil),

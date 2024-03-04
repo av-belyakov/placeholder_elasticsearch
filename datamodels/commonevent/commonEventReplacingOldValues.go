@@ -68,13 +68,9 @@ DONE:
 
 				currentStruct.Field(i).Set(newStruct.Field(j))
 				countReplacingFields++
-
-				fmt.Println("func 'CommonEventType', Field name:", typeOfCurrentStruct.Field(i).Name, " Value:", newStruct.Field(j))
 			}
 		}
 	}
-
-	fmt.Println("func 'CommonEventType', countReplacingFields:", countReplacingFields)
 
 	return countReplacingFields, err
 }

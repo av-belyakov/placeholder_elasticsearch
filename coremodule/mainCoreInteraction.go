@@ -71,10 +71,6 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				return
 			}
 
-			//switch data.SubjectType {
-			//case "subject_case":
-			//case "subject_alert":
-
 			switch eventSettings.Event.ObjectType {
 			case "case":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonCase.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)
