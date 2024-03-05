@@ -147,11 +147,6 @@ func reflectAnySimpleType(
 	case reflect.String:
 		result := reflect.ValueOf(anyType).String()
 
-		if strings.Contains(fieldBranch, "description") {
-			result = strings.ReplaceAll(result, "\t", "")
-			result = strings.ReplaceAll(result, "\n", "")
-		}
-
 		ncv, num, err := lr.ReplacementRuleHandler("string", nameStr, result)
 		if err != nil {
 			_, f, l, _ := runtime.Caller(0)

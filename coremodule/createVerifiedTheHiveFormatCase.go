@@ -244,16 +244,11 @@ func NewVerifiedTheHiveFormatCase(
 
 // searchEventSource выполняет поиск источника события
 func searchEventSource(fieldBranch string, value interface{}) (string, bool) {
-	var (
-		source string
-		ok     bool
-	)
-
 	if fieldBranch == "source" {
-		source, ok = value.(string)
+		return value.(string)
 	}
 
-	return source, ok
+	return "", false
 }
 
 func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHiveCase) {
