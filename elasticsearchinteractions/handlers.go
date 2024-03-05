@@ -144,7 +144,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	var countReplacingFields int
 
-	fmt.Printf("func 'ReplacementDocumentAlert', source:'%s'\n", newDocument.GetSource())
+	//fmt.Printf("func 'ReplacementDocumentAlert', source:'%s', RootId:'%s'\n", newDocument.GetSource(), newDocument.GetEvent().GetRootId())
 
 	t := time.Now()
 	month := int(t.Month())
@@ -191,7 +191,21 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	if res.StatusCode != http.StatusOK {
+	//fmt.Println("======================== FOUND STATUS:", res.Status())
+
+	decEs := datamodels.ElasticsearchResponseCase{}
+	err = json.NewDecoder(res.Body).Decode(&decEs)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	if decEs.Options.Total.Value == 0 {
 		//выполняется только когда не найден искомый документ
 		hsd.InsertNewDocument(indexCurrent, newDocumentBinary, logging, counting)
 
@@ -214,6 +228,8 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	updateVerified := datamodels.NewVerifiedForEsAlert()
 	for _, v := range object.Hits.Hits {
 		var err error
+
+		//		fmt.Println("=========== FOUND DOCUMENT RootID:", v.Source.Event.GetRootId())
 
 		_, errTmp := updateVerified.Event.ReplacingOldValues(v.Source.Event)
 		if errTmp != nil {
@@ -285,7 +301,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	res, err = hsd.UpdateDocument(indexCurrent, indexPattern, queryCurrent, nvbyte)
+	res, err = hsd.UpdateDocument(indexCurrent, decEs.Options.Hits, nvbyte)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{

@@ -3,6 +3,8 @@ package coremodule
 import (
 	"fmt"
 	"strings"
+
+	"placeholder_elasticsearch/datamodels"
 )
 
 func joinRawFieldsToString(list map[string]string, tag, id string) string {
@@ -13,4 +15,43 @@ func joinRawFieldsToString(list map[string]string, tag, id string) string {
 	}
 
 	return str.String()
+}
+
+// searchEventSource выполняет поиск источника события
+func searchEventSource(fieldBranch string, value interface{}) (string, bool) {
+	if fieldBranch != "source" {
+		return "", false
+	}
+
+	if v, ok := value.(string); ok {
+		return v, true
+	}
+
+	return "", false
+}
+
+func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHiveCase) {
+	if e.GetStartDate() == "" {
+		e.SetValueStartDate("1970-01-01T00:00:00+00:00")
+	}
+
+	if e.Details.GetEndDate() == "" {
+		e.Details.SetValueEndDate("1970-01-01T00:00:00+00:00")
+	}
+
+	if e.Object.GetStartDate() == "" {
+		e.Object.SetValueStartDate("1970-01-01T00:00:00+00:00")
+	}
+
+	if e.Object.GetEndDate() == "" {
+		e.Object.SetValueEndDate("1970-01-01T00:00:00+00:00")
+	}
+
+	if e.Object.GetCreatedAt() == "" {
+		e.Object.SetValueCreatedAt("1970-01-01T00:00:00+00:00")
+	}
+
+	if e.Object.GetUpdatedAt() == "" {
+		e.Object.SetValueUpdatedAt("1970-01-01T00:00:00+00:00")
+	}
 }

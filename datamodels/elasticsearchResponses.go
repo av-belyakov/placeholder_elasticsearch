@@ -12,6 +12,9 @@ type ElasticsearchResponseCaseOptions struct {
 	Hits     []CaseHits   `json:"hits"`
 }
 
+// OptionsTotal опции в результате поиска
+// Relation - отношение (==, >, <)
+// Value - количество найденных значений
 type OptionsTotal struct {
 	Relation string `json:"relation"`
 	Value    int    `json:"value"`

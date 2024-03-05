@@ -3,6 +3,7 @@ package coremodule
 import (
 	"fmt"
 	"reflect"
+	"runtime"
 	"strings"
 
 	"placeholder_elasticsearch/datamodels"
@@ -54,225 +55,196 @@ func NewVerifiedTheHiveFormatCase(
 	sttp := listhandlerthehivejson.NewSupportiveTtp()
 	listHandlerTtp := listhandlerthehivejson.NewListHandlerTtpElement(sttp)
 
-	for {
-		select {
-		case data := <-input:
-			var handlerIsExist bool
+	for data := range input {
+		var handlerIsExist bool
 
-			verifiedCase.SetID(data.UUID)
+		verifiedCase.SetID(data.UUID)
 
-			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
-				verifiedCase.SetSource(source)
+		if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
+			verifiedCase.SetSource(source)
 
-				continue
+			continue
+		}
+
+		if data.FieldBranch == "event.rootId" {
+			rootId = fmt.Sprint(data.Value)
+		}
+
+		//******************************************************************
+		//********** Сбор всех объектов относящихся к полю Event  **********
+		// event element
+		if lf, ok := listHandlerEvent[data.FieldBranch]; ok {
+			handlerIsExist = true
+
+			for _, f := range lf {
+				f(data.Value)
 			}
 
-			if data.FieldBranch == "event.rootId" {
-				rootId = fmt.Sprint(data.Value)
+			continue
+		}
+
+		// event.object element
+		if lf, ok := listHandlerEventObject[data.FieldBranch]; ok {
+			handlerIsExist = true
+
+			for _, f := range lf {
+				f(data.Value)
 			}
 
-			//******************************************************************
-			//********** Сбор всех объектов относящихся к полю Event  **********
-			// event element
-			if lf, ok := listHandlerEvent[data.FieldBranch]; ok {
-				handlerIsExist = true
+			continue
+		}
 
-				for _, f := range lf {
-					f(data.Value)
-				}
+		// event.object.customFields element
+		if lf, ok := listHandlerEventObjectCustomFields[data.FieldBranch]; ok {
+			handlerIsExist = true
 
-				continue
+			for _, f := range lf {
+				f(data.Value)
 			}
 
-			// event.object element
-			if lf, ok := listHandlerEventObject[data.FieldBranch]; ok {
-				handlerIsExist = true
+			continue
+		}
 
-				for _, f := range lf {
-					f(data.Value)
-				}
+		// event.details element
+		if lf, ok := listHandlerEventDetails[data.FieldBranch]; ok {
+			handlerIsExist = true
 
-				continue
+			for _, f := range lf {
+				f(data.Value)
 			}
 
-			// event.object.customFields element
-			if lf, ok := listHandlerEventObjectCustomFields[data.FieldBranch]; ok {
-				handlerIsExist = true
+			continue
+		}
 
-				for _, f := range lf {
-					f(data.Value)
-				}
+		// event.details.customFields element
+		if lf, ok := listHandlerEventDetailsCustomFields[data.FieldBranch]; ok {
+			handlerIsExist = true
 
-				continue
+			for _, f := range lf {
+				f(data.Value)
 			}
 
-			// event.details element
-			if lf, ok := listHandlerEventDetails[data.FieldBranch]; ok {
-				handlerIsExist = true
+			continue
+		}
 
-				for _, f := range lf {
-					f(data.Value)
-				}
+		//************************************************************************
+		//********** Сбор всех объектов относящихся к полю Observables  **********
+		// для всех полей входящих в observables, кроме содержимого
+		//поля reports
+		if lf, ok := listHandlerObservables[data.FieldBranch]; ok {
+			handlerIsExist = true
 
-				continue
-			}
-
-			// event.details.customFields element
-			if lf, ok := listHandlerEventDetailsCustomFields[data.FieldBranch]; ok {
-				handlerIsExist = true
-
-				for _, f := range lf {
-					f(data.Value)
-				}
-
-				continue
-			}
-
-			//************************************************************************
-			//********** Сбор всех объектов относящихся к полю Observables  **********
-			// для всех полей входящих в observables, кроме содержимого
-			//поля reports
-			if lf, ok := listHandlerObservables[data.FieldBranch]; ok {
-				handlerIsExist = true
-
-				for _, f := range lf {
-					r := reflect.TypeOf(data.Value)
-					switch r.Kind() {
-					case reflect.Slice:
-						if s, ok := data.Value.([]interface{}); ok {
-							for _, value := range s {
-								f(value)
-							}
+			for _, f := range lf {
+				r := reflect.TypeOf(data.Value)
+				switch r.Kind() {
+				case reflect.Slice:
+					if s, ok := data.Value.([]interface{}); ok {
+						for _, value := range s {
+							f(value)
 						}
-					default:
-						f(data.Value)
-
 					}
+				default:
+					f(data.Value)
+
 				}
-
-				continue
 			}
 
-			//для всех полей входящих в состав observables.reports
-			if strings.Contains(data.FieldBranch, "observables.reports.") {
-				handlerIsExist = true
-				so.HandlerReportValue(data.FieldBranch, data.Value)
-			}
+			continue
+		}
 
-			//*********************************************************************
-			//********** Сбор всех объектов относящихся к полю Ttp  ***************
-			if lf, ok := listHandlerTtp[data.FieldBranch]; ok {
-				handlerIsExist = true
+		//для всех полей входящих в состав observables.reports
+		if strings.Contains(data.FieldBranch, "observables.reports.") {
+			handlerIsExist = true
+			so.HandlerReportValue(data.FieldBranch, data.Value)
+		}
 
-				for _, f := range lf {
-					r := reflect.TypeOf(data.Value)
-					switch r.Kind() {
-					case reflect.Slice:
-						if s, ok := data.Value.([]interface{}); ok {
-							for _, value := range s {
-								f(value)
-							}
+		//*********************************************************************
+		//********** Сбор всех объектов относящихся к полю Ttp  ***************
+		if lf, ok := listHandlerTtp[data.FieldBranch]; ok {
+			handlerIsExist = true
+
+			for _, f := range lf {
+				r := reflect.TypeOf(data.Value)
+				switch r.Kind() {
+				case reflect.Slice:
+					if s, ok := data.Value.([]interface{}); ok {
+						for _, value := range s {
+							f(value)
 						}
-					default:
-						f(data.Value)
-
 					}
-				}
+				default:
+					f(data.Value)
 
-				continue
-			}
-
-			if !handlerIsExist {
-				// записываем в лог-файл поля, которые не были обработаны
-				listRawFields[data.FieldBranch] = fmt.Sprint(data.Value)
-			}
-
-		case <-done:
-			//Собираем объект Event
-			eventObject.SetValueCustomFields(eventObjectCustomFields)
-			eventDetails.SetValueCustomFields(eventDetailsCustomFields)
-			event.SetValueObject(*eventObject)
-			event.SetValueDetails(*eventDetails)
-
-			//проверяем объек на наличие пустых полей которые должны
-			//содержать дату и время
-			checkDatetimeFieldsEventObject(event)
-
-			//собираем объект observables
-			observables := datamodels.NewObservablesMessageTheHive()
-			observables.SetObservables(so.GetObservables())
-
-			//собираем объект ttp
-			ttps := datamodels.NewTtpsMessageTheHive()
-			ttps.SetTtps(sttp.GetTtps())
-
-			verifiedCase.SetEvent(*event)
-			verifiedCase.SetObservables(*observables)
-			verifiedCase.SetTtps(*ttps)
-
-			mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
-				Section: "handling case",
-				Command: "add new case",
-				Data:    verifiedCase.Get(),
-			}
-
-			esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
-				Section: "handling case",
-				Command: "add new case",
-				Data:    verifiedCase.Get(),
-			}
-
-			//отправляем список полей которые не смогли обработать
-			if len(listRawFields) > 0 {
-				logging <- datamodels.MessageLogging{
-					MsgData: joinRawFieldsToString(listRawFields, "rootId", rootId),
-					MsgType: "case_raw_fields",
 				}
 			}
 
-			// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования
-			//при выполнения тестирования
-			logging <- datamodels.MessageLogging{
-				MsgData: "",
-				MsgType: "STOP TEST",
-			}
+			continue
+		}
 
-			return
+		if !handlerIsExist {
+			// записываем в лог-файл поля, которые не были обработаны
+			listRawFields[data.FieldBranch] = fmt.Sprint(data.Value)
 		}
 	}
-}
 
-// searchEventSource выполняет поиск источника события
-func searchEventSource(fieldBranch string, value interface{}) (string, bool) {
-	if fieldBranch == "source" {
-		return value.(string)
+	// отправляем список полей которые не смогли обработать
+	if len(listRawFields) > 0 {
+		logging <- datamodels.MessageLogging{
+			MsgData: joinRawFieldsToString(listRawFields, "rootId", rootId),
+			MsgType: "alert_raw_fields",
+		}
 	}
 
-	return "", false
-}
+	//проверяем значения объектов на соответствие правилам
+	isAllowed := <-done
+	if !isAllowed {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'the message with aler rootId %s was not sent to ES because it does not comply with the rules' %s:%d", event.GetRootId(), f, l-1),
+			MsgType: "warning",
+		}
 
-func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHiveCase) {
-	if e.GetStartDate() == "" {
-		e.SetValueStartDate("1970-01-01T00:00:00+00:00")
+		return
 	}
 
-	if e.Details.GetEndDate() == "" {
-		e.Details.SetValueEndDate("1970-01-01T00:00:00+00:00")
+	// Собираем объект Event
+	eventObject.SetValueCustomFields(eventObjectCustomFields)
+	eventDetails.SetValueCustomFields(eventDetailsCustomFields)
+	event.SetValueObject(*eventObject)
+	event.SetValueDetails(*eventDetails)
+
+	// проверяем объек на наличие пустых полей которые должны
+	// содержать дату и время
+	checkDatetimeFieldsEventObject(event)
+
+	// собираем объект observables
+	observables := datamodels.NewObservablesMessageTheHive()
+	observables.SetObservables(so.GetObservables())
+
+	// собираем объект ttp
+	ttps := datamodels.NewTtpsMessageTheHive()
+	ttps.SetTtps(sttp.GetTtps())
+
+	verifiedCase.SetEvent(*event)
+	verifiedCase.SetObservables(*observables)
+	verifiedCase.SetTtps(*ttps)
+
+	mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
+		Section: "handling case",
+		Command: "add new case",
+		Data:    verifiedCase.Get(),
 	}
 
-	if e.Object.GetStartDate() == "" {
-		e.Object.SetValueStartDate("1970-01-01T00:00:00+00:00")
+	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+		Section: "handling case",
+		Command: "add new case",
+		Data:    verifiedCase.Get(),
 	}
 
-	if e.Object.GetEndDate() == "" {
-		e.Object.SetValueEndDate("1970-01-01T00:00:00+00:00")
-	}
-
-	if e.Object.GetCreatedAt() == "" {
-		e.Object.SetValueCreatedAt("1970-01-01T00:00:00+00:00")
-	}
-
-	if e.Object.GetUpdatedAt() == "" {
-		e.Object.SetValueUpdatedAt("1970-01-01T00:00:00+00:00")
+	// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования
+	// при выполнения тестирования
+	logging <- datamodels.MessageLogging{
+		MsgData: "",
+		MsgType: "STOP TEST",
 	}
 }

@@ -16,7 +16,8 @@ import (
 )
 
 type shortEventSettings struct {
-	Event nameObjectType `json:"event"`
+	Source string         `json:"source"`
+	Event  nameObjectType `json:"event"`
 }
 
 type nameObjectType struct {

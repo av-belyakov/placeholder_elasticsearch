@@ -9,6 +9,12 @@ func CreateChannelDuplication[T any](input chan T, count int) []chan T {
 	}
 
 	go func() {
+		defer func() {
+			for i := 0; i < count; i++ {
+				close(outputs[i])
+			}
+		}()
+
 		for data := range input {
 			for _, channel := range outputs {
 				channel <- data

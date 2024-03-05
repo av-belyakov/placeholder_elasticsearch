@@ -87,6 +87,8 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id, subject str
 			_ = reflectSlice(s.Logging, chanOutputJsonData, listSlice, s.ListRule, 0, "", id)
 		}
 
+		close(chanOutputJsonData)
+
 		//проверяем что бы хотя бы одно правило разрешало пропуск объекта
 		if s.ListRule.GetRulePassany() || s.ListRule.SomePassRuleIsTrue() {
 			isAllowed = true
@@ -114,7 +116,6 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id, subject str
 		//останавливаем обработчик формирующий верифицированный объект
 		chanDone <- isAllowed
 
-		close(chanOutputJsonData)
 		close(chanDone)
 	}()
 

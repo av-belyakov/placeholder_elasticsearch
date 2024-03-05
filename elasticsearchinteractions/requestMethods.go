@@ -110,30 +110,19 @@ func (hsd HandlerSendData) SearchDocument(index []string, query *strings.Reader)
 
 // UpdateDocument выполняет поиск и обновление документов соответствующих
 // параметрам заданным в запросе
-func (hsd HandlerSendData) UpdateDocument(index, pattern string, query *strings.Reader, document []byte) (*esapi.Response, error) {
-	var (
-		res *esapi.Response
-		err error
-	)
+func (hsd HandlerSendData) UpdateDocument(currentIndex string, list []datamodels.CaseHits, document []byte) (*esapi.Response, error) {
+	var err error
 
-	indexes, err := hsd.GetExistingIndexes(pattern)
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
+	for _, v := range list {
+		res, errDel := hsd.Client.Delete(v.Index, v.ID)
+		fmt.Printf("func 'DeleteDocument' delete data Index:'%s', ID:'%s', RESPONSE:%v\n", v.Index, v.ID, res)
+
+		if errDel != nil {
+			err = fmt.Errorf("%v, %v", err, errDel)
+		}
 	}
 
-	if len(indexes) == 0 {
-		_, f, l, _ := runtime.Caller(0)
-		return res, fmt.Errorf("'no index was found according to the specified template '%s'' %s:%d", pattern, f, l-1)
-	}
-
-	_, err = hsd.DeleteDocument(indexes, query)
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
-	}
-
-	return hsd.InsertDocument(index, document)
+	return hsd.InsertDocument(currentIndex, document)
 }
 
 // GetExistingIndexes выполняет проверку наличия индексов соответствующих

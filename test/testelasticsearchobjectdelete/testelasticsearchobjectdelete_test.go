@@ -31,19 +31,21 @@ var _ = Describe("Testelasticsearchobjectdelete", func() {
 			})
 			Expect(err).ShouldNot(HaveOccurred())
 
-			// module_placeholder_new_alert__2024_3
 			res, err := es.Search(
 				es.Search.WithContext(context.Background()),
-				es.Search.WithIndex("module_placeholder_new_alert_rcmmsk_2024_3"),
+				es.Search.WithIndex([]string{"module_placeholder_new_alert_rcmmsk_2024_3"}...),
 				es.Search.WithBody(queryCurrent),
 			)
 			Expect(err).ShouldNot(HaveOccurred())
+
+			fmt.Println("SEARCH STATUS:", res.Status())
 
 			decEs := datamodels.ElasticsearchResponseCase{}
 			err = json.NewDecoder(res.Body).Decode(&decEs)
 			Expect(err).ShouldNot(HaveOccurred())
 
-			fmt.Println("func 'FOUND DATA' found data:", decEs)
+			fmt.Println("func 'FOUND DATA' found data:", decEs.Options.Total.Value)
+			fmt.Println("found data:", decEs.Options)
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})
