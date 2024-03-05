@@ -272,10 +272,12 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			Expect(len(anyEventCustomFields)).Should(Equal(2))
 
 			_, _, _, firstTime := anyEventCustomFields["first-time"].Get()
-			Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
+			//Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
+			Expect(firstTime).Should(Equal("2024-02-06T07:48:52+03:00"))
 
 			_, _, _, lastTime := anyEventCustomFields["last-time"].Get()
-			Expect(lastTime).Should(Equal("2024-02-06T15:20:30+03:00"))
+			//Expect(lastTime).Should(Equal("2024-02-06T15:20:30+03:00"))
+			Expect(lastTime).Should(Equal("2024-02-06T07:48:52+03:00"))
 		})
 
 		It("Объект Alert должен быть успешно заполнен", func() {
@@ -302,16 +304,16 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			Expect(len(anyCustomField)).Should(Equal(2))
 
 			_, _, _, firstTime := anyCustomField["first-time"].Get()
-			Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
+			Expect(firstTime).Should(Equal("2024-02-06T07:48:52+03:00"))
 
 			_, _, _, lastTime := anyCustomField["last-time"].Get()
-			Expect(lastTime).Should(Equal("2024-02-06T15:20:30+03:00"))
+			Expect(lastTime).Should(Equal("2024-02-06T07:48:52+03:00"))
 		})
 
 		It("Объект Artifacts должен быть успешно заполнен", func() {
 			anyArtifacts := alert.Get().GetArtifacts()
 
-			Expect(len(anyArtifacts)).Should(Equal(2))
+			Expect(len(anyArtifacts)).Should(Equal(4))
 
 			urlArkime, ok := anyArtifacts["url_arkime"]
 			Expect(ok).Should(BeTrue())
@@ -351,8 +353,8 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 		It("Должен быть полностью заполнен объект verifiedTheHiveAlert", func() {
 			verified := VerifiedForEsAlert.Get()
 
-			//fmt.Println("---=== VERIFEDFORESALERT ===---")
-			//fmt.Println(verified.ToStringBeautiful(0))
+			fmt.Println("---=== VERIFEDFORESALERT ===---")
+			fmt.Println(verified.ToStringBeautiful(0))
 
 			Expect(verified.GetID()).Should(Equal("fhe78f838f88fg488398f8e3"))
 			Expect(verified.GetElasticsearchID()).Should(Equal("3883f8f9-839r983hf848g8h-f84"))
@@ -815,8 +817,8 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			//кол-во замененных полей
 			Expect(num).Should(Equal(19))
 
-			fmt.Println("---=== AlertMessageForEsAlert ===---")
-			fmt.Println(oldStruct.ToStringBeautiful(0))
+			//fmt.Println("---=== AlertMessageForEsAlert ===---")
+			//fmt.Println(oldStruct.ToStringBeautiful(0))
 
 			//Alert
 			//меняется

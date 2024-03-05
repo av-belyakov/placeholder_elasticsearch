@@ -134,7 +134,19 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 				fmt.Println("======================= Response ======================")
 				fmt.Println("||| Status:", res.Status())
 
-				if res.StatusCode == http.StatusOK {
+				decEs := datamodels.ElasticsearchResponseCase{}
+				err = json.NewDecoder(res.Body).Decode(&decEs)
+				Expect(err).ShouldNot(HaveOccurred())
+
+				if decEs.Options.Total.Value == 0 {
+					//ВЫПОЛНЯЕТСЯ ТОГДА КОГДА ДОКУМЕНТ НЕ НАЙДЕН
+
+					res, err = hsd.InsertDocument(indexCurrent, b)
+					Expect(err).ShouldNot(HaveOccurred())
+
+					fmt.Println("Status Code:", res.Status())
+					Expect(res.StatusCode).Should(Equal(http.StatusCreated))
+				} else {
 					//при наличие похожего индекса его замена
 					object, err := GetVerifiedForEsAlert(res)
 					Expect(err).ShouldNot(HaveOccurred())
@@ -164,23 +176,15 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 					nvbyte, err := json.Marshal(updateVerified)
 					Expect(err).ShouldNot(HaveOccurred())
 
-					res, err := hsd.UpdateDocument(
+					res, countDel, err := hsd.UpdateDocument(
 						indexCurrent,
-						indexPattern,
-						queryCurrent,
+						decEs.Options.Hits,
 						nvbyte,
 					)
-					fmt.Println("Status Code:", res.Status())
+
+					fmt.Println("Status Code:", res.Status(), " countDel:", countDel)
 
 					Expect(err).ShouldNot(HaveOccurred())
-					Expect(res.StatusCode).Should(Equal(http.StatusCreated))
-				} else {
-					//ВЫПОЛНЯЕТСЯ ТОГДА КОГДА ДОКУМЕНТ НЕ НАЙДЕН
-
-					res, err = hsd.InsertDocument(indexCurrent, b)
-					Expect(err).ShouldNot(HaveOccurred())
-
-					fmt.Println("Status Code:", res.Status())
 					Expect(res.StatusCode).Should(Equal(http.StatusCreated))
 				}
 			}

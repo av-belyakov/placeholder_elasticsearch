@@ -50,7 +50,9 @@ func (a *SupportiveAlertArtifacts) GetArtifactTmp() *datamodels.ArtifactForEsAle
 func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{}, f func(interface{})) {
 	if fieldBranch == "alert.artifacts.dataType" {
 		a.currentKey = fmt.Sprint(i)
-		a.artifacts[a.currentKey] = []datamodels.ArtifactForEsAlert(nil)
+		if _, ok := a.artifacts[a.currentKey]; !ok {
+			a.artifacts[a.currentKey] = []datamodels.ArtifactForEsAlert(nil)
+		}
 	}
 
 	//если поле повторяется то считается что это уже новый объект

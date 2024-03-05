@@ -110,19 +110,19 @@ func (hsd HandlerSendData) SearchDocument(index []string, query *strings.Reader)
 
 // UpdateDocument выполняет поиск и обновление документов соответствующих
 // параметрам заданным в запросе
-func (hsd HandlerSendData) UpdateDocument(currentIndex string, list []datamodels.CaseHits, document []byte) (*esapi.Response, error) {
-	var err error
-
+func (hsd HandlerSendData) UpdateDocument(currentIndex string, list []datamodels.CaseHits, document []byte) (res *esapi.Response, countDel int, err error) {
 	for _, v := range list {
-		res, errDel := hsd.Client.Delete(v.Index, v.ID)
-		fmt.Printf("func 'DeleteDocument' delete data Index:'%s', ID:'%s', RESPONSE:%v\n", v.Index, v.ID, res)
-
+		_, errDel := hsd.Client.Delete(v.Index, v.ID)
 		if errDel != nil {
 			err = fmt.Errorf("%v, %v", err, errDel)
 		}
+
+		countDel++
 	}
 
-	return hsd.InsertDocument(currentIndex, document)
+	res, err = hsd.InsertDocument(currentIndex, document)
+
+	return res, countDel, err
 }
 
 // GetExistingIndexes выполняет проверку наличия индексов соответствующих

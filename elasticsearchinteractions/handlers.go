@@ -89,7 +89,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	}
 	if countDel > 0 {
 		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("a total of '%d' data has been deleted that corresponds to the parameters: source = '%s' and event.rootId = '%s'", countDel, obj.GetSource(), obj.GetEvent().GetRootId()),
+			MsgData: fmt.Sprintf("DocumentCase - a total of '%d' data has been deleted that corresponds to the parameters: source = '%s' and event.rootId = '%s'", countDel, obj.GetSource(), obj.GetEvent().GetRootId()),
 			MsgType: "warning",
 		}
 	}
@@ -301,7 +301,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	res, err = hsd.UpdateDocument(indexCurrent, decEs.Options.Hits, nvbyte)
+	res, countDel, err := hsd.UpdateDocument(indexCurrent, decEs.Options.Hits, nvbyte)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -321,7 +321,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		}
 
 		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("count replacing fields '%d' for alert with rootId: '%s'", countReplacingFields, newDocument.GetEvent().GetRootId()),
+			MsgData: fmt.Sprintf("count delete: '%d', count replacing fields '%d' for alert with rootId: '%s'", countDel, countReplacingFields, newDocument.GetEvent().GetRootId()),
 			MsgType: "warning",
 		}
 	}
