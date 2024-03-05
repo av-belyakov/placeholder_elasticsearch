@@ -360,6 +360,25 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			Expect(verified.GetElasticsearchID()).Should(Equal("3883f8f9-839r983hf848g8h-f84"))
 			Expect(verified.GetSource()).Should(Equal("GCM"))
 			Expect(verified.GetCreateTimestatmp()).Should(Equal("2024-02-06T15:37:52+03:00"))
+
+			anyArtifacts := alert.Get().GetArtifacts()
+			listCountArtifacts := map[string]int{}
+			for k, v := range anyArtifacts {
+				for i := 0; i < len(v); i++ {
+					if _, ok := listCountArtifacts[k]; !ok {
+						listCountArtifacts[k] = 1
+
+						continue
+					}
+
+					listCountArtifacts[k] += listCountArtifacts[k]
+				}
+			}
+
+			fmt.Println("Count artifact types:")
+			for k, v := range listCountArtifacts {
+				fmt.Printf("\t'%s': %d\n", k, v)
+			}
 		})
 	})
 
