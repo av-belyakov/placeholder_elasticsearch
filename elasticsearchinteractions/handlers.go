@@ -144,6 +144,8 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	var countReplacingFields int
 
+	fmt.Printf("func 'ReplacementDocumentAlert', source:'%s'\n", newDocument.GetSource())
+
 	t := time.Now()
 	month := int(t.Month())
 	indexPattern := fmt.Sprintf("%s_%s_%d", indexName, newDocument.GetSource(), t.Year())

@@ -56,6 +56,8 @@ func (hsd HandlerSendData) DeleteDocument(index []string, query *strings.Reader)
 		res      *esapi.Response
 	)
 
+	fmt.Println("func 'DeleteDocument' START...")
+
 	res, err = hsd.Client.Search(
 		hsd.Client.Search.WithContext(context.Background()),
 		hsd.Client.Search.WithIndex(index...),
@@ -72,10 +74,17 @@ func (hsd HandlerSendData) DeleteDocument(index []string, query *strings.Reader)
 		return countDoc, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
+	fmt.Println("func 'DeleteDocument' found data:", decEs)
+
 	if decEs.Options.Total.Value > 0 {
 		countDoc = decEs.Options.Total.Value
 		for _, v := range decEs.Options.Hits {
-			if _, errDel := hsd.Client.Delete(v.Index, v.ID); errDel != nil {
+			fmt.Printf("func 'DeleteDocument' delete data Index:'%s', ID:'%s'\n", v.Index, v.ID)
+
+			res, errDel := hsd.Client.Delete(v.Index, v.ID)
+			fmt.Println("func 'DeleteDocument' delete data ", res)
+
+			if errDel != nil {
 				err = fmt.Errorf("%v, %v", err, errDel)
 			}
 		}
@@ -118,11 +127,11 @@ func (hsd HandlerSendData) UpdateDocument(index, pattern string, query *strings.
 		return res, fmt.Errorf("'no index was found according to the specified template '%s'' %s:%d", pattern, f, l-1)
 	}
 
-	/*_, err = hsd.DeleteDocument(indexes, query)
+	_, err = hsd.DeleteDocument(indexes, query)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
-	}*/
+	}
 
 	return hsd.InsertDocument(index, document)
 }

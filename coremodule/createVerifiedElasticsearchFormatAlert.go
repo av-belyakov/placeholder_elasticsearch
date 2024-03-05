@@ -67,6 +67,9 @@ func NewVerifiedElasticsearchFormatAlert(
 			if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
 				verifiedAlert.SetSource(source)
 
+				fmt.Printf("func 'NewVerifiedElasticsearchFormatAlert' FieldBranch:'%s' SOURCE:'%v'\n", data.FieldBranch, data.Value)
+				fmt.Println("verifiedAlert.GetSource() =", verifiedAlert.GetSource())
+
 				continue
 			}
 
