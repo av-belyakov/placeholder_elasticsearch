@@ -9,22 +9,18 @@ import (
 )
 
 func NewObservablesMessageEs() *ObservablesMessageEs {
-	return &ObservablesMessageEs{}
-}
-
-func (o *ObservablesMessageEs) SetObservables(list map[string][]ObservableMessageEs) {
-	o.Observables = list
+	return &ObservablesMessageEs{
+		Observables: make(map[string][]ObservableMessageEs),
+	}
 }
 
 func (o *ObservablesMessageEs) GetObservables() map[string][]ObservableMessageEs {
 	return o.Observables
 }
 
-/*
-func (o *ObservablesMessageEs) Set(v ObservablesMessageEs) {
-	o.Observables = append(o.Observables, v)
+func (o *ObservablesMessageEs) SetObservables(list map[string][]ObservableMessageEs) {
+	o.Observables = list
 }
-*/
 
 func (o *ObservablesMessageEs) GetKeyObservables(k string) ([]ObservableMessageEs, bool) {
 	if value, ok := o.Observables[k]; ok {
@@ -82,6 +78,34 @@ func NewObservableMessageEs() *ObservableMessageEs {
 
 func (o *ObservableMessageEs) Get() *ObservableMessageEs {
 	return o
+}
+
+func (o *ObservableMessageEs) GetSensorId() string {
+	return o.SensorId
+}
+
+// SetSensorId добаляет значение в SensorId
+func (o *ObservableMessageEs) SetValueSensorId(v string) {
+	o.SensorId = v
+}
+
+// SetSensorId добавляет ЛЮБОЕ значение в SensorId
+func (o *ObservableMessageEs) SetAnySensorId(i interface{}) {
+	o.SensorId = fmt.Sprint(i)
+}
+
+func (o *ObservableMessageEs) GetSnortSid() []string {
+	return o.SnortSid
+}
+
+// SetValueSnortSid добавляет значение STRING в список поля SnortSid
+func (o *ObservableMessageEs) SetValueSnortSid(v string) {
+	o.SnortSid = append(o.SnortSid, v)
+}
+
+// SetAnySnortSid добавляет ЛЮБОЕ значение в список поля SnortSid
+func (o *ObservableMessageEs) SetAnySnortSid(i interface{}) {
+	o.SnortSid = append(o.SnortSid, fmt.Sprint(i))
 }
 
 func (o *ObservableMessageEs) GetTags() map[string][]string {
@@ -142,7 +166,8 @@ func (om ObservableMessageEs) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	str.WriteString(om.CommonObservableType.ToStringBeautiful(num))
-
+	str.WriteString(fmt.Sprintf("%s'sensorId': '%s'\n", ws, om.SensorId))
+	str.WriteString(fmt.Sprintf("%s'snortSid': \n%s", ws, ToStringBeautifulSlice(num, om.SnortSid)))
 	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulMapSlice(num, om.Tags)))
 	str.WriteString(fmt.Sprintf("%s'tagsAll': \n%s", ws, ToStringBeautifulSlice(num, om.TagsAll)))
 	str.WriteString(fmt.Sprintf("%s'attachment': \n%s", ws, om.Attachment.ToStringBeautiful(num)))

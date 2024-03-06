@@ -10,13 +10,13 @@ import (
 
 // VerifiedEsCase объект представляет собой верифицированный 'кейс' Elasticsearch
 type VerifiedEsCase struct {
-	ID              string                  `json:"@id" bson:"@id"`
-	ElasticsearchID string                  `json:"@es_id" bson:"@es_id"`
-	CreateTimestamp string                  `json:"@timestamp" bson:"@timestamp"`
-	Source          string                  `json:"source" bson:"source"`
-	Event           EventMessageTheHiveCase `json:"event" bson:"event"`
-	ObservablesMessageTheHive
-	TtpsMessageTheHive
+	ID              string                `json:"@id" bson:"@id"`
+	ElasticsearchID string                `json:"@es_id" bson:"@es_id"`
+	CreateTimestamp string                `json:"@timestamp" bson:"@timestamp"`
+	Source          string                `json:"source" bson:"source"`
+	Event           EventMessageForEsCase `json:"event" bson:"event"`
+	ObservablesMessageEs
+	TtpsMessageEs
 }
 
 func NewVerifiedEsCase() *VerifiedEsCase {
@@ -45,28 +45,28 @@ func (c *VerifiedEsCase) SetSource(source string) {
 	c.Source = source
 }
 
-func (c *VerifiedEsCase) GetEvent() *EventMessageTheHiveCase {
+func (c *VerifiedEsCase) GetEvent() *EventMessageForEsCase {
 	return &c.Event
 }
 
-func (c *VerifiedEsCase) SetEvent(event EventMessageTheHiveCase) {
+func (c *VerifiedEsCase) SetEvent(event EventMessageForEsCase) {
 	c.Event = event
 }
 
-func (c *VerifiedEsCase) GetObservables() *ObservablesMessageTheHive {
-	return &c.ObservablesMessageTheHive
+func (c *VerifiedEsCase) GetObservables() *ObservablesMessageEs {
+	return &c.ObservablesMessageEs
 }
 
-func (c *VerifiedEsCase) SetObservables(observables ObservablesMessageTheHive) {
-	c.ObservablesMessageTheHive = observables
+func (c *VerifiedEsCase) SetObservables(observables ObservablesMessageEs) {
+	c.ObservablesMessageEs = observables
 }
 
-func (c *VerifiedEsCase) GetTtps() *TtpsMessageTheHive {
-	return &c.TtpsMessageTheHive
+func (c *VerifiedEsCase) GetTtps() *TtpsMessageEs {
+	return &c.TtpsMessageEs
 }
 
-func (c *VerifiedEsCase) SetTtps(ttp TtpsMessageTheHive) {
-	c.TtpsMessageTheHive = ttp
+func (c *VerifiedEsCase) SetTtps(ttp TtpsMessageEs) {
+	c.TtpsMessageEs = ttp
 }
 
 func (c *VerifiedEsCase) ToStringBeautiful(num int) string {
@@ -78,9 +78,9 @@ func (c *VerifiedEsCase) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%s'event':\n", ws))
 	str.WriteString(c.Event.ToStringBeautiful(num + 1))
 	str.WriteString(fmt.Sprintf("%s'observables':\n", ws))
-	str.WriteString(c.ObservablesMessageTheHive.ToStringBeautiful(num + 1))
+	str.WriteString(c.ObservablesMessageEs.ToStringBeautiful(num + 1))
 	str.WriteString(fmt.Sprintf("%s'ttp':\n", ws))
-	str.WriteString(c.TtpsMessageTheHive.ToStringBeautiful(num + 1))
+	str.WriteString(c.TtpsMessageEs.ToStringBeautiful(num + 1))
 
 	return str.String()
 }

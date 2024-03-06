@@ -20,25 +20,3 @@ type ObservableMessage struct {
 	//данное поле редко используемое, думаю пока оно не требует реализации
 	//ExtraData        map[string]interface{}                         `json:"extraData"`
 }
-
-// AttachmentData прикрепленные данные
-type AttachmentData struct {
-	Size        uint64   `json:"size" bson:"size"`
-	Id          string   `json:"id" bson:"id"`
-	Name        string   `json:"name" bson:"name"`
-	ContentType string   `json:"contentType" bson:"contentType"`
-	Hashes      []string `json:"hashes" bson:"hashes"`
-}
-
-// ReportTaxonomies
-type ReportTaxonomies struct {
-	Taxonomies []Taxonomy `json:"taxonomies" bson:"taxonomies"`
-}
-
-// Taxonomy
-type Taxonomy struct {
-	Level     string `json:"level" bson:"level"`
-	Namespace string `json:"namespace" bson:"namespace"`
-	Predicate string `json:"predicate" bson:"predicate"`
-	Value     string `json:"value" bson:"value"`
-}
