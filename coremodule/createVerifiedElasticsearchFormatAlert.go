@@ -58,15 +58,9 @@ func NewVerifiedElasticsearchFormatAlert(
 	// ------ ALERT ARTIFACTS ------
 	listHandlerAlertArtifacts := listhandlerforesjson.NewListHandlerAlertArtifactsElement(&sa)
 
-	fmt.Println("func 'NewVerifiedElasticsearchFormatAlert' START...")
-
 	for data := range input {
 		var handlerIsExist bool
 		verifiedAlert.SetID(data.UUID)
-
-		//if data.FieldBranch == "source" {
-		//	fmt.Printf("func 'NewVerifiedElasticsearchFormatAlert' FieldBranch:'%s' SOURCE:'%v'\n", data.FieldBranch, data.Value)
-		//}
 
 		if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {
 			verifiedAlert.SetSource(source)
@@ -192,14 +186,13 @@ func NewVerifiedElasticsearchFormatAlert(
 	event.SetValueDetails(*eventDetails)
 
 	alert.SetValueCustomFields(alertObjectCustomFields)
-	alert.SetValueArtifacts(sa.GetArtifacts())
+
+	//выполняем дополнительную обработку некоторых объектов artifacts
+	artifacts := PostProcessingListArtifacts(sa.GetArtifacts())
+	alert.SetValueArtifacts(artifacts)
 
 	verifiedAlert.SetEvent(*event)
 	verifiedAlert.SetAlert(*alert)
-
-	fmt.Println("__________________________________________")
-	fmt.Printf("func 'NewVerifiedElasticsearchFormatAlert' SOURCE: '%s', SEND TO CHAN ->", verifiedAlert.GetSource())
-	fmt.Println("__________________________________________")
 
 	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
 		Section: "handling alert",

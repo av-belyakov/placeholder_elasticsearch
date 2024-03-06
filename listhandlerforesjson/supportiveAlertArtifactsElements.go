@@ -49,6 +49,11 @@ func (a *SupportiveAlertArtifacts) GetArtifactTmp() *datamodels.ArtifactForEsAle
 
 func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{}, f func(interface{})) {
 	if fieldBranch == "alert.artifacts.dataType" {
+		str := fmt.Sprint(i)
+		if _, ok := a.artifacts[str]; !ok {
+			a.artifacts[str] = []datamodels.ArtifactForEsAlert(nil)
+		}
+
 		if a.isExistFieldBranch(fieldBranch) {
 			a.listAcceptedFields = []string(nil)
 
@@ -58,28 +63,10 @@ func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{
 
 			a.artifacts[a.currentKey] = append(a.artifacts[a.currentKey], a.artifactTmp)
 			a.artifactTmp = *datamodels.NewArtifactForEsAlert()
-			a.currentKey = fmt.Sprint(i)
-		} else {
-			a.currentKey = fmt.Sprint(i)
-			if _, ok := a.artifacts[a.currentKey]; !ok {
-				a.artifacts[a.currentKey] = []datamodels.ArtifactForEsAlert(nil)
-			}
 		}
+
+		a.currentKey = fmt.Sprint(i)
 	}
-
-	/*
-		возможно происходит следующее
-
-			.... заполняются какие то поля ....
-		alert.artifacts.dataType
-			.... заполняются какие то поля ....
-		alert.artifacts.tags (из-за чего происходит игнорирование)
-		alert.artifacts.dataType
-			.... заполняются какие то поля ....
-
-		врезультате создется a.artifacts[a.currentKey]: nil,
-		а a.artifactTmp переносится в другой a.artifacts[a.currentKey]
-	*/
 
 	//если поле повторяется то считается что это уже новый объект
 	if fieldBranch != "alert.artifacts.tags" && a.isExistFieldBranch(fieldBranch) {

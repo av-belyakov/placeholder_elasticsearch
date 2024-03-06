@@ -8,6 +8,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/datamodels/commonalert"
 	"placeholder_elasticsearch/datamodels/commonalertartifact"
@@ -206,7 +207,10 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			event.SetValueDetails(*eventDetails)
 
 			alert.SetValueCustomFields(alertObjectCustomFields)
-			alert.SetValueArtifacts(sa.GetArtifacts())
+
+			//выполняем дополнительную обработку некоторых объектов artifacts
+			artifacts := coremodule.PostProcessingListArtifacts(sa.GetArtifacts())
+			alert.SetValueArtifacts(artifacts)
 
 			VerifiedForEsAlert.SetID("fhe78f838f88fg488398f8e3")
 			VerifiedForEsAlert.SetElasticsearchID("3883f8f9-839r983hf848g8h-f84")
@@ -272,11 +276,9 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			Expect(len(anyEventCustomFields)).Should(Equal(2))
 
 			_, _, _, firstTime := anyEventCustomFields["first-time"].Get()
-			//Expect(firstTime).Should(Equal("2024-02-06T15:20:30+03:00"))
 			Expect(firstTime).Should(Equal("2024-02-06T07:48:52+03:00"))
 
 			_, _, _, lastTime := anyEventCustomFields["last-time"].Get()
-			//Expect(lastTime).Should(Equal("2024-02-06T15:20:30+03:00"))
 			Expect(lastTime).Should(Equal("2024-02-06T07:48:52+03:00"))
 		})
 
@@ -313,7 +315,7 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 		It("Объект Artifacts должен быть успешно заполнен", func() {
 			anyArtifacts := alert.Get().GetArtifacts()
 
-			Expect(len(anyArtifacts)).Should(Equal(4))
+			Expect(len(anyArtifacts)).Should(Equal(5))
 
 			urlArkime, ok := anyArtifacts["url_arkime"]
 			Expect(ok).Should(BeTrue())

@@ -28,6 +28,50 @@ func (a *AlertMessageForEsAlert) Get() *AlertMessageForEsAlert {
 	return a
 }
 
+func (a *AlertMessageForEsAlert) GetFollow() bool {
+	return a.Follow
+}
+
+// SetValueFollow устанавливает BOOL значение для поля Follow
+func (a *AlertMessageForEsAlert) SetValueFollow(v bool) {
+	a.Follow = v
+}
+
+// SetAnyFollow устанавливает ЛЮБОЕ значение для поля Follow
+func (a *AlertMessageForEsAlert) SetAnyFollow(i interface{}) {
+	if v, ok := i.(bool); ok {
+		a.Follow = v
+	}
+}
+
+func (a *AlertMessageForEsAlert) GetSeverity() uint64 {
+	return a.Severity
+}
+
+// SetValueSeverity устанавливает UINT64 значение для поля Severity
+func (a *AlertMessageForEsAlert) SetValueSeverity(v uint64) {
+	a.Severity = v
+}
+
+// SetAnySeverity устанавливает ЛЮБОЕ значение для поля Severity
+func (a *AlertMessageForEsAlert) SetAnySeverity(i interface{}) {
+	if v, ok := i.(float64); ok {
+		a.Severity = uint64(v)
+
+		return
+	}
+
+	if v, ok := i.(float64); ok {
+		a.Severity = uint64(v)
+
+		return
+	}
+
+	if v, ok := i.(uint64); ok {
+		a.Severity = v
+	}
+}
+
 func (a *AlertMessageForEsAlert) GetTags() map[string][]string {
 	return a.Tags
 }
@@ -113,6 +157,8 @@ func (a *AlertMessageForEsAlert) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	str.WriteString(a.CommonAlertType.ToStringBeautiful(num))
+	str.WriteString(fmt.Sprintf("%s'follow': '%t'\n", ws, a.Follow))
+	str.WriteString(fmt.Sprintf("%s'severity': '%d'\n", ws, a.Severity))
 	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulMapSlice(num, a.Tags)))
 	str.WriteString(fmt.Sprintf("%s'tagsAll': \n%s", ws, ToStringBeautifulSlice(num, a.TagsAll)))
 	str.WriteString(fmt.Sprintf("%s'customFields': \n%s", ws, CustomFieldsToStringBeautiful(a.CustomFields, num)))
@@ -138,14 +184,43 @@ func NewArtifactForEsAlert() *ArtifactForEsAlert {
 			CreatedAt: "1970-01-01T00:00:00+00:00",
 			StartDate: "1970-01-01T00:00:00+00:00",
 		},
-		Tags:    make(map[string][]string),
-		TagsAll: []string(nil),
+		SnortSid: []string(nil),
+		Tags:     make(map[string][]string),
+		TagsAll:  []string(nil),
 	}
 }
 
 // Get возвращает объект типа ArtifactForEsAlert
 func (a *ArtifactForEsAlert) Get() *ArtifactForEsAlert {
 	return a
+}
+
+func (a *ArtifactForEsAlert) GetSensorId() string {
+	return a.SensorId
+}
+
+// SetSensorId добаляет значение в SensorId
+func (a *ArtifactForEsAlert) SetValueSensorId(v string) {
+	a.SensorId = v
+}
+
+// SetSensorId добавляет ЛЮБОЕ значение в SensorId
+func (a *ArtifactForEsAlert) SetAnySensorId(i interface{}) {
+	a.SensorId = fmt.Sprint(i)
+}
+
+func (a *ArtifactForEsAlert) GetSnortSid() []string {
+	return a.SnortSid
+}
+
+// SetValueSnortSid добавляет значение STRING в список поля SnortSid
+func (a *ArtifactForEsAlert) SetValueSnortSid(v string) {
+	a.SnortSid = append(a.SnortSid, v)
+}
+
+// SetAnySnortSid добавляет ЛЮБОЕ значение в список поля SnortSid
+func (a *ArtifactForEsAlert) SetAnySnortSid(i interface{}) {
+	a.SnortSid = append(a.SnortSid, fmt.Sprint(i))
 }
 
 func (a *ArtifactForEsAlert) GetTags() map[string][]string {
@@ -194,6 +269,8 @@ func (a *ArtifactForEsAlert) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	str.WriteString(a.CommonArtifactType.ToStringBeautiful(num))
+	str.WriteString(fmt.Sprintf("%s'sensorId': '%s'\n", ws, a.SensorId))
+	str.WriteString(fmt.Sprintf("%s'snortSid': \n%s", ws, ToStringBeautifulSlice(num, a.SnortSid)))
 	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulMapSlice(num, a.Tags)))
 	str.WriteString(fmt.Sprintf("%s'tagsAll': \n%s", ws, ToStringBeautifulSlice(num, a.TagsAll)))
 

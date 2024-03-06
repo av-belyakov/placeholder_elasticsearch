@@ -7,6 +7,8 @@ import (
 
 func NewListHandlerAlertElement(alert *datamodels.AlertMessageForEsAlert) map[string][]func(interface{}) {
 	return map[string][]func(interface{}){
+		"alert.follow":       {alert.SetAnyFollow},
+		"alert.severity":     {alert.SetAnySeverity},
 		"alert.tlp":          {alert.SetAnyTlp},
 		"alert.date":         {alert.SetAnyDate},
 		"alert.createdAt":    {alert.SetAnyCreatedAt},

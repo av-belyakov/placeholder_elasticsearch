@@ -73,9 +73,7 @@ func HandlerElasticSearch(
 	}
 
 	if err := hsd.New(); err != nil {
-		if err != nil {
-			return module, err
-		}
+		return module, err
 	}
 
 	go func() {

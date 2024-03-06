@@ -30,6 +30,44 @@ func searchEventSource(fieldBranch string, value interface{}) (string, bool) {
 	return "", false
 }
 
+func PostProcessingListArtifacts(list map[string][]datamodels.ArtifactForEsAlert) map[string][]datamodels.ArtifactForEsAlert {
+	handlers := map[string]func(a *datamodels.ArtifactForEsAlert){
+		"snort_sid": func(a *datamodels.ArtifactForEsAlert) {
+			if strings.Contains(a.Data, ", ") {
+				sid := strings.Split(a.Data, ", ")
+				a.SnortSid = sid
+
+				return
+			}
+
+			a.SnortSid = append(a.SnortSid, a.Data)
+		},
+		"ip_home": func(a *datamodels.ArtifactForEsAlert) {
+			tmp := strings.Split(a.Data, ":")
+
+			if len(tmp) != 2 {
+				return
+			}
+
+			a.SensorId = tmp[0]
+			a.Data = tmp[1]
+		},
+	}
+
+	for k, v := range list {
+		for key, value := range v {
+			f, ok := handlers[value.DataType]
+			if !ok {
+				continue
+			}
+
+			f(&list[k][key])
+		}
+	}
+
+	return list
+}
+
 func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHiveCase) {
 	if e.GetStartDate() == "" {
 		e.SetValueStartDate("1970-01-01T00:00:00+00:00")

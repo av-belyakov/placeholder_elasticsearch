@@ -106,6 +106,25 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 
 				continue
 			}
+
+			//обработка полей содержащихся в AlertMessageForEsAlert
+			//и не относящихся к вышеперечисленым значениям
+			//*******************************************************
+			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
+				if !currentStruct.Field(i).CanSet() {
+					continue
+				}
+
+				if str, ok := newStruct.Field(j).Interface().(string); ok {
+					//не обновлять текущие значения новыми пустыми значениями
+					if str == "" {
+						continue
+					}
+				}
+
+				currentStruct.Field(i).Set(newStruct.Field(j))
+				countReplacingFields++
+			}
 		}
 	}
 
