@@ -156,9 +156,23 @@ func (o *ObservableMessageEs) GetReports() map[string]ReportTaxonomies {
 	return o.Reports
 }
 
+// GetTaxonomies возвращает список Taxonomy по заданному ключу
+func (o *ObservableMessageEs) GetTaxonomies(key string) (*ReportTaxonomies, bool) {
+	if res, ok := o.Reports[key]; ok {
+		return &res, true
+	}
+
+	return &ReportTaxonomies{}, false
+}
+
 // SetValueReports устанавливает значение для поля Reports
 func (o *ObservableMessageEs) SetValueReports(v map[string]ReportTaxonomies) {
 	o.Reports = v
+}
+
+// AddValueReports добавляет список значений ReportTaxonomies
+func (o *ObservableMessageEs) AddValueReports(key string, rt ReportTaxonomies) {
+	o.Reports[key] = rt
 }
 
 func (om ObservableMessageEs) ToStringBeautiful(num int) string {
@@ -170,7 +184,7 @@ func (om ObservableMessageEs) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%s'snortSid': \n%s", ws, ToStringBeautifulSlice(num, om.SnortSid)))
 	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulMapSlice(num, om.Tags)))
 	str.WriteString(fmt.Sprintf("%s'tagsAll': \n%s", ws, ToStringBeautifulSlice(num, om.TagsAll)))
-	str.WriteString(fmt.Sprintf("%s'attachment': \n%s", ws, om.Attachment.ToStringBeautiful(num)))
+	str.WriteString(fmt.Sprintf("%s'attachment': \n%s", ws, om.Attachment.ToStringBeautiful(num+1)))
 	str.WriteString(fmt.Sprintf("%s'reports': \n%s", ws, func(l map[string]ReportTaxonomies) string {
 		var str strings.Builder = strings.Builder{}
 		for key, value := range l {

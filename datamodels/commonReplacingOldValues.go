@@ -137,7 +137,7 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 			// для обработки поля "Platforms"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "Platforms" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -148,7 +148,7 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 			// для обработки поля "PermissionsRequired"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "PermissionsRequired" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -159,7 +159,7 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 			// для обработки поля "DataSources"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "DataSources" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -170,7 +170,7 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 			// для обработки поля "Tactics"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "Tactics" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -229,7 +229,7 @@ func (a *AttachmentData) ReplacingOldValues(element AttachmentData) int {
 			// для обработки поля "Hashes"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Hashes" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -272,57 +272,27 @@ func (tr *ReportTaxonomies) ReplacingOldValues(element ReportTaxonomies) (int, e
 		countReplacingFields int
 	)
 
-	currentStruct := reflect.ValueOf(tr).Elem()
-	typeOfCurrentStruct := currentStruct.Type()
+	//На мой взгляд в данном случае taxonomy.ReplacingOldValues
+	//здесь не нужна, так как не понятно по каким полям отслеживать
+	//уникальность объекта
+	tr.Taxonomies = append(tr.Taxonomies, element.Taxonomies...)
 
-	newStruct := reflect.ValueOf(element)
-	typeOfNewStruct := newStruct.Type()
+	//currentStruct := reflect.ValueOf(tr).Elem()
+	//typeOfCurrentStruct := currentStruct.Type()
 
-	for i := 0; i < currentStruct.NumField(); i++ {
-		for j := 0; j < newStruct.NumField(); j++ {
-			if typeOfCurrentStruct.Field(i).Name != typeOfNewStruct.Field(j).Name {
-				continue
-			}
+	//newStruct := reflect.ValueOf(element)
+	//typeOfNewStruct := newStruct.Type()
 
-			/*
-							!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-				Здесь надо как то сделать сравнение списков типа
-				type ReportTaxonomies struct {
-					Taxonomies []Taxonomy `json:"taxonomies" bson:"taxonomies"`
-				}
-
-							!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			*/
-		}
-	}
+	//for i := 0; i < currentStruct.NumField(); i++ {
+	//	for j := 0; j < newStruct.NumField(); j++ {
+	//		if typeOfCurrentStruct.Field(i).Name != typeOfNewStruct.Field(j).Name {
+	//			continue
+	//		}
+	//	}
+	//}
 
 	return countReplacingFields, err
 }
-
-// comparisonListsTtp объединяет два списка
-/*func comparisonLists(currentTtp, newTtp []TtpMessage) ([]TtpMessage, int) {
-	var countReplacingFields int
-
-	for _, value := range newTtp {
-		var isExist bool
-
-		for k, v := range currentTtp {
-			if value.GetUnderliningId() == v.GetUnderliningId() {
-				isExist = true
-				countReplacingFields += currentTtp[k].ReplacingOldValues(value)
-
-				break
-			}
-		}
-
-		if !isExist {
-			currentTtp = append(currentTtp, value)
-		}
-	}
-
-	return currentTtp, countReplacingFields
-}*/
 
 //***************** Taxonomy ********************
 

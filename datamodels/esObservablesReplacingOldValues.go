@@ -5,50 +5,23 @@ import "reflect"
 // ReplacingOldValues заменяет старые значения структуры ObservablesMessageEs
 // новыми значениями. Изменяемые поля:
 // Observables
-func (o *ObservablesMessageEs) ReplacingOldValues(element ObservablesMessageEs) (int, error) {
-	var (
-		err                  error
-		countReplacingFields int
-	)
+func (o *ObservablesMessageEs) ReplacingOldValues(element ObservablesMessageEs) int {
+	var countReplacingFields int
 
-	currentStruct := reflect.ValueOf(o).Elem()
-	typeOfCurrentStruct := currentStruct.Type()
+	for key, value := range element.Observables {
+		currentObservables, ok := o.GetKeyObservables(key)
+		if !ok {
+			o.SetKeyObservables(key, value)
 
-	newStruct := reflect.ValueOf(element)
-	typeOfNewStruct := newStruct.Type()
-
-	for i := 0; i < currentStruct.NumField(); i++ {
-		for j := 0; j < newStruct.NumField(); j++ {
-			if typeOfCurrentStruct.Field(i).Name != typeOfNewStruct.Field(j).Name {
-				continue
-			}
-
-			// для обработки поля "Observables"
-			if typeOfCurrentStruct.Field(i).Name == "Observables" {
-				newObservables, okNew := newStruct.Field(j).Interface().(map[string][]ObservableMessageEs)
-				if !okNew {
-					continue
-				}
-
-				for key, value := range newObservables {
-					currentObservables, ok := o.GetKeyObservables(key)
-					if !ok {
-						o.SetKeyObservables(key, value)
-						continue
-					}
-
-					//modifiedTtp, num := comparisonListsTtp(currentTtp, value)
-					modifiedObservables, num := comparisonListsObservables(currentObservables, value)
-					countReplacingFields += num
-					o.SetKeyObservables(key, modifiedObservables)
-				}
-
-				continue
-			}
+			continue
 		}
+
+		modifiedObservables, num := comparisonListsObservables(currentObservables, value)
+		countReplacingFields += num
+		o.SetKeyObservables(key, modifiedObservables)
 	}
 
-	return countReplacingFields, err
+	return countReplacingFields
 }
 
 // ReplacingOldValues заменяет старые значения структуры ObservableMessageEs
@@ -81,9 +54,9 @@ func (o *ObservableMessageEs) ReplacingOldValues(element ObservableMessageEs) in
 			}
 
 			// для обработки поля "SnortSid"
-			//**************************
+			//******************************
 			if typeOfCurrentStruct.Field(i).Name == "SnortSid" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -111,9 +84,9 @@ func (o *ObservableMessageEs) ReplacingOldValues(element ObservableMessageEs) in
 			}
 
 			// для обработки поля "TagsAll"
-			//**************************
+			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
-				if list, ok := replacingSlice(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -122,27 +95,38 @@ func (o *ObservableMessageEs) ReplacingOldValues(element ObservableMessageEs) in
 			}
 
 			// для обработки поля "Attachment"
-			//**************************
+			//********************************
 			if typeOfCurrentStruct.Field(i).Name == "Attachment" {
 				countReplacingFields += o.Attachment.ReplacingOldValues(*element.GetAttachment())
 				continue
 			}
 
 			// для обработки поля "Reports"
-			//**************************
+			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "Reports" {
-				/*
-					!!!!!!!!!!!!!!!!!!!
-					здесь нужно сделать обработку map[string]ReportTaxonomies
-					!!!!!!!!!!!!!!!!!!!
+				newRT, okNew := newStruct.Field(j).Interface().(map[string]ReportTaxonomies)
+				if !okNew {
+					continue
+				}
 
-					Reports    map[string]ReportTaxonomies
-				*/
+				for key, value := range newRT {
+					rt, ok := o.GetTaxonomies(key)
+					if !ok {
+						o.AddValueReports(key, value)
+
+						continue
+					}
+
+					num, _ := rt.ReplacingOldValues(value)
+					countReplacingFields += num
+				}
+
+				continue
 			}
 
 			//обработка полей содержащихся в ObservableMessageEs
 			//и не относящихся к вышеперечисленым значениям
-			//*******************************************************
+			//***************************************************
 			if !currentStruct.Field(i).Equal(newStruct.Field(j)) {
 				if !currentStruct.Field(i).CanSet() {
 					continue

@@ -1,54 +1,25 @@
 package datamodels
 
-import "reflect"
-
 // ReplacingOldValues заменяет старые значения структуры TtpsMessageEs
 // новыми значениями. Изменяемые поля:
 // Ttp
-func (ttp *TtpsMessageEs) ReplacingOldValues(element TtpsMessageEs) (int, error) {
-	var (
-		err                  error
-		countReplacingFields int
-	)
+func (ttp *TtpsMessageEs) ReplacingOldValues(element TtpsMessageEs) int {
+	var countReplacingFields int
 
-	currentStruct := reflect.ValueOf(ttp).Elem()
-	typeOfCurrentStruct := currentStruct.Type()
+	for key, value := range element.Ttp {
+		currentTtp, ok := ttp.GetKeyTtp(key)
+		if !ok {
+			ttp.SetKeyTtp(key, value)
 
-	newStruct := reflect.ValueOf(element)
-	typeOfNewStruct := newStruct.Type()
-
-	for i := 0; i < currentStruct.NumField(); i++ {
-		for j := 0; j < newStruct.NumField(); j++ {
-			if typeOfCurrentStruct.Field(i).Name != typeOfNewStruct.Field(j).Name {
-				continue
-			}
-
-			// для обработки поля "Ttp"
-			if typeOfCurrentStruct.Field(i).Name == "Ttp" {
-				newTtp, okNew := newStruct.Field(j).Interface().(map[string][]TtpMessage)
-				if !okNew {
-					continue
-				}
-
-				for key, value := range newTtp {
-					currentTtp, ok := ttp.GetKeyTtp(key)
-					if !ok {
-						ttp.SetKeyTtp(key, value)
-
-						continue
-					}
-
-					modifiedTtp, num := comparisonListsTtp(currentTtp, value)
-					countReplacingFields += num
-					ttp.SetKeyTtp(key, modifiedTtp)
-				}
-
-				continue
-			}
+			continue
 		}
+
+		modifiedTtp, num := comparisonListsTtp(currentTtp, value)
+		countReplacingFields += num
+		ttp.SetKeyTtp(key, modifiedTtp)
 	}
 
-	return countReplacingFields, err
+	return countReplacingFields
 }
 
 // comparisonListsTtp объединяет два списка

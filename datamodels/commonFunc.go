@@ -8,7 +8,7 @@ import (
 	"placeholder_elasticsearch/supportingfunctions"
 )
 
-func replacingSlice(current, new reflect.Value) (list reflect.Value, ok bool) {
+func replacingSliceString(current, new reflect.Value) (list reflect.Value, ok bool) {
 	if reflect.DeepEqual(current, new) {
 		return list, false
 	}
