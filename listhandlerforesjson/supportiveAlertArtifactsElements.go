@@ -65,7 +65,7 @@ func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{
 			a.artifactTmp = *datamodels.NewArtifactForEsAlert()
 		}
 
-		a.currentKey = fmt.Sprint(i)
+		a.currentKey = str
 	}
 
 	//если поле повторяется то считается что это уже новый объект

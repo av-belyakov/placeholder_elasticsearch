@@ -191,6 +191,11 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 					if str == "" {
 						continue
 					}
+
+					//не обновлять значение если оно соответствует пустой дате
+					if str == "1970-01-01T00:00:00+00:00" {
+						continue
+					}
 				}
 
 				currentStruct.Field(i).Set(newStruct.Field(j))

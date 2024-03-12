@@ -448,12 +448,19 @@ func (ped *PatternExtraData) GetDetection() string {
 
 // SetAnyDetection устанавливает значение поля Detection
 func (ped *PatternExtraData) SetValueDetection(v string) {
+	v = strings.ReplaceAll(v, "\t", "")
+	v = strings.ReplaceAll(v, "\n", "")
+
 	ped.Detection = v
 }
 
 // SetAnyDetection устанавливает ЛЮБОЕ значение для поля Detection
 func (ped *PatternExtraData) SetAnyDetection(i interface{}) {
-	ped.Detection = fmt.Sprint(i)
+	str := fmt.Sprint(i)
+	str = strings.ReplaceAll(str, "\t", "")
+	str = strings.ReplaceAll(str, "\n", "")
+
+	ped.Detection = str
 }
 
 func (ped *PatternExtraData) GetDescription() string {

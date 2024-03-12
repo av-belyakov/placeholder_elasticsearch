@@ -18,10 +18,6 @@ func (o *ObservablesMessageEs) GetObservables() map[string][]ObservableMessageEs
 	return o.Observables
 }
 
-func (o *ObservablesMessageEs) SetObservables(list map[string][]ObservableMessageEs) {
-	o.Observables = list
-}
-
 func (o *ObservablesMessageEs) GetKeyObservables(k string) ([]ObservableMessageEs, bool) {
 	if value, ok := o.Observables[k]; ok {
 		return value, true
@@ -69,7 +65,7 @@ func NewObservableMessageEs() *ObservableMessageEs {
 			UnderliningUpdatedAt: "1970-01-01T00:00:00+00:00",
 			StartDate:            "1970-01-01T00:00:00+00:00",
 		},
-		Tags:       map[string][]string(nil),
+		Tags:       make(map[string][]string),
 		TagsAll:    []string(nil),
 		Attachment: *NewAttachmentData(),
 		Reports:    make(map[string]ReportTaxonomies),

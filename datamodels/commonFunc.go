@@ -8,6 +8,58 @@ import (
 	"placeholder_elasticsearch/supportingfunctions"
 )
 
+type UserTypeGetter interface {
+	GetData() string
+	GetDataType() string
+	SetValueData(string)
+	SetValueSensorId(string)
+	SetValueSnortSid(string)
+}
+
+// PostProcessingUserType выполняет постобработку некоторых пользовательских типов
+func PostProcessingUserType[T UserTypeGetter](ut T) (T, bool) {
+	/*
+
+		Не работает, что то не так
+
+	*/
+
+	handlers := map[string]func(utg UserTypeGetter){
+		"snort_sid": func(utg UserTypeGetter) {
+			if !strings.Contains((utg).GetData(), ",") {
+				return
+			}
+
+			tmp := strings.Split((utg).GetData(), ",")
+			for _, v := range tmp {
+				(utg).SetValueSnortSid(strings.TrimSpace(v))
+			}
+		},
+		"ip_home": func(utg UserTypeGetter) {
+			if !strings.Contains((utg).GetData(), ":") {
+				return
+			}
+
+			tmp := strings.Split((utg).GetData(), ":")
+			if len(tmp) != 2 {
+				return
+			}
+
+			(utg).SetValueSensorId(tmp[0])
+			(utg).SetValueData(tmp[1])
+		},
+	}
+
+	f, ok := handlers[ut.GetDataType()]
+	if !ok {
+		return ut, false
+	}
+
+	f(ut)
+
+	return ut, true
+}
+
 func replacingSliceString(current, new reflect.Value) (list reflect.Value, ok bool) {
 	if reflect.DeepEqual(current, new) {
 		return list, false

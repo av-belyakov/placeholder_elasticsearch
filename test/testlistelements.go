@@ -303,6 +303,45 @@ func GetObservableTwo() []struct {
 	}
 }
 
+func GetObservableThree() []struct {
+	ElemName  string
+	ElemValue interface{}
+} {
+	return []struct {
+		ElemName  string
+		ElemValue interface{}
+	}{
+		{ElemName: "observables._id", ElemValue: "~1916473544"},
+		{ElemName: "observables.data", ElemValue: "91003345,95000138"},
+		{ElemName: "observables.dataType", ElemValue: "snort_sid"},
+		{ElemName: "observables.ioc", ElemValue: true},
+		{ElemName: "observables._type", ElemValue: "Observable"},
+		{ElemName: "observables.tlp", ElemValue: float64(3)},
+		{ElemName: "observables._createdAt", ElemValue: float64(1690968664227)},
+		{ElemName: "observables._createdBy", ElemValue: "zsiem@rcm.lcl"},
+		{ElemName: "observables._updatedAt", ElemValue: float64(1704977151860)},
+		{ElemName: "observables.sighted", ElemValue: false},
+		{ElemName: "observables.startDate", ElemValue: float64(1690968664227)},
+		{ElemName: "observables.tags", ElemValue: []interface{}{
+			"snort",
+			"misp:Network activity=\"snort\"",
+		}},
+
+		{ElemName: "observables.attachment.contentType", ElemValue: "text/plain"},
+		{ElemName: "observables.attachment.id", ElemValue: "00000000000000000000c398ac1"},
+		{ElemName: "observables.attachment.name", ElemValue: "d23t.dll"},
+		{ElemName: "observables.attachment.size", ElemValue: float64(817)},
+		{ElemName: "observables.attachment.hashes", ElemValue: []interface{}{
+			"000000000000000000c29438b04791184d3eba39bdb",
+			"7c531394dc2f483bc00000000000000006c6c628c02e0788",
+		}},
+		//{ElemName: "observables.extraData", ElemValue: ""},
+		//{ElemName: "observables.extraData", ElemValue: ""},
+		//{ElemName: "observables.extraData", ElemValue: ""},
+		//{ElemName: "observables.", ElemValue: ""},
+	}
+}
+
 func GetTtpOne() []struct {
 	ElemName  string
 	ElemValue interface{}
