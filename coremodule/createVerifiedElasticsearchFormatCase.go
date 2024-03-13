@@ -2,32 +2,33 @@ package coremodule
 
 import (
 	"fmt"
+	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/elasticsearchinteractions"
+	"placeholder_elasticsearch/listhandlerforesjson"
+	"placeholder_elasticsearch/listhandlerthehivejson"
 	"reflect"
 	"runtime"
 	"strings"
-
-	"placeholder_elasticsearch/datamodels"
-	"placeholder_elasticsearch/listhandlerthehivejson"
-	"placeholder_elasticsearch/mongodbinteractions"
 )
 
-func NewVerifiedTheHiveFormatCase(
+func NewVerifiedElasticsearchFormatCase(
 	input <-chan datamodels.ChanOutputDecodeJSON,
 	done <-chan bool,
-	mongodbm *mongodbinteractions.MongoDBModule,
+	esm *elasticsearchinteractions.ElasticSearchModule,
 	logging chan<- datamodels.MessageLogging,
 ) {
 	var (
 		rootId string
-		//список не обработанных полей
+		// список не обработанных полей
 		listRawFields map[string]string = make(map[string]string)
 
 		//Финальный объект
-		verifiedCase *datamodels.VerifiedTheHiveCase = datamodels.NewVerifiedTheHiveCase()
+		verifiedCase *datamodels.VerifiedEsCase = datamodels.NewVerifiedEsCase()
 
-		event        *datamodels.EventMessageTheHiveCase = datamodels.NewEventMessageTheHiveCase()
-		eventObject  *datamodels.EventCaseObject         = datamodels.NewEventCaseObject()
-		eventDetails *datamodels.EventCaseDetails        = datamodels.NewEventCaseDetails()
+		event *datamodels.EventMessageForEsCase = datamodels.NewEventMessageForEsCase()
+
+		eventObject  *datamodels.EventForEsCaseObject = datamodels.NewEventForEsCaseObject()
+		eventDetails *datamodels.EventCaseDetails     = datamodels.NewEventCaseDetails()
 
 		eventObjectCustomFields  datamodels.CustomFields = datamodels.CustomFields{}
 		eventDetailsCustomFields datamodels.CustomFields = datamodels.CustomFields{}
@@ -35,23 +36,23 @@ func NewVerifiedTheHiveFormatCase(
 
 	//******************* Основные обработчики для Event **********************
 	// ------ EVENT ------
-	listHandlerEvent := listhandlerthehivejson.NewListHandlerEventCaseElement(event)
+	listHandlerEvent := listhandlerforesjson.NewListHandlerEventCaseElement(event)
 	// ------ EVENT OBJECT ------
-	listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventCaseObjectElement(eventObject)
+	listHandlerEventObject := listhandlerforesjson.NewListHandlerEventCaseObjectElement(eventObject)
 	// ------ EVENT OBJECT CUSTOMFIELDS ------
 	listHandlerEventObjectCustomFields := listhandlerthehivejson.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
 	// ------ EVENT DETAILS ------
-	listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventCaseDetailsElement(eventDetails)
+	listHandlerEventDetails := listhandlerforesjson.NewListHandlerEventCaseDetailsElement(eventDetails)
 	// ------ EVENT DETAILS CUSTOMFIELDS ------
 	listHandlerEventDetailsCustomFields := listhandlerthehivejson.NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields)
 
 	//******************* Вспомогательный объект для Observables **********************
-	so := listhandlerthehivejson.NewSupportiveObservables()
-	listHandlerObservables := listhandlerthehivejson.NewListHandlerObservablesElement(so)
+	so := listhandlerforesjson.NewSupportiveObservables()
+	listHandlerObservables := listhandlerforesjson.NewListHandlerObservablesElement(so)
 
 	//******************* Вспомогательный объект для Ttp **********************
-	sttp := listhandlerthehivejson.NewSupportiveTtp()
-	listHandlerTtp := listhandlerthehivejson.NewListHandlerTtpElement(sttp)
+	sttp := listhandlerforesjson.NewSupportiveTtp()
+	listHandlerTtp := listhandlerforesjson.NewListHandlerTtpElement(sttp)
 
 	for data := range input {
 		var handlerIsExist bool
@@ -211,32 +212,21 @@ func NewVerifiedTheHiveFormatCase(
 	event.SetValueObject(*eventObject)
 	event.SetValueDetails(*eventDetails)
 
-	// проверяем объек на наличие пустых полей которые должны
-	// содержать дату и время
-	checkDatetimeFieldsEventObject(event)
-
 	// собираем объект observables
-	observables := datamodels.NewObservablesMessageTheHive()
-	observables.SetObservables(so.GetObservables())
+	observables := datamodels.NewObservablesMessageEs()
+	observables.SetValueObservables(so.GetObservables())
 
 	// собираем объект ttp
-	ttps := datamodels.NewTtpsMessageTheHive()
-	ttps.SetTtps(sttp.GetTtps())
+	ttps := datamodels.NewTtpsMessageEs()
+	ttps.SetValueTtp(sttp.GetTtps())
 
 	verifiedCase.SetEvent(*event)
 	verifiedCase.SetObservables(*observables)
 	verifiedCase.SetTtps(*ttps)
 
-	mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
+	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
 		Section: "handling case",
 		Command: "add new case",
 		Data:    verifiedCase.Get(),
-	}
-
-	// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования
-	// при выполнения тестирования
-	logging <- datamodels.MessageLogging{
-		MsgData: "",
-		MsgType: "STOP TEST",
 	}
 }

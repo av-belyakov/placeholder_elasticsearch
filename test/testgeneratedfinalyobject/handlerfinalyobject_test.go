@@ -138,7 +138,7 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 
 		decodeJson = coremodule.NewDecodeJsonMessageSettings(listRule, logging, counting)
 		chanOutputJsonDecode, chanDecodeDone = decodeJson.HandlerJsonMessage(exampleByte, uuid.NewString(), "subject_case")
-		go coremodule.NewVerifiedTheHiveFormatCase(chanOutputJsonDecode, chanDecodeDone, esModule, mongodbModule, logging)
+		go coremodule.NewVerifiedTheHiveFormatCase(chanOutputJsonDecode, chanDecodeDone, mongodbModule, logging)
 	})
 
 	Context("Тест 1. Проверка чтения тестового JSON файла", func() {

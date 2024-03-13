@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"runtime"
 	"time"
 
@@ -246,14 +247,14 @@ func init() {
 }
 
 func main() {
-	defer func() {
-		if err := recover(); err != nil {
-			_ = sl.WriteLoggingData(fmt.Sprintf("stop 'main' function, %v", err), "error")
-		}
-	}()
+	var (
+		appName   string
+		appStatus string = "production"
+	)
 
-	var appName string
-	appStatus := "production"
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
 	if an, err := getAppName("README.md", 1); err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "warning")
@@ -321,12 +322,18 @@ func main() {
 	}
 
 	ctxCoreHandler, closeCoreHandler := context.WithCancel(context.Background())
-	defer func() {
+
+	go func() {
+		oscall := <-c
 		close(counting)
 		close(logging)
 
 		closeZabbix()
 		closeCoreHandler()
+
+		if err := recover(); err != nil {
+			_ = sl.WriteLoggingData(fmt.Sprintf("stop 'main' function, %v, os.signal: '%s'", err, oscall), "error")
+		}
 	}()
 	core := coremodule.NewCoreHandler(storageApp, logging, counting)
 	core.CoreHandler(ctxCoreHandler, lrcase, lralert, natsModule, esModule, mongodbModule)

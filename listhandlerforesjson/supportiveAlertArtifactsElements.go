@@ -33,6 +33,7 @@ func (a *SupportiveAlertArtifacts) GetArtifacts() map[string][]datamodels.Artifa
 	a.listAcceptedFields = []string(nil)
 
 	if a.currentKey != "" {
+		_, _ = datamodels.PostProcessingUserType[*datamodels.ArtifactForEsAlert](&a.artifactTmp)
 		a.artifacts[a.currentKey] = append(a.artifacts[a.currentKey], a.artifactTmp)
 	}
 
@@ -57,11 +58,9 @@ func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{
 		if a.isExistFieldBranch(fieldBranch) {
 			a.listAcceptedFields = []string(nil)
 
-			if _, ok := a.artifacts[a.currentKey]; !ok {
-				a.artifacts[a.currentKey] = []datamodels.ArtifactForEsAlert(nil)
-			}
-
+			_, _ = datamodels.PostProcessingUserType[*datamodels.ArtifactForEsAlert](&a.artifactTmp)
 			a.artifacts[a.currentKey] = append(a.artifacts[a.currentKey], a.artifactTmp)
+
 			a.artifactTmp = *datamodels.NewArtifactForEsAlert()
 		}
 
@@ -76,7 +75,9 @@ func (a *SupportiveAlertArtifacts) HandlerValue(fieldBranch string, i interface{
 			a.artifacts[a.currentKey] = []datamodels.ArtifactForEsAlert(nil)
 		}
 
+		_, _ = datamodels.PostProcessingUserType[*datamodels.ArtifactForEsAlert](&a.artifactTmp)
 		a.artifacts[a.currentKey] = append(a.artifacts[a.currentKey], a.artifactTmp)
+
 		a.artifactTmp = *datamodels.NewArtifactForEsAlert()
 	}
 

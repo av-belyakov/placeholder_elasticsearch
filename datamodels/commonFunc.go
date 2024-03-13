@@ -18,35 +18,33 @@ type UserTypeGetter interface {
 
 // PostProcessingUserType выполняет постобработку некоторых пользовательских типов
 func PostProcessingUserType[T UserTypeGetter](ut T) (T, bool) {
-	/*
-
-		Не работает, что то не так
-
-	*/
-
 	handlers := map[string]func(utg UserTypeGetter){
 		"snort_sid": func(utg UserTypeGetter) {
-			if !strings.Contains((utg).GetData(), ",") {
+			if !strings.Contains(utg.GetData(), ",") {
+				if utg.GetData() != "" {
+					utg.SetValueSnortSid(utg.GetData())
+				}
+
 				return
 			}
 
-			tmp := strings.Split((utg).GetData(), ",")
+			tmp := strings.Split(utg.GetData(), ",")
 			for _, v := range tmp {
-				(utg).SetValueSnortSid(strings.TrimSpace(v))
+				utg.SetValueSnortSid(strings.TrimSpace(v))
 			}
 		},
 		"ip_home": func(utg UserTypeGetter) {
-			if !strings.Contains((utg).GetData(), ":") {
+			if !strings.Contains(utg.GetData(), ":") {
 				return
 			}
 
-			tmp := strings.Split((utg).GetData(), ":")
+			tmp := strings.Split(utg.GetData(), ":")
 			if len(tmp) != 2 {
 				return
 			}
 
-			(utg).SetValueSensorId(tmp[0])
-			(utg).SetValueData(tmp[1])
+			utg.SetValueSensorId(tmp[0])
+			utg.SetValueData(tmp[1])
 		},
 	}
 

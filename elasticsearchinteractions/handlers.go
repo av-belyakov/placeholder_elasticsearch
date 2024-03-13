@@ -58,7 +58,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings,
 ) {
-	obj, ok := data.(*datamodels.VerifiedTheHiveCase)
+	obj, ok := data.(*datamodels.VerifiedEsCase)
 	if !ok {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{

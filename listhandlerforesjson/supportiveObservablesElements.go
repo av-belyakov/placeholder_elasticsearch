@@ -38,6 +38,7 @@ func (o *SupportiveObservables) GetObservables() map[string][]datamodels.Observa
 	o.listAcceptedFields = []string(nil)
 
 	if o.currentKey != "" {
+		_, _ = datamodels.PostProcessingUserType[*datamodels.ObservableMessageEs](&o.observableTmp)
 		o.observables[o.currentKey] = append(o.observables[o.currentKey], o.observableTmp)
 	}
 
@@ -61,8 +62,8 @@ func (o *SupportiveObservables) HandlerValue(fieldBranch string, i interface{}, 
 
 		if o.isExistFieldBranch(fieldBranch) {
 			o.listAcceptedFields = []string(nil)
-			tmp, _ := datamodels.PostProcessingUserType[*datamodels.ObservableMessageEs](&o.observableTmp)
-			o.observables[o.currentKey] = append(o.observables[o.currentKey], *tmp)
+			_, _ = datamodels.PostProcessingUserType[*datamodels.ObservableMessageEs](&o.observableTmp)
+			o.observables[o.currentKey] = append(o.observables[o.currentKey], o.observableTmp)
 
 			o.observableTmp = *datamodels.NewObservableMessageEs()
 		}
@@ -78,8 +79,8 @@ func (o *SupportiveObservables) HandlerValue(fieldBranch string, i interface{}, 
 			o.observables[o.currentKey] = []datamodels.ObservableMessageEs(nil)
 		}
 
-		tmp, _ := datamodels.PostProcessingUserType[*datamodels.ObservableMessageEs](&o.observableTmp)
-		o.observables[o.currentKey] = append(o.observables[o.currentKey], *tmp)
+		_, _ = datamodels.PostProcessingUserType[*datamodels.ObservableMessageEs](&o.observableTmp)
+		o.observables[o.currentKey] = append(o.observables[o.currentKey], o.observableTmp)
 
 		o.observableTmp = *datamodels.NewObservableMessageEs()
 	}

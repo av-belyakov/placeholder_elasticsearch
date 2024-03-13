@@ -517,6 +517,91 @@ func GetTtpTwo() []struct {
 	}
 }
 
+func GetTtpThree() []struct {
+	ElemName  string
+	ElemValue interface{}
+} {
+	return []struct {
+		ElemName  string
+		ElemValue interface{}
+	}{
+		{ElemName: "ttp._createdAt", ElemValue: float64(1705041429370)},
+		{ElemName: "ttp._createdBy", ElemValue: "ag@rcm.ekb"},
+		{ElemName: "ttp._id", ElemValue: "~698159200"},
+		{ElemName: "ttp.occurDate", ElemValue: float64(1705041420000)},
+		{ElemName: "ttp.patternId", ElemValue: "T1110.001"},
+		{ElemName: "ttp.tactic", ElemValue: "initial-access"},
+
+		//pattern
+		{ElemName: "ttp.extraData.pattern.remoteSupport", ElemValue: true},
+		{ElemName: "ttp.extraData.pattern.revoked", ElemValue: true},
+		{ElemName: "ttp.extraData.pattern._createdAt", ElemValue: float64(1705041429370)},
+		{ElemName: "ttp.extraData.pattern._createdBy", ElemValue: "adminxxx@thehive.local"},
+		{ElemName: "ttp.extraData.pattern._id", ElemValue: "~61546640"},
+		{ElemName: "ttp.extraData.pattern._type", ElemValue: "Pattern"},
+		{ElemName: "ttp.extraData.pattern.description", ElemValue: "Spearphishing attachment"},
+		{ElemName: "ttp.extraData.pattern.detection", ElemValue: "ACSC Email Spoofing"},
+		{ElemName: "ttp.extraData.pattern.name", ElemValue: "Spearphishing Attachment"},
+		{ElemName: "ttp.extraData.pattern.patternId", ElemValue: "T1110.001"},
+		{ElemName: "ttp.extraData.pattern.patternType", ElemValue: "attack-pattern"},
+		{ElemName: "ttp.extraData.pattern.url", ElemValue: "https://attack.mitre.org/techniques/T1110/001"},
+		{ElemName: "ttp.extraData.pattern.version", ElemValue: "2.2"},
+		{ElemName: "ttp.extraData.pattern.platforms", ElemValue: []interface{}{
+			"macOS",
+			"Windows",
+			"Office 365",
+		}},
+		{ElemName: "ttp.extraData.pattern.permissionsRequired", ElemValue: []interface{}{
+			"User",
+		}},
+		{ElemName: "ttp.extraData.pattern.dataSources", ElemValue: []interface{}{
+			"Network Traffic: Network Traffic Content",
+			"Application Log: Application Log Content",
+			"File: File Creation",
+		}},
+		{ElemName: "ttp.extraData.pattern.tactics", ElemValue: []interface{}{
+			"initial-access",
+		}},
+
+		//patternParent
+		{ElemName: "ttp.extraData.patternParent.remoteSupport", ElemValue: true},
+		{ElemName: "ttp.extraData.patternParent.revoked", ElemValue: true},
+		{ElemName: "ttp.extraData.patternParent._createdAt", ElemValue: float64(1705040481513)},
+		{ElemName: "ttp.extraData.patternParent._createdBy", ElemValue: "rootxx@thehive.gcm"},
+		{ElemName: "ttp.extraData.patternParent._id", ElemValue: "~346894448"},
+		{ElemName: "ttp.extraData.patternParent._type", ElemValue: "Pattern cxv Parent"},
+		{ElemName: "ttp.extraData.patternParent.description", ElemValue: "Phishing may also"},
+		{ElemName: "ttp.extraData.patternParent.detection", ElemValue: "SSL/TLS inspection"},
+		{ElemName: "ttp.extraData.patternParent.name", ElemValue: "Password Guessing"},
+		{ElemName: "ttp.extraData.patternParent.patternId", ElemValue: "T1110"},
+		{ElemName: "ttp.extraData.patternParent.patternType", ElemValue: "attack-pattern"},
+		{ElemName: "ttp.extraData.patternParent.url", ElemValue: "https://attack.mitre.org/techniques/T1110"},
+		{ElemName: "ttp.extraData.patternParent.version", ElemValue: "2.14"},
+		{ElemName: "ttp.extraData.patternParent.platforms", ElemValue: []interface{}{
+			"Office 365",
+			"Linux",
+			"macOS",
+			"Google Workspace",
+		}},
+		{ElemName: "ttp.extraData.patternParent.permissionsRequired", ElemValue: []interface{}{
+			"Root",
+			"User",
+			"Administrator",
+		}},
+		{ElemName: "ttp.extraData.patternParent.dataSources", ElemValue: []interface{}{
+			"Application Log: Application Log Content",
+			"User Account: User Account Authentication",
+			"Command: Command Execution",
+		}},
+		{ElemName: "ttp.extraData.patternParent.tactics", ElemValue: []interface{}{
+			"initial-access",
+		}},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+		//{ElemName: "ttp.patternParent.", ElemValue: ""},
+	}
+}
+
 func GetEventForAlertOne() []struct {
 	ElemName  string
 	ElemValue interface{}

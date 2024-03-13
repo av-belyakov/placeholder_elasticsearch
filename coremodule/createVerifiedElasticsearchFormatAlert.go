@@ -186,10 +186,7 @@ func NewVerifiedElasticsearchFormatAlert(
 	event.SetValueDetails(*eventDetails)
 
 	alert.SetValueCustomFields(alertObjectCustomFields)
-
-	//выполняем дополнительную обработку некоторых объектов artifacts
-	artifacts := PostProcessingListArtifacts(sa.GetArtifacts())
-	alert.SetValueArtifacts(artifacts)
+	alert.SetValueArtifacts(sa.GetArtifacts())
 
 	verifiedAlert.SetEvent(*event)
 	verifiedAlert.SetAlert(*alert)

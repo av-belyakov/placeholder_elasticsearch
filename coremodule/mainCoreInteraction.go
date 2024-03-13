@@ -75,7 +75,14 @@ func (settings *CoreHandlerSettings) CoreHandler(
 			switch eventSettings.Event.ObjectType {
 			case "case":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonCase.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)
-				go NewVerifiedTheHiveFormatCase(chanOutputDecodeJson, chanDecodeJsonDone, esModule, mdbModule, settings.logging)
+
+				chansOut := supportingfunctions.CreateChannelDuplication[datamodels.ChanOutputDecodeJSON](chanOutputDecodeJson, 2)
+				chansDone := supportingfunctions.CreateChannelDuplication[bool](chanDecodeJsonDone, 2)
+
+				//используется для хранения в MongoDB
+				go NewVerifiedTheHiveFormatCase(chansOut[0], chansDone[0], mdbModule, settings.logging)
+				//используется для хранения в Elasticsearch
+				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], esModule, settings.logging)
 
 			case "alert":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)

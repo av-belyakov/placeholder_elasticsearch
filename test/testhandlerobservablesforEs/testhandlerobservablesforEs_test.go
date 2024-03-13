@@ -110,14 +110,14 @@ var _ = Describe("TesthandlerobservablesforEs", Ordered, func() {
 
 			observablesMessageEs := *datamodels.NewObservablesMessageEs()
 
-			fmt.Println("-----------------------------------------------")
-			for k, v := range so.GetObservables() {
-				fmt.Println(k)
-				for key, value := range v {
-					fmt.Printf("%d.\n%s\n", key, value.ToStringBeautiful(2))
-				}
-			}
-			fmt.Println("===============================================")
+			//fmt.Println("-----------------------------------------------")
+			//for k, v := range so.GetObservables() {
+			//	fmt.Println(k)
+			//	for key, value := range v {
+			//		fmt.Printf("%d.\n%s\n", key, value.ToStringBeautiful(2))
+			//	}
+			//}
+			//fmt.Println("===============================================")
 
 			observablesMessageEs.SetValueObservables(so.GetObservables())
 			obser := observablesMessageEs.GetObservables()

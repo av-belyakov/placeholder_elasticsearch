@@ -13,12 +13,17 @@ func NewTtpsMessageEs() *TtpsMessageEs {
 	}
 }
 
-func (ttp *TtpsMessageEs) GetTtp() map[string][]TtpMessage {
+func (ttp *TtpsMessageEs) Get() *TtpsMessageEs {
+	return ttp
+}
+
+func (ttp *TtpsMessageEs) GetValueTtp() map[string][]TtpMessage {
 	return ttp.Ttp
 }
 
-func (ttp *TtpsMessageEs) SetTtp(list map[string][]TtpMessage) {
-	ttp.Ttp = list
+// SetTtp устанавливает значение для поля Ttp
+func (ttp *TtpsMessageEs) SetValueTtp(v map[string][]TtpMessage) {
+	ttp.Ttp = v
 }
 
 func (ttp *TtpsMessageEs) GetKeyTtp(k string) ([]TtpMessage, bool) {
@@ -31,11 +36,6 @@ func (ttp *TtpsMessageEs) GetKeyTtp(k string) ([]TtpMessage, bool) {
 
 func (ttp *TtpsMessageEs) SetKeyTtp(k string, v []TtpMessage) {
 	ttp.Ttp[k] = v
-}
-
-// SetTtp устанавливает значение для поля Ttp
-func (ttp *TtpsMessageEs) SetValueTtp(v map[string][]TtpMessage) {
-	ttp.Ttp = v
 }
 
 // AddValueTtp устанавливает значение для поля Ttp

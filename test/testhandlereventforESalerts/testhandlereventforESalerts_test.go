@@ -8,7 +8,6 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/datamodels/commonalert"
 	"placeholder_elasticsearch/datamodels/commonalertartifact"
@@ -207,10 +206,7 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			event.SetValueDetails(*eventDetails)
 
 			alert.SetValueCustomFields(alertObjectCustomFields)
-
-			//выполняем дополнительную обработку некоторых объектов artifacts
-			artifacts := coremodule.PostProcessingListArtifacts(sa.GetArtifacts())
-			alert.SetValueArtifacts(artifacts)
+			alert.SetValueArtifacts(sa.GetArtifacts())
 
 			VerifiedForEsAlert.SetID("fhe78f838f88fg488398f8e3")
 			VerifiedForEsAlert.SetElasticsearchID("3883f8f9-839r983hf848g8h-f84")
