@@ -29,8 +29,8 @@ type AlertMessageForEsAlert struct {
 // TagsAll - все теги
 type ArtifactForEsAlert struct {
 	commonalertartifact.CommonArtifactType
-	SensorId string              `json:"sensorId" bson:"sensorId"`
-	SnortSid []string            `json:"snortSid" bson:"snortSid"`
+	SensorId string              `json:"sensorId,omitempty" bson:"sensorId"`
+	SnortSid []string            `json:"snortSid,omitempty" bson:"snortSid"`
 	Tags     map[string][]string `json:"tags" bson:"tags"`
 	TagsAll  []string            `json:"tagsAll" bson:"tagsAll"`
 }

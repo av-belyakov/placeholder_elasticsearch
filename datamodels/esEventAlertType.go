@@ -10,8 +10,8 @@ import (
 // Object - объект события
 type EventMessageForEsAlert struct {
 	commonevent.CommonEventType
-	Details EventMessageForEsAlertDetails `json:"details" bson:"details"`
-	Object  EventMessageForEsAlertObject  `json:"object" bson:"object"`
+	Details EventMessageForEsAlertDetails `json:"details,omitempty" bson:"details"`
+	Object  EventMessageForEsAlertObject  `json:"object,omitempty" bson:"object"`
 }
 
 // EventMessageForEsAlertDetails детальная информация о событии
@@ -21,9 +21,9 @@ type EventMessageForEsAlert struct {
 // Tags - теги после обработки
 // TagsAll - все теги
 type EventMessageForEsAlertDetails struct {
-	SourceRef   string              `json:"sourceRef" bson:"sourceRef"`
-	Title       string              `json:"title" bson:"title"`
-	Description string              `json:"description" bson:"description"`
+	SourceRef   string              `json:"sourceRef,omitempty" bson:"sourceRef"`
+	Title       string              `json:"title,omitempty" bson:"title"`
+	Description string              `json:"description,omitempty" bson:"description"`
 	Tags        map[string][]string `json:"tags" bson:"tags"`
 	TagsAll     []string            `json:"tagsAll" bson:"tagsAll"`
 }
@@ -36,5 +36,5 @@ type EventMessageForEsAlertObject struct {
 	commonobjectevent.CommonEventAlertObject
 	Tags         map[string][]string `json:"tags" bson:"tags"`
 	TagsAll      []string            `json:"tagsAll" bson:"tagsAll"`
-	CustomFields CustomFields        `json:"customFields" bson:"customFields"`
+	CustomFields CustomFields        `json:"customFields,omitempty" bson:"customFields"`
 }

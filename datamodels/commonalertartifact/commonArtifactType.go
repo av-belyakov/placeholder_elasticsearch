@@ -15,9 +15,9 @@ package commonalertartifact
 type CommonArtifactType struct {
 	Ioc             bool   `json:"ioc" bson:"ioc"`
 	Tlp             uint64 `json:"tlp" bson:"tlp"`
-	UnderliningId   string `json:"_id" bson:"_id"`
+	UnderliningId   string `json:"_id,omitempty" bson:"_id"`
 	Id              string `json:"id" bson:"id"`
-	UnderliningType string `json:"_type" bson:"_type"`
+	UnderliningType string `json:"_type,omitempty" bson:"_type"`
 	CreatedAt       string `json:"createdAt" bson:"createdAt"` //формат RFC3339
 	StartDate       string `json:"startDate" bson:"startDate"` //формат RFC3339
 	CreatedBy       string `json:"createdBy" bson:"createdBy"`

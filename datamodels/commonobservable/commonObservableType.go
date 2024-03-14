@@ -23,11 +23,11 @@ type CommonObservableType struct {
 	UnderliningCreatedAt string `json:"_createdAt" bson:"_createdAt"` //формат RFC3339
 	UnderliningUpdatedAt string `json:"_updatedAt" bson:"_updatedAt"` //формат RFC3339
 	StartDate            string `json:"startDate" bson:"startDate"`   //формат RFC3339
-	UnderliningCreatedBy string `json:"_createdBy" bson:"_createdBy"`
-	UnderliningUpdatedBy string `json:"_updatedBy" bson:"_updatedBy"`
-	UnderliningId        string `json:"_id" bson:"_id"`
-	UnderliningType      string `json:"_type" bson:"_type"`
-	Data                 string `json:"data" bson:"data"`
-	DataType             string `json:"dataType" bson:"dataType"`
-	Message              string `json:"message" bson:"message"`
+	UnderliningCreatedBy string `json:"_createdBy,omitempty" bson:"_createdBy"`
+	UnderliningUpdatedBy string `json:"_updatedBy,omitempty" bson:"_updatedBy"`
+	UnderliningId        string `json:"_id,omitempty" bson:"_id"`
+	UnderliningType      string `json:"_type,omitempty" bson:"_type"`
+	Data                 string `json:"data,omitempty" bson:"data"`
+	DataType             string `json:"dataType,omitempty" bson:"dataType"`
+	Message              string `json:"message,omitempty" bson:"message"`
 }

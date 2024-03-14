@@ -10,8 +10,8 @@ import (
 // Object - объект события
 type EventMessageForEsCase struct {
 	commonevent.CommonEventType
-	Details EventCaseDetails     `json:"details" bson:"details"`
-	Object  EventForEsCaseObject `json:"object" bson:"object"`
+	Details EventCaseDetails     `json:"details,omitempty" bson:"details"`
+	Object  EventForEsCaseObject `json:"object,omitempty" bson:"object"`
 }
 
 // EventForEsCaseObject объект события
@@ -22,5 +22,5 @@ type EventForEsCaseObject struct {
 	commonobjectevent.CommonEventCaseObject
 	Tags         map[string][]string `json:"tags" bson:"tags"`
 	TagsAll      []string            `json:"tagsAll" bson:"tagsAll"`
-	CustomFields CustomFields        `json:"customFields" bson:"customFields"`
+	CustomFields CustomFields        `json:"customFields,omitempty" bson:"customFields"`
 }

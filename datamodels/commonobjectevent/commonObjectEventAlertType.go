@@ -29,15 +29,15 @@ type CommonEventAlertObject struct {
 	UpdatedBy       string `json:"updatedBy,omitempty" bson:"updatedBy,omitempty"`
 	CreatedAt       string `json:"createdAt" bson:"createdAt"`                     //формат RFC3339
 	UpdatedAt       string `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"` //формат RFC3339
-	UnderliningType string `json:"_type" bson:"_type"`
-	Title           string `json:"title" bson:"title"`
-	Description     string `json:"description" bson:"description"`
-	Status          string `json:"status" bson:"status"`
+	UnderliningType string `json:"_type,omitempty" bson:"_type"`
+	Title           string `json:"title,omitempty" bson:"title"`
+	Description     string `json:"description,omitempty" bson:"description"`
+	Status          string `json:"status,omitempty" bson:"status"`
 	Date            string `json:"date" bson:"date"` //формат RFC3339
-	Type            string `json:"type" bson:"type"`
-	ObjectType      string `json:"objectType" bson:"objectType"`
-	Source          string `json:"source" bson:"source"`
-	SourceRef       string `json:"sourceRef" bson:"sourceRef"`
+	Type            string `json:"type,omitempty" bson:"type"`
+	ObjectType      string `json:"objectType,omitempty" bson:"objectType"`
+	Source          string `json:"source,omitempty" bson:"source"`
+	SourceRef       string `json:"sourceRef,omitempty" bson:"sourceRef"`
 	Case            string `json:"case,omitempty" bson:"case,omitempty"`
 	CaseTemplate    string `json:"caseTemplate,omitempty" bson:"caseTemplate,omitempty"`
 }

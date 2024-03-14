@@ -32,16 +32,16 @@ type CommonEventCaseObject struct {
 	EndDate          string `json:"endDate" bson:"endDate"`     //формат RFC3339
 	CreatedAt        string `json:"createdAt" bson:"createdAt"` //формат RFC3339
 	UpdatedAt        string `json:"updatedAt" bson:"updatedAt"` //формат RFC3339
-	UnderliningId    string `json:"_id" bson:"_id"`
-	Id               string `json:"id" bson:"id"`
-	CreatedBy        string `json:"createdBy" bson:"createdBy"`
-	UpdatedBy        string `json:"updatedBy" bson:"updatedBy"`
-	UnderliningType  string `json:"_type" bson:"_type"`
-	Title            string `json:"title" bson:"title"`
-	Description      string `json:"description" bson:"description"`
-	ImpactStatus     string `json:"impactStatus" bson:"impactStatus"`
-	ResolutionStatus string `json:"resolutionStatus" bson:"resolutionStatus"`
-	Status           string `json:"status" bson:"status"`
-	Summary          string `json:"summary" bson:"summary"`
-	Owner            string `json:"owner" bson:"owner"`
+	UnderliningId    string `json:"_id,omitempty" bson:"_id"`
+	Id               string `json:"id,omitempty" bson:"id"`
+	CreatedBy        string `json:"createdBy,omitempty" bson:"createdBy"`
+	UpdatedBy        string `json:"updatedBy,omitempty" bson:"updatedBy"`
+	UnderliningType  string `json:"_type,omitempty" bson:"_type"`
+	Title            string `json:"title,omitempty" bson:"title"`
+	Description      string `json:"description,omitempty" bson:"description"`
+	ImpactStatus     string `json:"impactStatus,omitempty" bson:"impactStatus"`
+	ResolutionStatus string `json:"resolutionStatus,omitempty" bson:"resolutionStatus"`
+	Status           string `json:"status,omitempty" bson:"status"`
+	Summary          string `json:"summary,omitempty" bson:"summary"`
+	Owner            string `json:"owner,omitempty" bson:"owner"`
 }

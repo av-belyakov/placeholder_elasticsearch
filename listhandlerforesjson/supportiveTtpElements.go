@@ -60,7 +60,7 @@ func (sttp *SupportiveTtp) GetTtpTmp() *datamodels.TtpMessage {
 }
 
 func (sttp *SupportiveTtp) HandlerValue(fieldBranch string, i interface{}, f func(interface{})) {
-	if fieldBranch == "ttp.patternId" {
+	if fieldBranch == "ttp.tactic" {
 		str := fmt.Sprint(i)
 		if _, ok := sttp.ttps[str]; !ok {
 			sttp.ttps[str] = []datamodels.TtpMessage(nil)

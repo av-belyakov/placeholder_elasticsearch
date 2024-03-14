@@ -49,6 +49,8 @@ func (w *wrappers) AddNewCase(
 			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
 			MsgType: "error",
 		}
+
+		return
 	}
 
 	listForDelete := []string{}
@@ -159,6 +161,8 @@ func (w *wrappers) AddNewAlert(
 			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
 			MsgType: "error",
 		}
+
+		return
 	}
 
 	if errors.Is(err, mongo.ErrNoDocuments) {
@@ -178,6 +182,8 @@ func (w *wrappers) AddNewAlert(
 				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
 				MsgType: "error",
 			}
+
+			return
 		}
 
 		if _, err := currentData.GetEvent().ReplacingOldValues(*obj.GetEvent()); err != nil {

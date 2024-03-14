@@ -94,7 +94,7 @@ type AttachmentData struct {
 
 // ReportTaxonomies
 type ReportTaxonomies struct {
-	Taxonomies []Taxonomy `json:"taxonomies" bson:"taxonomies"`
+	Taxonomies []Taxonomy `json:"taxonomies,omitempty" bson:"taxonomies"`
 }
 
 // Taxonomy

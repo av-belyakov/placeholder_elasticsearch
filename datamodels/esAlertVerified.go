@@ -16,7 +16,7 @@ type VerifiedForEsAlert struct {
 	CreateTimestamp string                 `json:"@timestamp" bson:"@timestamp"`
 	Source          string                 `json:"source" bson:"source"`
 	Event           EventMessageForEsAlert `json:"event" bson:"event"`
-	Alert           AlertMessageForEsAlert `json:"alert" bson:"alert"`
+	Alert           AlertMessageForEsAlert `json:"alert,omitempty" bson:"alert"`
 }
 
 func NewVerifiedForEsAlert() *VerifiedForEsAlert {
