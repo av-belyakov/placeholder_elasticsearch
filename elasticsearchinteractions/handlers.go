@@ -27,12 +27,13 @@ func GetVerifiedForEsAlert(res *esapi.Response) (datamodels.ElasticsearchPattern
 }
 
 func (hsd HandlerSendData) InsertNewDocument(
+	tag string,
 	index string,
 	document []byte,
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings,
 ) {
-	res, err := hsd.InsertDocument(index, document)
+	res, err := hsd.InsertDocument(tag, index, document)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -105,7 +106,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
-	_, err = hsd.InsertDocument(index, b)
+	_, err = hsd.InsertDocument(fmt.Sprintf("rootId: '%s' ", obj.GetEvent().GetRootId()), index, b)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -142,9 +143,10 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	var countReplacingFields int
-
-	//fmt.Printf("func 'ReplacementDocumentAlert', source:'%s', RootId:'%s'\n", newDocument.GetSource(), newDocument.GetEvent().GetRootId())
+	var (
+		countReplacingFields int
+		tag                  string = fmt.Sprint("rootId: '%s'", newDocument.GetEvent().GetRootId())
+	)
 
 	t := time.Now()
 	month := int(t.Month())
@@ -175,7 +177,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	}
 
 	if len(indexes) == 0 {
-		hsd.InsertNewDocument(indexCurrent, newDocumentBinary, logging, counting)
+		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
 		return
 	}
@@ -207,7 +209,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	if decEs.Options.Total.Value == 0 {
 		//выполняется только когда не найден искомый документ
-		hsd.InsertNewDocument(indexCurrent, newDocumentBinary, logging, counting)
+		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
 		return
 	}
@@ -301,7 +303,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	res, countDel, err := hsd.UpdateDocument(indexCurrent, decEs.Options.Hits, nvbyte)
+	res, countDel, err := hsd.UpdateDocument(tag, indexCurrent, decEs.Options.Hits, nvbyte)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{

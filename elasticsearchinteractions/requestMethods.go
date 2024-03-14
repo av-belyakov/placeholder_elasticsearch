@@ -15,7 +15,7 @@ import (
 )
 
 // InsertDocument добавляет новый документ в заданный индекс
-func (hsd HandlerSendData) InsertDocument(index string, b []byte) (*esapi.Response, error) {
+func (hsd HandlerSendData) InsertDocument(tag, index string, b []byte) (*esapi.Response, error) {
 	var res *esapi.Response
 
 	if hsd.Client == nil {
@@ -41,7 +41,7 @@ func (hsd HandlerSendData) InsertDocument(index string, b []byte) (*esapi.Respon
 	}
 
 	if e, ok := r["error"]; ok {
-		return res, fmt.Errorf("received from module Elsaticsearch: %s (%s)", res.Status(), e)
+		return res, fmt.Errorf("%s received from module Elsaticsearch: %s (%s)", tag, res.Status(), e)
 	}
 
 	return res, nil
@@ -103,7 +103,7 @@ func (hsd HandlerSendData) SearchDocument(index []string, query *strings.Reader)
 
 // UpdateDocument выполняет поиск и обновление документов соответствующих
 // параметрам заданным в запросе
-func (hsd HandlerSendData) UpdateDocument(currentIndex string, list []datamodels.CaseHits, document []byte) (res *esapi.Response, countDel int, err error) {
+func (hsd HandlerSendData) UpdateDocument(tag, currentIndex string, list []datamodels.CaseHits, document []byte) (res *esapi.Response, countDel int, err error) {
 	for _, v := range list {
 		_, errDel := hsd.Client.Delete(v.Index, v.ID)
 		if errDel != nil {
@@ -113,7 +113,7 @@ func (hsd HandlerSendData) UpdateDocument(currentIndex string, list []datamodels
 		countDel++
 	}
 
-	res, err = hsd.InsertDocument(currentIndex, document)
+	res, err = hsd.InsertDocument(tag, currentIndex, document)
 
 	return res, countDel, err
 }
