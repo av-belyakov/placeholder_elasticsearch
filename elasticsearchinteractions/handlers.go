@@ -70,6 +70,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
+	tag := fmt.Sprintf("case rootId: '%s' ", obj.GetEvent().GetRootId())
 	t := time.Now()
 	index = fmt.Sprintf("%s_%d_%d", index, t.Year(), int(t.Month()))
 
@@ -106,7 +107,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
-	_, err = hsd.InsertDocument(fmt.Sprintf("rootId: '%s' ", obj.GetEvent().GetRootId()), index, b)
+	_, err = hsd.InsertDocument(tag, index, b)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -145,7 +146,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	var (
 		countReplacingFields int
-		tag                  string = fmt.Sprint("rootId: '%s'", newDocument.GetEvent().GetRootId())
+		tag                  string = fmt.Sprintf("alert rootId: '%s'", newDocument.GetEvent().GetRootId())
 	)
 
 	t := time.Now()
@@ -230,9 +231,6 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	updateVerified := datamodels.NewVerifiedForEsAlert()
 	for _, v := range object.Hits.Hits {
 		var err error
-
-		//		fmt.Println("=========== FOUND DOCUMENT RootID:", v.Source.Event.GetRootId())
-
 		_, errTmp := updateVerified.Event.ReplacingOldValues(v.Source.Event)
 		if errTmp != nil {
 			err = fmt.Errorf("%w event replacing error '%w'", err, errTmp)
