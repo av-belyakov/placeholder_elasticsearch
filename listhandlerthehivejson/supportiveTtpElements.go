@@ -55,7 +55,9 @@ func NewSupportiveTtp() *SupportiveTtp {
 // JSON объекта, последние добавленные значения остаются sttp.ttpTmp
 func (sttp *SupportiveTtp) GetTtps() []datamodels.TtpMessage {
 	sttp.listAcceptedFields = []string(nil)
-	sttp.ttps = append(sttp.ttps, sttp.ttpTmp)
+	if sttp.ttpTmp.PatternId != "" {
+		sttp.ttps = append(sttp.ttps, sttp.ttpTmp)
+	}
 
 	return sttp.ttps
 }

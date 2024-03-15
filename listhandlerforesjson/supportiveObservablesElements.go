@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	//"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/datamodels"
 )
 

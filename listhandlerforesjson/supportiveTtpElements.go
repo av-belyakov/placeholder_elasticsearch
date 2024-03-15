@@ -2,6 +2,7 @@ package listhandlerforesjson
 
 import (
 	"fmt"
+
 	"placeholder_elasticsearch/datamodels"
 )
 
@@ -68,7 +69,6 @@ func (sttp *SupportiveTtp) HandlerValue(fieldBranch string, i interface{}, f fun
 
 		if sttp.isExistFieldBranch(fieldBranch) {
 			sttp.listAcceptedFields = []string(nil)
-			//_, _ = datamodels.PostProcessingUserType[*datamodels.ObservableMessageEs](&o.observableTmp)
 			sttp.ttps[sttp.currentKey] = append(sttp.ttps[sttp.currentKey], sttp.ttpTmp)
 
 			sttp.ttpTmp = *datamodels.NewTtpMessage()

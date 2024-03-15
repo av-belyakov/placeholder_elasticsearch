@@ -60,6 +60,10 @@ func HandlerTag(i interface{}) (key, value string) {
 	if isExistValidTag(tag) && strings.Contains(tag, "=") {
 		elements := strings.Split(tag, "=")
 		if len(elements) > 1 {
+			if strings.Contains(elements[0], "geo") {
+				return elements[0], strings.ToUpper(elements[1])
+			}
+
 			return elements[0], elements[1]
 		}
 	}

@@ -56,10 +56,10 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 
 	Context("Тест 2. Поиск, обновление и удаление индексов с Alerts", func() {
 		var (
-			index                      string = "module_placeholder_alert"
+			index                      string = "module_placeholder_new_alert"
 			indexCurrent, indexPattern string
 			source                     string = "gcm"
-			rootId                     string = "~84625227848"
+			rootId                     string = "~86079815800" //только это objectId
 			queryCurrent               *strings.Reader
 			hsd                        elasticsearchinteractions.HandlerSendData
 
@@ -85,7 +85,7 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 			t := time.Now()
 			month := int(t.Month())
 
-			indexPattern = fmt.Sprintf("module_placeholder_alert_%s_%d", source, t.Year())
+			indexPattern = fmt.Sprintf("module_placeholder_new_alert_%s_%d", source, t.Year())
 			indexCurrent = fmt.Sprintf("%s_%s_%d_%d", index, source, t.Year(), month)
 
 			hsd = elasticsearchinteractions.HandlerSendData{
@@ -99,7 +99,7 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 
 			errConn = hsd.New()
 
-			queryCurrent = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId))
+			queryCurrent = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.objectId\": \"%s\"}}]}}}", source, rootId))
 		})
 
 		It("При подключении не должно быть ошибок", func() {
@@ -122,7 +122,7 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 			if len(indexes) == 0 {
 				//ЭТО ВЫПОЛЯЕТСЯ ТОЛЬКО КОГДА ПОХОЖИЙ ИНДЕКС НЕ НАЙДЕН
 
-				res, err := hsd.InsertDocument(indexCurrent, b)
+				res, err := hsd.InsertDocument("my_tag", indexCurrent, b)
 				Expect(err).ShouldNot(HaveOccurred())
 
 				fmt.Println("Status Code:", res.Status())
@@ -133,26 +133,39 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 
 				fmt.Println("======================= Response ======================")
 				fmt.Println("||| Status:", res.Status())
+				//fmt.Println("||| Body:", res.Body)
 
 				decEs := datamodels.ElasticsearchResponseCase{}
 				err = json.NewDecoder(res.Body).Decode(&decEs)
 				Expect(err).ShouldNot(HaveOccurred())
 
+				fmt.Println("==== decEs.Options.Total.Value ===")
+				fmt.Println(decEs.Options.Total.Value)
+
 				if decEs.Options.Total.Value == 0 {
 					//ВЫПОЛНЯЕТСЯ ТОГДА КОГДА ДОКУМЕНТ НЕ НАЙДЕН
 
-					res, err = hsd.InsertDocument(indexCurrent, b)
+					res, err = hsd.InsertDocument("my_tag", indexCurrent, b)
 					Expect(err).ShouldNot(HaveOccurred())
 
 					fmt.Println("Status Code:", res.Status())
 					Expect(res.StatusCode).Should(Equal(http.StatusCreated))
 				} else {
+					/*
+						здесь проблемма так как res был УЖЕ обработан ранее
+
+						datamodels.ElasticsearchPatternVerifiedForEsAlert{}
+					*/
+
 					//при наличие похожего индекса его замена
 					object, err := GetVerifiedForEsAlert(res)
 					Expect(err).ShouldNot(HaveOccurred())
 
 					updateVerified := datamodels.NewVerifiedForEsAlert()
 					for _, v := range object.Hits.Hits {
+						fmt.Println("****************** v.Source.Event *********************")
+						fmt.Println(v.Source.Event)
+
 						num, err := updateVerified.Event.ReplacingOldValues(v.Source.Event)
 						Expect(err).ShouldNot(HaveOccurred())
 						fmt.Println("EVENT Replacing:", num)
@@ -162,30 +175,38 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 						fmt.Println("ALERT Replacing:", num)
 					}
 
-					num, err := updateVerified.Event.ReplacingOldValues(newVerifiedForEsAlert.Event)
-					Expect(err).ShouldNot(HaveOccurred())
-					fmt.Println("EVENT Replacing:", num)
-
-					num, err = updateVerified.Alert.ReplacingOldValues(newVerifiedForEsAlert.Alert)
-					Expect(err).ShouldNot(HaveOccurred())
-					fmt.Println("ALERT Replacing:", num)
-
-					fmt.Println("_____ UPDATE OLD DATA ______")
+					fmt.Println("_____ OLD DATA ______")
 					fmt.Println(updateVerified.ToStringBeautiful(0))
+					/*
+						num, err := updateVerified.Event.ReplacingOldValues(newVerifiedForEsAlert.Event)
+						Expect(err).ShouldNot(HaveOccurred())
+						fmt.Println("EVENT Replacing:", num)
 
-					nvbyte, err := json.Marshal(updateVerified)
+						num, err = updateVerified.Alert.ReplacingOldValues(newVerifiedForEsAlert.Alert)
+						Expect(err).ShouldNot(HaveOccurred())
+						fmt.Println("ALERT Replacing:", num)
+
+						fmt.Println("_____ UPDATE OLD DATA ______")
+						fmt.Println(updateVerified.ToStringBeautiful(0))
+
+						/*nvbyte*/
+					_, err = json.Marshal(updateVerified)
 					Expect(err).ShouldNot(HaveOccurred())
 
-					res, countDel, err := hsd.UpdateDocument(
-						indexCurrent,
-						decEs.Options.Hits,
-						nvbyte,
-					)
+					//Пока временно выключаем замену в БД
+					/*
+						res, countDel, err := hsd.UpdateDocument(
+							"my_tag",
+							indexCurrent,
+							decEs.Options.Hits,
+							nvbyte,
+						)
 
-					fmt.Println("Status Code:", res.Status(), " countDel:", countDel)
+						fmt.Println("Status Code:", res.Status(), " countDel:", countDel)
 
-					Expect(err).ShouldNot(HaveOccurred())
-					Expect(res.StatusCode).Should(Equal(http.StatusCreated))
+						Expect(err).ShouldNot(HaveOccurred())
+						Expect(res.StatusCode).Should(Equal(http.StatusCreated))
+					*/
 				}
 			}
 

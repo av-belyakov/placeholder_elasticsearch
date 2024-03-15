@@ -13,10 +13,9 @@ import (
 	"github.com/av-belyakov/simplelogger"
 
 	"placeholder_elasticsearch/confighandler"
+	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
-
-	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/memorytemporarystorage"
 	"placeholder_elasticsearch/mongodbinteractions"
 	"placeholder_elasticsearch/natsinteractions"

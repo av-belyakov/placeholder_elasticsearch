@@ -134,7 +134,7 @@ func NewClientNATS(
 				Data:        m.Data,
 			}
 
-			//счетчик принятых кейсов
+			//счетчик принятых событий
 			counting <- datamodels.DataCounterSettings{
 				DataType: "update accepted events",
 				DataMsg:  k,

@@ -215,6 +215,26 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
+	/*
+		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+		Вот здесь проблема, так как res.Body был УЖЕ ОБРАБОТАН
+		ранее на строке 199 decEs := datamodels.ElasticsearchResponseCase{}
+		то мы получаем из GetVerifiedForEsAlert(res), что чуть ниже по коду
+		пустой объект
+
+		Я забыл что библиотека Elasticsearch дает обработать результат
+		ТОЛЬКО ОДИН РАЗ
+		здесь надо править и в тесте что с права
+
+		и еще datamodels.ElasticsearchResponseCase{} для КЕЙСОВ а я принимаю
+		АЛЕРТЫ
+		похоже надо создать datamodels.ElasticsearchResponseAlert{} и встроить
+		туда datamodels.ElasticsearchPatternVerifiedForEsAlert и обработать
+		res.Body ЗА ОДИН РАЗ
+		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	*/
+
 	//*** при наличие искомого документа выполняем его замену ***
 	//***********************************************************
 	object, err := GetVerifiedForEsAlert(res)

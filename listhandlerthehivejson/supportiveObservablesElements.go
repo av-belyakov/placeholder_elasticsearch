@@ -34,7 +34,10 @@ func NewSupportiveObservables() *SupportiveObservables {
 func (o *SupportiveObservables) GetObservables() []datamodels.ObservableMessage {
 	o.listAcceptedFields = []string(nil)
 	o.listAcceptedFieldsReports = []string(nil)
-	o.observables = append(o.observables, o.observableTmp)
+
+	if o.observableTmp.DataType != "" {
+		o.observables = append(o.observables, o.observableTmp)
+	}
 
 	return o.observables
 }
