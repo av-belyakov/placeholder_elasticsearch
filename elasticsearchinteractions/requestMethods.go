@@ -103,7 +103,7 @@ func (hsd HandlerSendData) SearchDocument(index []string, query *strings.Reader)
 
 // UpdateDocument выполняет поиск и обновление документов соответствующих
 // параметрам заданным в запросе
-func (hsd HandlerSendData) UpdateDocument(tag, currentIndex string, list []datamodels.CaseHits, document []byte) (res *esapi.Response, countDel int, err error) {
+func (hsd HandlerSendData) UpdateDocument(tag, currentIndex string, list []datamodels.ServiseOption, document []byte) (res *esapi.Response, countDel int, err error) {
 	for _, v := range list {
 		_, errDel := hsd.Client.Delete(v.Index, v.ID)
 		if errDel != nil {

@@ -211,7 +211,7 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			VerifiedForEsAlert.SetID("fhe78f838f88fg488398f8e3")
 			VerifiedForEsAlert.SetElasticsearchID("3883f8f9-839r983hf848g8h-f84")
 			VerifiedForEsAlert.SetSource("GCM")
-			VerifiedForEsAlert.SetCreateTimestatmp("2024-02-06T15:37:52+03:00")
+			VerifiedForEsAlert.SetCreateTimestamp("2024-02-06T15:37:52+03:00")
 			VerifiedForEsAlert.SetEvent(*event)
 			VerifiedForEsAlert.SetAlert(*alert)
 		})
@@ -357,7 +357,7 @@ var _ = Describe("TesthandlereventforESalerts", Ordered, func() {
 			Expect(verified.GetID()).Should(Equal("fhe78f838f88fg488398f8e3"))
 			Expect(verified.GetElasticsearchID()).Should(Equal("3883f8f9-839r983hf848g8h-f84"))
 			Expect(verified.GetSource()).Should(Equal("GCM"))
-			Expect(verified.GetCreateTimestatmp()).Should(Equal("2024-02-06T15:37:52+03:00"))
+			Expect(verified.GetCreateTimestamp()).Should(Equal("2024-02-06T15:37:52+03:00"))
 
 			anyArtifacts := alert.Get().GetArtifacts()
 			listCountArtifacts := map[string]int{}

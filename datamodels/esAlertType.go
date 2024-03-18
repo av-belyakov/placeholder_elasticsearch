@@ -13,12 +13,12 @@ import (
 // CustomFields - настраиваемые поля
 // Artifacts - артефакты
 type AlertMessageForEsAlert struct {
-	Follow   bool   `json:"follow" bson:"follow"`
-	Severity uint64 `json:"severity" bson:"severity"`
+	Follow   bool   `json:"follow,omitempty" bson:"follow"`
+	Severity uint64 `json:"severity,omitempty" bson:"severity"`
 	commonalert.CommonAlertType
 	Tags         map[string][]string             `json:"tags" bson:"tags"`
 	TagsAll      []string                        `json:"tagsAll" bson:"tagsAll"`
-	CustomFields CustomFields                    `json:"customFields" bson:"customFields"`
+	CustomFields CustomFields                    `json:"customFields,omitempty" bson:"customFields"`
 	Artifacts    map[string][]ArtifactForEsAlert `json:"artifact" bson:"artifact"`
 }
 

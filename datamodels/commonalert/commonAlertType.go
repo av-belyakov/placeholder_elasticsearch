@@ -18,14 +18,14 @@ package commonalert
 // CaseTemplate - шаблон обращения
 // SourceRef - ссылка на источник
 type CommonAlertType struct {
-	Tlp             uint64 `json:"tlp" bson:"tlp"`
-	Date            string `json:"date" bson:"date"`           //формат RFC3339
-	CreatedAt       string `json:"createdAt" bson:"createdAt"` //формат RFC3339
-	UpdatedAt       string `json:"updatedAt" bson:"updatedAt"` //формат RFC3339
+	Tlp             uint64 `json:"tlp,omitempty" bson:"tlp"`
+	Date            string `json:"date,omitempty" bson:"date"`           //формат RFC3339
+	CreatedAt       string `json:"createdAt,omitempty" bson:"createdAt"` //формат RFC3339
+	UpdatedAt       string `json:"updatedAt,omitempty" bson:"updatedAt"` //формат RFC3339
 	CreatedBy       string `json:"createdBy,omitempty" bson:"createdBy"`
 	UpdatedBy       string `json:"updatedBy,omitempty" bson:"updatedBy"`
 	UnderliningId   string `json:"_id,omitempty" bson:"_id"`
-	Id              string `json:"id" bson:"id"`
+	Id              string `json:"id,omitempty" bson:"id"`
 	Status          string `json:"status,omitempty" bson:"status"`
 	Source          string `json:"source,omitempty" bson:"source"`
 	Type            string `json:"type,omitempty" bson:"type"`

@@ -9,9 +9,9 @@ import (
 // Details - детальная информация о событии
 // Object - объект события
 type EventMessageTheHiveAlert struct {
-	commonevent.CommonEventType                   //`bson:"-"`
-	Details                     EventAlertDetails `json:"details" bson:"details"`
-	Object                      EventAlertObject  `json:"object" bson:"object"`
+	commonevent.CommonEventType
+	Details EventAlertDetails `json:"details" bson:"details"`
+	Object  EventAlertObject  `json:"object" bson:"object"`
 }
 
 // EventAlertDetails детальная информация о событии
@@ -20,9 +20,9 @@ type EventMessageTheHiveAlert struct {
 // Description - описание
 // Tags - список тегов
 type EventAlertDetails struct {
-	SourceRef   string   `json:"sourceRef" bson:"sourceRef"`
-	Title       string   `json:"title" bson:"title"`
-	Description string   `json:"description" bson:"description"`
+	SourceRef   string   `json:"sourceRef,omitempty" bson:"sourceRef"`
+	Title       string   `json:"title,omitempty" bson:"title"`
+	Description string   `json:"description,omitempty" bson:"description"`
 	Tags        []string `json:"tags" bson:"tags"`
 }
 
@@ -34,9 +34,9 @@ type EventAlertDetails struct {
 // CustomFields - настраиваемые поля
 type EventAlertObject struct {
 	commonobjectevent.CommonEventAlertObject
-	Follow       bool         `json:"follow" bson:"follow"`
-	Severity     uint64       `json:"severity" bson:"severity"`
-	Pap          uint64       `json:"pap" bson:"pap"`
+	Follow       bool         `json:"follow,omitempty" bson:"follow"`
+	Severity     uint64       `json:"severity,omitempty" bson:"severity"`
+	Pap          uint64       `json:"pap,omitempty" bson:"pap"`
 	Tags         []string     `json:"tags" bson:"tags"`
 	CustomFields CustomFields `json:"customFields" bson:"customFields"`
 }

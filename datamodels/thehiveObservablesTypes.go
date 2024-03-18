@@ -15,7 +15,7 @@ type ObservablesMessageTheHive struct {
 type ObservableMessage struct {
 	commonobservable.CommonObservableType
 	Tags       []string                    `json:"tags" bson:"tags"`
-	Attachment AttachmentData              `json:"attachment" bson:"attachment"`
+	Attachment AttachmentData              `json:"attachment,omitempty" bson:"attachment"`
 	Reports    map[string]ReportTaxonomies `json:"reports" bson:"reports"`
 	//данное поле редко используемое, думаю пока оно не требует реализации
 	//ExtraData        map[string]interface{}                         `json:"extraData"`

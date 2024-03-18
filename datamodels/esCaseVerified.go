@@ -22,6 +22,7 @@ type VerifiedEsCase struct {
 func NewVerifiedEsCase() *VerifiedEsCase {
 	return &VerifiedEsCase{
 		CreateTimestamp: supportingfunctions.GetDateTimeFormatRFC3339(time.Now().UnixMilli()),
+		Event:           *NewEventMessageForEsCase(),
 	}
 }
 
@@ -43,6 +44,14 @@ func (c *VerifiedEsCase) GetSource() string {
 
 func (c *VerifiedEsCase) SetSource(source string) {
 	c.Source = source
+}
+
+func (c *VerifiedEsCase) GetCreateTimestamp() string {
+	return c.CreateTimestamp
+}
+
+func (c *VerifiedEsCase) SetCreateTimestamp(timestamp string) {
+	c.CreateTimestamp = timestamp
 }
 
 func (c *VerifiedEsCase) GetEvent() *EventMessageForEsCase {

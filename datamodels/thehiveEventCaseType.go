@@ -22,12 +22,12 @@ type EventMessageTheHiveCase struct {
 // ImpactStatus - краткое описание воздействия
 // CustomFields - настраиваемые поля
 type EventCaseDetails struct {
-	EndDate          string       `json:"endDate" bson:"endDate"` //формат RFC3339
-	ResolutionStatus string       `json:"resolutionStatus" bson:"resolutionStatus"`
-	Summary          string       `json:"summary" bson:"summary"`
-	Status           string       `json:"status" bson:"status"`
-	ImpactStatus     string       `json:"impactStatus" bson:"impactStatus"`
-	CustomFields     CustomFields `json:"customFields" bson:"customFields"`
+	EndDate          string       `json:"endDate,omitempty" bson:"endDate"` //формат RFC3339
+	ResolutionStatus string       `json:"resolutionStatus,omitempty" bson:"resolutionStatus"`
+	Summary          string       `json:"summary,omitempty" bson:"summary"`
+	Status           string       `json:"status,omitempty" bson:"status"`
+	ImpactStatus     string       `json:"impactStatus,omitempty" bson:"impactStatus"`
+	CustomFields     CustomFields `json:"customFields,omitempty" bson:"customFields"`
 }
 
 // EventObject объект события
@@ -36,5 +36,5 @@ type EventCaseDetails struct {
 type EventCaseObject struct {
 	commonobjectevent.CommonEventCaseObject
 	Tags         []string     `json:"tags" bson:"tags"`
-	CustomFields CustomFields `json:"customFields" bson:"customFields"`
+	CustomFields CustomFields `json:"customFields,omitempty" bson:"customFields"`
 }

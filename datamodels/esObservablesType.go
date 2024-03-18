@@ -21,6 +21,6 @@ type ObservableMessageEs struct {
 	SnortSid   []string                    `json:"snortSid,omitempty" bson:"snortSid"`
 	Tags       map[string][]string         `json:"tags" bson:"tags"`
 	TagsAll    []string                    `json:"tagsAll" bson:"tagsAll"`
-	Attachment AttachmentData              `json:"attachment" bson:"attachment"`
-	Reports    map[string]ReportTaxonomies `json:"reports" bson:"reports"`
+	Attachment AttachmentData              `json:"attachment,omitempty" bson:"attachment"`
+	Reports    map[string]ReportTaxonomies `json:"reports,omitempty" bson:"reports"`
 }

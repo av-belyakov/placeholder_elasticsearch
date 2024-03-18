@@ -47,11 +47,11 @@ func (va *VerifiedForEsAlert) SetElasticsearchID(id string) {
 	va.ElasticsearchID = id
 }
 
-func (va *VerifiedForEsAlert) GetCreateTimestatmp() string {
+func (va *VerifiedForEsAlert) GetCreateTimestamp() string {
 	return va.CreateTimestamp
 }
 
-func (va *VerifiedForEsAlert) SetCreateTimestatmp(time string) {
+func (va *VerifiedForEsAlert) SetCreateTimestamp(time string) {
 	va.CreateTimestamp = time
 }
 

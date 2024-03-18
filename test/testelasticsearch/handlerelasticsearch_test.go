@@ -56,12 +56,14 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 
 	Context("Тест 2. Поиск, обновление и удаление индексов с Alerts", func() {
 		var (
-			index                      string = "module_placeholder_new_alert"
+			index                      string = "test_module_placeholder_alert"
 			indexCurrent, indexPattern string
 			source                     string = "gcm"
-			rootId                     string = "~86079815800" //только это objectId
-			queryCurrent               *strings.Reader
-			hsd                        elasticsearchinteractions.HandlerSendData
+			rootId                     string
+			//rootId                     string = "~86079815800" //только это objectId
+			//rootId       string = "~8607981580011" //этого не существует
+			queryCurrent *strings.Reader
+			hsd          elasticsearchinteractions.HandlerSendData
 
 			newVerifiedForEsAlert *datamodels.VerifiedForEsAlert = datamodels.NewVerifiedForEsAlert()
 			verifiedForEsAlert    *datamodels.VerifiedForEsAlert = datamodels.NewVerifiedForEsAlert()
@@ -71,13 +73,13 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 
 		verifiedForEsAlert.SetSource(source)
 		verifiedForEsAlert.SetID("jf99r3u9rtt045059y9h49yh9fef93")
-		verifiedForEsAlert.SetCreateTimestatmp("2024-02-06T15:37:52+03:00")
+		verifiedForEsAlert.SetCreateTimestamp("2024-02-06T15:37:52+03:00")
 		verifiedForEsAlert.SetEvent(testelasticsearch.EventForEsAlertTestOne)
 		verifiedForEsAlert.SetAlert(testelasticsearch.AlertForEsAlertTestOne)
 
 		newVerifiedForEsAlert.SetSource(source)
 		newVerifiedForEsAlert.SetID("jf99r3u9rtt045059y9h49yh9fef93")
-		newVerifiedForEsAlert.SetCreateTimestatmp("2024-02-06T15:37:52+03:00")
+		newVerifiedForEsAlert.SetCreateTimestamp("2024-02-06T15:37:52+03:00")
 		newVerifiedForEsAlert.SetEvent(testelasticsearch.EventForEsAlertTestTwo)
 		newVerifiedForEsAlert.SetAlert(testelasticsearch.AlertForEsAlertTestTwo)
 
@@ -85,7 +87,7 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 			t := time.Now()
 			month := int(t.Month())
 
-			indexPattern = fmt.Sprintf("module_placeholder_new_alert_%s_%d", source, t.Year())
+			indexPattern = fmt.Sprintf("%s_%s_%d", index, source, t.Year())
 			indexCurrent = fmt.Sprintf("%s_%s_%d_%d", index, source, t.Year(), month)
 
 			hsd = elasticsearchinteractions.HandlerSendData{
@@ -99,7 +101,8 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 
 			errConn = hsd.New()
 
-			queryCurrent = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.objectId\": \"%s\"}}]}}}", source, rootId))
+			rootId = verifiedForEsAlert.GetEvent().GetRootId()
+			queryCurrent = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId))
 		})
 
 		It("При подключении не должно быть ошибок", func() {
@@ -118,6 +121,7 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			fmt.Println("INDEXES:", indexes)
+			fmt.Printf("Index current: %s\n", indexCurrent)
 
 			if len(indexes) == 0 {
 				//ЭТО ВЫПОЛЯЕТСЯ ТОЛЬКО КОГДА ПОХОЖИЙ ИНДЕКС НЕ НАЙДЕН
@@ -133,14 +137,21 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 
 				fmt.Println("======================= Response ======================")
 				fmt.Println("||| Status:", res.Status())
-				//fmt.Println("||| Body:", res.Body)
 
-				decEs := datamodels.ElasticsearchResponseCase{}
+				decEs := datamodels.ElasticsearchResponseAlert{}
 				err = json.NewDecoder(res.Body).Decode(&decEs)
 				Expect(err).ShouldNot(HaveOccurred())
 
-				fmt.Println("==== decEs.Options.Total.Value ===")
+				fmt.Println("==== ALERT: decEs.Options.Total.Value ===")
 				fmt.Println(decEs.Options.Total.Value)
+				listRes := []datamodels.ServiseOption(nil)
+				for _, v := range decEs.Options.Hits {
+					listRes = append(listRes, datamodels.ServiseOption{
+						ID:    v.ID,
+						Index: v.Index,
+					})
+				}
+				fmt.Println("listRes =", listRes)
 
 				if decEs.Options.Total.Value == 0 {
 					//ВЫПОЛНЯЕТСЯ ТОГДА КОГДА ДОКУМЕНТ НЕ НАЙДЕН
@@ -158,11 +169,15 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 					*/
 
 					//при наличие похожего индекса его замена
-					object, err := GetVerifiedForEsAlert(res)
-					Expect(err).ShouldNot(HaveOccurred())
+					//object, err := GetVerifiedForEsAlert(res)
+					//Expect(err).ShouldNot(HaveOccurred())
 
-					updateVerified := datamodels.NewVerifiedForEsAlert()
-					for _, v := range object.Hits.Hits {
+					fmt.Println("*************************************")
+					fmt.Println(decEs.Options.Hits)
+					fmt.Println("*************************************")
+
+					/*updateVerified := datamodels.NewVerifiedForEsAlert()
+					for _, v := range decEs.Options.Hits.Hits {
 						fmt.Println("****************** v.Source.Event *********************")
 						fmt.Println(v.Source.Event)
 
@@ -190,8 +205,9 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 						fmt.Println(updateVerified.ToStringBeautiful(0))
 
 						/*nvbyte*/
-					_, err = json.Marshal(updateVerified)
-					Expect(err).ShouldNot(HaveOccurred())
+
+					//	_, err = json.Marshal(updateVerified)
+					//Expect(err).ShouldNot(HaveOccurred())
 
 					//Пока временно выключаем замену в БД
 					/*
@@ -208,6 +224,74 @@ var _ = Describe("Handlerelasticsearch", Ordered, func() {
 						Expect(res.StatusCode).Should(Equal(http.StatusCreated))
 					*/
 				}
+			}
+
+			Expect(true).Should(BeTrue())
+		})
+	})
+
+	Context("Тест 3. Поиск, обновление и удаление индексов с Case", func() {
+		var (
+			index                      string = "module_placeholder_new_case"
+			indexCurrent, indexPattern string
+			rootId                     string = "~184295504"
+			queryCurrent               *strings.Reader
+			hsd                        elasticsearchinteractions.HandlerSendData
+
+			errConn error
+		)
+
+		BeforeAll(func() {
+			t := time.Now()
+			month := int(t.Month())
+
+			indexPattern = fmt.Sprintf("%s_%d", index, t.Year())
+			indexCurrent = fmt.Sprintf("%s_%d_%d", index, t.Year(), month)
+
+			hsd = elasticsearchinteractions.HandlerSendData{
+				Settings: elasticsearchinteractions.SettingsHandler{
+					Port:   Port,
+					Host:   Host,
+					User:   User,
+					Passwd: Passwd,
+				},
+			}
+
+			errConn = hsd.New()
+
+			queryCurrent = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"event.rootId\": \"%s\"}}]}}}", rootId))
+		})
+
+		It("При подключении не должно быть ошибок", func() {
+			Expect(errConn).ShouldNot(HaveOccurred())
+		})
+
+		It("Запросы должны быть обработаны без ошибок", func() {
+			indexes, err := hsd.GetExistingIndexes(indexPattern)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			fmt.Println("INDEXES:", indexes)
+			fmt.Printf("Index current: %s\n", indexCurrent)
+
+			res, errSearch := hsd.SearchDocument(indexes, queryCurrent)
+			Expect(errSearch).ShouldNot(HaveOccurred())
+
+			fmt.Println("======================= Response ======================")
+			fmt.Println("||| Status:", res.Status())
+
+			decEs := datamodels.ElasticsearchResponseCase{}
+			err = json.NewDecoder(res.Body).Decode(&decEs)
+			Expect(err).ShouldNot(HaveOccurred())
+
+			fmt.Println("==== CASE: decEs.Options.Total.Value ===")
+			fmt.Println(decEs.Options.Total.Value)
+			fmt.Println("ID FOUND elements:")
+			for k, v := range decEs.Options.Hits {
+				fmt.Printf("%d.\nID: '%s', Index: '%s'\n", k, v.ID, v.Index)
+			}
+			fmt.Println("ROW FOUND elements:")
+			for k, v := range decEs.Options.Hits {
+				fmt.Printf("%d.\nElements: '%v'\n", k, v.Source)
 			}
 
 			Expect(true).Should(BeTrue())

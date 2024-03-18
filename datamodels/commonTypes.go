@@ -74,10 +74,6 @@ type ShardsPattern struct {
 	Successful int `json:"successful"`
 }
 
-type ElasticsearchPatternVerifiedForEsAlert struct {
-	Hits HitsParrent `json:"hits"`
-}
-
 // AttachmentData прикрепленные данные
 // Size - размер
 // Id - идентификатор
@@ -85,11 +81,11 @@ type ElasticsearchPatternVerifiedForEsAlert struct {
 // ContentType - тип контента
 // Hashes - список хешей
 type AttachmentData struct {
-	Size        uint64   `json:"size" bson:"size"`
-	Id          string   `json:"id" bson:"id"`
-	Name        string   `json:"name" bson:"name"`
-	ContentType string   `json:"contentType" bson:"contentType"`
-	Hashes      []string `json:"hashes" bson:"hashes"`
+	Size        uint64   `json:"size,omitempty" bson:"size"`
+	Id          string   `json:"id,omitempty" bson:"id"`
+	Name        string   `json:"name,omitempty" bson:"name"`
+	ContentType string   `json:"contentType,omitempty" bson:"contentType"`
+	Hashes      []string `json:"hashes,omitempty" bson:"hashes"`
 }
 
 // ReportTaxonomies
@@ -99,10 +95,10 @@ type ReportTaxonomies struct {
 
 // Taxonomy
 type Taxonomy struct {
-	Level     string `json:"level" bson:"level"`
-	Namespace string `json:"namespace" bson:"namespace"`
-	Predicate string `json:"predicate" bson:"predicate"`
-	Value     string `json:"value" bson:"value"`
+	Level     string `json:"level,omitempty" bson:"level"`
+	Namespace string `json:"namespace,omitempty" bson:"namespace"`
+	Predicate string `json:"predicate,omitempty" bson:"predicate"`
+	Value     string `json:"value,omitempty" bson:"value"`
 }
 
 // CustomerFields
@@ -147,12 +143,12 @@ type CustomFieldBoolenType struct {
 // Tactic - тактика
 // ExtraData - дополнительные данные
 type TtpMessage struct {
-	OccurDate            string              `json:"occurDate" bson:"occurDate"`   //формат RFC3339
-	UnderliningCreatedAt string              `json:"_createdAt" bson:"_createdAt"` //формат RFC3339
-	UnderliningId        string              `json:"_id" bson:"_id"`
-	UnderliningCreatedBy string              `json:"_createdBy" bson:"_createdBy"`
-	PatternId            string              `json:"patternId" bson:"patternId"`
-	Tactic               string              `json:"tactic" bson:"tactic"`
+	OccurDate            string              `json:"occurDate,omitempty" bson:"occurDate"`   //формат RFC3339
+	UnderliningCreatedAt string              `json:"_createdAt,omitempty" bson:"_createdAt"` //формат RFC3339
+	UnderliningId        string              `json:"_id,omitempty" bson:"_id"`
+	UnderliningCreatedBy string              `json:"_createdBy,omitempty" bson:"_createdBy"`
+	PatternId            string              `json:"patternId,omitempty" bson:"patternId"`
+	Tactic               string              `json:"tactic,omitempty" bson:"tactic"`
 	ExtraData            ExtraDataTtpMessage `json:"extraData" bson:"extraData"`
 }
 
@@ -160,8 +156,8 @@ type TtpMessage struct {
 // Pattern - шаблон
 // PatternParent - родительский шаблон
 type ExtraDataTtpMessage struct {
-	Pattern       PatternExtraData `json:"pattern" bson:"pattern"`
-	PatternParent PatternExtraData `json:"patternParent" bson:"patternParent"`
+	Pattern       PatternExtraData `json:"pattern,omitempty" bson:"pattern"`
+	PatternParent PatternExtraData `json:"patternParent,omitempty" bson:"patternParent"`
 }
 
 // PatternExtraData шаблон дополнительных данных
@@ -185,19 +181,19 @@ type ExtraDataTtpMessage struct {
 // URL - URL
 // Version - версия
 type PatternExtraData struct {
-	RemoteSupport        bool     `json:"remoteSupport" bson:"remoteSupport"`
-	Revoked              bool     `json:"revoked" bson:"revoked"`
-	UnderliningCreatedAt string   `json:"_createdAt" bson:"_createdAt"` //формат RFC3339
-	UnderliningCreatedBy string   `json:"_createdBy" bson:"_createdBy"`
-	UnderliningId        string   `json:"_id" bson:"_id"`
-	UnderliningType      string   `json:"_type" bson:"_type"`
-	Description          string   `json:"description" bson:"description"`
-	Detection            string   `json:"detection" bson:"detection"`
-	Name                 string   `json:"name" bson:"name"`
-	PatternId            string   `json:"patternId" bson:"patternId"`
-	PatternType          string   `json:"patternType" bson:"patternType"`
-	URL                  string   `json:"url" bson:"url"`
-	Version              string   `json:"version" bson:"version"`
+	RemoteSupport        bool     `json:"remoteSupport,omitempty" bson:"remoteSupport"`
+	Revoked              bool     `json:"revoked,omitempty" bson:"revoked"`
+	UnderliningCreatedAt string   `json:"_createdAt,omitempty" bson:"_createdAt"` //формат RFC3339
+	UnderliningCreatedBy string   `json:"_createdBy,omitempty" bson:"_createdBy"`
+	UnderliningId        string   `json:"_id,omitempty" bson:"_id"`
+	UnderliningType      string   `json:"_type,omitempty" bson:"_type"`
+	Description          string   `json:"description,omitempty" bson:"description"`
+	Detection            string   `json:"detection,omitempty" bson:"detection"`
+	Name                 string   `json:"name,omitempty" bson:"name"`
+	PatternId            string   `json:"patternId,omitempty" bson:"patternId"`
+	PatternType          string   `json:"patternType,omitempty" bson:"patternType"`
+	URL                  string   `json:"url,omitempty" bson:"url"`
+	Version              string   `json:"version,omitempty" bson:"version"`
 	Platforms            []string `json:"platforms" bson:"platforms"`
 	PermissionsRequired  []string `json:"permissionsRequired" bson:"permissionsRequired"`
 	DataSources          []string `json:"dataSources" bson:"dataSources"`

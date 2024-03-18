@@ -22,18 +22,18 @@ package commonobjectevent
 // CaseTemplate - шаблон обращения
 // ObjectType - тип объекта
 type CommonEventAlertObject struct {
-	Tlp             uint64 `json:"tlp" bson:"tlp"`
-	UnderliningId   string `json:"_id" bson:"_id"`
-	Id              string `json:"id" bson:"id"`
-	CreatedBy       string `json:"createdBy" bson:"createdBy"`
+	Tlp             uint64 `json:"tlp,omitempty" bson:"tlp"`
+	UnderliningId   string `json:"_id,omitempty" bson:"_id"`
+	Id              string `json:"id,omitempty" bson:"id"`
+	CreatedBy       string `json:"createdBy,omitempty" bson:"createdBy"`
 	UpdatedBy       string `json:"updatedBy,omitempty" bson:"updatedBy,omitempty"`
-	CreatedAt       string `json:"createdAt" bson:"createdAt"`                     //формат RFC3339
+	CreatedAt       string `json:"createdAt,omitempty" bson:"createdAt"`           //формат RFC3339
 	UpdatedAt       string `json:"updatedAt,omitempty" bson:"updatedAt,omitempty"` //формат RFC3339
 	UnderliningType string `json:"_type,omitempty" bson:"_type"`
 	Title           string `json:"title,omitempty" bson:"title"`
 	Description     string `json:"description,omitempty" bson:"description"`
 	Status          string `json:"status,omitempty" bson:"status"`
-	Date            string `json:"date" bson:"date"` //формат RFC3339
+	Date            string `json:"date,omitempty" bson:"date"` //формат RFC3339
 	Type            string `json:"type,omitempty" bson:"type"`
 	ObjectType      string `json:"objectType,omitempty" bson:"objectType"`
 	Source          string `json:"source,omitempty" bson:"source"`

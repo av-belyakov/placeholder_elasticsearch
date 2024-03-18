@@ -12,11 +12,11 @@ import (
 // CustomFields - настраиваемые поля
 // Artifacts - артефакты
 type AlertMessageTheHiveAlert struct {
-	Follow   bool   `json:"follow" bson:"follow"`
-	Severity uint64 `json:"severity" bson:"severity"`
+	Follow   bool   `json:"follow,omitempty" bson:"follow"`
+	Severity uint64 `json:"severity,omitempty" bson:"severity"`
 	commonalert.CommonAlertType
 	Tags         []string        `json:"tags" bson:"tags"`
-	CustomFields CustomFields    `json:"customFields" bson:"customFields"`
+	CustomFields CustomFields    `json:"customFields,omitempty" bson:"customFields"`
 	Artifacts    []AlertArtifact `json:"artifact" bson:"artifact"`
 }
 
@@ -38,10 +38,10 @@ type AlertMessageTheHiveAlert struct {
 // Message - сообщение
 // Tags - список тегов
 type AlertArtifact struct {
-	Sighted          bool `json:"sighted" bson:"sighted"`
-	IgnoreSimilarity bool `json:"ignoreSimilarity" bson:"ignoreSimilarity"`
+	Sighted          bool `json:"sighted,omitempty" bson:"sighted"`
+	IgnoreSimilarity bool `json:"ignoreSimilarity,omitempty" bson:"ignoreSimilarity"`
 	commonalertartifact.CommonArtifactType
 	UpdatedAt string   `json:"updatedAt" bson:"updatedAt"` //формат RFC3339
-	UpdatedBy string   `json:"updatedBy" bson:"updatedBy"`
+	UpdatedBy string   `json:"updatedBy,omitempty" bson:"updatedBy"`
 	Tags      []string `json:"tags" bson:"tags"`
 }
