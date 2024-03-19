@@ -1,6 +1,7 @@
 package coremodule
 
 import (
+	"encoding/json"
 	"fmt"
 	"runtime"
 	"strings"
@@ -197,10 +198,20 @@ func NewVerifiedElasticsearchFormatAlert(
 		Data:    verifiedAlert.Get(),
 	}
 
-	// ТОЛЬКО ДЛЯ ТЕСТОВ, что бы завершить гроутину вывода информации и логирования
-	//при выполнения тестирования
-	logging <- datamodels.MessageLogging{
-		MsgData: "",
-		MsgType: "STOP TEST",
+	//******** TEST ********
+	//только в рамках тестирования, отправка обновленного объекта
+	//в специальный файл
+	infoUpdate, err := json.MarshalIndent(verifiedAlert, "", "  ")
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
 	}
+	logging <- datamodels.MessageLogging{
+		MsgData: string(infoUpdate),
+		MsgType: "test_object_alert",
+	}
+	//***********************
 }

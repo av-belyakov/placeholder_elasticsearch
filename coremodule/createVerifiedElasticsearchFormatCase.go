@@ -1,6 +1,7 @@
 package coremodule
 
 import (
+	"encoding/json"
 	"fmt"
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
@@ -229,4 +230,21 @@ func NewVerifiedElasticsearchFormatCase(
 		Command: "add new case",
 		Data:    verifiedCase.Get(),
 	}
+
+	//******** TEST ********
+	//только в рамках тестирования, отправка обновленного объекта
+	//в специальный файл
+	infoUpdate, err := json.MarshalIndent(verifiedCase, "", "  ")
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
+	}
+	logging <- datamodels.MessageLogging{
+		MsgData: string(infoUpdate),
+		MsgType: "test_object_case",
+	}
+	//***********************
 }

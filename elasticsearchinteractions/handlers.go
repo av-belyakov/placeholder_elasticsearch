@@ -171,23 +171,6 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	countReplacingFields += updateVerified.ObservablesMessageEs.ReplacingOldValues(*newDocument.GetObservables())
 	countReplacingFields += updateVerified.TtpsMessageEs.ReplacingOldValues(*newDocument.GetTtps())
 
-	//******** TEST ********
-	//только в рамках тестирования, отправка обновленного объекта
-	//в специальный файл
-	infoUpdate, err := json.MarshalIndent(updateVerified, "", "  ")
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
-	}
-	logging <- datamodels.MessageLogging{
-		MsgData: string(infoUpdate),
-		MsgType: "test_object_update",
-	}
-	//***********************
-
 	nvbyte, err := json.Marshal(updateVerified)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -223,65 +206,6 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 			MsgType: "warning",
 		}
 	}
-
-	/*
-
-		tag := fmt.Sprintf("case rootId: '%s' ", obj.GetEvent().GetRootId())
-		t := time.Now()
-		index = fmt.Sprintf("%s_%d_%d", index, t.Year(), int(t.Month()))
-
-
-		queryDelete := strings.NewReader(
-			fmt.Sprintf(
-				"{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}",
-				obj.GetSource(),
-				obj.GetEvent().GetRootId(),
-			))
-
-		countDel, err := hsd.DeleteDocument([]string{index}, queryDelete)
-		if err != nil {
-			_, f, l, _ := runtime.Caller(0)
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
-				MsgType: "error",
-			}
-		}
-		if countDel > 0 {
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("DocumentCase - a total of '%d' data has been deleted that corresponds to the parameters: source = '%s' and event.rootId = '%s'", countDel, obj.GetSource(), obj.GetEvent().GetRootId()),
-				MsgType: "warning",
-			}
-		}
-
-		b, err := json.Marshal(data)
-		if err != nil {
-			_, f, l, _ := runtime.Caller(0)
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-				MsgType: "error",
-			}
-
-			return
-		}
-
-		_, err = hsd.InsertDocument(tag, index, b)
-		if err != nil {
-			_, f, l, _ := runtime.Caller(0)
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-				MsgType: "error",
-			}
-
-			return
-		}
-
-		//счетчик
-		counting <- datamodels.DataCounterSettings{
-			DataType: "update count insert Elasticserach",
-			DataMsg:  "subject_case",
-			Count:    1,
-		}
-	*/
 }
 
 // ReplacementDocumentAlert выполняет замену документа, но только в рамках одного индекса
@@ -425,23 +349,6 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 			MsgType: "error",
 		}
 	}
-
-	//******** TEST ********
-	//только в рамках тестирования, отправка обновленного объекта
-	//в специальный файл
-	infoUpdate, err := json.MarshalIndent(updateVerified, "", "  ")
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
-	}
-	logging <- datamodels.MessageLogging{
-		MsgData: string(infoUpdate),
-		MsgType: "test_object_update",
-	}
-	//***********************
 
 	nvbyte, err := json.Marshal(updateVerified)
 	if err != nil {
