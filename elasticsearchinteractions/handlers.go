@@ -11,6 +11,16 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
+var querySetIndexLimit string = `{
+	"index": {
+		"mapping": {
+			"total_fields": {
+				"limit": 2000
+			}
+		}
+	}
+}`
+
 func (hsd HandlerSendData) InsertNewDocument(
 	tag string,
 	index string,
@@ -90,6 +100,19 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 
 	if len(indexes) == 0 {
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
+
+		//при создании нового индекса вносим в его настройку дополнительный
+		//параметр позволяющий увеличить лимит количества создаваемых полей
+		//в текущем индексе, что, позволяет убрать ошибку Elasticsearch типа
+		//Limit of total fields [1000] has been exceeded while adding new fields
+		_, err := hsd.SetIndexSetting([]string{indexCurrent}, querySetIndexLimit)
+		if err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
 
 		return
 	}
@@ -183,6 +206,12 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	}
 
 	res, countDel, err := hsd.UpdateDocument(tag, indexCurrent, listDeleting, nvbyte)
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -233,7 +262,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	t := time.Now()
 	month := int(t.Month())
-	indexPattern := fmt.Sprintf("%s_%s_%d", indexName, newDocument.GetSource(), t.Year())
+	indexPattern := fmt.Sprintf("%s_%s", indexName, newDocument.GetSource())
 	indexCurrent := fmt.Sprintf("%s_%s_%d_%d", indexName, newDocument.GetSource(), t.Year(), month)
 	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", newDocument.GetSource(), newDocument.GetEvent().GetRootId()))
 
@@ -262,10 +291,29 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	if len(indexes) == 0 {
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
+		//при создании нового индекса вносим в его настройку дополнительный
+		//параметр позволяющий увеличить лимит количества создаваемых полей
+		//в текущем индексе, что, позволяет убрать ошибку Elasticsearch типа
+		//Limit of total fields [1000] has been exceeded while adding new fields
+		_, err := hsd.SetIndexSetting([]string{indexCurrent}, querySetIndexLimit)
+		if err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+
 		return
 	}
 
 	res, err := hsd.SearchDocument(indexes, queryCurrent)
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -379,6 +427,12 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	}
 
 	res, countDel, err := hsd.UpdateDocument(tag, indexCurrent, listDeleting, nvbyte)
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{

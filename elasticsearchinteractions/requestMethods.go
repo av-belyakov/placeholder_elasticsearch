@@ -14,6 +14,40 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
 
+func (hsd HandlerSendData) SetIndexSetting(indexes []string, query string) (bool, error) {
+	indicesSettings := esapi.IndicesPutSettingsRequest{
+		Index: indexes,
+		Body:  strings.NewReader(query),
+	}
+
+	res, err := indicesSettings.Do(context.Background(), hsd.Client.Transport)
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
+	if err != nil {
+		return false, err
+	}
+
+	if res.StatusCode == http.StatusCreated || res.StatusCode == http.StatusOK {
+		return true, nil
+	}
+
+	r := map[string]interface{}{}
+	if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		return true, fmt.Errorf("'%v' %s:%d", err, f, l-1)
+	}
+
+	if e, ok := r["error"]; ok {
+		return true, fmt.Errorf("received from module Elsaticsearch: %s (%s)", res.Status(), e)
+	}
+
+	return false, nil
+}
+
 // InsertDocument добавляет новый документ в заданный индекс
 func (hsd HandlerSendData) InsertDocument(tag, index string, b []byte) (*esapi.Response, error) {
 	var res *esapi.Response
@@ -131,6 +165,12 @@ func (hsd HandlerSendData) GetExistingIndexes(pattern string) ([]string, error) 
 		hsd.Client.Cat.Indices.WithContext(context.TODO()),
 		hsd.Client.Cat.Indices.WithFormat("json"),
 	)
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
 	if err != nil {
 		return nil, err
 	}
