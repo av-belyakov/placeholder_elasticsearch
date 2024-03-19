@@ -211,7 +211,7 @@ func NewVerifiedElasticsearchFormatAlert(
 	}
 	logging <- datamodels.MessageLogging{
 		MsgData: string(infoUpdate),
-		MsgType: "test_object_alert",
+		MsgType: "test_object_update",
 	}
 	//***********************
 }

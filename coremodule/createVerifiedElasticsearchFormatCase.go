@@ -244,7 +244,7 @@ func NewVerifiedElasticsearchFormatCase(
 	}
 	logging <- datamodels.MessageLogging{
 		MsgData: string(infoUpdate),
-		MsgType: "test_object_case",
+		MsgType: "test_object_update",
 	}
 	//***********************
 }
