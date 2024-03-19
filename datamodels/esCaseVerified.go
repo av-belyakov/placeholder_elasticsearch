@@ -20,10 +20,14 @@ type VerifiedEsCase struct {
 }
 
 func NewVerifiedEsCase() *VerifiedEsCase {
-	return &VerifiedEsCase{
+	vec := VerifiedEsCase{
 		CreateTimestamp: supportingfunctions.GetDateTimeFormatRFC3339(time.Now().UnixMilli()),
 		Event:           *NewEventMessageForEsCase(),
 	}
+	vec.ObservablesMessageEs = *NewObservablesMessageEs()
+	vec.TtpsMessageEs = *NewTtpsMessageEs()
+
+	return &vec
 }
 
 func (c *VerifiedEsCase) Get() *VerifiedEsCase {

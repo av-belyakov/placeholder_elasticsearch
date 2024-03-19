@@ -1,7 +1,6 @@
 package commonobjectevent
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -62,14 +61,9 @@ func (e *CommonEventCaseObject) ReplacingOldValues(element CommonEventCaseObject
 
 				currentStruct.Field(i).Set(newStruct.Field(j))
 				countReplacingFields++
-
-				fmt.Println("func 'CommonEventCaseObject' Field Name:", typeOfCurrentStruct.Field(i).Name, " Value:", newStruct.Field(j))
-
 			}
 		}
 	}
-
-	fmt.Println("func 'CommonEventCaseObject' countReplacingFields:", countReplacingFields)
 
 	return countReplacingFields
 }

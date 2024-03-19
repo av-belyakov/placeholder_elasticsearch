@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
-	"strings"
 
 	"placeholder_elasticsearch/datamodels"
 	rules "placeholder_elasticsearch/rulesinteraction"
@@ -34,9 +33,17 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id, subject str
 	chanDone := make(chan bool)
 
 	//ПРЕДНАЗНАЧЕНО для записи принимаемых объектов в лог-файл
-	str, _ := supportingfunctions.NewReadReflectJSONSprint(b)
+	str, err := supportingfunctions.NewReadReflectJSONSprint(b)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		s.Logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l+2),
+			MsgType: "error",
+		}
+	}
+
 	s.Logging <- datamodels.MessageLogging{
-		MsgData: fmt.Sprintf("\t---------------\n\t%s:\n%s\n", strings.ToUpper(subject), str),
+		MsgData: fmt.Sprintf("\t---------------\n%s\n", str),
 		MsgType: "objects",
 	}
 

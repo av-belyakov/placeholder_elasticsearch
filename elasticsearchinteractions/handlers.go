@@ -95,6 +95,12 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	}
 
 	res, err := hsd.SearchDocument(indexes, queryCurrent)
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
