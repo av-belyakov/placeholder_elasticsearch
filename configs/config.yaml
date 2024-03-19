@@ -61,6 +61,20 @@ LOGGING:
       writingStdout: false,
       maxFileSize: 10000,
     }
+  - {
+      msgTypeName: "test_object_update",
+      writingFile: true,
+      pathDirectory: "logs",
+      writingStdout: false,
+      maxFileSize: 1000000,
+    }
+  - {
+      msgTypeName: "test_object_replaced",
+      writingFile: true,
+      pathDirectory: "logs",
+      writingStdout: false,
+      maxFileSize: 1000000,
+    }
 ZABBIX:
   isTransmit: true
   networkHost: "zabbix.cloud.gcm"

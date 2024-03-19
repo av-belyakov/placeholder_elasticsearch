@@ -350,6 +350,23 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		}
 	}
 
+	//******** TEST ********
+	//только в рамках тестирования, отправка обновленного объекта
+	//в специальный файл
+	infoUpdate, err := json.MarshalIndent(updateVerified, "", "  ")
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
+	}
+	logging <- datamodels.MessageLogging{
+		MsgData: string(infoUpdate),
+		MsgType: "test_object_replaced",
+	}
+	//***********************
+
 	nvbyte, err := json.Marshal(updateVerified)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
