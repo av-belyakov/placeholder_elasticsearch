@@ -3,7 +3,6 @@ package testhandlerobservablesforEs_test
 import (
 	"fmt"
 	"reflect"
-	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -57,9 +56,9 @@ var _ = Describe("TesthandlerobservablesforEs", Ordered, func() {
 					}
 				}
 
-				if strings.Contains(v.ElemName, "observables.reports.") {
+				/*if strings.Contains(v.ElemName, "observables.reports.") {
 					so.HandlerReportValue(v.ElemName, v.ElemValue)
-				}
+				}*/
 			}
 
 			for _, v := range testing.GetObservableTwo() {
@@ -143,13 +142,13 @@ var _ = Describe("TesthandlerobservablesforEs", Ordered, func() {
 			Expect(listSnortSid[0].GetAttachment().GetSize()).Should(Equal(uint64(817)))
 			Expect(len(listSnortSid[0].GetAttachment().GetHashes())).Should(Equal(3))
 
-			cct, ok := listSnortSid[0].GetTaxonomies("CyberCrime-Tracker_1_0")
+			/*cct, ok := listSnortSid[0].GetTaxonomies("CyberCrime-Tracker_1_0")
 			Expect(ok).Should(BeTrue())
 			Expect(len(cct.Taxonomies)).Should(Equal(2))
 			Expect(cct.Taxonomies[0].GetLevel()).Should(Equal("info"))
 			Expect(cct.Taxonomies[0].GetNamespace()).Should(Equal("CCT"))
 			Expect(cct.Taxonomies[0].GetPredicate()).Should(Equal("C2 Search"))
-			Expect(cct.Taxonomies[0].GetValue()).Should(Equal("0 hits"))
+			Expect(cct.Taxonomies[0].GetValue()).Should(Equal("0 hits"))*/
 		})
 	})
 })

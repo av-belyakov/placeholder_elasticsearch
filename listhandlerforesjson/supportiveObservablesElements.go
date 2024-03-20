@@ -2,15 +2,14 @@ package listhandlerforesjson
 
 import (
 	"fmt"
-	"strings"
 
 	"placeholder_elasticsearch/datamodels"
 )
 
 // SupportiveObservables вспомогательный тип для для обработки observables
 type SupportiveObservables struct {
-	currentKey                string
-	previousFieldReports      string
+	currentKey string
+	//previousFieldReports      string
 	listAcceptedFields        []string
 	listAcceptedFieldsReports []string
 	observableTmp             datamodels.ObservableMessageEs
@@ -99,6 +98,7 @@ func (o *SupportiveObservables) isExistFieldBranch(value string) bool {
 	return false
 }
 
+/*
 func (o *SupportiveObservables) HandlerReportValue(fieldBranch string, i interface{}) {
 	fields := strings.Split(fieldBranch, ".")
 	if len(fields) != 5 {
@@ -158,3 +158,4 @@ func (o *SupportiveObservables) isExistFieldBranchReports(value string) bool {
 
 	return false
 }
+*/

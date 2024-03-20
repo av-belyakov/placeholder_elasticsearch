@@ -68,7 +68,7 @@ func NewObservableMessageEs() *ObservableMessageEs {
 		Tags:       make(map[string][]string),
 		TagsAll:    []string(nil),
 		Attachment: *NewAttachmentData(),
-		Reports:    make(map[string]ReportTaxonomies),
+		//Reports:    make(map[string]ReportTaxonomies),
 	}
 }
 
@@ -148,6 +148,10 @@ func (o *ObservableMessageEs) GetAttachment() *AttachmentData {
 	return &o.Attachment
 }
 
+/*
+ИСКЛЮЧИЛ из-за черезмерно большого количества
+ полей которое влечет за собой превышения лимита маппинга в Elsticsearch
+ что выражается в ошибке от СУБД типа "Limit of total fields [2000] has been exceeded while adding new fields"
 func (o *ObservableMessageEs) GetReports() map[string]ReportTaxonomies {
 	return o.Reports
 }
@@ -169,7 +173,7 @@ func (o *ObservableMessageEs) SetValueReports(v map[string]ReportTaxonomies) {
 // AddValueReports добавляет список значений ReportTaxonomies
 func (o *ObservableMessageEs) AddValueReports(key string, rt ReportTaxonomies) {
 	o.Reports[key] = rt
-}
+}*/
 
 func (om ObservableMessageEs) ToStringBeautiful(num int) string {
 	var str strings.Builder = strings.Builder{}
@@ -181,7 +185,7 @@ func (om ObservableMessageEs) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulMapSlice(num, om.Tags)))
 	str.WriteString(fmt.Sprintf("%s'tagsAll': \n%s", ws, ToStringBeautifulSlice(num, om.TagsAll)))
 	str.WriteString(fmt.Sprintf("%s'attachment': \n%s", ws, om.Attachment.ToStringBeautiful(num+1)))
-	str.WriteString(fmt.Sprintf("%s'reports': \n%s", ws, func(l map[string]ReportTaxonomies) string {
+	/*str.WriteString(fmt.Sprintf("%s'reports': \n%s", ws, func(l map[string]ReportTaxonomies) string {
 		var str strings.Builder = strings.Builder{}
 		for key, value := range l {
 			str.WriteString(fmt.Sprintf("%s'%s':\n", supportingfunctions.GetWhitespace(num+1), key))
@@ -195,7 +199,7 @@ func (om ObservableMessageEs) ToStringBeautiful(num int) string {
 			}
 		}
 		return str.String()
-	}(om.Reports)))
+	}(om.Reports)))*/
 
 	return str.String()
 }

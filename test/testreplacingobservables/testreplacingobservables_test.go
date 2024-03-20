@@ -59,7 +59,7 @@ var _ = Describe("Testreplacingobservables", func() {
 							"APPA:Direction=\"outbound\"",
 						},
 						Attachment: datamodels.AttachmentData{},
-						Reports:    make(map[string]datamodels.ReportTaxonomies),
+						//Reports:    make(map[string]datamodels.ReportTaxonomies),
 					},
 					{
 						CommonObservableType: commonobservable.CommonObservableType{
@@ -87,7 +87,7 @@ var _ = Describe("Testreplacingobservables", func() {
 							"misp:External analysis=\"domain\"",
 						},
 						Attachment: datamodels.AttachmentData{},
-						Reports: map[string]datamodels.ReportTaxonomies{
+						/*Reports: map[string]datamodels.ReportTaxonomies{
 							"AbuseIPDB_1_0": {
 								Taxonomies: []datamodels.Taxonomy{
 									{
@@ -108,7 +108,7 @@ var _ = Describe("Testreplacingobservables", func() {
 									},
 								},
 							},
-						},
+						},*/
 					},
 				},
 				"ip_home": {
@@ -149,7 +149,7 @@ var _ = Describe("Testreplacingobservables", func() {
 								"03f2aa58955a9f542642e7d7672cf360",
 							},
 						},
-						Reports: make(map[string]datamodels.ReportTaxonomies),
+						//Reports: make(map[string]datamodels.ReportTaxonomies),
 					},
 				},
 			},
@@ -204,7 +204,7 @@ var _ = Describe("Testreplacingobservables", func() {
 							"misp:Network activity=\"snort\"", //добавление
 						},
 						Attachment: datamodels.AttachmentData{},
-						Reports: map[string]datamodels.ReportTaxonomies{
+						/*Reports: map[string]datamodels.ReportTaxonomies{
 							"AbuseIPDB_1_0": {
 								Taxonomies: []datamodels.Taxonomy{
 									{
@@ -226,7 +226,7 @@ var _ = Describe("Testreplacingobservables", func() {
 									},
 								},
 							},
-						},
+						},*/
 					},
 					//добавление
 					{
@@ -255,7 +255,7 @@ var _ = Describe("Testreplacingobservables", func() {
 							"misp:External analysis=\"domain\"",
 						},
 						Attachment: datamodels.AttachmentData{},
-						Reports: map[string]datamodels.ReportTaxonomies{
+						/*Reports: map[string]datamodels.ReportTaxonomies{
 							"AbuseIPDB_1_0": {
 								Taxonomies: []datamodels.Taxonomy{
 									{
@@ -276,7 +276,7 @@ var _ = Describe("Testreplacingobservables", func() {
 									},
 								},
 							},
-						},
+						},*/
 					},
 				},
 				//добавление
@@ -303,7 +303,7 @@ var _ = Describe("Testreplacingobservables", func() {
 						Tags:       map[string][]string{},
 						TagsAll:    []string{"45.8 KB"},
 						Attachment: datamodels.AttachmentData{},
-						Reports: map[string]datamodels.ReportTaxonomies{
+						/*Reports: map[string]datamodels.ReportTaxonomies{
 							"Moloch_1_7": {
 								Taxonomies: []datamodels.Taxonomy{
 									{
@@ -314,7 +314,7 @@ var _ = Describe("Testreplacingobservables", func() {
 									},
 								},
 							},
-						},
+						},*/
 					},
 				},
 				"ip_home": {
@@ -357,7 +357,7 @@ var _ = Describe("Testreplacingobservables", func() {
 								"84584584a224af43454b4554776",
 							},
 						},
-						Reports: make(map[string]datamodels.ReportTaxonomies),
+						//Reports: make(map[string]datamodels.ReportTaxonomies),
 					},
 				},
 				//добавление
@@ -388,7 +388,7 @@ var _ = Describe("Testreplacingobservables", func() {
 						Tags:       map[string][]string{},
 						TagsAll:    []string{"snort"},
 						Attachment: datamodels.AttachmentData{},
-						Reports: map[string]datamodels.ReportTaxonomies{
+						/*Reports: map[string]datamodels.ReportTaxonomies{
 							"ARIADNA_GeoIP_1_0": {
 								Taxonomies: []datamodels.Taxonomy{
 									{
@@ -399,7 +399,7 @@ var _ = Describe("Testreplacingobservables", func() {
 									},
 								},
 							},
-						},
+						},*/
 					},
 				},
 			},

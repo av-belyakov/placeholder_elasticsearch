@@ -16,7 +16,12 @@ type VerifiedEsCase struct {
 	Source          string                `json:"source" bson:"source"`
 	Event           EventMessageForEsCase `json:"event" bson:"event"`
 	ObservablesMessageEs
-	TtpsMessageEs
+	//TtpsMessageEs
+	//поменял тип так как тип TtpsMessageEs способствует росту черезмерно большого
+	//количества полей которое влечет за собой превышения лимита маппинга в
+	//Elsticsearch), что выражается в ошибке от СУБД типа "Limit of total
+	//fields [2000] has been exceeded while adding new fields"
+	TtpsMessageTheHive
 }
 
 func NewVerifiedEsCase() *VerifiedEsCase {
@@ -25,7 +30,8 @@ func NewVerifiedEsCase() *VerifiedEsCase {
 		Event:           *NewEventMessageForEsCase(),
 	}
 	vec.ObservablesMessageEs = *NewObservablesMessageEs()
-	vec.TtpsMessageEs = *NewTtpsMessageEs()
+	//vec.TtpsMessageEs = *NewTtpsMessageEs()
+	vec.TtpsMessageTheHive = *NewTtpsMessageTheHive()
 
 	return &vec
 }
@@ -74,13 +80,21 @@ func (c *VerifiedEsCase) SetObservables(observables ObservablesMessageEs) {
 	c.ObservablesMessageEs = observables
 }
 
-func (c *VerifiedEsCase) GetTtps() *TtpsMessageEs {
+func (c *VerifiedEsCase) GetTtps() *TtpsMessageTheHive {
+	return &c.TtpsMessageTheHive
+}
+
+func (c *VerifiedEsCase) SetTtps(ttp TtpsMessageTheHive) {
+	c.TtpsMessageTheHive = ttp
+}
+
+/*func (c *VerifiedEsCase) GetTtps() *TtpsMessageEs {
 	return &c.TtpsMessageEs
 }
 
 func (c *VerifiedEsCase) SetTtps(ttp TtpsMessageEs) {
 	c.TtpsMessageEs = ttp
-}
+}*/
 
 func (c *VerifiedEsCase) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
@@ -93,7 +107,8 @@ func (c *VerifiedEsCase) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%s'observables':\n", ws))
 	str.WriteString(c.ObservablesMessageEs.ToStringBeautiful(num + 1))
 	str.WriteString(fmt.Sprintf("%s'ttp':\n", ws))
-	str.WriteString(c.TtpsMessageEs.ToStringBeautiful(num + 1))
+	str.WriteString(c.TtpsMessageTheHive.ToStringBeautiful(num + 1))
+	//str.WriteString(c.TtpsMessageEs.ToStringBeautiful(num + 1))
 
 	return str.String()
 }

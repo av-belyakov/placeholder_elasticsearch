@@ -104,7 +104,7 @@ func (o *ObservableMessageEs) ReplacingOldValues(element ObservableMessageEs) in
 			// для обработки поля "Reports"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "Reports" {
-				newRT, okNew := newStruct.Field(j).Interface().(map[string]ReportTaxonomies)
+				/*newRT, okNew := newStruct.Field(j).Interface().(map[string]ReportTaxonomies)
 				if !okNew {
 					continue
 				}
@@ -119,7 +119,7 @@ func (o *ObservableMessageEs) ReplacingOldValues(element ObservableMessageEs) in
 
 					num, _ := rt.ReplacingOldValues(value)
 					countReplacingFields += num
-				}
+				}*/
 
 				continue
 			}

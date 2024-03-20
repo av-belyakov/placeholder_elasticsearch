@@ -14,13 +14,16 @@ type ObservablesMessageEs struct {
 // Tags - список тегов
 // TagsAll - список всех тегов
 // Attachment - приложенные данные
-// Reports - список отчетов
+// Reports - список отчетов (ИСКЛЮЧИЛ из-за черезмерно большого количества
+// полей которое влечет за собой превышения лимита маппинга в Elsticsearch)
+// что выражается в ошибке от СУБД типа "Limit of total fields [2000] has
+// been exceeded while adding new fields"
 type ObservableMessageEs struct {
 	commonobservable.CommonObservableType
-	SensorId   string                      `json:"sensorId,omitempty" bson:"sensorId"`
-	SnortSid   []string                    `json:"snortSid,omitempty" bson:"snortSid"`
-	Tags       map[string][]string         `json:"tags" bson:"tags"`
-	TagsAll    []string                    `json:"tagsAll" bson:"tagsAll"`
-	Attachment AttachmentData              `json:"attachment,omitempty" bson:"attachment"`
-	Reports    map[string]ReportTaxonomies `json:"reports" bson:"reports"`
+	SensorId   string              `json:"sensorId,omitempty" bson:"sensorId"`
+	SnortSid   []string            `json:"snortSid,omitempty" bson:"snortSid"`
+	Tags       map[string][]string `json:"tags" bson:"tags"`
+	TagsAll    []string            `json:"tagsAll" bson:"tagsAll"`
+	Attachment AttachmentData      `json:"attachment,omitempty" bson:"attachment"`
+	// Reports    map[string]ReportTaxonomies `json:"reports" bson:"reports"`
 }

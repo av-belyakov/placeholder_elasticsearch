@@ -3,13 +3,13 @@ package coremodule
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
+	"runtime"
+
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/listhandlerforesjson"
 	"placeholder_elasticsearch/listhandlerthehivejson"
-	"reflect"
-	"runtime"
-	"strings"
 )
 
 func NewVerifiedElasticsearchFormatCase(
@@ -52,8 +52,10 @@ func NewVerifiedElasticsearchFormatCase(
 	listHandlerObservables := listhandlerforesjson.NewListHandlerObservablesElement(so)
 
 	//******************* Вспомогательный объект для Ttp **********************
-	sttp := listhandlerforesjson.NewSupportiveTtp()
-	listHandlerTtp := listhandlerforesjson.NewListHandlerTtpElement(sttp)
+	sttp := listhandlerthehivejson.NewSupportiveTtp()
+	listHandlerTtp := listhandlerthehivejson.NewListHandlerTtpElement(sttp)
+	//sttp := listhandlerforesjson.NewSupportiveTtp()
+	//listHandlerTtp := listhandlerforesjson.NewListHandlerTtpElement(sttp)
 
 	for data := range input {
 		var handlerIsExist bool
@@ -152,11 +154,17 @@ func NewVerifiedElasticsearchFormatCase(
 			continue
 		}
 
+		//убрал обработку observables.reports так как тип TtpsMessageEs
+		//способствует росту черезмерно большого количества полей которое
+		//влечет за собой превышения лимита маппинга в Elsticsearch), что
+		//выражается в ошибке от СУБД типа "Limit of total fields [2000]
+		//has been exceeded while adding new fields"
+		//
 		//для всех полей входящих в состав observables.reports
-		if strings.Contains(data.FieldBranch, "observables.reports.") {
-			handlerIsExist = true
-			so.HandlerReportValue(data.FieldBranch, data.Value)
-		}
+		//if strings.Contains(data.FieldBranch, "observables.reports.") {
+		//		handlerIsExist = true
+		//		so.HandlerReportValue(data.FieldBranch, data.Value)
+		//}
 
 		//*********************************************************************
 		//********** Сбор всех объектов относящихся к полю Ttp  ***************
@@ -172,6 +180,7 @@ func NewVerifiedElasticsearchFormatCase(
 							f(value)
 						}
 					}
+
 				default:
 					f(data.Value)
 
@@ -218,8 +227,8 @@ func NewVerifiedElasticsearchFormatCase(
 	observables.SetValueObservables(so.GetObservables())
 
 	// собираем объект ttp
-	ttps := datamodels.NewTtpsMessageEs()
-	ttps.SetValueTtp(sttp.GetTtps())
+	ttps := datamodels.NewTtpsMessageTheHive()
+	ttps.SetTtps(sttp.GetTtps())
 
 	verifiedCase.SetEvent(*event)
 	verifiedCase.SetObservables(*observables)

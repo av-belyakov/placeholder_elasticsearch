@@ -170,7 +170,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		}
 
 		countReplacingFields += updateVerified.ObservablesMessageEs.ReplacingOldValues(v.Source.ObservablesMessageEs)
-		countReplacingFields += updateVerified.TtpsMessageEs.ReplacingOldValues(v.Source.TtpsMessageEs)
+		countReplacingFields += updateVerified.TtpsMessageTheHive.ReplacingOldValues(v.Source.TtpsMessageTheHive)
 
 		listDeleting = append(listDeleting, datamodels.ServiseOption{
 			ID:    v.ID,
@@ -192,7 +192,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	}
 
 	countReplacingFields += updateVerified.ObservablesMessageEs.ReplacingOldValues(*newDocument.GetObservables())
-	countReplacingFields += updateVerified.TtpsMessageEs.ReplacingOldValues(*newDocument.GetTtps())
+	countReplacingFields += updateVerified.TtpsMessageTheHive.ReplacingOldValues(*newDocument.GetTtps())
 
 	nvbyte, err := json.Marshal(updateVerified)
 	if err != nil {
