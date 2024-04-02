@@ -76,10 +76,28 @@ LOGGING:
       maxFileSize: 1000000,
     }
 ZABBIX:
-  isTransmit: true
-  networkHost: "zabbix.cloud.gcm"
+  networkHost: "192.168.9.45"
   networkPort: 10051
-  zabbixHost: "sib-server"
-  zabbixKey: "placeholder_elasticsearch"
-  timeInterval: 10
-  handshake: "I'm still alive"
+  zabbixHost: "test-uchet-db.cloud.gcm"
+  eventTypes:
+    # для отслеживания ошибок
+    - eventType: "error"
+      zabbixKey: "placeholder_elasticsearch.error"
+      isTransmit: true
+      handshake:
+        timeInterval: 0
+        message: ""
+    # для информационных сообщений о выполненной работе
+    - eventType: "info"
+      zabbixKey: "placeholder_elasticsearch.info"
+      isTransmit: true
+      handshake:
+        timeInterval: 0
+        message: "I'm still alive"
+    # для регулярного отстукивания что модуль еще работает
+    - eventType: "handshake"
+      zabbixKey: "placeholder_elasticsearch.handshake"
+      isTransmit: true
+      handshake:
+        timeInterval: 1
+        message: "0"

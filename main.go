@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
+	"syscall"
 	"time"
 
 	"github.com/av-belyakov/simplelogger"
@@ -24,20 +25,6 @@ import (
 )
 
 const ROOT_DIR = "placeholder_elasticsearch"
-
-var (
-	err             error
-	sl              simplelogger.SimpleLoggerSettings
-	confApp         confighandler.ConfigApp
-	hz              *zabbixinteractions.HandlerZabbixConnection
-	warning         string
-	storageApp      *memorytemporarystorage.CommonStorageTemporary
-	lrcase, lralert *rules.ListRule
-
-	iz       chan string
-	logging  chan datamodels.MessageLogging
-	counting chan datamodels.DataCounterSettings
-)
 
 func getLoggerSettings(cls []confighandler.LogSet) []simplelogger.MessageTypeSettings {
 	loggerConf := make([]simplelogger.MessageTypeSettings, 0, len(cls))
@@ -57,22 +44,31 @@ func getLoggerSettings(cls []confighandler.LogSet) []simplelogger.MessageTypeSet
 
 // loggingHandler обработчик логов
 func loggingHandler(
-	iz chan<- string,
+	channelZabbix chan<- zabbixinteractions.MessageSettings,
 	sl simplelogger.SimpleLoggerSettings,
 	logging <-chan datamodels.MessageLogging) {
-
 	for msg := range logging {
 		_ = sl.WriteLoggingData(msg.MsgData, msg.MsgType)
 
-		if msg.MsgType == "error" || msg.MsgType == "info" {
-			iz <- msg.MsgData
+		if msg.MsgType == "error" || msg.MsgType == "warning" {
+			channelZabbix <- zabbixinteractions.MessageSettings{
+				EventType: "error",
+				Message:   fmt.Sprintf("%s: %s", msg.MsgType, msg.MsgData),
+			}
+		}
+
+		if msg.MsgType == "info" {
+			channelZabbix <- zabbixinteractions.MessageSettings{
+				EventType: "info",
+				Message:   msg.MsgData,
+			}
 		}
 	}
 }
 
 // counterHandler обработчик счетчиков
 func counterHandler(
-	iz chan<- string,
+	channelZabbix chan<- zabbixinteractions.MessageSettings,
 	storageApp *memorytemporarystorage.CommonStorageTemporary,
 	counting <-chan datamodels.DataCounterSettings) {
 
@@ -105,7 +101,10 @@ func counterHandler(
 
 		log.Printf("\t%s\n", msg)
 
-		iz <- msg
+		channelZabbix <- zabbixinteractions.MessageSettings{
+			EventType: "info",
+			Message:   msg,
+		}
 	}
 }
 
@@ -113,38 +112,45 @@ func counterHandler(
 func interactionZabbix(
 	ctx context.Context,
 	confApp confighandler.ConfigApp,
-	hz *zabbixinteractions.HandlerZabbixConnection,
 	sl simplelogger.SimpleLoggerSettings,
-	iz <-chan string) {
-	co := confApp.GetCommonApp()
-	t := time.Tick(time.Duration(co.Zabbix.TimeInterval) * time.Minute)
+	channelZabbix <-chan zabbixinteractions.MessageSettings) error {
 
-	for {
-		select {
-		case <-ctx.Done():
-			return
-
-		case <-t:
-			if !co.Zabbix.IsTransmit {
-				continue
-			}
-
-			if _, err := hz.SendData([]string{co.Zabbix.Handshake}); err != nil {
-				_, f, l, _ := runtime.Caller(0)
-				_ = sl.WriteLoggingData(fmt.Sprintf(" '%v' %s:%d", err, f, l-1), "error")
-			}
-
-		case msg := <-iz:
-			if !co.Zabbix.IsTransmit {
-				continue
-			}
-
-			if _, err := hz.SendData([]string{msg}); err != nil {
-				_, f, l, _ := runtime.Caller(0)
-				_ = sl.WriteLoggingData(fmt.Sprintf(" '%v' %s:%d", err, f, l-1), "error")
-			}
-		}
+	connTimeout := time.Duration(7 * time.Second)
+	hz, err := zabbixinteractions.NewZabbixConnection(
+		ctx,
+		zabbixinteractions.SettingsZabbixConnection{
+			Port:              confApp.Zabbix.NetworkPort,
+			Host:              confApp.Zabbix.NetworkHost,
+			NetProto:          "tcp",
+			ZabbixHost:        confApp.Zabbix.ZabbixHost,
+			ConnectionTimeout: &connTimeout,
+		})
+	if err != nil {
+		return err
 	}
+
+	et := make([]zabbixinteractions.EventType, len(confApp.Zabbix.EventTypes))
+	for _, v := range confApp.Zabbix.EventTypes {
+		et = append(et, zabbixinteractions.EventType{
+			IsTransmit: v.IsTransmit,
+			EventType:  v.EventType,
+			ZabbixKey:  v.ZabbixKey,
+			Handshake:  zabbixinteractions.Handshake(v.Handshake),
+		})
+	}
+
+	if err = hz.Handler(et, channelZabbix); err != nil {
+		return err
+	}
+
+	go func() {
+		for err := range hz.GetChanErr() {
+			_, f, l, _ := runtime.Caller(0)
+			_ = sl.WriteLoggingData(fmt.Sprintf("zabbix module: '%s' %s:%d", err.Error(), f, l-1), "error")
+		}
+	}()
+
+	return nil
 }
 
 func readListRules(rootDir, dirName, fileName string) (*rules.ListRule, string, error) {
@@ -178,25 +184,28 @@ func readListRules(rootDir, dirName, fileName string) (*rules.ListRule, string, 
 	return lr, warning, err
 }
 
-func init() {
-	iz = make(chan string)
-	logging = make(chan datamodels.MessageLogging)
-	counting = make(chan datamodels.DataCounterSettings)
+func main() {
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan,
+		syscall.SIGHUP,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGQUIT)
 
 	//инициализируем модуль чтения конфигурационного файла
-	confApp, err = confighandler.NewConfig(ROOT_DIR)
+	confApp, err := confighandler.NewConfig(ROOT_DIR)
 	if err != nil {
 		log.Fatalf("error module 'confighandler': %v", err)
 	}
 
 	//инициализируем модуль логирования
-	sl, err = simplelogger.NewSimpleLogger(ROOT_DIR, getLoggerSettings(confApp.GetListLogs()))
+	sl, err := simplelogger.NewSimpleLogger(ROOT_DIR, getLoggerSettings(confApp.GetListLogs()))
 	if err != nil {
 		log.Fatalf("error module 'simplelogger': %v", err)
 	}
 
 	// инициализируем модуль чтения правил обработки Cases поступающих через NATS
-	lrcase, warning, err = readListRules(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.FileCase)
+	lrcase, warning, err := readListRules(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.FileCase)
 	if err != nil {
 		_ = sl.WriteLoggingData(fmt.Sprint(err), "error")
 
@@ -204,7 +213,7 @@ func init() {
 	}
 
 	// инициализируем модуль чтения правил обработки Alerts поступающих через NATS
-	lralert, warning, err = readListRules(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.FileAlert)
+	lralert, warning, err := readListRules(ROOT_DIR, confApp.AppConfigRulesProcMsg.Directory, confApp.AppConfigRulesProcMsg.FileAlert)
 	if err != nil {
 		_ = sl.WriteLoggingData(fmt.Sprint(err), "error")
 
@@ -215,22 +224,18 @@ func init() {
 		_ = sl.WriteLoggingData(warning, "warning")
 	}
 
-	commOpt := confApp.GetCommonApp()
-	host := fmt.Sprintf("%s:%d", commOpt.Zabbix.NetworkHost, commOpt.Zabbix.NetworkPort)
+	//взаимодействие с Zabbix
+	channelZabbix := make(chan zabbixinteractions.MessageSettings)
+	ctxz, ctxCancelZ := context.WithCancel(context.Background())
+	if err := interactionZabbix(ctxz, confApp, sl, channelZabbix); err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err.Error(), f, l-3), "error")
 
-	//инициализируем модуль связи с Zabbix
-	hz = zabbixinteractions.NewHandlerZabbixConnection(host, commOpt.Zabbix.ZabbixHost, commOpt.Zabbix.ZabbixKey)
-}
+		log.Fatalln(err.Error())
+	}
 
-func main() {
-	var (
-		appName   string
-		appStatus string = "production"
-	)
-
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-
+	var appName string
+	appStatus := "production"
 	if an, err := supportingfunctions.GetAppName("README.md", 1); err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "warning")
@@ -252,20 +257,18 @@ func main() {
 	log.Printf("Placeholder_Elasticsearch application, version %s is running. Application status is '%s'\n", appVersion, appStatus)
 
 	//инициализируем модуль временного хранения информации
-	storageApp = memorytemporarystorage.NewTemporaryStorage()
+	storageApp := memorytemporarystorage.NewTemporaryStorage()
 
 	//добавляем время инициализации счетчика хранения
 	storageApp.SetStartTimeDataCounter(time.Now())
 
-	//взаимодействие с Zabbix
-	ctxZabbix, closeZabbix := context.WithCancel(context.Background())
-	go interactionZabbix(ctxZabbix, confApp, hz, sl, iz)
-
 	//вывод данных счетчика
-	go counterHandler(iz, storageApp, counting)
+	counting := make(chan datamodels.DataCounterSettings)
+	go counterHandler(channelZabbix, storageApp, counting)
 
 	// логирование данных
-	go loggingHandler(iz, sl, logging)
+	logging := make(chan datamodels.MessageLogging)
+	go loggingHandler(channelZabbix, sl, logging)
 
 	//инициализация модуля для взаимодействия с NATS (Данный модуль обязателен для взаимодействия)
 	natsModule, err := natsinteractions.NewClientNATS(*confApp.GetAppNATS(), storageApp, logging, counting)
@@ -297,20 +300,21 @@ func main() {
 		MsgType: "info",
 	}
 
-	ctxCoreHandler, closeCoreHandler := context.WithCancel(context.Background())
+	ctxCore, ctxCancelCore := context.WithCancel(context.Background())
 
 	go func() {
-		oscall := <-c
+		osCall := <-sigChan
+		msg := fmt.Sprintf("stop 'main' function, %s", osCall.String())
+		_ = sl.WriteLoggingData(msg, "info")
+
 		close(counting)
 		close(logging)
+		close(channelZabbix)
 
-		closeZabbix()
-		closeCoreHandler()
-
-		if err := recover(); err != nil {
-			_ = sl.WriteLoggingData(fmt.Sprintf("stop 'main' function, %v, os.signal: '%s'", err, oscall), "error")
-		}
+		ctxCancelZ()
+		ctxCancelCore()
 	}()
+
 	core := coremodule.NewCoreHandler(storageApp, logging, counting)
-	core.CoreHandler(ctxCoreHandler, lrcase, lralert, natsModule, esModule, mongodbModule)
+	core.CoreHandler(ctxCore, lrcase, lralert, natsModule, esModule, mongodbModule)
 }

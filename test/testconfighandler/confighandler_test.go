@@ -38,9 +38,9 @@ var _ = Describe("Confighandler", func() {
 			Expect(ces.User).Should(Equal("writer"))
 			Expect(ces.Passwd).Should(Equal("XxZqesYXuk8C"))
 			Expect(ces.PrefixCase).Should(Equal(""))
-			Expect(ces.IndexCase).Should(Equal("module_placeholder_elasticsearch_thehive_case"))
-			Expect(ces.PrefixAlert).Should(Equal("test"))
-			Expect(ces.IndexAlert).Should(Equal("module_placeholder_elasticsearch_thehive_alert"))
+			Expect(ces.IndexCase).Should(Equal("module_placeholder_case"))
+			Expect(ces.PrefixAlert).Should(Equal(""))
+			Expect(ces.IndexAlert).Should(Equal("module_placeholder_alert"))
 		})
 		It("Все пораметры конфигрурационного файла для MongoDB должны быть успешно получены", func() {
 			cmdb := conf.GetAppMongoDB()
@@ -142,6 +142,43 @@ var _ = Describe("Confighandler", func() {
 			Expect(cmdb.User).Should(Equal(MDB_USER))
 			Expect(cmdb.Passwd).Should(Equal(MDB_PASSWD))
 			Expect(cmdb.NameDB).Should(Equal(MDB_NAMEDB))
+		})
+	})
+
+	Context("Тест 3. Проверяем работу функции NewConfig с разными значениями переменной окружения GO_PHMISP_MAIN", func() {
+		It("Должно быть получено содержимое общего файла 'config.yaml'", func() {
+			conf, err := confighandler.NewConfig("placeholder_elasticsearch")
+
+			//fmt.Println("conf = ", conf)
+
+			//for k, v := range conf.GetListOrganization() {
+			//	fmt.Printf("%d. OrgName: %s, SourceName: %s\n", k, v.OrgName, v.SourceName)
+			//}
+
+			commonApp := conf.GetCommonApp()
+
+			//fmt.Println("------------------------ ZABBIX -------------------------")
+			//fmt.Println("NetworkHost:", conf.GetCommonApp().Zabbix.NetworkHost)
+			//fmt.Println("NetworkPort:", conf.GetCommonApp().Zabbix.NetworkPort)
+
+			Expect(commonApp.Zabbix.NetworkHost).Should(Equal("192.168.9.45"))
+			Expect(commonApp.Zabbix.NetworkPort).Should(Equal(10051))
+			Expect(commonApp.Zabbix.ZabbixHost).Should(Equal("test-uchet-db.cloud.gcm"))
+			Expect(len(commonApp.Zabbix.EventTypes)).Should(Equal(3))
+			Expect(commonApp.Zabbix.EventTypes[0].EventType).Should(Equal("error"))
+			Expect(commonApp.Zabbix.EventTypes[0].ZabbixKey).Should(Equal("placeholder_elasticsearch.error"))
+			Expect(commonApp.Zabbix.EventTypes[0].IsTransmit).Should(BeTrue())
+			Expect(commonApp.Zabbix.EventTypes[0].Handshake.TimeInterval).Should(Equal(0))
+			Expect(commonApp.Zabbix.EventTypes[0].Handshake.Message).Should(Equal(""))
+			Expect(commonApp.Zabbix.EventTypes[1].EventType).Should(Equal("info"))
+			Expect(commonApp.Zabbix.EventTypes[1].ZabbixKey).Should(Equal("placeholder_elasticsearch.info"))
+			Expect(commonApp.Zabbix.EventTypes[1].IsTransmit).Should(BeTrue())
+			Expect(commonApp.Zabbix.EventTypes[2].EventType).Should(Equal("handshake"))
+			Expect(commonApp.Zabbix.EventTypes[2].ZabbixKey).Should(Equal("placeholder_elasticsearch.handshake"))
+			Expect(commonApp.Zabbix.EventTypes[2].IsTransmit).Should(BeTrue())
+
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(len(conf.GetListLogs())).Should(Equal(8))
 		})
 	})
 })

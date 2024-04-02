@@ -78,29 +78,16 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 				return err
 			}
 
-			ti := 10
-			if z.Zabbix.TimeInterval > 0 && z.Zabbix.TimeInterval <= 30 {
-				ti = z.Zabbix.TimeInterval
-			}
-
-			hs := "0"
-			if z.Zabbix.Handshake != "" && len(z.Zabbix.Handshake) <= 60 {
-				hs = z.Zabbix.Handshake
-			}
-
 			np := 10051
 			if z.Zabbix.NetworkPort != 0 && z.Zabbix.NetworkPort < 65536 {
 				np = z.Zabbix.NetworkPort
 			}
 
 			conf.CommonAppConfig.Zabbix = ZabbixOptions{
-				IsTransmit:   z.Zabbix.IsTransmit,
-				TimeInterval: ti,
-				NetworkPort:  np,
-				NetworkHost:  z.Zabbix.NetworkHost,
-				ZabbixHost:   z.Zabbix.ZabbixHost,
-				ZabbixKey:    z.Zabbix.ZabbixKey,
-				Handshake:    hs,
+				NetworkPort: np,
+				NetworkHost: z.Zabbix.NetworkHost,
+				ZabbixHost:  z.Zabbix.ZabbixHost,
+				EventTypes:  z.Zabbix.EventTypes,
 			}
 		}
 

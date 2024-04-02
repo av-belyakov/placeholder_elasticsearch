@@ -30,13 +30,22 @@ type ZabbixSet struct {
 }
 
 type ZabbixOptions struct {
-	IsTransmit   bool   `yaml:"isTransmit"`
+	NetworkPort int         `yaml:"networkPort"`
+	NetworkHost string      `yaml:"networkHost"`
+	ZabbixHost  string      `yaml:"zabbixHost"`
+	EventTypes  []EventType `yaml:"eventType"`
+}
+
+type EventType struct {
+	IsTransmit bool      `yaml:"isTransmit"`
+	EventType  string    `yaml:"eventType"`
+	ZabbixKey  string    `yaml:"zabbixKey"`
+	Handshake  Handshake `yaml:"handshake"`
+}
+
+type Handshake struct {
 	TimeInterval int    `yaml:"timeInterval"`
-	NetworkPort  int    `yaml:"networkPort"`
-	NetworkHost  string `yaml:"networkHost"`
-	ZabbixHost   string `yaml:"zabbixHost"`
-	ZabbixKey    string `yaml:"zabbixKey"`
-	Handshake    string `yaml:"handshake"`
+	Message      string `yaml:"message"`
 }
 
 type AppConfigNATS struct {
