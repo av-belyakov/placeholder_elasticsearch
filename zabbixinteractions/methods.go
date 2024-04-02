@@ -53,6 +53,7 @@ func (hzc *HandlerZabbixConnection) SendData(data []string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+	defer conn.Close()
 
 	num, err := conn.Write(pkg)
 	if err != nil {

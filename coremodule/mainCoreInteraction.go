@@ -33,8 +33,7 @@ type CoreHandlerSettings struct {
 func NewCoreHandler(
 	storage *memorytemporarystorage.CommonStorageTemporary,
 	log chan<- datamodels.MessageLogging,
-	count chan<- datamodels.DataCounterSettings,
-) *CoreHandlerSettings {
+	count chan<- datamodels.DataCounterSettings) *CoreHandlerSettings {
 	return &CoreHandlerSettings{
 		storageApp: storage,
 		logging:    log,
@@ -48,8 +47,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 	listRuleAlert *rules.ListRule,
 	natsModule *natsinteractions.ModuleNATS,
 	esModule *elasticsearchinteractions.ElasticSearchModule,
-	mdbModule *mongodbinteractions.MongoDBModule,
-) {
+	mdbModule *mongodbinteractions.MongoDBModule) {
 	natsChanReception := natsModule.GetDataReceptionChannel()
 	decodeJsonCase := NewDecodeJsonMessageSettings(listRuleCase, settings.logging, settings.counting)
 	decodeJsonAlert := NewDecodeJsonMessageSettings(listRuleAlert, settings.logging, settings.counting)

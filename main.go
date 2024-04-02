@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"log"
@@ -39,28 +38,6 @@ var (
 	logging  chan datamodels.MessageLogging
 	counting chan datamodels.DataCounterSettings
 )
-
-func getAppName(pf string, nl int) (string, error) {
-	var line string
-
-	f, err := os.OpenFile(pf, os.O_RDONLY, os.ModePerm)
-	if err != nil {
-		return line, err
-	}
-	defer f.Close()
-
-	num := 1
-	sc := bufio.NewScanner(f)
-	for sc.Scan() {
-		if num == nl {
-			return sc.Text(), nil
-		}
-
-		num++
-	}
-
-	return line, nil
-}
 
 func getLoggerSettings(cls []confighandler.LogSet) []simplelogger.MessageTypeSettings {
 	loggerConf := make([]simplelogger.MessageTypeSettings, 0, len(cls))
@@ -254,7 +231,7 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 
-	if an, err := getAppName("README.md", 1); err != nil {
+	if an, err := supportingfunctions.GetAppName("README.md", 1); err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "warning")
 	} else {
