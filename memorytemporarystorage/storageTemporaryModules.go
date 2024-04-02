@@ -2,6 +2,7 @@ package memorytemporarystorage
 
 import (
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -10,12 +11,7 @@ var cst CommonStorageTemporary
 
 func NewTemporaryStorage() *CommonStorageTemporary {
 	once.Do(func() {
-		cst = CommonStorageTemporary{
-			dataCounter: DataCounterStorage{
-				insertElasticsearch: make(map[string]int),
-			},
-		}
-
+		cst = CommonStorageTemporary{}
 		//go checkTimeDelete(&cst)
 	})
 
@@ -45,119 +41,84 @@ func NewTemporaryStorage() *CommonStorageTemporary {
 	}
 }*/
 
-// GetDataCounter возвращает информацию по сетчикам
-func (cst *CommonStorageTemporary) GetDataCounter() DataCounterStorage {
-	return DataCounterStorage{
-		acceptedEvents:       cst.dataCounter.acceptedEvents,
-		processedEvents:      cst.dataCounter.processedEvents,
-		eventsMeetRules:      cst.dataCounter.eventsMeetRules,
-		eventsDoNotMeetRules: cst.dataCounter.eventsDoNotMeetRules,
-		insertMongoDB:        cst.dataCounter.insertMongoDB,
-		insertElasticsearch:  cst.dataCounter.insertElasticsearch,
-		startTime:            cst.dataCounter.startTime,
-	}
+func (cst *CommonStorageTemporary) GetAlertCounter() StorageCounter {
+	return cst.alertCounter
+}
+
+func (cst *CommonStorageTemporary) GetCaseCounter() StorageCounter {
+	return cst.caseCounter
+}
+
+func (cst *CommonStorageTemporary) IncrementAcceptedEvents() {
+	atomic.AddUint64(&cst.dataCounter.acceptedEvents, 1)
+}
+
+func (cst *CommonStorageTemporary) GetAcceptedEvents() uint64 {
+	return cst.dataCounter.acceptedEvents
+}
+
+func (cst *CommonStorageTemporary) IncrementProcessedEvents() {
+	atomic.AddUint64(&cst.dataCounter.processedEvents, 1)
+}
+
+func (cst *CommonStorageTemporary) GetProcessedEvents() uint64 {
+	return cst.dataCounter.processedEvents
+}
+
+func (cst *CommonStorageTemporary) IncrementAlertEventsMeetRules() {
+	atomic.AddUint64(&cst.alertCounter.eventsMeetRules, 1)
+}
+
+func (cst *CommonStorageTemporary) GetAlertEventsMeetRules() uint64 {
+	return cst.alertCounter.eventsMeetRules
+}
+
+func (cst *CommonStorageTemporary) IncrementAlertInsertMongoDB() {
+	atomic.AddUint64(&cst.alertCounter.insertMongoDB, 1)
+}
+
+func (cst *CommonStorageTemporary) GetAlertInsertMongoDB() uint64 {
+	return cst.alertCounter.insertMongoDB
+}
+
+func (cst *CommonStorageTemporary) IncrementAlertInsertElasticsearch() {
+	atomic.AddUint64(&cst.alertCounter.insertElasticsearch, 1)
+}
+
+func (cst *CommonStorageTemporary) GetAlertInsertElasticsearch() uint64 {
+	return cst.alertCounter.insertElasticsearch
+}
+
+func (cst *CommonStorageTemporary) IncrementCaseEventsMeetRules() {
+	atomic.AddUint64(&cst.caseCounter.eventsMeetRules, 1)
+}
+
+func (cst *CommonStorageTemporary) GetCaseEventsMeetRules() uint64 {
+	return cst.caseCounter.eventsMeetRules
+}
+
+func (cst *CommonStorageTemporary) IncrementCaseInsertMongoDB() {
+	atomic.AddUint64(&cst.caseCounter.insertMongoDB, 1)
+}
+
+func (cst *CommonStorageTemporary) GetCaseInsertMongoDB() uint64 {
+	return cst.caseCounter.insertMongoDB
+}
+
+func (cst *CommonStorageTemporary) IncrementCaseInsertElasticsearch() {
+	atomic.AddUint64(&cst.caseCounter.insertElasticsearch, 1)
+}
+
+func (cst *CommonStorageTemporary) GetCaseInsertElasticsearch() uint64 {
+	return cst.caseCounter.insertElasticsearch
+}
+
+// SetStartTimeDataCounter добавляет время начала сетчика
+func (cst *CommonStorageTemporary) SetStartTimeDataCounter(t time.Time) {
+	cst.dataCounter.startTime = t
 }
 
 // GetStartTimeDataCounter возвращает время начала сетчика
 func (cst *CommonStorageTemporary) GetStartTimeDataCounter() time.Time {
 	return cst.dataCounter.startTime
-}
-
-// SetStartTimeDataCounter добавляет время начала сетчика
-func (cst *CommonStorageTemporary) SetStartTimeDataCounter(t time.Time) {
-	cst.dataCounter.Lock()
-	defer cst.dataCounter.Unlock()
-
-	cst.dataCounter.startTime = t
-}
-
-// GetAcceptedEventsDataCounter возвращает сетчик принятых событий
-func (cst *CommonStorageTemporary) GetAcceptedEventsDataCounter() int {
-	return cst.dataCounter.acceptedEvents
-}
-
-// SetAcceptedEventsDataCounter увеличивает сетчик принятых событий
-func (cst *CommonStorageTemporary) SetAcceptedEventsDataCounter(num int) {
-	cst.dataCounter.Lock()
-	defer cst.dataCounter.Unlock()
-
-	cst.dataCounter.acceptedEvents += num
-}
-
-// GetProcessedEventsDataCounter возвращает сетчик обработанных событий
-func (cst *CommonStorageTemporary) GetProcessedEventsDataCounter() int {
-	return cst.dataCounter.processedEvents
-}
-
-// SetProcessedEventsDataCounter увеличивает сетчик обработанных событий
-func (cst *CommonStorageTemporary) SetProcessedEventsDataCounter(num int) {
-	cst.dataCounter.Lock()
-	defer cst.dataCounter.Unlock()
-
-	cst.dataCounter.processedEvents += num
-}
-
-// GetEventsMeetRulesDataCounter возвращает время начала сетчика
-func (cst *CommonStorageTemporary) GetEventsMeetRulesDataCounter() int {
-	return cst.dataCounter.eventsMeetRules
-}
-
-// SetEventsMeetRulesDataCounter увеличивает сетчик событий соответствующих правилу
-func (cst *CommonStorageTemporary) SetEventsMeetRulesDataCounter(num int) {
-	cst.dataCounter.Lock()
-	defer cst.dataCounter.Unlock()
-
-	cst.dataCounter.eventsMeetRules += num
-}
-
-// GetEventsDoNotMeetRulesDataCounter возвращает сетчик событий не соответствующих правилу
-func (cst *CommonStorageTemporary) GetEventsDoNotMeetRulesDataCounter() int {
-	return cst.dataCounter.eventsDoNotMeetRules
-}
-
-// SetEventsDoNotMeetRulesDataCounter увеличивает сетчик событий не соответствующих правилу
-func (cst *CommonStorageTemporary) SetEventsDoNotMeetRulesDataCounter(num int) {
-	cst.dataCounter.Lock()
-	defer cst.dataCounter.Unlock()
-
-	cst.dataCounter.eventsDoNotMeetRules += num
-}
-
-// GetInsertMongoDBDataCounter возвращает сетчик вставленных в MongoDB документов
-func (cst *CommonStorageTemporary) GetInsertMongoDBDataCounter() int {
-	return cst.dataCounter.insertMongoDB
-}
-
-// SetInsertMongoDBDataCounter увеличивает сетчик вставленных в MongoDB документов
-func (cst *CommonStorageTemporary) SetInsertMongoDBDataCounter(num int) {
-	cst.dataCounter.Lock()
-	defer cst.dataCounter.Unlock()
-
-	cst.dataCounter.insertMongoDB += num
-}
-
-// GetAllInsertElasticsearchDataCounter возвращает сетчик вставленных в Elasticsearch документов
-func (cst *CommonStorageTemporary) GetAllInsertElasticsearchDataCounter() map[string]int {
-	return cst.dataCounter.insertElasticsearch
-}
-
-// GetInsertElasticsearchDataCounter возвращает сетчик вставленных в Elasticsearch документов
-func (cst *CommonStorageTemporary) GetInsertElasticsearchDataCounter(item string) (int, bool) {
-	if v, ok := cst.dataCounter.insertElasticsearch[item]; ok {
-		return v, true
-	}
-
-	return 0, false
-}
-
-// SetInsertElasticsearchDataCounter увеличивает сетчик вставленных в Elasticsearch документов
-func (cst *CommonStorageTemporary) SetInsertElasticsearchDataCounter(item string, num int) {
-	cst.dataCounter.Lock()
-	defer cst.dataCounter.Unlock()
-
-	if _, ok := cst.dataCounter.insertElasticsearch[item]; !ok {
-		cst.dataCounter.insertElasticsearch[item] = 0
-	}
-
-	cst.dataCounter.insertElasticsearch[item] += num
 }

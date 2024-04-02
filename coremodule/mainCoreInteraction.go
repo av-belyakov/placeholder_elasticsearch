@@ -72,7 +72,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 
 			switch eventSettings.Event.ObjectType {
 			case "case":
-				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonCase.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)
+				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonCase.HandlerJsonMessage(data.Data, data.MsgId, "subject_case")
 
 				chansOut := supportingfunctions.CreateChannelDuplication[datamodels.ChanOutputDecodeJSON](chanOutputDecodeJson, 2)
 				chansDone := supportingfunctions.CreateChannelDuplication[bool](chanDecodeJsonDone, 2)
@@ -83,7 +83,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], esModule, settings.logging)
 
 			case "alert":
-				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, data.SubjectType)
+				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, "subject_alert")
 
 				chansOut := supportingfunctions.CreateChannelDuplication[datamodels.ChanOutputDecodeJSON](chanOutputDecodeJson, 2)
 				chansDone := supportingfunctions.CreateChannelDuplication[bool](chanDecodeJsonDone, 2)

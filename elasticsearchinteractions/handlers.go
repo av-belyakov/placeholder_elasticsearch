@@ -226,7 +226,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		//счетчик
 		counting <- datamodels.DataCounterSettings{
 			DataType: "update count insert Elasticserach",
-			DataMsg:  "subject_alert",
+			DataMsg:  "subject_case",
 			Count:    1,
 		}
 

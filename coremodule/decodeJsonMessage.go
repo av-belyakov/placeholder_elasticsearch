@@ -96,6 +96,13 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id, subject str
 
 		close(chanOutputJsonData)
 
+		// сетчик обработаных сообщений
+		s.Counting <- datamodels.DataCounterSettings{
+			DataType: "update processed events",
+			DataMsg:  subject,
+			Count:    1,
+		}
+
 		//проверяем что бы хотя бы одно правило разрешало пропуск объекта
 		if s.ListRule.GetRulePassany() || s.ListRule.SomePassRuleIsTrue() {
 			isAllowed = true
@@ -108,14 +115,9 @@ func (s *DecodeJsonMessageSettings) HandlerJsonMessage(b []byte, id, subject str
 		//
 		s.ListRule.CleanStatementExpressionRulePass()
 
-		dt := "events do not meet rules"
-		if isAllowed {
-			dt = "update events meet rules"
-		}
-
 		//сетчик объектов соответствующих или не соответствующих правилам
 		s.Counting <- datamodels.DataCounterSettings{
-			DataType: dt,
+			DataType: "update events meet rules",
 			DataMsg:  subject,
 			Count:    1,
 		}

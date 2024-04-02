@@ -1,25 +1,27 @@
 package memorytemporarystorage
 
 import (
-	"sync"
 	"time"
 )
 
 // CommonStorageTemporary содержит информацию предназначенную для временного хранения
 type CommonStorageTemporary struct {
-	dataCounter DataCounterStorage
+	dataCounter  DataCounterStorage
+	alertCounter StorageCounter
+	caseCounter  StorageCounter
+}
+
+type StorageCounter struct {
+	eventsMeetRules     uint64
+	insertMongoDB       uint64
+	insertElasticsearch uint64
 }
 
 // DataCounterStorage
 type DataCounterStorage struct {
-	acceptedEvents       int
-	processedEvents      int
-	eventsDoNotMeetRules int
-	eventsMeetRules      int
-	insertMongoDB        int
-	insertElasticsearch  map[string]int
-	startTime            time.Time
-	sync.Mutex
+	acceptedEvents  uint64
+	processedEvents uint64
+	startTime       time.Time
 }
 
 type SettingsInputCase struct {

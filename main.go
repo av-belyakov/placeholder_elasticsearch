@@ -73,34 +73,54 @@ func counterHandler(
 	counting <-chan datamodels.DataCounterSettings) {
 
 	for data := range counting {
+		d, h, m, s := supportingfunctions.GetDifference(storageApp.GetStartTimeDataCounter(), time.Now())
+		patternTime := fmt.Sprintf("со старта приложения: дней %d, часов %d, минут %d, секунд %d", d, h, m, s)
+		var msg string
+
 		switch data.DataType {
 		case "update accepted events":
-			storageApp.SetAcceptedEventsDataCounter(data.Count)
+			storageApp.IncrementAcceptedEvents()
+			msg = fmt.Sprintf("принято: %d, %s", storageApp.GetAcceptedEvents(), patternTime)
+
 		case "update processed events":
-			storageApp.SetProcessedEventsDataCounter(data.Count)
+			storageApp.IncrementProcessedEvents()
+			msg = fmt.Sprintf("обработано: %d, %s", storageApp.GetProcessedEvents(), patternTime)
+
 		case "update events meet rules":
-			storageApp.SetEventsMeetRulesDataCounter(data.Count)
-		case "events do not meet rules":
-			storageApp.SetEventsDoNotMeetRulesDataCounter(data.Count)
+			if data.DataMsg == "subject_case" {
+				storageApp.IncrementCaseEventsMeetRules()
+				msg = fmt.Sprintf("подписка-'subject_case', соответствие правилам: %d, %s", storageApp.GetCaseEventsMeetRules(), patternTime)
+			}
+
+			if data.DataMsg == "subject_alert" {
+				storageApp.IncrementAlertEventsMeetRules()
+				msg = fmt.Sprintf("подписка-'subject_alert', соответствие правилам: %d, %s", storageApp.GetAlertEventsMeetRules(), patternTime)
+			}
+
 		case "update count insert MongoDB":
-			storageApp.SetInsertMongoDBDataCounter(data.Count)
+			if data.DataMsg == "subject_case" {
+				storageApp.IncrementCaseInsertMongoDB()
+				msg = fmt.Sprintf("подписка-'subject_case', добавлено в MongoDB: %d, %s", storageApp.GetCaseInsertMongoDB(), patternTime)
+			}
+
+			if data.DataMsg == "subject_alert" {
+				storageApp.IncrementAlertInsertMongoDB()
+				msg = fmt.Sprintf("подписка-'subject_alert', добавлено в MongoDB: %d, %s", storageApp.GetAlertInsertMongoDB(), patternTime)
+			}
+
 		case "update count insert Elasticserach":
-			storageApp.SetInsertElasticsearchDataCounter(data.DataMsg, data.Count)
+			if data.DataMsg == "subject_case" {
+				storageApp.IncrementCaseInsertElasticsearch()
+				msg = fmt.Sprintf("подписка-'subject_case', добавлено в Elasticsearch: %d, %s", storageApp.GetCaseInsertElasticsearch(), patternTime)
+			}
+
+			if data.DataMsg == "subject_alert" {
+				storageApp.IncrementAlertInsertElasticsearch()
+				msg = fmt.Sprintf("подписка-'subject_alert', добавлено в Elasticsearch: %d, %s", storageApp.GetAlertInsertElasticsearch(), patternTime)
+			}
 		}
 
-		d, h, m, s := supportingfunctions.GetDifference(storageApp.GetStartTimeDataCounter(), time.Now())
-
-		patternReciveEvents := fmt.Sprintf("принято: %d", storageApp.GetAcceptedEventsDataCounter())
-		patternRuleIsOk := fmt.Sprintf("соответствие правилам: %d", storageApp.GetEventsMeetRulesDataCounter())
-		patternInsertMongoDB := fmt.Sprintf("добавлено в MongoDB: %d", storageApp.GetInsertMongoDBDataCounter())
-
-		num, _ := storageApp.GetInsertElasticsearchDataCounter(data.DataMsg)
-		patternInsertES := fmt.Sprintf("добавлено в Elasticsearch: %d", num)
-		patternTime := fmt.Sprintf("со старта приложения: дней %d, часов %d, минут %d, секунд %d", d, h, m, s)
-		msg := fmt.Sprintf("подписка-'%s', %s, %s, %s, %s %s", data.DataMsg, patternReciveEvents, patternRuleIsOk, patternInsertMongoDB, patternInsertES, patternTime)
-
 		log.Printf("\t%s\n", msg)
-
 		channelZabbix <- zabbixinteractions.MessageSettings{
 			EventType: "info",
 			Message:   msg,
