@@ -102,7 +102,7 @@ func NewClientNATS(
 		nats.ReconnectWait(3*time.Second))
 	_, f, l, _ := runtime.Caller(0)
 	if err != nil {
-		return &mnats, fmt.Errorf("'%v' %s:%d", err, f, l-4)
+		return &mnats, fmt.Errorf("'%s' %s:%d", err.Error(), f, l-4)
 	}
 
 	//обработка разрыва соединения с NATS

@@ -308,12 +308,6 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	}
 
 	res, err := hsd.SearchDocument(indexes, queryCurrent)
-	defer func() {
-		errClose := res.Body.Close()
-		if err == nil {
-			err = errClose
-		}
-	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -323,6 +317,13 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 		return
 	}
+
+	defer func() {
+		errClose := res.Body.Close() //здесь бывает паника !!!!
+		if err == nil {
+			err = errClose
+		}
+	}()
 
 	decEs := datamodels.ElasticsearchResponseAlert{}
 	err = json.NewDecoder(res.Body).Decode(&decEs)

@@ -54,12 +54,9 @@ func NewVerifiedElasticsearchFormatCase(
 	//******************* Вспомогательный объект для Ttp **********************
 	sttp := listhandlerthehivejson.NewSupportiveTtp()
 	listHandlerTtp := listhandlerthehivejson.NewListHandlerTtpElement(sttp)
-	//sttp := listhandlerforesjson.NewSupportiveTtp()
-	//listHandlerTtp := listhandlerforesjson.NewListHandlerTtpElement(sttp)
 
 	for data := range input {
 		var handlerIsExist bool
-
 		verifiedCase.SetID(data.UUID)
 
 		if source, ok := searchEventSource(data.FieldBranch, data.Value); ok {

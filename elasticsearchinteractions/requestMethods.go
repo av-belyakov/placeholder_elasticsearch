@@ -165,15 +165,16 @@ func (hsd HandlerSendData) GetExistingIndexes(pattern string) ([]string, error) 
 		hsd.Client.Cat.Indices.WithContext(context.TODO()),
 		hsd.Client.Cat.Indices.WithFormat("json"),
 	)
+	if err != nil {
+		return nil, err
+	}
+
 	defer func() {
-		errClose := res.Body.Close()
+		errClose := res.Body.Close() //здесь бывает паника !!!!
 		if err == nil {
 			err = errClose
 		}
 	}()
-	if err != nil {
-		return nil, err
-	}
 
 	if err = json.NewDecoder(res.Body).Decode(&msg); err != nil {
 		return nil, err

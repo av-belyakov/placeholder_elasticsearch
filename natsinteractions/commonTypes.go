@@ -6,7 +6,7 @@ type ModuleNATS struct {
 	chanOutputNATS chan SettingsOutputChan
 }
 
-// SettingsOutputChan канал вывода данных из модула
+// SettingsOutputChan канал вывода данных из модуля
 // MsgId - id сообщения
 // SubjectType - тип подписки
 // Data - данные
@@ -21,7 +21,7 @@ type SettingsInputChan struct {
 	Command, EventId, TaskId string
 }
 
-func (mnats ModuleNATS) GetDataReceptionChannel() <-chan SettingsOutputChan /*[]byte*/ {
+func (mnats ModuleNATS) GetDataReceptionChannel() <-chan SettingsOutputChan {
 	return mnats.chanOutputNATS
 }
 
