@@ -52,8 +52,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	data interface{},
 	indexName string,
 	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) {
+	counting chan<- datamodels.DataCounterSettings) {
 	newDocument, ok := data.(*datamodels.VerifiedEsCase)
 	if !ok {
 		_, f, l, _ := runtime.Caller(0)
@@ -72,7 +71,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 
 	t := time.Now()
 	month := int(t.Month())
-	indexPattern := fmt.Sprintf("%s_%d", indexName, t.Year())
+	//indexPattern := fmt.Sprintf("%s_%d", indexName, t.Year())
 	indexCurrent := fmt.Sprintf("%s_%d_%d", indexName, t.Year(), month)
 	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", newDocument.GetSource(), newDocument.GetEvent().GetRootId()))
 
@@ -87,7 +86,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
-	indexes, err := hsd.GetExistingIndexes(indexPattern)
+	indexes, err := hsd.GetExistingIndexes(indexCurrent)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -262,7 +261,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	t := time.Now()
 	month := int(t.Month())
-	indexPattern := fmt.Sprintf("%s_%s", indexName, newDocument.GetSource())
+	//indexPattern := fmt.Sprintf("%s_%s", indexName, newDocument.GetSource())
 	indexCurrent := fmt.Sprintf("%s_%s_%d_%d", indexName, newDocument.GetSource(), t.Year(), month)
 	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", newDocument.GetSource(), newDocument.GetEvent().GetRootId()))
 
@@ -277,7 +276,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	indexes, err := hsd.GetExistingIndexes(indexPattern)
+	indexes, err := hsd.GetExistingIndexes(indexCurrent)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{

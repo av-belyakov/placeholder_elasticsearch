@@ -1,6 +1,8 @@
 package testelasticsearchindexsettings_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -15,7 +17,7 @@ var _ = Describe("Testelasticsearchindexsettings", Ordered, func() {
 		Passwd string = "XxZqesYXuk8C"
 
 		hsd       elasticsearchinteractions.HandlerSendData
-		indexName string = "test_module_placeholder_alert_gcm_2024_3"
+		indexName string = "module_placeholder_new_case_2024_4"
 		errConn   error
 	)
 
@@ -58,6 +60,14 @@ var _ = Describe("Testelasticsearchindexsettings", Ordered, func() {
 			Expect(ok).Should(BeTrue())
 		})
 
+		It("Должен быть найден индекс по заданному шаблону", func() {
+			indexes, err := hsd.GetExistingIndexes("module_placeholder_new_case_2024")
+
+			fmt.Println("index:", indexes)
+
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(len(indexes)).ShouldNot(Equal(0))
+		})
 		/*It("При создании тестового индекса не должно быть ошибок", func() {
 			document, err := json.Marshal(struct {
 				Id   string

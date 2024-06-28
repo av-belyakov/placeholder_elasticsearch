@@ -189,7 +189,7 @@ func NewVerifiedTheHiveFormatCase(
 	if len(listRawFields) > 0 {
 		logging <- datamodels.MessageLogging{
 			MsgData: joinRawFieldsToString(listRawFields, "rootId", rootId),
-			MsgType: "alert_raw_fields",
+			MsgType: "case_raw_fields",
 		}
 	}
 

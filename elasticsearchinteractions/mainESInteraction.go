@@ -55,8 +55,7 @@ func (h *HandlerSendData) New() error {
 func HandlerElasticSearch(
 	conf confighandler.AppConfigElasticSearch,
 	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) (*ElasticSearchModule, error) {
+	counting chan<- datamodels.DataCounterSettings) (*ElasticSearchModule, error) {
 
 	module := &ElasticSearchModule{
 		ChanInputModule:  make(chan SettingsInputChan),
@@ -75,6 +74,16 @@ func HandlerElasticSearch(
 	if err := hsd.New(); err != nil {
 		return module, err
 	}
+
+	/*
+				Была ошибка
+				06.05.2024 15:43:04
+		error: 'dial tcp 192.168.9.10:9200: connect: cannot assign requested address' /go/src/elasticsearchinteractions/handlers.go:90
+		06.05.2024 15:42:57
+		error: 'dial tcp 192.168.9.10:9200: connect: cannot assign requested address' /go/src/elasticsearchinteractions/handlers.go:280
+
+			И она так и осталась. Надо разбиратся с ней!!!!!!
+	*/
 
 	go func() {
 		for data := range module.ChanInputModule {
