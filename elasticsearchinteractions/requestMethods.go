@@ -14,6 +14,28 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
 
+// GetIndexSetting получает натройки выбранного индекса
+func (hsd HandlerSendData) GetIndexSetting(index, query string) (*esapi.Response, error) {
+	var (
+		res *esapi.Response
+		err error
+	)
+
+	req := esapi.IndicesGetSettingsRequest{
+		Index:  []string{index},
+		Pretty: true,
+		Human:  true,
+	}
+
+	res, err = req.Do(context.Background(), hsd.Client.Transport)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+// SetIndexSetting устанавливает новые настройки индекса
 func (hsd HandlerSendData) SetIndexSetting(indexes []string, query string) (bool, error) {
 	indicesSettings := esapi.IndicesPutSettingsRequest{
 		Index: indexes,
@@ -46,6 +68,25 @@ func (hsd HandlerSendData) SetIndexSetting(indexes []string, query string) (bool
 	}
 
 	return false, nil
+}
+
+// DelIndexSetting удаляет выбранные индексы
+func (hsd HandlerSendData) DelIndexSetting(indexes []string) (*esapi.Response, error) {
+	var (
+		res *esapi.Response
+		err error
+	)
+
+	req := esapi.IndicesDeleteRequest{
+		Index: indexes,
+	}
+
+	res, err = req.Do(context.Background(), hsd.Client.Transport)
+	if err != nil {
+		return res, err
+	}
+
+	return res, err
 }
 
 // InsertDocument добавляет новый документ в заданный индекс

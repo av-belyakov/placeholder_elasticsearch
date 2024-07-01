@@ -11,7 +11,8 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
-var querySetIndexLimit string = `{
+var (
+	querySetIndexLimit string = `{
 	"index": {
 		"mapping": {
 			"total_fields": {
@@ -20,6 +21,19 @@ var querySetIndexLimit string = `{
 		}
 	}
 }`
+
+	indexSettings = map[string]struct {
+		Settings struct {
+			Index struct {
+				Mapping struct {
+					TotalFields struct {
+						Limit string `json:"limit"`
+					} `json:"total_fields"`
+				} `json:"mapping"`
+			} `json:"index"`
+		} `json:"settings"`
+	}{}
+)
 
 func (hsd HandlerSendData) InsertNewDocument(
 	tag string,
@@ -71,7 +85,6 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 
 	t := time.Now()
 	month := int(t.Month())
-	//indexPattern := fmt.Sprintf("%s_%d", indexName, t.Year())
 	indexCurrent := fmt.Sprintf("%s_%d_%d", indexName, t.Year(), month)
 	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", newDocument.GetSource(), newDocument.GetEvent().GetRootId()))
 
@@ -86,7 +99,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
-	indexes, err := hsd.GetExistingIndexes(indexCurrent)
+	indexes, err := hsd.GetExistingIndexes(indexName)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -97,26 +110,16 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
-	if len(indexes) == 0 {
-		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
-
-		//при создании нового индекса вносим в его настройку дополнительный
-		//параметр позволяющий увеличить лимит количества создаваемых полей
-		//в текущем индексе, что, позволяет убрать ошибку Elasticsearch типа
-		//Limit of total fields [1000] has been exceeded while adding new fields
-		_, err := hsd.SetIndexSetting([]string{indexCurrent}, querySetIndexLimit)
-		if err != nil {
-			_, f, l, _ := runtime.Caller(0)
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-				MsgType: "error",
-			}
+	//будет выполнятся поиск по индексам только в текущем году
+	//так как при накоплении большого количества индексов, поиск
+	//по всем серьезно замедлит работу
+	indexesOnlyCurrentYear := []string(nil)
+	for _, v := range indexes {
+		if strings.Contains(v, fmt.Sprint(t.Year())) {
+			indexesOnlyCurrentYear = append(indexesOnlyCurrentYear, v)
 		}
-
-		return
 	}
-
-	res, err := hsd.SearchDocument(indexes, queryCurrent)
+	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
 	defer func() {
 		errClose := res.Body.Close()
 		if err == nil {
@@ -149,7 +152,27 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		//выполняется только когда не найден искомый документ
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
+		//устанавливаем максимальный лимит количества полей для всех индексов которые
+		//содержат значение по умолчанию в 1000 полей
+		if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+
 		return
+	}
+
+	//устанавливаем максимальный лимит количества полей для всех индексов которые
+	//содержат значение по умолчанию в 1000 полей
+	if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
 	}
 
 	//*** при наличие искомого документа выполняем его замену ***
@@ -261,7 +284,6 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	t := time.Now()
 	month := int(t.Month())
-	//indexPattern := fmt.Sprintf("%s_%s", indexName, newDocument.GetSource())
 	indexCurrent := fmt.Sprintf("%s_%s_%d_%d", indexName, newDocument.GetSource(), t.Year(), month)
 	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", newDocument.GetSource(), newDocument.GetEvent().GetRootId()))
 
@@ -287,25 +309,15 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	if len(indexes) == 0 {
-		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
-
-		//при создании нового индекса вносим в его настройку дополнительный
-		//параметр позволяющий увеличить лимит количества создаваемых полей
-		//в текущем индексе, что, позволяет убрать ошибку Elasticsearch типа
-		//Limit of total fields [1000] has been exceeded while adding new fields
-		_, err := hsd.SetIndexSetting([]string{indexCurrent}, querySetIndexLimit)
-		if err != nil {
-			_, f, l, _ := runtime.Caller(0)
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-				MsgType: "error",
-			}
+	//будет выполнятся поиск по индексам только в текущем году
+	//так как при накоплении большого количества индексов, поиск
+	//по всем серьезно замедлит работу
+	indexesOnlyCurrentYear := []string(nil)
+	for _, v := range indexes {
+		if strings.Contains(v, fmt.Sprint(t.Year())) {
+			indexesOnlyCurrentYear = append(indexesOnlyCurrentYear, v)
 		}
-
-		return
 	}
-
 	res, err := hsd.SearchDocument(indexes, queryCurrent)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -340,7 +352,27 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		//выполняется только когда не найден искомый документ
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
+		//устанавливаем максимальный лимит количества полей для всех индексов которые
+		//содержат значение по умолчанию в 1000 полей
+		if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+
 		return
+	}
+
+	//устанавливаем максимальный лимит количества полей для всех индексов которые
+	//содержат значение по умолчанию в 1000 полей
+	if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
 	}
 
 	//*** при наличие искомого документа выполняем его замену ***
