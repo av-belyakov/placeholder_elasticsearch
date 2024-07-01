@@ -11,30 +11,6 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
-var (
-	querySetIndexLimit string = `{
-	"index": {
-		"mapping": {
-			"total_fields": {
-				"limit": 2000
-			}
-		}
-	}
-}`
-
-	indexSettings = map[string]struct {
-		Settings struct {
-			Index struct {
-				Mapping struct {
-					TotalFields struct {
-						Limit string `json:"limit"`
-					} `json:"total_fields"`
-				} `json:"mapping"`
-			} `json:"index"`
-		} `json:"settings"`
-	}{}
-)
-
 func (hsd HandlerSendData) InsertNewDocument(
 	tag string,
 	index string,
@@ -298,7 +274,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		return
 	}
 
-	indexes, err := hsd.GetExistingIndexes(indexCurrent)
+	indexes, err := hsd.GetExistingIndexes(indexName)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -318,7 +294,13 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 			indexesOnlyCurrentYear = append(indexesOnlyCurrentYear, v)
 		}
 	}
-	res, err := hsd.SearchDocument(indexes, queryCurrent)
+	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
+	defer func() {
+		errClose := res.Body.Close() //здесь бывает паника !!!!
+		if err == nil {
+			err = errClose
+		}
+	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -328,13 +310,6 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 		return
 	}
-
-	defer func() {
-		errClose := res.Body.Close() //здесь бывает паника !!!!
-		if err == nil {
-			err = errClose
-		}
-	}()
 
 	decEs := datamodels.ElasticsearchResponseAlert{}
 	err = json.NewDecoder(res.Body).Decode(&decEs)

@@ -76,6 +76,8 @@ func SetMaxTotalFieldsLimit(hsd HandlerSendData, indexes []string, logging chan<
 	}
 
 	if len(indexForTotalFieldsLimit) == 0 {
+		fmt.Println("Index for set total fields limit not found!!!")
+
 		return nil
 	}
 
