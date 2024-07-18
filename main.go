@@ -251,7 +251,7 @@ func main() {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err.Error(), f, l-3), "error")
 
-		log.Fatalln(err.Error())
+		log.Fatalf("error module 'zabbixinteraction': %v\n", err)
 	}
 
 	var appName string
@@ -296,7 +296,7 @@ func main() {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")
 
-		log.Fatal(err)
+		log.Fatalf("error module 'natsclient': %v\n", err)
 	}
 
 	// инициализация модуля для взаимодействия с СУБД MongoDB
@@ -305,7 +305,7 @@ func main() {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")
 
-		log.Fatal(err)
+		log.Fatalf("error module 'mongodbclient': %v\n", err)
 	}
 
 	//инициализация модуля для взаимодействия с ElasticSearch

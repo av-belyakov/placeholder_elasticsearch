@@ -6,6 +6,7 @@ import (
 
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/listhandlercommon"
+	"placeholder_elasticsearch/supportingfunctions"
 )
 
 func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamodels.CustomFields) map[string][]func(interface{}) {
@@ -22,11 +23,9 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 				return
 			}
 
-			countru := strings.Trim(tmp[1], "\"")
-
 			//создаем элемент "geoip" если его нет
 			listhandlercommon.NewCustomFieldsElement("geoip", "string", &eventObjectCustomFields)
-			eventObjectCustomFields["geoip"].Set(0, countru)
+			eventObjectCustomFields["geoip"].Set(0, supportingfunctions.TrimIsNotLetter(tmp[1]))
 		}},
 
 		//------------------ attack-type ------------------
@@ -34,7 +33,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 			//создаем элемент "attack-type" если его нет
 			listhandlercommon.NewCustomFieldsElement("attack-type", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["attack-type"].Get()
-			eventObjectCustomFields["attack-type"].Set(i, str)
+			eventObjectCustomFields["attack-type"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.attack-type.string": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("attack-type", "string", &eventObjectCustomFields)
@@ -45,7 +44,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.class-attack.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("class-attack", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["class-attack"].Get()
-			eventObjectCustomFields["class-attack"].Set(i, str)
+			eventObjectCustomFields["class-attack"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.class-attack.string": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("class-attack", "string", &eventObjectCustomFields)
@@ -56,7 +55,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.ncircc-class-attack.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("ncircc-class-attack", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["ncircc-class-attack"].Get()
-			eventObjectCustomFields["ncircc-class-attack"].Set(i, str)
+			eventObjectCustomFields["ncircc-class-attack"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.ncircc-class-attack.string": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("ncircc-class-attack", "string", &eventObjectCustomFields)
@@ -67,25 +66,25 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.inbox1.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("inbox1", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["inbox1"].Get()
-			eventObjectCustomFields["inbox1"].Set(i, str)
+			eventObjectCustomFields["inbox1"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		//------------------ inner-letter ------------------
 		"event.object.customFields.inner-letter.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("inner-letter", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["inner-letter"].Get()
-			eventObjectCustomFields["inner-letter"].Set(i, str)
+			eventObjectCustomFields["inner-letter"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		//------------------ notification ------------------
 		"event.object.customFields.notification.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("notification", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["notification"].Get()
-			eventObjectCustomFields["notification"].Set(i, str)
+			eventObjectCustomFields["notification"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		//------------------ report ------------------
 		"event.object.customFields.report.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("report", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["report"].Get()
-			eventObjectCustomFields["report"].Set(i, str)
+			eventObjectCustomFields["report"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		//------------------ first-time ------------------
 		"event.object.customFields.first-time.order": {func(i interface{}) {
@@ -113,7 +112,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.sphere.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("sphere", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["sphere"].Get()
-			eventObjectCustomFields["sphere"].Set(i, str)
+			eventObjectCustomFields["sphere"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.sphere.string": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("sphere", "string", &eventObjectCustomFields)
@@ -124,7 +123,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.state.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("state", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["state"].Get()
-			eventObjectCustomFields["state"].Set(i, str)
+			eventObjectCustomFields["state"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.state.string": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("state", "string", &eventObjectCustomFields)
@@ -135,7 +134,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.ir-name.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("ir-name", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["ir-name"].Get()
-			eventObjectCustomFields["ir-name"].Set(i, str)
+			eventObjectCustomFields["ir-name"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.ir-name.string": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("ir-name", "string", &eventObjectCustomFields)
@@ -146,7 +145,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.id-soa.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("id-soa", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["id-soa"].Get()
-			eventObjectCustomFields["id-soa"].Set(i, str)
+			eventObjectCustomFields["id-soa"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.id-soa.string": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("id-soa", "string", &eventObjectCustomFields)
@@ -157,7 +156,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.is-incident.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("is-incident", "boolen", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["is-incident"].Get()
-			eventObjectCustomFields["is-incident"].Set(i, str)
+			eventObjectCustomFields["is-incident"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.is-incident.boolean": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("is-incident", "boolean", &eventObjectCustomFields)
@@ -168,7 +167,7 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 		"event.object.customFields.work-admin.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("work-admin", "boolen", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["work-admin"].Get()
-			eventObjectCustomFields["work-admin"].Set(i, str)
+			eventObjectCustomFields["work-admin"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
 		"event.object.customFields.work-admin.boolean": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("work-admin", "boolean", &eventObjectCustomFields)

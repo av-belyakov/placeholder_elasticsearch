@@ -2,6 +2,7 @@ package zabbixinteractions
 
 import (
 	"context"
+	"net/http"
 	"time"
 )
 
@@ -19,6 +20,16 @@ type SettingsZabbixConnection struct {
 	ConnectionTimeout *time.Duration
 }
 
+// SettingsZabbixConnectionJsonRPC настройки Zabbix соединения
+// Host - ip адрес или доменное имя
+// ConnectionTimeout - время ожидания подключения (по умолчанию используется 5 сек)
+type SettingsZabbixConnectionJsonRPC struct {
+	Host              string
+	Login             string
+	Passwd            string
+	ConnectionTimeout *time.Duration
+}
+
 type HandlerZabbixConnection struct {
 	ctx         context.Context
 	port        int
@@ -27,6 +38,14 @@ type HandlerZabbixConnection struct {
 	zabbixHost  string
 	connTimeout *time.Duration
 	chanErr     chan error
+}
+
+type ZabbixConnectionJsonRPC struct {
+	url               string
+	host              string
+	applicationType   string
+	authorizationHash string
+	connClient        *http.Client
 }
 
 type ZabbixOptions struct {
