@@ -105,6 +105,11 @@ func NewRequiredHostId(sensorId int, zconn *zabbixinteractions.ZabbixConnectionJ
 		l int
 	)
 
+	if sensorId == 0 {
+		_, f, l, _ = runtime.Caller(0)
+		return &requiredHostId, fmt.Errorf("The sensor ID cannot be equal to 0 %s:%d", f, l-1)
+	}
+
 	res, err := zconn.SendPostRequest(strings.NewReader(strReq))
 	if err != nil {
 		_, f, l, _ = runtime.Caller(0)
