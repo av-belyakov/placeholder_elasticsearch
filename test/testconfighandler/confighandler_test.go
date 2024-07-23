@@ -37,16 +37,16 @@ var _ = Describe("Confighandler", func() {
 			Expect(ces.Port).Should(Equal(9200))
 			Expect(ces.User).Should(Equal("writer"))
 			Expect(ces.Passwd).Should(Equal("XxZqesYXuk8C"))
-			Expect(ces.PrefixCase).Should(Equal(""))
+			Expect(ces.PrefixCase).Should(Equal("test_"))
 			Expect(ces.IndexCase).Should(Equal("module_placeholder_case"))
-			Expect(ces.PrefixAlert).Should(Equal(""))
+			Expect(ces.PrefixAlert).Should(Equal("test_"))
 			Expect(ces.IndexAlert).Should(Equal("module_placeholder_alert"))
 		})
 		It("Все пораметры конфигрурационного файла для MongoDB должны быть успешно получены", func() {
 			cmdb := conf.GetAppMongoDB()
 
-			Expect(cmdb.Host).Should(Equal("172.10.11.2"))
-			Expect(cmdb.Port).Should(Equal(27017))
+			Expect(cmdb.Host).Should(Equal("192.168.9.208"))
+			Expect(cmdb.Port).Should(Equal(27117))
 			Expect(cmdb.User).Should(Equal("module_placeholder_elasticsearch"))
 			Expect(cmdb.Passwd).Should(Equal("gDbv5cf7*F2"))
 			Expect(cmdb.NameDB).Should(Equal("placeholder_elasticsearch"))
@@ -148,6 +148,7 @@ var _ = Describe("Confighandler", func() {
 	Context("Тест 3. Проверяем работу функции NewConfig с разными значениями переменной окружения GO_PHMISP_MAIN", func() {
 		It("Должно быть получено содержимое общего файла 'config.yaml'", func() {
 			conf, err := confighandler.NewConfig("placeholder_elasticsearch")
+			Expect(err).ShouldNot(HaveOccurred())
 
 			//fmt.Println("conf = ", conf)
 
@@ -177,8 +178,17 @@ var _ = Describe("Confighandler", func() {
 			Expect(commonApp.Zabbix.EventTypes[2].ZabbixKey).Should(Equal("placeholder_elasticsearch.handshake"))
 			Expect(commonApp.Zabbix.EventTypes[2].IsTransmit).Should(BeTrue())
 
-			Expect(err).ShouldNot(HaveOccurred())
 			Expect(len(conf.GetListLogs())).Should(Equal(8))
+
+			//параметры подключения к НКЦКИ
+			Expect(commonApp.NCIRCC.URL).Should(Equal("https://lk.cert.local/api/v2/companies"))
+			Expect(len(commonApp.NCIRCC.Token)).ShouldNot(Equal(0))
+
+			//параметры подключения к API Zabbix для работы через JsonRPC
+			Expect(commonApp.ZabbixJsonRPC.NetworkHost).Should(Equal("192.168.9.45"))
+			Expect(commonApp.ZabbixJsonRPC.Login).Should(Equal("Cherry"))
+			Expect(len(commonApp.ZabbixJsonRPC.Passwd)).ShouldNot(Equal(0))
+			Expect(commonApp.ZabbixJsonRPC.ConnectionTimeout).Should(Equal(3))
 		})
 	})
 })

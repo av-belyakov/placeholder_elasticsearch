@@ -9,8 +9,10 @@ type ConfigApp struct {
 }
 
 type CommonAppConfig struct {
-	LogList []LogSet
-	Zabbix  ZabbixOptions
+	LogList       []LogSet
+	NCIRCC        NCIRCCOptions
+	Zabbix        ZabbixOptions
+	ZabbixJsonRPC ZabbixJsonRPCOptions
 }
 
 type Logs struct {
@@ -34,6 +36,26 @@ type ZabbixOptions struct {
 	NetworkHost string      `yaml:"networkHost"`
 	ZabbixHost  string      `yaml:"zabbixHost"`
 	EventTypes  []EventType `yaml:"eventType"`
+}
+
+type NCIRCCSet struct {
+	NCIRCC NCIRCCOptions
+}
+
+type NCIRCCOptions struct {
+	URL   string `yaml:"url"`
+	Token string `yaml:"token"`
+}
+
+type ZABBIXJSONRPCSet struct {
+	ZABBIXJSONRPC ZabbixJsonRPCOptions
+}
+
+type ZabbixJsonRPCOptions struct {
+	NetworkHost       string `yaml:"networkHost"`
+	Login             string `yaml:"login"`
+	Passwd            string `yaml:"passwd"`
+	ConnectionTimeout int    `yaml:"connectionTimeout"`
 }
 
 type EventType struct {

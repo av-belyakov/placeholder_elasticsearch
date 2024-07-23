@@ -294,8 +294,13 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 			indexesOnlyCurrentYear = append(indexesOnlyCurrentYear, v)
 		}
 	}
+
 	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
 	defer func() {
+		if res.Body == nil {
+			return
+		}
+
 		errClose := res.Body.Close() //здесь бывает паника !!!!
 		if err == nil {
 			err = errClose
@@ -435,6 +440,10 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	res, countDel, err := hsd.UpdateDocument(tag, indexCurrent, listDeleting, nvbyte)
 	defer func() {
+		if res.Body == nil {
+			return
+		}
+
 		errClose := res.Body.Close()
 		if err == nil {
 			err = errClose

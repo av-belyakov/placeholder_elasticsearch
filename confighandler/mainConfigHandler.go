@@ -72,6 +72,41 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 			conf.CommonAppConfig.LogList = ls.Logging
 		}
 
+		//**********************************************
+		//*** параметры настройки для доступа к НКЦКИ
+		//**********************************************
+		ncircc := NCIRCCSet{}
+		if ok := viper.IsSet("NCIRCC"); ok {
+			if err := viper.GetViper().Unmarshal(&ncircc); err != nil {
+				return err
+			}
+
+			conf.CommonAppConfig.NCIRCC = NCIRCCOptions{
+				URL:   ncircc.NCIRCC.URL,
+				Token: ncircc.NCIRCC.Token,
+			}
+		}
+
+		//***************************************************
+		//*** параметры настройки для доступа к API Zabbix
+		//***************************************************
+		zjsonrpc := ZABBIXJSONRPCSet{}
+		if ok := viper.IsSet("ZABBIXJSONRPC"); ok {
+			if err := viper.GetViper().Unmarshal(&zjsonrpc); err != nil {
+				return err
+			}
+
+			conf.CommonAppConfig.ZabbixJsonRPC = ZabbixJsonRPCOptions{
+				NetworkHost:       zjsonrpc.ZABBIXJSONRPC.NetworkHost,
+				Login:             zjsonrpc.ZABBIXJSONRPC.Login,
+				Passwd:            zjsonrpc.ZABBIXJSONRPC.Passwd,
+				ConnectionTimeout: zjsonrpc.ZABBIXJSONRPC.ConnectionTimeout,
+			}
+		}
+
+		//*******************************************************
+		//*** параметры настройки для отправки данных в Zabbix
+		//*******************************************************
 		z := ZabbixSet{}
 		if ok := viper.IsSet("ZABBIX"); ok {
 			if err := viper.GetViper().Unmarshal(&z); err != nil {
