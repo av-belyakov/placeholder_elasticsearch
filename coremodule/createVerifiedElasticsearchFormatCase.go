@@ -231,11 +231,27 @@ func NewVerifiedElasticsearchFormatCase(
 	verifiedCase.SetObservables(*observables)
 	verifiedCase.SetTtps(*ttps)
 
+	//готовый кейс отправляется в Elasticsearch
 	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
 		Section: "handling case",
 		Command: "add new case",
 		Data:    verifiedCase.Get(),
 	}
+
+	/*
+
+	   получаем id сенсора из тегов
+
+	   		eventObject := document.GetEvent().GetObject()
+	   		tags := eventObject.GetTags()
+	   		if sensorsId, ok := tags["sensor:id"]; ok {
+
+	   		}
+
+	   отправляем запрос в заббикс и
+
+
+	*/
 
 	//******** TEST ********
 	//только в рамках тестирования, отправка обновленного объекта

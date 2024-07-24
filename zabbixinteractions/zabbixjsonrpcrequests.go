@@ -1,7 +1,6 @@
 package zabbixinteractions
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"runtime"
@@ -28,7 +27,7 @@ type FullSensorInformationFromZabbixAPI struct {
 	HomeNet    string
 }
 
-func GetFullSensorInformationFromZabbixAPI(ctx context.Context, sensorId int, zconn *ZabbixConnectionJsonRPC) (FullSensorInformationFromZabbixAPI, error) {
+func GetFullSensorInformationFromZabbixAPI(sensorId int, zconn *ZabbixConnectionJsonRPC) (FullSensorInformationFromZabbixAPI, error) {
 	fullInfo := FullSensorInformationFromZabbixAPI{SensorId: sensorId}
 
 	var (
@@ -36,31 +35,19 @@ func GetFullSensorInformationFromZabbixAPI(ctx context.Context, sensorId int, zc
 		err            error
 	)
 
-	/*
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		тут надо внимательно посмотреть
-		!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	*/
 	requiredHostId, err = NewRequiredHostId(sensorId, zconn)
 	if err != nil {
-		tmp := ctx.Value("auth")
-		if auth, ok := tmp.(struct {
-			login, passwd string
-		}); ok {
-			//при возникновении ошибки пытаемся авторизоватся повторно, так как при устаревании
-			//авторизационного хеша возможно появления ошибки с сообщением: 'Invalid params. Session terminated, re-login, please.'.
-			authHash, err := authorizationZabbixAPI(auth.login, auth.passwd, *zconn)
-			if err != nil {
-				return fullInfo, err
-			}
+		//при возникновении ошибки пытаемся авторизоватся повторно, так как при устаревании
+		//авторизационного хеша возможно появления ошибки с сообщением: 'Invalid params. Session terminated, re-login, please.'.
+		authHash, err := authorizationZabbixAPI(zconn.login, zconn.passwd, *zconn)
+		if err != nil {
+			return fullInfo, err
+		}
 
-			zconn.authorizationHash = authHash
-			requiredHostId, err = NewRequiredHostId(sensorId, zconn)
-			if err != nil {
-				return fullInfo, err
-			}
-
-		} else {
+		zconn.authorizationHash = authHash
+		//вторая попытка выполнения запроса на основе нового хеша
+		requiredHostId, err = NewRequiredHostId(sensorId, zconn)
+		if err != nil {
 			return fullInfo, err
 		}
 	}
@@ -111,7 +98,7 @@ func NewRequiredHostId(sensorId int, zconn *ZabbixConnectionJsonRPC) (*RequiredH
 	strReq += " \"method\": \"host.get\","
 	strReq += " \"params\": {\"search\":"
 	strReq += fmt.Sprintf("{\"host\": %d}},", sensorId)
-	strReq += fmt.Sprintf(" \"auth\": \"%s+DDD\",", zconn.GetAuthorizationData())
+	strReq += fmt.Sprintf(" \"auth\": \"%s\",", zconn.GetAuthorizationData())
 	strReq += " \"id\": 1}"
 
 	if sensorId == 0 {

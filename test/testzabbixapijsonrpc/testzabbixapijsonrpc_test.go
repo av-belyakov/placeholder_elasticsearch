@@ -1,7 +1,6 @@
 package testzabbixapijsonrpc_test
 
 import (
-	"context"
 	"fmt"
 	"time"
 
@@ -13,7 +12,6 @@ import (
 
 var _ = Describe("Testzabbixapijsonrpc", Ordered, func() {
 	var (
-		ctx      context.Context
 		settings zabbixinteractions.SettingsZabbixConnectionJsonRPC
 
 		zabbixConnHandler *zabbixinteractions.ZabbixConnectionJsonRPC
@@ -31,10 +29,7 @@ var _ = Describe("Testzabbixapijsonrpc", Ordered, func() {
 			ConnectionTimeout: &connTimeout,
 		}
 
-		ctx, _ /*ctxCancel*/ = context.WithCancel(context.Background())
-		zabbixConnHandler, zabbixConnErr = zabbixinteractions.NewZabbixConnectionJsonRPC(
-			ctx,
-			settings)
+		zabbixConnHandler, zabbixConnErr = zabbixinteractions.NewZabbixConnectionJsonRPC(settings)
 	})
 
 	Context("Тест 0. Выполняем создание нового JSON RPC соединения", func() {
@@ -52,14 +47,7 @@ var _ = Describe("Testzabbixapijsonrpc", Ordered, func() {
 			hostName := 570084
 			//hostName := 530043 (содержит некорректную запись в Zabbix)
 
-			ctxValue := context.WithValue(context.Background(), "auth", struct {
-				login, passwd string
-			}{
-				login:  "Cherry",
-				passwd: "v-2ymX!aVg3eS*hC",
-			})
-
-			fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(ctxValue, hostName, zabbixConnHandler)
+			fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(hostName, zabbixConnHandler)
 			Expect(err).ShouldNot(HaveOccurred())
 
 			fmt.Println("_____ SensorId _____:", fullInfo.SensorId)

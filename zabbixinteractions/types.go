@@ -43,6 +43,8 @@ type HandlerZabbixConnection struct {
 type ZabbixConnectionJsonRPC struct {
 	url               string
 	host              string
+	login             string
+	passwd            string
 	applicationType   string
 	authorizationHash string
 	connClient        *http.Client

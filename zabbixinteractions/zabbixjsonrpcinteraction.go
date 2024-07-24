@@ -1,7 +1,6 @@
 package zabbixinteractions
 
 import (
-	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
@@ -27,9 +26,8 @@ type ZabbixAuthorizationErrorMessage struct {
 
 // NewZabbixConnectionJsonRPC создает объект соединения с Zabbix API с
 // использование Json-RPC
-// ctx - должен быть context.WithCancel()
 // settings - настройки
-func NewZabbixConnectionJsonRPC(ctx context.Context, settings SettingsZabbixConnectionJsonRPC) (*ZabbixConnectionJsonRPC, error) {
+func NewZabbixConnectionJsonRPC(settings SettingsZabbixConnectionJsonRPC) (*ZabbixConnectionJsonRPC, error) {
 	var zc ZabbixConnectionJsonRPC
 
 	connTimeout := 30 * time.Second
@@ -59,6 +57,8 @@ func NewZabbixConnectionJsonRPC(ctx context.Context, settings SettingsZabbixConn
 	zc = ZabbixConnectionJsonRPC{
 		url:             fmt.Sprintf("https://%s/api_jsonrpc.php", settings.Host),
 		host:            settings.Host,
+		login:           settings.Login,
+		passwd:          settings.Passwd,
 		applicationType: "application/json-rpc",
 		connClient:      client,
 	}

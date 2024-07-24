@@ -52,10 +52,10 @@ type ZABBIXJSONRPCSet struct {
 }
 
 type ZabbixJsonRPCOptions struct {
+	ConnectionTimeout int    `yaml:"connectionTimeout"`
 	NetworkHost       string `yaml:"networkHost"`
 	Login             string `yaml:"login"`
 	Passwd            string `yaml:"passwd"`
-	ConnectionTimeout int    `yaml:"connectionTimeout"`
 }
 
 type EventType struct {

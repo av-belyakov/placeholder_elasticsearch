@@ -2,6 +2,7 @@ package elasticsearchinteractions
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/elastic/go-elasticsearch/v8"
 
@@ -42,9 +43,9 @@ func (h *HandlerSendData) New() error {
 		Username:  h.Settings.User,
 		Password:  h.Settings.Passwd,
 	})
-
 	if err != nil {
-		return err
+		_, f, l, _ := runtime.Caller(0)
+		return fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
 	h.Client = es
