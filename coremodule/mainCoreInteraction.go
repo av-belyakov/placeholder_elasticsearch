@@ -8,6 +8,7 @@ import (
 
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
+	"placeholder_elasticsearch/eventenrichmentmodule"
 	"placeholder_elasticsearch/memorytemporarystorage"
 	"placeholder_elasticsearch/mongodbinteractions"
 	"placeholder_elasticsearch/natsinteractions"
@@ -24,20 +25,37 @@ type nameObjectType struct {
 	ObjectType string `json:"objectType"`
 }
 
+type SettingsCommonChanInput struct {
+	Section      string
+	Command      string
+	MsgType      string
+	SourceModule string
+	Description  string
+	Data         interface{}
+	SomeData     interface{}
+}
+
+type SettingsCommonChanOutput struct{}
+
 type CoreHandlerSettings struct {
-	storageApp *memorytemporarystorage.CommonStorageTemporary
-	logging    chan<- datamodels.MessageLogging
-	counting   chan<- datamodels.DataCounterSettings
+	storageApp       *memorytemporarystorage.CommonStorageTemporary
+	commonChanInput  chan SettingsCommonChanInput
+	commonChanOutput chan SettingsCommonChanOutput
+	logging          chan<- datamodels.MessageLogging
+	counting         chan<- datamodels.DataCounterSettings
 }
 
 func NewCoreHandler(
 	storage *memorytemporarystorage.CommonStorageTemporary,
 	log chan<- datamodels.MessageLogging,
 	count chan<- datamodels.DataCounterSettings) *CoreHandlerSettings {
+
 	return &CoreHandlerSettings{
-		storageApp: storage,
-		logging:    log,
-		counting:   count,
+		storageApp:       storage,
+		commonChanInput:  make(chan SettingsCommonChanInput),
+		commonChanOutput: make(chan SettingsCommonChanOutput),
+		logging:          log,
+		counting:         count,
 	}
 }
 
@@ -47,7 +65,9 @@ func (settings *CoreHandlerSettings) CoreHandler(
 	listRuleAlert *rules.ListRule,
 	natsModule *natsinteractions.ModuleNATS,
 	esModule *elasticsearchinteractions.ElasticSearchModule,
-	mdbModule *mongodbinteractions.MongoDBModule) {
+	mdbModule *mongodbinteractions.MongoDBModule,
+	eeModule *eventenrichmentmodule.EventEnrichmentModule) {
+
 	natsChanReception := natsModule.GetDataReceptionChannel()
 	decodeJsonCase := NewDecodeJsonMessageSettings(listRuleCase, settings.logging, settings.counting)
 	decodeJsonAlert := NewDecodeJsonMessageSettings(listRuleAlert, settings.logging, settings.counting)
@@ -57,6 +77,77 @@ func (settings *CoreHandlerSettings) CoreHandler(
 		case <-ctx.Done():
 			return
 
+		//канал для взаимодействия модулей с ядром
+		case data := <-settings.commonChanInput:
+			switch data.SourceModule {
+			case "case_for_elasticsearch":
+				//готовый кейс отправляется в Elasticsearch
+				esModule.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+					Section: data.Section,
+					Command: data.Command,
+					Data:    data.Data,
+				}
+
+				/*tmp := strings.Split(data.Description, ":")
+				if len(tmp) < 3 {
+					var rootId string
+					if len(tmp) != 0 {
+						rootId = tmp[1]
+					}
+
+					_, f, l, _ := runtime.Caller(0)
+					settings.logging <- datamodels.MessageLogging{
+						MsgData: fmt.Sprintf("'there is not enough data to attempt to enrich with additional information (root_id:'%s')' %s:%d", rootId, f, l-7),
+						MsgType: "error",
+					}
+
+					break
+				}*/
+				if someData, ok := data.SomeData.(struct {
+					rootId    string
+					source    string
+					sensorsId []string
+				}); ok {
+					//информация отправляется в модуль обогащения доп. информацией
+					eeModule.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
+						RootId:    someData.rootId,
+						Source:    someData.source,
+						SensorsId: someData.sensorsId,
+					}
+				}
+			}
+
+		//канал для взаимодействия с модулем обогащения доп. информацией об организацией
+		case data := <-eeModule.ChanOutputModule:
+			//делаем запрос модулю MongoDB
+			if data.Sensor.HostId == "" {
+
+				continue
+			}
+
+			info, err := json.Marshal(data.Sensor)
+			if err != nil {
+				_, f, l, _ := runtime.Caller(0)
+				settings.logging <- datamodels.MessageLogging{
+					MsgData: fmt.Sprintf("'%v' %s:%d", err, f, l-1),
+					MsgType: "error",
+				}
+
+				continue
+			}
+
+			//отправляем данные для записи в Elasticsearch
+			esModule.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+				Section: "handling case",
+				Command: "add eventenrichment information",
+				RootId:  data.RootId,
+				Source:  data.Source,
+				Data:    info,
+			}
+
+			//отправляем данные для записи в MongoDB
+
+		//канал для взаимодействия с NATS
 		case data := <-natsChanReception:
 			eventSettings := shortEventSettings{}
 
@@ -67,7 +158,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 					MsgType: "error",
 				}
 
-				return
+				continue
 			}
 
 			switch eventSettings.Event.ObjectType {
@@ -80,7 +171,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				//используется для хранения в MongoDB
 				go NewVerifiedTheHiveFormatCase(chansOut[0], chansDone[0], mdbModule, settings.logging)
 				//используется для хранения в Elasticsearch
-				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], esModule, settings.logging)
+				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], settings.logging, settings.commonChanInput)
 
 			case "alert":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, "subject_alert")

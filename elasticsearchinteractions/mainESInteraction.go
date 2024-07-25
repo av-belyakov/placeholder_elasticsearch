@@ -14,6 +14,8 @@ type SettingsInputChan struct {
 	UUID    string
 	Section string
 	Command string
+	RootId  string
+	Source  string
 	Data    interface{}
 }
 

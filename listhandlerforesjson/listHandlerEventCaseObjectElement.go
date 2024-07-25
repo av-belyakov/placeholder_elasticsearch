@@ -36,7 +36,9 @@ func NewListHandlerEventCaseObjectElement(object *datamodels.EventForEsCaseObjec
 					return
 				}
 
-				object.SetAnyTags(key, strings.TrimSpace(value))
+				value = strings.TrimSpace(value)
+				value = strings.Trim(value, "\"")
+				object.SetAnyTags(key, value)
 			},
 			object.SetAnyTagsAll},
 	}

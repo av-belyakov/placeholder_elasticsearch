@@ -44,7 +44,7 @@ var _ = Describe("Testzabbixapijsonrpc", Ordered, func() {
 		It("Не должно быть ошибок при запросе", func() {
 			//hostName := 690023
 			//hostName := 8030160
-			hostName := 570084
+			hostName := "570084"
 			//hostName := 530043 (содержит некорректную запись в Zabbix)
 
 			fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(hostName, zabbixConnHandler)

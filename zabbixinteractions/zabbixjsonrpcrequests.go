@@ -18,7 +18,7 @@ type responseData struct {
 }
 
 type FullSensorInformationFromZabbixAPI struct {
-	SensorId   int
+	SensorId   string
 	HostId     string
 	GeoCode    string
 	ObjectArea string
@@ -27,7 +27,7 @@ type FullSensorInformationFromZabbixAPI struct {
 	HomeNet    string
 }
 
-func GetFullSensorInformationFromZabbixAPI(sensorId int, zconn *ZabbixConnectionJsonRPC) (FullSensorInformationFromZabbixAPI, error) {
+func GetFullSensorInformationFromZabbixAPI(sensorId string, zconn *ZabbixConnectionJsonRPC) (FullSensorInformationFromZabbixAPI, error) {
 	fullInfo := FullSensorInformationFromZabbixAPI{SensorId: sensorId}
 
 	var (
@@ -86,7 +86,7 @@ func GetFullSensorInformationFromZabbixAPI(sensorId int, zconn *ZabbixConnection
 	return fullInfo, nil
 }
 
-func NewRequiredHostId(sensorId int, zconn *ZabbixConnectionJsonRPC) (*RequiredHostId, error) {
+func NewRequiredHostId(sensorId string, zconn *ZabbixConnectionJsonRPC) (*RequiredHostId, error) {
 	var (
 		f string
 		l int
@@ -97,11 +97,11 @@ func NewRequiredHostId(sensorId int, zconn *ZabbixConnectionJsonRPC) (*RequiredH
 	strReq := "{ \"jsonrpc\": \"2.0\","
 	strReq += " \"method\": \"host.get\","
 	strReq += " \"params\": {\"search\":"
-	strReq += fmt.Sprintf("{\"host\": %d}},", sensorId)
+	strReq += fmt.Sprintf("{\"host\": %s}},", sensorId)
 	strReq += fmt.Sprintf(" \"auth\": \"%s\",", zconn.GetAuthorizationData())
 	strReq += " \"id\": 1}"
 
-	if sensorId == 0 {
+	if sensorId == "" {
 		_, f, l, _ = runtime.Caller(0)
 		return &requiredHostId, fmt.Errorf("error, the sensor ID cannot be equal to 0 %s:%d", f, l-1)
 	}

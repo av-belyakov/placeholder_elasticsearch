@@ -13,25 +13,26 @@ import (
 // SettingsChanInputEEM параметры для ПРИЕМА данных в модуль
 // RootId - основной идентификатор
 // Source - источник
-// IdSensors - список искомых идентификаторов сенсоров
+// SensorsId - искомые идентификаторы сенсоров
 type SettingsChanInputEEM struct {
 	RootId    string
 	Source    string
-	IdSensors []int
+	SensorsId []string
 }
 
-// SettingsChanInputEEM параметры для ОТПРАВКИ данных из модуль
+// SettingsChanInputEEM параметры для ОТПРАВКИ данных из модуля
 // RootId - основной идентификатор
 // Source - источник
-// Sensors - найденная информация о сенсорах
+// Sensors - найденная информация, где ключ карты это идентификатор сенсора
 type SettingsChanOutputEEM struct {
 	RootId  string
 	Source  string
-	Sensors map[int]FoundSensorInformation
+	Sensors map[string]FoundSensorInformation
 }
 
 // FoundSensorInformation содержит найденную о сенсоре информацию
-// HostId - идентификатор сенсора для поиска информации в НКЦКИ
+// SensorId - идентификатор сенсора
+// HostId - идентификатор сенсора, специальный, для поиска информации в НКЦКИ
 // GeoCode - географический код страны
 // ObjectArea - сфера деятельности объекта
 // SubjectRF - субъект Российской Федерации
@@ -40,6 +41,7 @@ type SettingsChanOutputEEM struct {
 // OrgName - наименование организации
 // FullOrgName - полное наименование организации
 type FoundSensorInformation struct {
+	SensorId    string
 	HostId      string
 	GeoCode     string
 	ObjectArea  string
@@ -135,10 +137,10 @@ func NewEventEnrichmentModule(
 				settingsResponse := SettingsChanOutputEEM{
 					RootId:  data.RootId,
 					Source:  data.Source,
-					Sensors: make(map[int]FoundSensorInformation),
+					Sensors: make(map[string]FoundSensorInformation),
 				}
 
-				for _, sensorId := range data.IdSensors {
+				for _, sensorId := range data.SensorsId {
 					fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(sensorId, zabbixConnHandler)
 					if err != nil {
 						_, f, l, _ := runtime.Caller(0)
@@ -151,6 +153,7 @@ func NewEventEnrichmentModule(
 					}
 
 					settingsResponse.Sensors[sensorId] = FoundSensorInformation{
+						SensorId:   sensorId,
 						HostId:     fullInfo.HostId,
 						GeoCode:    fullInfo.GeoCode,
 						ObjectArea: fullInfo.ObjectArea,
@@ -168,13 +171,21 @@ func NewEventEnrichmentModule(
 						}
 					}
 
-					for _, v := range rd.Data {
-						if sensor, ok := settingsResponse.Sensors[sensorId]; ok {
-							sensor.OrgName = v.Name
-							sensor.FullOrgName = v.Sname
-
-							settingsResponse.Sensors[sensorId] = sensor
+					if len(rd.Data) == 0 {
+						_, f, l, _ := runtime.Caller(0)
+						logging <- datamodels.MessageLogging{
+							MsgData: fmt.Sprintf("'nothing was found by INN '%s'' %s:%d", fullInfo.INN, f, l-1),
+							MsgType: "error",
 						}
+
+						return
+					}
+
+					if sensor, ok := settingsResponse.Sensors[sensorId]; ok {
+						sensor.OrgName = rd.Data[0].Name
+						sensor.FullOrgName = rd.Data[0].Sname
+
+						settingsResponse.Sensors[sensorId] = sensor
 					}
 				}
 

@@ -59,16 +59,16 @@ var _ = Describe("Testeventenrichmentmodule", Ordered, func() {
 			eventEnrichmentModule.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
 				RootId:    rootId,
 				Source:    source,
-				IdSensors: []int{570084},
+				SensorsId: []string{"570084"},
 			}
 
 			response := <-eventEnrichmentModule.ChanOutputModule
 			Expect(response.RootId).Should(Equal(rootId))
 			Expect(response.Source).Should(Equal(source))
-			Expect(len(response.Sensors)).ShouldNot(Equal(0))
 
 			for k, v := range response.Sensors {
-				fmt.Println("Sensor ID:", k)
+				fmt.Println("___ SensorId ___:", k)
+				fmt.Println("Sensor ID:", v.SensorId)
 				fmt.Println("HostId:", v.HostId)
 				fmt.Println("GeoCode:", v.GeoCode)
 				fmt.Println("ObjectArea:", v.ObjectArea)

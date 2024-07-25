@@ -7,7 +7,6 @@ import (
 	"runtime"
 
 	"placeholder_elasticsearch/datamodels"
-	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/listhandlerforesjson"
 	"placeholder_elasticsearch/listhandlerthehivejson"
 )
@@ -15,8 +14,8 @@ import (
 func NewVerifiedElasticsearchFormatCase(
 	input <-chan datamodels.ChanOutputDecodeJSON,
 	done <-chan bool,
-	esm *elasticsearchinteractions.ElasticSearchModule,
 	logging chan<- datamodels.MessageLogging,
+	coreChan chan<- SettingsCommonChanInput,
 ) {
 	var (
 		rootId string
@@ -231,27 +230,30 @@ func NewVerifiedElasticsearchFormatCase(
 	verifiedCase.SetObservables(*observables)
 	verifiedCase.SetTtps(*ttps)
 
-	//готовый кейс отправляется в Elasticsearch
-	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
-		Section: "handling case",
-		Command: "add new case",
-		Data:    verifiedCase.Get(),
+	sensorsId := []string(nil)
+	caseElem := verifiedCase.Get()
+	eventElem := caseElem.GetEvent()
+	objectElem := eventElem.GetObject()
+	sId, ok := objectElem.GetTags()["sensor:id"]
+	if ok && len(sId) > 0 {
+		sensorsId = sId
 	}
 
-	/*
-
-	   получаем id сенсора из тегов
-
-	   		eventObject := document.GetEvent().GetObject()
-	   		tags := eventObject.GetTags()
-	   		if sensorsId, ok := tags["sensor:id"]; ok {
-
-	   		}
-
-	   отправляем запрос в заббикс и
-
-
-	*/
+	coreChan <- SettingsCommonChanInput{
+		Section:      "handling case",
+		Command:      "add new case",
+		SourceModule: "case_for_elasticsearch",
+		Data:         caseElem,
+		SomeData: struct {
+			rootId    string
+			source    string
+			sensorsId []string
+		}{
+			rootId:    rootId,
+			source:    caseElem.GetSource(),
+			sensorsId: sensorsId,
+		},
+	}
 
 	//******** TEST ********
 	//только в рамках тестирования, отправка обновленного объекта

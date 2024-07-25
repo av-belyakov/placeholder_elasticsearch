@@ -16,6 +16,7 @@ import (
 	"placeholder_elasticsearch/coremodule"
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
+	"placeholder_elasticsearch/eventenrichmentmodule"
 	"placeholder_elasticsearch/memorytemporarystorage"
 	"placeholder_elasticsearch/mongodbinteractions"
 	"placeholder_elasticsearch/natsinteractions"
@@ -308,6 +309,16 @@ func main() {
 		log.Fatalf("error module 'mongodbclient': %v\n", err)
 	}
 
+	//инициализация модуля применяемого для обогащения кейсов
+	ctxEM, ctxCancelEM := context.WithCancel(context.Background())
+	eventenrichmentModule, err := eventenrichmentmodule.NewEventEnrichmentModule(ctxEM, confApp.NCIRCC, confApp.ZabbixJsonRPC, logging)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")
+
+		log.Fatalf("error module 'eventenrichmentmodule': %v\n", err)
+	}
+
 	//инициализация модуля для взаимодействия с ElasticSearch
 	esModule, err := elasticsearchinteractions.HandlerElasticSearch(*confApp.GetAppES(), logging, counting)
 	if err != nil {
@@ -332,9 +343,10 @@ func main() {
 		close(channelZabbix)
 
 		ctxCancelZ()
+		ctxCancelEM()
 		ctxCancelCore()
 	}()
 
 	core := coremodule.NewCoreHandler(storageApp, logging, counting)
-	core.CoreHandler(ctxCore, lrcase, lralert, natsModule, esModule, mongodbModule)
+	core.CoreHandler(ctxCore, lrcase, lralert, natsModule, esModule, mongodbModule, eventenrichmentModule)
 }
