@@ -10,35 +10,6 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
-type SettingsInputChan struct {
-	UUID    string
-	Section string
-	Command string
-	RootId  string
-	Source  string
-	Data    interface{}
-}
-
-// ElasticSearchModule инициализированный модуль
-// ChanInputModule - канал для отправки данных В модуль
-// ChanOutputModule - канал для принятия данных ИЗ модуля
-type ElasticSearchModule struct {
-	ChanInputModule  chan SettingsInputChan
-	ChanOutputModule chan interface{}
-}
-
-type HandlerSendData struct {
-	Client   *elasticsearch.Client
-	Settings SettingsHandler
-}
-
-type SettingsHandler struct {
-	Port   int
-	Host   string
-	User   string
-	Passwd string
-}
-
 func (h *HandlerSendData) New() error {
 	es, err := elasticsearch.NewClient(elasticsearch.Config{
 		Addresses: []string{fmt.Sprintf("http://%s:%d", h.Settings.Host, h.Settings.Port)},
@@ -96,6 +67,14 @@ func HandlerElasticSearch(
 					index := fmt.Sprintf("%s%s", conf.PrefixCase, conf.IndexCase)
 
 					go hsd.ReplacementDocumentCase(data.Data, index, logging, counting)
+				}
+
+				if data.Command == "add eventenrichment information" {
+					//
+					//
+					// здесь нужно выполнять обновления кейса дополнительной информацией
+					//
+					//
 				}
 
 			case "handling alert":

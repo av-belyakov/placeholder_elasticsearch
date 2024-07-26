@@ -119,19 +119,11 @@ func (settings *CoreHandlerSettings) CoreHandler(
 
 		//канал для взаимодействия с модулем обогащения доп. информацией об организацией
 		case data := <-eeModule.ChanOutputModule:
-			//делаем запрос модулю MongoDB
-			if data.Sensor.HostId == "" {
-
-				continue
-			}
-
-			info, err := json.Marshal(data.Sensor)
-			if err != nil {
-				_, f, l, _ := runtime.Caller(0)
-				settings.logging <- datamodels.MessageLogging{
-					MsgData: fmt.Sprintf("'%v' %s:%d", err, f, l-1),
-					MsgType: "error",
-				}
+			if len(data.Sensors) == 0 {
+				//делаем запрос модулю MongoDB
+				//
+				// надо сделать
+				//
 
 				continue
 			}
@@ -140,12 +132,13 @@ func (settings *CoreHandlerSettings) CoreHandler(
 			esModule.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
 				Section: "handling case",
 				Command: "add eventenrichment information",
-				RootId:  data.RootId,
-				Source:  data.Source,
-				Data:    info,
+				Data:    data,
 			}
 
 			//отправляем данные для записи в MongoDB
+			//
+			// надо сделать
+			//
 
 		//канал для взаимодействия с NATS
 		case data := <-natsChanReception:

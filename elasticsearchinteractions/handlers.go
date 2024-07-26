@@ -37,6 +37,27 @@ func (hsd HandlerSendData) InsertNewDocument(
 	}
 }
 
+func (hsd HandlerSendData) AddEventenrichment(
+	data interface{},
+	indexName string,
+	logging chan<- datamodels.MessageLogging) {
+
+	//приводим к интерфейсу позволяющему получить доступ к информации о сенсорах
+	infoEvent, ok := data.(datamodels.InformationFromEventEnricher)
+
+	/*
+		Здесь надо будет сделать следующее:
+		1. Сделать поисковый запрос на поиск _id кейса
+		querySearch *strings.Reader = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId))
+		res, err := hsd.SearchDocument([]string{indexCurrent}, querySearch)
+
+		2. Сделать добавление дополнительной информации в уже существующий кейс
+			bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": {\"@geoCode\": \"%s\", \"@objectArea\": \"%s\", \"@subjectRF\": \"%s\", \"@inn\": \"%s\", \"@homeNet\": \"%s\", \"@orgName\": \"%s\", \"@fullOrgName\": \"%s\"}}}", GeoCode, ObjectArea, SubjectRF, INN, HomeNet, OrgName, FullOrgName))
+			res, err = hsd.Client.Update(indexCurrent, caseid, bodyUpdate)
+
+	*/
+}
+
 // ReplacementDocumentCase выполняет замену документа, но только в рамках одного индекса
 func (hsd HandlerSendData) ReplacementDocumentCase(
 	data interface{},

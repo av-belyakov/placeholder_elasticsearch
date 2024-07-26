@@ -59,7 +59,7 @@ var _ = Describe("Testeventenrichmentmodule", Ordered, func() {
 			eventEnrichmentModule.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
 				RootId:    rootId,
 				Source:    source,
-				SensorsId: []string{"570084"},
+				SensorsId: []string{"570084", "690017", "690013"},
 			}
 
 			response := <-eventEnrichmentModule.ChanOutputModule
@@ -67,7 +67,7 @@ var _ = Describe("Testeventenrichmentmodule", Ordered, func() {
 			Expect(response.Source).Should(Equal(source))
 
 			for k, v := range response.Sensors {
-				fmt.Println("___ SensorId ___:", k)
+				fmt.Printf("\t___ SensorId ___:'%s'\n", k)
 				fmt.Println("Sensor ID:", v.SensorId)
 				fmt.Println("HostId:", v.HostId)
 				fmt.Println("GeoCode:", v.GeoCode)
