@@ -8,9 +8,9 @@ ElasticSearch:
   port: 9200
   user: "writer"
   passwd: "XxZqesYXuk8C"
-  prefix_case: "test_"
+  prefix_case: "test_elem_"
   index_case: "module_placeholder_case"
-  prefix_alert: "test_"
+  prefix_alert: "test_elem_"
   index_alert: "module_placeholder_alert"
 MongoDB:
   host: "192.168.9.208"

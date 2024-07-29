@@ -1,6 +1,10 @@
 package elasticsearchinteractions
 
-import "github.com/elastic/go-elasticsearch/v8"
+import (
+	"github.com/elastic/go-elasticsearch/v8"
+
+	"placeholder_elasticsearch/datamodels"
+)
 
 type SettingsInputChan struct {
 	UUID    string
@@ -9,12 +13,20 @@ type SettingsInputChan struct {
 	Data    interface{}
 }
 
+type SettingsOutputChan struct {
+	Section     string
+	Command     string
+	UnderlineId string
+	RootId      string
+	Data        interface{}
+}
+
 // ElasticSearchModule инициализированный модуль
 // ChanInputModule - канал для отправки данных В модуль
 // ChanOutputModule - канал для принятия данных ИЗ модуля
 type ElasticSearchModule struct {
 	ChanInputModule  chan SettingsInputChan
-	ChanOutputModule chan interface{}
+	ChanOutputModule chan SettingsOutputChan
 }
 
 type HandlerSendData struct {
@@ -27,4 +39,8 @@ type SettingsHandler struct {
 	Host   string
 	User   string
 	Passwd string
+}
+
+type tmpRequest struct {
+	SensorAdditionalInformation []datamodels.AdditionSensorInformation `json:"@sensorAdditionalInformation"`
 }

@@ -20,21 +20,11 @@ var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 	var (
 		hsd          elasticsearchinteractions.HandlerSendData
 		source       string = "rcmlnx"
-		rootId       string = "~129876088"
+		rootId       string = "~338731008"
 		indexName    string = "test_module_placeholder_case"
 		indexCurrent string = indexName + "_2024_7"
 
 		querySearch *strings.Reader = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId))
-
-		/*
-			GeoCode     string = "RU-IRK"
-			ObjectArea  string = "Наука и образование"
-			SubjectRF   string = "Иркутская область"
-			INN         string = "3812011682"
-			HomeNet     string = "[84.237.16.0/20]"
-			OrgName     string = "ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ УЧРЕЖДЕНИЕ НАУКИ ИНСТИТУТ ДИНАМИКИ СИСТЕМ И ТЕОРИИ УПРАВЛЕНИЯ ИМЕНИ В.М. МАТРОСОВА СИБИРСКОГО ОТДЕЛЕНИЯ РОССИЙСКОЙ АКАДЕМИИ НАУК"
-			FullOrgName string = "ИДСТУ СО РАН"
-		*/
 
 		ctxEEM       context.Context
 		ctxCancelEEM context.CancelFunc
@@ -42,9 +32,7 @@ var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 		confApp               confighandler.ConfigApp
 		eventEnrichmentModule *eventenrichmentmodule.EventEnrichmentModule
 
-		errConfApp, errEEM error
-
-		errConn error
+		errConn, errConfApp, errEEM error
 	)
 
 	BeforeAll(func() {
@@ -78,7 +66,7 @@ var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 		eventEnrichmentModule.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
 			RootId:    rootId,
 			Source:    source,
-			SensorsId: []string{"570084", "690017", "690013"},
+			SensorsId: []string{"690017", "8030160", "690013", "570084"},
 		}
 	})
 
@@ -98,6 +86,10 @@ var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 
 	Context("Тест 1. Проверяем возможность добавление данных в существующий кейс", func() {
 		It("При добавлении новых данных к существующему кейсу не должно быть ошибок", func() {
+			type tmpRequest struct {
+				SensorAdditionalInformation []eventenrichmentmodule.FoundSensorInformation `json:"@sensorAdditionalInformation"`
+			}
+
 			//делаем запрос для поиска _id кейса
 			//----------------------------------
 			res, err := hsd.SearchDocument([]string{indexCurrent}, querySearch)
@@ -123,34 +115,23 @@ var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 			//---------------------------------------------------------
 			additionalInformation := <-eventEnrichmentModule.ChanOutputModule
 
+			func( /*i datamodels.InformationFromEventEnricher*/ i interface{}) {
+
+				infoEvent, ok := i.(datamodels.InformationFromEventEnricher)
+
+				fmt.Println("___ IS OK:", ok)
+				fmt.Println("___ infoEvent:", infoEvent)
+
+			}(additionalInformation)
+
 			fmt.Println("RootId:", additionalInformation.GetRootId())
 			fmt.Println("Source:", additionalInformation.GetSource())
-			for k, v := range additionalInformation.Sensors {
-				fmt.Printf("\tSensor:'%s'\n", k)
-				fmt.Println("SensorId:", v.SensorId)
-				fmt.Println("HostId:", v.HostId)
-				fmt.Println("GeoCode:", v.GeoCode)
-				fmt.Println("ObjectArea:", v.ObjectArea)
-				fmt.Println("SubjectRF:", v.SubjectRF)
-				fmt.Println("INN:", v.INN)
-				fmt.Println("HomeNet:", v.HomeNet)
-				fmt.Println("OrgName:", v.OrgName)
-				fmt.Println("FullOrgName:", v.FullOrgName)
-			}
 
-			//
-			//здесь надо сформировать запрос на добавление доп. данных
-			// с учетом того, что необхлдимо формировать список объектов
-			//
+			tmpReq := tmpRequest{SensorAdditionalInformation: additionalInformation.Sensors}
+			request, err := json.MarshalIndent(tmpReq, "", " ")
+			Expect(err).ShouldNot(HaveOccurred())
 
-			//выполняем запрос на добавление в кейс дополнительных данных
-			//-----------------------------------------------------------
-
-			//этот запрос уже не подходит
-			bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": {\"@geoCode\": \"%s\", \"@objectArea\": \"%s\", \"@subjectRF\": \"%s\", \"@inn\": \"%s\", \"@homeNet\": \"%s\", \"@orgName\": \"%s\", \"@fullOrgName\": \"%s\"}}}", GeoCode, ObjectArea, SubjectRF, INN, HomeNet, OrgName, FullOrgName))
-
-			//bodyUpdate := strings.NewReader(fmt.Sprintf("{\"must\": [{\"script\": \"ctx._source.event.GeoCode='%s'\"}, {\"script\": \"ctx._source.event.ObjectArea='%s'\"}, {\"script\": \"ctx._source.event.SubjectRF='%s'\"}, {\"script\": \"ctx._source.event.INN='%s'\"}, {\"script\": \"ctx._source.event.HomeNet='%s'\"}, {\"script\": \"ctx._source.event.OrgName='%s'\"}, {\"script\": \"ctx._source.event.FullOrgName='%s'\"}]}", GeoCode, ObjectArea, SubjectRF, INN, HomeNet, OrgName, FullOrgName))
-			//bodyUpdate := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"script\": \"ctx._source.event.GeoCode='%s'\"}, {\"script\": \"ctx._source.event.ObjectArea='%s'\"}, {\"script\": \"ctx._source.event.SubjectRF='%s'\"}, {\"script\": \"ctx._source.event.INN='%s'\"}, {\"script\": \"ctx._source.event.HomeNet='%s'\"}, {\"script\": \"ctx._source.event.OrgName='%s'\"}, {\"script\": \"ctx._source.event.FullOrgName='%s'\"}]}}}", GeoCode, ObjectArea, SubjectRF, INN, HomeNet, OrgName, FullOrgName))
+			bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": %s}", string(request)))
 			res, err = hsd.Client.Update(indexCurrent, caseid, bodyUpdate)
 			Expect(err).ShouldNot(HaveOccurred())
 
@@ -164,14 +145,6 @@ var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 			for k, v := range t {
 				fmt.Println(k, " - ", v)
 			}
-
-			/*
-
-				здесь по тестам все проходит, однако сенсоров может быть много
-				поэтому следуюе продумать как в СУБД добавлять информацию по нескольким
-				сенсорам
-
-			*/
 
 			ctxCancelEEM()
 

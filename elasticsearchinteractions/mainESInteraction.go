@@ -33,7 +33,7 @@ func HandlerElasticSearch(
 
 	module := &ElasticSearchModule{
 		ChanInputModule:  make(chan SettingsInputChan),
-		ChanOutputModule: make(chan interface{}),
+		ChanOutputModule: make(chan SettingsOutputChan),
 	}
 
 	hsd := HandlerSendData{
@@ -63,18 +63,14 @@ func HandlerElasticSearch(
 		for data := range module.ChanInputModule {
 			switch data.Section {
 			case "handling case":
-				if data.Command == "add new case" {
-					index := fmt.Sprintf("%s%s", conf.PrefixCase, conf.IndexCase)
+				index := fmt.Sprintf("%s%s", conf.PrefixCase, conf.IndexCase)
 
-					go hsd.ReplacementDocumentCase(data.Data, index, logging, counting)
+				if data.Command == "add new case" {
+					go hsd.ReplacementDocumentCase(data.Data, index, module.ChanOutputModule, logging, counting)
 				}
 
 				if data.Command == "add eventenrichment information" {
-					//
-					//
-					// здесь нужно выполнять обновления кейса дополнительной информацией
-					//
-					//
+					go hsd.AddEventenrichment(data.Data, index, logging)
 				}
 
 			case "handling alert":

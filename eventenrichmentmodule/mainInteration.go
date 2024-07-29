@@ -24,6 +24,13 @@ func NewEventEnrichmentModule(
 		ChanOutputModule: make(chan SettingsChanOutputEEM),
 	}
 
+	ctxTimeout, ctxTimeoutCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	settingsFullOrgNameByINN, err := NewSettingsFuncFullNameOrganizationByINN(ctxTimeout, ncirccConf.URL, ncirccConf.Token, (5 * time.Second))
+	if err != nil {
+		ctxTimeoutCancel()
+		return &module, err
+	}
+
 	checkConfZabbixAPI := func(zabbixApi confighandler.ZabbixJsonRPCOptions) error {
 		if zabbixApi.NetworkHost == "" {
 			_, f, l, _ := runtime.Caller(0)
@@ -43,11 +50,24 @@ func NewEventEnrichmentModule(
 		return nil
 	}
 
-	ctxTimeout, ctxTimeoutCancel := context.WithTimeout(context.Background(), 5*time.Second)
-	settingsFullOrgNameByINN, err := NewSettingsFuncFullNameOrganizationByINN(ctxTimeout, ncirccConf.URL, ncirccConf.Token, (5 * time.Second))
-	if err != nil {
-		ctxTimeoutCancel()
-		return &module, err
+	searchNCIRCCInfo := func(inn, sensorId string) (orgName, fullOrgName string, err error) {
+		if inn == "" {
+			_, f, l, _ := runtime.Caller(0)
+			return "", "", fmt.Errorf("'sensorId: '%s', it is impossible to search for additional information because the INN is empty' %s:%d", sensorId, f, l-1)
+		}
+
+		rd, err := settingsFullOrgNameByINN.GetFullNameOrganizationByINN(inn)
+		if err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			return "", "", fmt.Errorf("'sensorId: '%s', %v' %s:%d", sensorId, err, f, l-1)
+		}
+
+		if len(rd.Data) == 0 {
+			_, f, l, _ := runtime.Caller(0)
+			return "", "", fmt.Errorf("'sensorId: '%s', nothing was found by INN '%s'' %s:%d", sensorId, inn, f, l-1)
+		}
+
+		return rd.Data[0].Name, rd.Data[0].Sname, nil
 	}
 
 	if err := checkConfZabbixAPI(zabbixApi); err != nil {
@@ -87,7 +107,7 @@ func NewEventEnrichmentModule(
 				settingsResponse := SettingsChanOutputEEM{
 					RootId:  data.RootId,
 					Source:  data.Source,
-					Sensors: make(map[string]FoundSensorInformation),
+					Sensors: []FoundSensorInformation(nil),
 				}
 
 				for _, sensorId := range data.SensorsId {
@@ -95,14 +115,14 @@ func NewEventEnrichmentModule(
 					if err != nil {
 						_, f, l, _ := runtime.Caller(0)
 						logging <- datamodels.MessageLogging{
-							MsgData: fmt.Sprintf("'%v' %s:%d", err, f, l-1),
+							MsgData: fmt.Sprintf("'sensorId: '%s', %v' %s:%d", sensorId, err, f, l-1),
 							MsgType: "error",
 						}
 
 						continue
 					}
 
-					settingsResponse.Sensors[sensorId] = FoundSensorInformation{
+					foundInfo := FoundSensorInformation{
 						SensorId:   sensorId,
 						HostId:     fullInfo.HostId,
 						GeoCode:    fullInfo.GeoCode,
@@ -112,31 +132,18 @@ func NewEventEnrichmentModule(
 						HomeNet:    fullInfo.HomeNet,
 					}
 
-					rd, err := settingsFullOrgNameByINN.GetFullNameOrganizationByINN(fullInfo.INN)
+					orgName, fullOrgName, err := searchNCIRCCInfo(fullInfo.INN, sensorId)
 					if err != nil {
-						_, f, l, _ := runtime.Caller(0)
 						logging <- datamodels.MessageLogging{
-							MsgData: fmt.Sprintf("'%v' %s:%d", err, f, l-1),
+							MsgData: err.Error(),
 							MsgType: "error",
 						}
+					} else {
+						foundInfo.OrgName = orgName
+						foundInfo.FullOrgName = fullOrgName
 					}
 
-					if len(rd.Data) == 0 {
-						_, f, l, _ := runtime.Caller(0)
-						logging <- datamodels.MessageLogging{
-							MsgData: fmt.Sprintf("'nothing was found by INN '%s'' %s:%d", fullInfo.INN, f, l-1),
-							MsgType: "error",
-						}
-
-						return
-					}
-
-					if sensor, ok := settingsResponse.Sensors[sensorId]; ok {
-						sensor.OrgName = rd.Data[0].Name
-						sensor.FullOrgName = rd.Data[0].Sname
-
-						settingsResponse.Sensors[sensorId] = sensor
-					}
+					settingsResponse.Sensors = append(settingsResponse.Sensors, foundInfo)
 				}
 
 				module.ChanOutputModule <- settingsResponse

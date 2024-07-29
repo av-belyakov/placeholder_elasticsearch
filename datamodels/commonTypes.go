@@ -205,3 +205,25 @@ type PatternExtraData struct {
 	//данное поле редко используемое, думаю пока оно не требует реализации
 	//ExtraData           map[string]interface{} `json:"extraData"`
 }
+
+// AdditionSensorInformation содержит дополнительную информацию о сенсоре
+// SensorId - идентификатор сенсора
+// HostId - идентификатор сенсора, специальный, для поиска информации в НКЦКИ
+// GeoCode - географический код страны
+// ObjectArea - сфера деятельности объекта
+// SubjectRF - субъект Российской Федерации
+// INN - налоговый идентификатор
+// HomeNet - перечень домашних сетей
+// OrgName - наименование организации
+// FullOrgName - полное наименование организации
+type AdditionSensorInformation struct {
+	SensorId    string `json:"sensorId"`
+	HostId      string `json:"hostId"`
+	GeoCode     string `json:"geoCode"`
+	ObjectArea  string `json:"objectArea"`
+	SubjectRF   string `json:"subjectRF"`
+	INN         string `json:"inn"`
+	HomeNet     string `json:"homeNet"`
+	OrgName     string `json:"orgName"`
+	FullOrgName string `json:"fullOrgName"`
+}

@@ -37,31 +37,112 @@ func (hsd HandlerSendData) InsertNewDocument(
 	}
 }
 
+// AddEventenrichment выполняет обогащение уже имеющегося кейса дополнительной, полезной информацией
 func (hsd HandlerSendData) AddEventenrichment(
 	data interface{},
 	indexName string,
 	logging chan<- datamodels.MessageLogging) {
+	addSensorsInformation := []datamodels.AdditionSensorInformation(nil)
 
-	//приводим к интерфейсу позволяющему получить доступ к информации о сенсорах
+	time.Sleep(3 * time.Second)
+
+	//приводим значение к интерфейсу позволяющему получить доступ к информации о сенсорах
 	infoEvent, ok := data.(datamodels.InformationFromEventEnricher)
+	if !ok {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.InformationFromEventEnricher' %s:%d", f, l-1),
+			MsgType: "error",
+		}
 
-	/*
-		Здесь надо будет сделать следующее:
-		1. Сделать поисковый запрос на поиск _id кейса
-		querySearch *strings.Reader = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId))
-		res, err := hsd.SearchDocument([]string{indexCurrent}, querySearch)
+		return
+	}
 
-		2. Сделать добавление дополнительной информации в уже существующий кейс
-			bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": {\"@geoCode\": \"%s\", \"@objectArea\": \"%s\", \"@subjectRF\": \"%s\", \"@inn\": \"%s\", \"@homeNet\": \"%s\", \"@orgName\": \"%s\", \"@fullOrgName\": \"%s\"}}}", GeoCode, ObjectArea, SubjectRF, INN, HomeNet, OrgName, FullOrgName))
-			res, err = hsd.Client.Update(indexCurrent, caseid, bodyUpdate)
+	t := time.Now()
+	month := int(t.Month())
+	indexCurrent := fmt.Sprintf("%s_%d_%d", indexName, t.Year(), month)
 
-	*/
+	//выполняем поиск _id индекса
+	caseId, err := SearchUnderlineIdCase(indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource(), hsd)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'rootId: '%s', %s' %s:%d", err.Error(), infoEvent.GetRootId(), f, l-2),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	fmt.Println("func 'AddEventenrichment', indexCurrent:", indexCurrent, " search case id:'", caseId, "'")
+
+	sensorsId := infoEvent.GetSensorsId()
+	for _, v := range sensorsId {
+		addSensorsInformation = append(addSensorsInformation, datamodels.AdditionSensorInformation{
+			SensorId:    v,
+			HostId:      infoEvent.GetHostId(v),
+			GeoCode:     infoEvent.GetGeoCode(v),
+			ObjectArea:  infoEvent.GetObjectArea(v),
+			SubjectRF:   infoEvent.GetSubjectRF(v),
+			INN:         infoEvent.GetINN(v),
+			HomeNet:     infoEvent.GetHomeNet(v),
+			OrgName:     infoEvent.GetOrgName(v),
+			FullOrgName: infoEvent.GetFullOrgName(v),
+		})
+	}
+
+	tmpReq := tmpRequest{SensorAdditionalInformation: addSensorsInformation}
+	request, err := json.MarshalIndent(tmpReq, "", " ")
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'rootId: '%s', '%s' %s:%d", infoEvent.GetRootId(), err.Error(), f, l-2),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": %s}", string(request)))
+	res, err := hsd.Client.Update(indexCurrent, caseId, bodyUpdate)
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'rootId: '%s', %s' %s:%d", err.Error(), infoEvent.GetRootId(), f, l-1),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	if res.StatusCode != http.StatusOK {
+		tmp := map[string]interface{}{}
+		if err := json.NewDecoder(res.Body).Decode(&tmp); err != nil {
+			fmt.Println("============= DECODE =============")
+			for k, v := range tmp {
+				fmt.Printf("%s: %v\n", k, v)
+			}
+		}
+
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'rootId: '%s', %d %s' %s:%d", infoEvent.GetRootId(), res.StatusCode, res.Status(), f, l-1),
+			MsgType: "error",
+		}
+	}
 }
 
 // ReplacementDocumentCase выполняет замену документа, но только в рамках одного индекса
 func (hsd HandlerSendData) ReplacementDocumentCase(
 	data interface{},
 	indexName string,
+	chanOutput chan<- SettingsOutputChan,
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings) {
 	newDocument, ok := data.(*datamodels.VerifiedEsCase)
@@ -74,6 +155,17 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 
 		return
 	}
+
+	/*
+
+	   Похоже при почти параллельном создании индекса кейса и добавлении дополнительной
+	   информации в elasticsearch БД не успевает создать индекс, по этому поиск без
+	   предварительного time.Sleep(3*time.Second) в func (hsd HandlerSendData) AddEventenrichment
+	   стр. 47 не обойтись.
+	   Однако можно попробовать сделать передачу запроса на поиск доп. информации в Zabbix выполнять
+	   только после создании индекса в БД elasticsearch
+
+	*/
 
 	var (
 		countReplacingFields int

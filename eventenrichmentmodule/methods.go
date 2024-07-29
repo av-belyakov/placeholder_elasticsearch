@@ -1,130 +1,134 @@
 package eventenrichmentmodule
 
 // GetRootId основной идентификатор кейса
-func (e *SettingsChanOutputEEM) GetRootId() string {
+func (e SettingsChanOutputEEM) GetRootId() string {
 	return e.RootId
 }
 
 // GetSource источник сформировавший кейс
-func (e *SettingsChanOutputEEM) GetSource() string {
+func (e SettingsChanOutputEEM) GetSource() string {
 	return e.Source
 }
 
-// GetSourcesId список идентификаторов сенсоров
-func (e *SettingsChanOutputEEM) GetSourcesId() []string {
+// GetSensorsId список идентификаторов сенсоров
+func (e SettingsChanOutputEEM) GetSensorsId() []string {
 	list := make([]string, 0, len(e.Sensors))
 
-	for k := range e.Sensors {
-		list = append(list, k)
+	for _, v := range e.Sensors {
+		list = append(list, v.SensorId)
 	}
 
 	return list
 }
 
-// GetSensorId идентификатор сенсора
-func (e *SettingsChanOutputEEM) GetSensorId(key string) (sensorId string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		sensorId = sensor.SensorId
-
-		return
-	}
-
-	return
-}
-
 // GetHostId идентификатор сенсора (необходимый для поиска в НКЦКИ)
-func (e *SettingsChanOutputEEM) GetHostId(key string) (hostId string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		hostId = sensor.HostId
+func (e SettingsChanOutputEEM) GetHostId(sensorId string) string {
+	var foundElem string
+	for _, v := range e.Sensors {
+		if v.SensorId == sensorId {
+			foundElem = v.HostId
 
-		return
+			break
+		}
 	}
 
-	return
+	return foundElem
 }
 
 // GetGeoCode географический код
-func (e *SettingsChanOutputEEM) GetGeoCode(key string) (geoCode string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		geoCode = sensor.GeoCode
+func (e SettingsChanOutputEEM) GetGeoCode(sensorId string) string {
+	var foundElem string
+	for _, v := range e.Sensors {
+		if v.SensorId == sensorId {
+			foundElem = v.GeoCode
 
-		return
+			break
+		}
 	}
 
-	return
+	return foundElem
 }
 
 // GetObjectArea сфера деятельности объекта
-func (e *SettingsChanOutputEEM) GetObjectArea(key string) (objectArea string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		objectArea = sensor.ObjectArea
+func (e SettingsChanOutputEEM) GetObjectArea(sensorId string) string {
+	var foundElem string
+	for _, v := range e.Sensors {
+		if v.SensorId == sensorId {
+			foundElem = v.ObjectArea
 
-		return
+			break
+		}
 	}
 
-	return
+	return foundElem
 }
 
 // GetSubjectRF субъект Российской Федерации
-func (e *SettingsChanOutputEEM) GetSubjectRF(key string) (subjectRF string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		subjectRF = sensor.SubjectRF
+func (e SettingsChanOutputEEM) GetSubjectRF(sensorId string) string {
+	var foundElem string
+	for _, v := range e.Sensors {
+		if v.SensorId == sensorId {
+			foundElem = v.SubjectRF
 
-		return
+			break
+		}
 	}
 
-	return
+	return foundElem
 }
 
 // GetINN налоговый идентификатор
-func (e *SettingsChanOutputEEM) GetINN(key string) (inn string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		inn = sensor.INN
+func (e SettingsChanOutputEEM) GetINN(sensorId string) string {
+	var foundElem string
+	for _, v := range e.Sensors {
+		if v.SensorId == sensorId {
+			foundElem = v.INN
 
-		return
+			break
+		}
 	}
 
-	return
+	return foundElem
 }
 
 // GetHomeNet перечень домашних сетей
-func (e *SettingsChanOutputEEM) GetHomeNet(key string) (homeNet string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		homeNet = sensor.HomeNet
+func (e SettingsChanOutputEEM) GetHomeNet(sensorId string) string {
+	var foundElem string
+	for _, v := range e.Sensors {
+		if v.SensorId == sensorId {
+			foundElem = v.HomeNet
 
-		return
+			break
+		}
 	}
 
-	return
+	return foundElem
 }
 
 // GetOrgName наименование организации
-func (e *SettingsChanOutputEEM) GetOrgName(key string) (orgName string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		orgName = sensor.OrgName
+func (e SettingsChanOutputEEM) GetOrgName(sensorId string) string {
+	var foundElem string
+	for _, v := range e.Sensors {
+		if v.SensorId == sensorId {
+			foundElem = v.OrgName
 
-		return
+			break
+		}
 	}
 
-	return
+	return foundElem
 }
 
 // GetFullOrgName полное наименование организации
-func (e *SettingsChanOutputEEM) GetFullOrgName(key string) (fullOrgName string, ok bool) {
-	var sensor FoundSensorInformation
-	if sensor, ok = e.Sensors[key]; ok {
-		fullOrgName = sensor.FullOrgName
+func (e SettingsChanOutputEEM) GetFullOrgName(sensorId string) string {
+	var foundElem string
+	for _, v := range e.Sensors {
+		if v.SensorId == sensorId {
+			foundElem = v.FullOrgName
 
-		return
+			break
+		}
 	}
 
-	return
+	return foundElem
 }

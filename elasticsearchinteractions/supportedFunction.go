@@ -3,7 +3,9 @@ package elasticsearchinteractions
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"runtime"
+	"strings"
 
 	"placeholder_elasticsearch/datamodels"
 )
@@ -76,8 +78,6 @@ func SetMaxTotalFieldsLimit(hsd HandlerSendData, indexes []string, logging chan<
 	}
 
 	if len(indexForTotalFieldsLimit) == 0 {
-		fmt.Println("Index for set total fields limit not found!!!")
-
 		return nil
 	}
 
@@ -86,4 +86,43 @@ func SetMaxTotalFieldsLimit(hsd HandlerSendData, indexes []string, logging chan<
 	}
 
 	return nil
+}
+
+// SearchUnderlineIdCase выполняет поиск уникального идентификатора (_id) кейса
+func SearchUnderlineIdCase(indexName, rootId, source string, hsd HandlerSendData) (string, error) {
+	var caseId string
+
+	//выполняем поиск _id индекса
+	res, err := hsd.SearchDocument([]string{indexName}, strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId)))
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		return caseId, fmt.Errorf("'rootId: '%s', %s' %s:%d", err.Error(), rootId, f, l-1)
+	}
+
+	if res.StatusCode != http.StatusOK {
+		_, f, l, _ := runtime.Caller(0)
+		return caseId, fmt.Errorf("'rootId: '%s', %d %s' %s:%d", rootId, res.StatusCode, res.Status(), f, l-2)
+	}
+
+	tmp := datamodels.ElasticsearchResponseCase{}
+	if err = json.NewDecoder(res.Body).Decode(&tmp); err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		return caseId, fmt.Errorf("'rootId: '%s', '%s' %s:%d", rootId, err.Error(), f, l-2)
+	}
+
+	fmt.Println("_________________________________________________")
+	fmt.Printf("func 'SearchUnderlineIdCase', source:'%s' rootId:'%s', tmp.Options:%v\n", source, rootId, tmp)
+	fmt.Println("_________________________________________________")
+
+	for _, v := range tmp.Options.Hits {
+		caseId = v.ID
+	}
+
+	return caseId, nil
 }

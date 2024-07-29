@@ -67,7 +67,7 @@ var _ = Describe("Testeventenrichmentmodule", Ordered, func() {
 			Expect(response.Source).Should(Equal(source))
 
 			for k, v := range response.Sensors {
-				fmt.Printf("\t___ SensorId ___:'%s'\n", k)
+				fmt.Printf("%d.\n", k)
 				fmt.Println("Sensor ID:", v.SensorId)
 				fmt.Println("HostId:", v.HostId)
 				fmt.Println("GeoCode:", v.GeoCode)

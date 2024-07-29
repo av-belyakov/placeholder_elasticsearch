@@ -17,7 +17,7 @@ type SettingsChanInputEEM struct {
 type SettingsChanOutputEEM struct {
 	RootId  string
 	Source  string
-	Sensors map[string]FoundSensorInformation
+	Sensors []FoundSensorInformation
 }
 
 // FoundSensorInformation содержит найденную о сенсоре информацию
@@ -31,15 +31,15 @@ type SettingsChanOutputEEM struct {
 // OrgName - наименование организации
 // FullOrgName - полное наименование организации
 type FoundSensorInformation struct {
-	SensorId    string
-	HostId      string
-	GeoCode     string
-	ObjectArea  string
-	SubjectRF   string
-	INN         string
-	HomeNet     string
-	OrgName     string
-	FullOrgName string
+	SensorId    string `json:"sensorId"`
+	HostId      string `json:"hostId"`
+	GeoCode     string `json:"geoCode"`
+	ObjectArea  string `json:"objectArea"`
+	SubjectRF   string `json:"subjectRF"`
+	INN         string `json:"inn"`
+	HomeNet     string `json:"homeNet"`
+	OrgName     string `json:"orgName"`
+	FullOrgName string `json:"fullOrgName"`
 }
 
 // EventEnrichmentModule инициализированный модуль обогащения кейсов
