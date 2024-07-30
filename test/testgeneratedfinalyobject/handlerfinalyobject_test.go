@@ -80,7 +80,7 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 
 		esModule = &elasticsearchinteractions.ElasticSearchModule{
 			ChanInputModule:  make(chan elasticsearchinteractions.SettingsInputChan),
-			ChanOutputModule: make(chan interface{}),
+			ChanOutputModule: make(chan elasticsearchinteractions.SettingsOutputChan),
 		}
 
 		go func() {

@@ -683,3 +683,109 @@ func (ped PatternExtraData) ToStringBeautiful(num int) string {
 
 	return str.String()
 }
+
+func NewSensorAdditionalInformation() *SensorAdditionalInformation {
+	return &SensorAdditionalInformation{Sensors: []SensorInformation(nil)}
+}
+
+func (sai *SensorAdditionalInformation) Get() []SensorInformation {
+	return sai.Sensors
+}
+
+func (sai *SensorAdditionalInformation) Add(e SensorInformation) {
+	sai.Sensors = append(sai.Sensors, e)
+}
+
+func NewSensorInformation() *SensorInformation {
+	return &SensorInformation{}
+}
+
+// GetSensorId возвращает значение SensorId
+func (si *SensorInformation) GetSensorId() string {
+	return si.SensorId
+}
+
+// SetSensorId устанавливает значение SensorId
+func (si *SensorInformation) SetSensorId(v string) {
+	si.SensorId = v
+}
+
+// GetHostId возвращает значение HostId
+func (si *SensorInformation) GetHostId() string {
+	return si.HostId
+}
+
+// SetHostId устанавливает значение HostId
+func (si *SensorInformation) SetHostId(v string) {
+	si.HostId = v
+}
+
+// GetGeoCode возвращает значение GeoCode
+func (si *SensorInformation) GetGeoCode() string {
+	return si.GeoCode
+}
+
+// SetGeoCode устанавливает значение GeoCode
+func (si *SensorInformation) SetGeoCode(v string) {
+	si.GeoCode = v
+}
+
+// GetObjectArea возвращает значение ObjectArea
+func (si *SensorInformation) GetObjectArea() string {
+	return si.ObjectArea
+}
+
+// SetObjectArea устанавливает значение ObjectArea
+func (si *SensorInformation) SetObjectArea(v string) {
+	si.ObjectArea = v
+}
+
+// GetSubjectRF возвращает значение SubjectRF
+func (si *SensorInformation) GetSubjectRF() string {
+	return si.SubjectRF
+}
+
+// SetSubjectRF устанавливает значение SubjectRF
+func (si *SensorInformation) SetSubjectRF(v string) {
+	si.SubjectRF = v
+}
+
+// GetINN возвращает значение INN
+func (si *SensorInformation) GetINN() string {
+	return si.INN
+}
+
+// SetINN устанавливает значение INN
+func (si *SensorInformation) SetINN(v string) {
+	si.INN = v
+}
+
+// GetHomeNet возвращает значение HomeNet
+func (si *SensorInformation) GetHomeNet() string {
+	return si.HomeNet
+}
+
+// SetHomeNet устанавливает значение HomeNet
+func (si *SensorInformation) SetHomeNet(v string) {
+	si.HomeNet = v
+}
+
+// GetOrgName возвращает значение OrgName
+func (si *SensorInformation) GetOrgName() string {
+	return si.OrgName
+}
+
+// SetOrgName устанавливает значение OrgName
+func (si *SensorInformation) SetOrgName(v string) {
+	si.OrgName = v
+}
+
+// GetFullOrgName возвращает значение FullOrgName
+func (si *SensorInformation) GetFullOrgName() string {
+	return si.FullOrgName
+}
+
+// SetFullOrgName устанавливает значение FullOrgName
+func (si *SensorInformation) SetFullOrgName(v string) {
+	si.FullOrgName = v
+}

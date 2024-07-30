@@ -69,16 +69,20 @@ func HandlerElasticSearch(
 					go hsd.ReplacementDocumentCase(data.Data, index, module.ChanOutputModule, logging, counting)
 				}
 
-				if data.Command == "add eventenrichment information" {
-					go hsd.AddEventenrichment(data.Data, index, logging)
-				}
+				//if data.Command == "add eventenrichment information" {
+				//	go hsd.AddEventenrichmentCase(data.Data, index, logging)
+				//}
 
 			case "handling alert":
-				if data.Command == "add new alert" {
-					index := fmt.Sprintf("%s%s", conf.PrefixAlert, conf.IndexAlert)
+				index := fmt.Sprintf("%s%s", conf.PrefixAlert, conf.IndexAlert)
 
-					go hsd.ReplacementDocumentAlert(data.Data, index, logging, counting)
+				if data.Command == "add new alert" {
+					go hsd.ReplacementDocumentAlert(data.Data, index, module.ChanOutputModule, logging, counting)
 				}
+
+				//if data.Command == "add eventenrichment information" {
+				//	go hsd.AddEventenrichmentAlert(data.Data, index, logging)
+				//}
 			}
 		}
 	}()

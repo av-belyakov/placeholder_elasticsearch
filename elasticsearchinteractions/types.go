@@ -2,8 +2,6 @@ package elasticsearchinteractions
 
 import (
 	"github.com/elastic/go-elasticsearch/v8"
-
-	"placeholder_elasticsearch/datamodels"
 )
 
 type SettingsInputChan struct {
@@ -14,11 +12,9 @@ type SettingsInputChan struct {
 }
 
 type SettingsOutputChan struct {
-	Section     string
-	Command     string
-	UnderlineId string
-	RootId      string
-	Data        interface{}
+	Section string
+	Command string
+	Data    interface{}
 }
 
 // ElasticSearchModule инициализированный модуль
@@ -41,6 +37,6 @@ type SettingsHandler struct {
 	Passwd string
 }
 
-type tmpRequest struct {
-	SensorAdditionalInformation []datamodels.AdditionSensorInformation `json:"@sensorAdditionalInformation"`
+type listSensorId struct {
+	sensors []string
 }

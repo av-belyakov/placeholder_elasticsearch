@@ -24,7 +24,7 @@ func NewEventEnrichmentModule(
 		ChanOutputModule: make(chan SettingsChanOutputEEM),
 	}
 
-	ctxTimeout, ctxTimeoutCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctxTimeout, ctxTimeoutCancel := context.WithTimeout(context.Background(), 7*time.Second)
 	settingsFullOrgNameByINN, err := NewSettingsFuncFullNameOrganizationByINN(ctxTimeout, ncirccConf.URL, ncirccConf.Token, (5 * time.Second))
 	if err != nil {
 		ctxTimeoutCancel()
@@ -104,49 +104,55 @@ func NewEventEnrichmentModule(
 				return
 
 			case data := <-module.ChanInputModule:
-				settingsResponse := SettingsChanOutputEEM{
-					RootId:  data.RootId,
-					Source:  data.Source,
-					Sensors: []FoundSensorInformation(nil),
-				}
+				go func(
+					settings SettingsChanInputEEM,
+					chanOutput chan<- SettingsChanOutputEEM,
+					logging chan<- datamodels.MessageLogging) {
 
-				for _, sensorId := range data.SensorsId {
-					fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(sensorId, zabbixConnHandler)
-					if err != nil {
-						_, f, l, _ := runtime.Caller(0)
-						logging <- datamodels.MessageLogging{
-							MsgData: fmt.Sprintf("'sensorId: '%s', %v' %s:%d", sensorId, err, f, l-1),
-							MsgType: "error",
+					settingsResponse := SettingsChanOutputEEM{
+						RootId:  data.RootId,
+						Source:  data.Source,
+						Sensors: []FoundSensorInformation(nil),
+					}
+
+					for _, sensorId := range data.SensorsId {
+						fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(sensorId, zabbixConnHandler)
+						if err != nil {
+							_, f, l, _ := runtime.Caller(0)
+							logging <- datamodels.MessageLogging{
+								MsgData: fmt.Sprintf("'sensorId: '%s', %v' %s:%d", sensorId, err, f, l-1),
+								MsgType: "error",
+							}
+
+							continue
 						}
 
-						continue
-					}
-
-					foundInfo := FoundSensorInformation{
-						SensorId:   sensorId,
-						HostId:     fullInfo.HostId,
-						GeoCode:    fullInfo.GeoCode,
-						ObjectArea: fullInfo.ObjectArea,
-						SubjectRF:  fullInfo.SubjectRF,
-						INN:        fullInfo.INN,
-						HomeNet:    fullInfo.HomeNet,
-					}
-
-					orgName, fullOrgName, err := searchNCIRCCInfo(fullInfo.INN, sensorId)
-					if err != nil {
-						logging <- datamodels.MessageLogging{
-							MsgData: err.Error(),
-							MsgType: "error",
+						foundInfo := FoundSensorInformation{
+							SensorId:   sensorId,
+							HostId:     fullInfo.HostId,
+							GeoCode:    fullInfo.GeoCode,
+							ObjectArea: fullInfo.ObjectArea,
+							SubjectRF:  fullInfo.SubjectRF,
+							INN:        fullInfo.INN,
+							HomeNet:    fullInfo.HomeNet,
 						}
-					} else {
-						foundInfo.OrgName = orgName
-						foundInfo.FullOrgName = fullOrgName
+
+						orgName, fullOrgName, err := searchNCIRCCInfo(fullInfo.INN, sensorId)
+						if err != nil {
+							logging <- datamodels.MessageLogging{
+								MsgData: err.Error(),
+								MsgType: "error",
+							}
+						} else {
+							foundInfo.OrgName = orgName
+							foundInfo.FullOrgName = fullOrgName
+						}
+
+						settingsResponse.Sensors = append(settingsResponse.Sensors, foundInfo)
 					}
 
-					settingsResponse.Sensors = append(settingsResponse.Sensors, foundInfo)
-				}
-
-				module.ChanOutputModule <- settingsResponse
+					module.ChanOutputModule <- settingsResponse
+				}(data, module.ChanOutputModule, logging)
 			}
 		}
 	}()

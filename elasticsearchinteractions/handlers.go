@@ -37,14 +37,15 @@ func (hsd HandlerSendData) InsertNewDocument(
 	}
 }
 
-// AddEventenrichment выполняет обогащение уже имеющегося кейса дополнительной, полезной информацией
-func (hsd HandlerSendData) AddEventenrichment(
+// AddEventenrichmentCase выполняет обогащение уже имеющегося кейса дополнительной, полезной информацией
+/*func (hsd HandlerSendData) AddEventenrichmentCase(
 	data interface{},
 	indexName string,
 	logging chan<- datamodels.MessageLogging) {
-	addSensorsInformation := []datamodels.AdditionSensorInformation(nil)
-
+	//добавляем небольшую задержку что бы СУБД успела добавить индекс
 	time.Sleep(3 * time.Second)
+
+	addSensorsInformation := []datamodels.AdditionSensorInformation(nil)
 
 	//приводим значение к интерфейсу позволяющему получить доступ к информации о сенсорах
 	infoEvent, ok := data.(datamodels.InformationFromEventEnricher)
@@ -62,19 +63,21 @@ func (hsd HandlerSendData) AddEventenrichment(
 	month := int(t.Month())
 	indexCurrent := fmt.Sprintf("%s_%d_%d", indexName, t.Year(), month)
 
+	fmt.Printf("func 'AddEventenrichmentCASE', indexCurrent:%s, rootId:'%s', source:'%s'\n", indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource())
+
 	//выполняем поиск _id индекса
 	caseId, err := SearchUnderlineIdCase(indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource(), hsd)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'rootId: '%s', %s' %s:%d", err.Error(), infoEvent.GetRootId(), f, l-2),
+			MsgData: fmt.Sprintf("'rootId: '%s', %s' %s:%d", infoEvent.GetRootId(), err.Error(), f, l-2),
 			MsgType: "error",
 		}
 
 		return
 	}
 
-	fmt.Println("func 'AddEventenrichment', indexCurrent:", indexCurrent, " search case id:'", caseId, "'")
+	fmt.Println("func 'AddEventenrichmentCASE', indexCurrent:", indexCurrent, " search case id:'", caseId, "'")
 
 	sensorsId := infoEvent.GetSensorsId()
 	for _, v := range sensorsId {
@@ -122,21 +125,13 @@ func (hsd HandlerSendData) AddEventenrichment(
 	}
 
 	if res.StatusCode != http.StatusOK {
-		tmp := map[string]interface{}{}
-		if err := json.NewDecoder(res.Body).Decode(&tmp); err != nil {
-			fmt.Println("============= DECODE =============")
-			for k, v := range tmp {
-				fmt.Printf("%s: %v\n", k, v)
-			}
-		}
-
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
 			MsgData: fmt.Sprintf("'rootId: '%s', %d %s' %s:%d", infoEvent.GetRootId(), res.StatusCode, res.Status(), f, l-1),
 			MsgType: "error",
 		}
 	}
-}
+}*/
 
 // ReplacementDocumentCase выполняет замену документа, но только в рамках одного индекса
 func (hsd HandlerSendData) ReplacementDocumentCase(
@@ -156,17 +151,6 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
-	/*
-
-	   Похоже при почти параллельном создании индекса кейса и добавлении дополнительной
-	   информации в elasticsearch БД не успевает создать индекс, по этому поиск без
-	   предварительного time.Sleep(3*time.Second) в func (hsd HandlerSendData) AddEventenrichment
-	   стр. 47 не обойтись.
-	   Однако можно попробовать сделать передачу запроса на поиск доп. информации в Zabbix выполнять
-	   только после создании индекса в БД elasticsearch
-
-	*/
-
 	var (
 		countReplacingFields int
 		tag                  string = fmt.Sprintf("case rootId: '%s'", newDocument.GetEvent().GetRootId())
@@ -176,6 +160,35 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	month := int(t.Month())
 	indexCurrent := fmt.Sprintf("%s_%d_%d", indexName, t.Year(), month)
 	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", newDocument.GetSource(), newDocument.GetEvent().GetRootId()))
+
+	sensorsId := listSensorId{
+		sensors: []string(nil),
+	}
+
+	caseElem := newDocument.Get()
+	eventElem := caseElem.GetEvent()
+	objectElem := eventElem.GetObject()
+	if listSensorId, ok := objectElem.GetTags()["sensor:id"]; ok {
+		for _, v := range listSensorId {
+			sensorsId.AddElem(v)
+		}
+	}
+
+	/*
+		settingsOutputChan := SettingsOutputChan{
+			Section: "eventenrichment case",
+			Command: "get eventenrichment information",
+			Data: struct {
+				Source    string
+				RootId    string
+				SensorsId []string
+			}{
+				Source:    newDocument.GetSource(),
+				RootId:    newDocument.GetEvent().GetRootId(),
+				SensorsId: sensorsId.Get(),
+			},
+		}
+	*/
 
 	newDocumentBinary, err := json.Marshal(newDocument.Get())
 	if err != nil {
@@ -208,6 +221,14 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 			indexesOnlyCurrentYear = append(indexesOnlyCurrentYear, v)
 		}
 	}
+
+	// если похожих индексов нет
+	if len(indexesOnlyCurrentYear) == 0 {
+		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
+
+		return
+	}
+
 	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
 	defer func() {
 		errClose := res.Body.Close()
@@ -250,6 +271,11 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 				MsgType: "error",
 			}
 		}
+
+		// Пока закоментируем, возможно посже откажемся от этого способа
+		//
+		//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
+		//chanOutput <- settingsOutputChan
 
 		return
 	}
@@ -333,6 +359,11 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
+	// Пока закоментируем, возможно посже откажемся от этого способа
+	//
+	//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
+	//chanOutput <- settingsOutputChan
+
 	if res.StatusCode == http.StatusCreated {
 		//счетчик
 		counting <- datamodels.DataCounterSettings{
@@ -348,13 +379,109 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	}
 }
 
+// AddEventenrichmentAlert выполняет обогащение уже имеющегося алерта дополнительной, полезной информацией
+/*func (hsd HandlerSendData) AddEventenrichmentAlert(
+	data interface{},
+	indexName string,
+	logging chan<- datamodels.MessageLogging) {
+	//добавляем небольшую задержку что бы СУБД успела добавить индекс
+	time.Sleep(3 * time.Second)
+
+	addSensorsInformation := []datamodels.AdditionSensorInformation(nil)
+
+	//приводим значение к интерфейсу позволяющему получить доступ к информации о сенсорах
+	infoEvent, ok := data.(datamodels.InformationFromEventEnricher)
+	if !ok {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.InformationFromEventEnricher' %s:%d", f, l-1),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	t := time.Now()
+	month := int(t.Month())
+	indexCurrent := fmt.Sprintf("%s_%s_%d_%d", indexName, infoEvent.GetSource(), t.Year(), month)
+
+	fmt.Printf("func 'AddEventenrichmentALERT', indexCurrent:%s, rootId:'%s', source:'%s'\n", indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource())
+
+	//выполняем поиск _id индекса
+	alertId, err := SearchUnderlineIdAlert(indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource(), hsd)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'rootId: '%s', %s' %s:%d", infoEvent.GetRootId(), err.Error(), f, l-2),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	fmt.Println("func 'AddEventenrichmentALERT', indexCurrent:", indexCurrent, " search case id:'", alertId, "'")
+
+	sensorsId := infoEvent.GetSensorsId()
+	for _, v := range sensorsId {
+		addSensorsInformation = append(addSensorsInformation, datamodels.AdditionSensorInformation{
+			SensorId:    v,
+			HostId:      infoEvent.GetHostId(v),
+			GeoCode:     infoEvent.GetGeoCode(v),
+			ObjectArea:  infoEvent.GetObjectArea(v),
+			SubjectRF:   infoEvent.GetSubjectRF(v),
+			INN:         infoEvent.GetINN(v),
+			HomeNet:     infoEvent.GetHomeNet(v),
+			OrgName:     infoEvent.GetOrgName(v),
+			FullOrgName: infoEvent.GetFullOrgName(v),
+		})
+	}
+
+	tmpReq := tmpRequest{SensorAdditionalInformation: addSensorsInformation}
+	request, err := json.MarshalIndent(tmpReq, "", " ")
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'rootId: '%s', '%s' %s:%d", infoEvent.GetRootId(), err.Error(), f, l-2),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": %s}", string(request)))
+	res, err := hsd.Client.Update(indexCurrent, alertId, bodyUpdate)
+	defer func() {
+		errClose := res.Body.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'rootId: '%s', %s' %s:%d", err.Error(), infoEvent.GetRootId(), f, l-1),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	if res.StatusCode != http.StatusOK {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'rootId: '%s', %d %s' %s:%d", infoEvent.GetRootId(), res.StatusCode, res.Status(), f, l-1),
+			MsgType: "error",
+		}
+	}
+}*/
+
 // ReplacementDocumentAlert выполняет замену документа, но только в рамках одного индекса
 func (hsd HandlerSendData) ReplacementDocumentAlert(
 	data interface{},
 	indexName string,
+	chanOutput chan<- SettingsOutputChan,
 	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) {
+	counting chan<- datamodels.DataCounterSettings) {
 	newDocument, ok := data.(*datamodels.VerifiedForEsAlert)
 	if !ok {
 		_, f, l, _ := runtime.Caller(0)
@@ -375,6 +502,40 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	month := int(t.Month())
 	indexCurrent := fmt.Sprintf("%s_%s_%d_%d", indexName, newDocument.GetSource(), t.Year(), month)
 	queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", newDocument.GetSource(), newDocument.GetEvent().GetRootId()))
+
+	sensorsId := listSensorId{
+		sensors: []string(nil),
+	}
+
+	caseElem := newDocument.Get()
+	eventElem := caseElem.GetEvent()
+	objectElem := eventElem.GetObject()
+	if listSensorId, ok := objectElem.GetTags()["sensor:id"]; ok {
+		for _, v := range listSensorId {
+			sensorsId.AddElem(v)
+		}
+	}
+
+	detailElem := eventElem.GetDetails()
+	if listSensorId, ok := detailElem.GetTags()["sensor:id"]; ok {
+		for _, v := range listSensorId {
+			sensorsId.AddElem(v)
+		}
+	}
+
+	/*settingsOutputChan := SettingsOutputChan{
+		Section: "eventenrichment alert",
+		Command: "get eventenrichment information",
+		Data: struct {
+			Source    string
+			RootId    string
+			SensorsId []string
+		}{
+			Source:    newDocument.GetSource(),
+			RootId:    newDocument.GetEvent().GetRootId(),
+			SensorsId: sensorsId.Get(),
+		},
+	}*/
 
 	newDocumentBinary, err := json.Marshal(newDocument.Get())
 	if err != nil {
@@ -406,6 +567,13 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		if strings.Contains(v, fmt.Sprint(t.Year())) {
 			indexesOnlyCurrentYear = append(indexesOnlyCurrentYear, v)
 		}
+	}
+
+	//если похожих индексов нет
+	if len(indexesOnlyCurrentYear) == 0 {
+		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
+
+		return
 	}
 
 	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
@@ -454,6 +622,11 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 				MsgType: "error",
 			}
 		}
+
+		// Пока закоментируем, возможно посже откажемся от этого способа
+		//
+		//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
+		//chanOutput <- settingsOutputChan
 
 		return
 	}
@@ -571,6 +744,11 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 		return
 	}
+
+	// Пока закоментируем, возможно посже откажемся от этого способа
+	//
+	//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
+	//chanOutput <- settingsOutputChan
 
 	if res.StatusCode == http.StatusCreated {
 		//счетчик

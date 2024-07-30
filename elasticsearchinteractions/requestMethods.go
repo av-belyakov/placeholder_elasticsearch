@@ -231,3 +231,19 @@ func (hsd HandlerSendData) GetExistingIndexes(pattern string) ([]string, error) 
 
 	return listIndexes, err
 }
+
+// Get возвращает список идентификаторов сенсоров
+func (e *listSensorId) Get() []string {
+	return e.sensors
+}
+
+// AddElem добавляет только уникальные элементы
+func (e *listSensorId) AddElem(sensorId string) {
+	for _, v := range e.sensors {
+		if v == sensorId {
+			return
+		}
+	}
+
+	e.sensors = append(e.sensors, sensorId)
+}

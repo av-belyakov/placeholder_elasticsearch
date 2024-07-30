@@ -7,16 +7,38 @@ import (
 	"runtime"
 
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/elasticsearchinteractions"
+	"placeholder_elasticsearch/eventenrichmentmodule"
 	"placeholder_elasticsearch/listhandlerforesjson"
 	"placeholder_elasticsearch/listhandlerthehivejson"
 )
 
+type listSensorId struct {
+	sensors []string
+}
+
+// Get возвращает список идентификаторов сенсоров
+func (e *listSensorId) Get() []string {
+	return e.sensors
+}
+
+// AddElem добавляет только уникальные элементы
+func (e *listSensorId) AddElem(sensorId string) {
+	for _, v := range e.sensors {
+		if v == sensorId {
+			return
+		}
+	}
+
+	e.sensors = append(e.sensors, sensorId)
+}
+
 func NewVerifiedElasticsearchFormatCase(
 	input <-chan datamodels.ChanOutputDecodeJSON,
 	done <-chan bool,
-	logging chan<- datamodels.MessageLogging,
-	coreChan chan<- SettingsCommonChanInput,
-) {
+	esm *elasticsearchinteractions.ElasticSearchModule,
+	eem *eventenrichmentmodule.EventEnrichmentModule,
+	logging chan<- datamodels.MessageLogging) {
 	var (
 		rootId string
 		// список не обработанных полей
@@ -230,29 +252,47 @@ func NewVerifiedElasticsearchFormatCase(
 	verifiedCase.SetObservables(*observables)
 	verifiedCase.SetTtps(*ttps)
 
-	sensorsId := []string(nil)
-	caseElem := verifiedCase.Get()
-	eventElem := caseElem.GetEvent()
-	objectElem := eventElem.GetObject()
-	sId, ok := objectElem.GetTags()["sensor:id"]
-	if ok && len(sId) > 0 {
-		sensorsId = sId
+	sensorsId := listSensorId{
+		sensors: []string(nil),
 	}
 
-	coreChan <- SettingsCommonChanInput{
-		Section:      "handling case",
-		Command:      "add new case",
-		SourceModule: "case_for_elasticsearch",
-		Data:         caseElem,
-		SomeData: struct {
-			rootId    string
-			source    string
-			sensorsId []string
-		}{
-			rootId:    rootId,
-			source:    caseElem.GetSource(),
-			sensorsId: sensorsId,
-		},
+	eventCase := verifiedCase.GetEvent()
+	objectElem := eventCase.GetObject()
+	if listSensorId, ok := objectElem.GetTags()["sensor:id"]; ok {
+		for _, v := range listSensorId {
+			sensorsId.AddElem(v)
+		}
+	}
+
+	//делаем запрос к модулю обогащения доп. информацией из Zabbix
+	eem.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
+		RootId:    eventCase.GetRootId(),
+		Source:    verifiedCase.GetSource(),
+		SensorsId: sensorsId.Get(),
+	}
+
+	resultEventenrichment := <-eem.ChanOutputModule
+	sai := datamodels.NewSensorAdditionalInformation()
+	for _, v := range resultEventenrichment.Sensors {
+		si := datamodels.NewSensorInformation()
+		si.SetSensorId(v.SensorId)
+		si.SetHostId(v.HostId)
+		si.SetGeoCode(v.GeoCode)
+		si.SetObjectArea(v.ObjectArea)
+		si.SetSubjectRF(v.SubjectRF)
+		si.SetINN(v.INN)
+		si.SetHomeNet(v.HomeNet)
+		si.SetOrgName(v.OrgName)
+		si.SetFullOrgName(v.FullOrgName)
+
+		sai.Add(*si)
+	}
+	verifiedCase.SetSensorAdditionalInformation(*sai)
+
+	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+		Section: "handling case",
+		Command: "add new case",
+		Data:    verifiedCase.Get(),
 	}
 
 	//******** TEST ********

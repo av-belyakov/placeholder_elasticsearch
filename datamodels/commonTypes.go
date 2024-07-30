@@ -206,7 +206,11 @@ type PatternExtraData struct {
 	//ExtraData           map[string]interface{} `json:"extraData"`
 }
 
-// AdditionSensorInformation содержит дополнительную информацию о сенсоре
+type SensorAdditionalInformation struct {
+	Sensors []SensorInformation `json:"@sensorAdditionalInformation"`
+}
+
+// SensorInformation содержит дополнительную информацию о сенсоре
 // SensorId - идентификатор сенсора
 // HostId - идентификатор сенсора, специальный, для поиска информации в НКЦКИ
 // GeoCode - географический код страны
@@ -216,7 +220,7 @@ type PatternExtraData struct {
 // HomeNet - перечень домашних сетей
 // OrgName - наименование организации
 // FullOrgName - полное наименование организации
-type AdditionSensorInformation struct {
+type SensorInformation struct {
 	SensorId    string `json:"sensorId"`
 	HostId      string `json:"hostId"`
 	GeoCode     string `json:"geoCode"`

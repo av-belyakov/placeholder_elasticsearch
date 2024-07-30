@@ -1,6 +1,8 @@
 package listhandlerforesjson
 
 import (
+	"strings"
+
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/listhandlercommon"
 )
@@ -32,6 +34,8 @@ func NewListHandlerEventAlertObjectElement(object *datamodels.EventMessageForEsA
 					return
 				}
 
+				value = strings.TrimSpace(value)
+				value = strings.Trim(value, "\"")
 				object.SetAnyTags(key, value)
 			},
 			object.SetAnyTagsAll},

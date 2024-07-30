@@ -19,9 +19,9 @@ import (
 var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 	var (
 		hsd          elasticsearchinteractions.HandlerSendData
-		source       string = "rcmlnx"
-		rootId       string = "~338731008"
-		indexName    string = "test_module_placeholder_case"
+		source       string = "rcmros"
+		rootId       string = "~539582536"
+		indexName    string = "test_elem_module_placeholder_case"
 		indexCurrent string = indexName + "_2024_7"
 
 		querySearch *strings.Reader = strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId))
@@ -66,7 +66,7 @@ var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 		eventEnrichmentModule.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
 			RootId:    rootId,
 			Source:    source,
-			SensorsId: []string{"690017", "8030160", "690013", "570084"},
+			SensorsId: []string{"690017", "630114", "8030002", "8030160", "690013", "570084"},
 		}
 	})
 
