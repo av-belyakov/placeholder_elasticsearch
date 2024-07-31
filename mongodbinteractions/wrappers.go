@@ -13,13 +13,95 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
+// GetSensorsEventenrichment запрос на получения дополнительной информации о сенсоре
+func (w *wrappers) GetSensorsEventenrichment(
+	data interface{},
+	logging chan<- datamodels.MessageLogging) {
+	/*
+			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+		   Здесь надо написать запрос на получения информации о сенсорах
+
+			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	*/
+}
+
+// AddNewSensorsEventenrichment добавляет дополнительную информацию о сенсорах
+func (w *wrappers) AddNewSensorsEventenrichment(
+	data interface{},
+	logging chan<- datamodels.MessageLogging) {
+
+	requestMongoDB := func(sensorId string, sensorSettings datamodels.InformationFromEventEnricher) error {
+		collection := w.ConnDB.Database(w.NameDB).Collection("collection_sensor_information")
+		opts := options.FindOne()
+		currentData := datamodels.NewSensorInformation()
+		err := collection.FindOne(
+			context.TODO(),
+			bson.D{
+				{Key: "sensorId", Value: sensorId},
+			},
+			opts,
+		).Decode(currentData)
+		if !errors.Is(err, mongo.ErrNoDocuments) {
+			if _, err := collection.DeleteMany(
+				context.TODO(),
+				bson.D{{
+					Key:   "sensorId",
+					Value: bson.D{{Key: "$in", Value: []string{currentData.SensorId}}}}},
+				options.Delete()); err != nil {
+
+				return err
+			}
+		}
+
+		newData := datamodels.NewSensorInformation()
+		newData.SetSensorId(sensorId)
+		newData.SetHostId(sensorSettings.GetHostId(sensorId))
+		newData.SetGeoCode(sensorSettings.GetGeoCode(sensorId))
+		newData.SetObjectArea(sensorSettings.GetObjectArea(sensorId))
+		newData.SetSubjectRF(sensorSettings.GetSubjectRF(sensorId))
+		newData.SetINN(sensorSettings.GetINN(sensorId))
+		newData.SetHomeNet(sensorSettings.GetHomeNet(sensorId))
+		newData.SetOrgName(sensorSettings.GetOrgName(sensorId))
+		newData.SetFullOrgName(sensorSettings.GetFullOrgName(sensorId))
+
+		//если похожего документа нет в БД
+		if _, err := collection.InsertMany(context.TODO(), []interface{}{newData}); err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	sensorSettings, ok := data.(datamodels.InformationFromEventEnricher)
+	if !ok {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.InformationFromEventEnricher' %s:%d", f, l-1),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	for _, sensorId := range sensorSettings.GetSensorsId() {
+		if err := requestMongoDB(sensorId, sensorSettings); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
+				MsgType: "error",
+			}
+
+			continue
+		}
+	}
+}
+
 // AddNewCase добавляет новый кейс в БД
 func (w *wrappers) AddNewCase(
-	//data *datamodels.VerifiedTheHiveCase,
 	data interface{},
 	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) {
+	counting chan<- datamodels.DataCounterSettings) {
 	qp := QueryParameters{
 		NameDB:         w.NameDB,
 		ConnectDB:      w.ConnDB,
@@ -130,8 +212,7 @@ func (w *wrappers) AddNewCase(
 func (w *wrappers) AddNewAlert(
 	data interface{},
 	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) {
+	counting chan<- datamodels.DataCounterSettings) {
 	qp := QueryParameters{
 		NameDB:         w.NameDB,
 		ConnectDB:      w.ConnDB,

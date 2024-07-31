@@ -12,18 +12,21 @@ import (
 	"time"
 )
 
+// SettingsFuncFullNameOrganizationByINN настройки для получения информации
+// об организации по её ИНН
 type SettingsFuncFullNameOrganizationByINN struct {
 	ctx               context.Context
+	connectionTimeout time.Duration
 	url               string
 	token             string
 	client            *http.Client
-	connectionTimeout time.Duration
 }
 
+// ResponseFullNameOrganizationByINN результат поиска информации об организации по ИНН
 type ResponseFullNameOrganizationByINN struct {
-	Data    []SettingsResponseFullNameOrganizationByINN `json:"data"`
 	Success bool                                        `json:"success"`
 	Count   int                                         `json:"total"`
+	Data    []SettingsResponseFullNameOrganizationByINN `json:"data"`
 }
 
 type SettingsResponseFullNameOrganizationByINN struct {
@@ -59,8 +62,9 @@ func NewSettingsFuncFullNameOrganizationByINN(ctx context.Context, url, token st
 	}
 
 	transport := &http.Transport{
-		MaxIdleConns:    10,
-		IdleConnTimeout: connTimeout,
+		MaxIdleConns:        10,
+		IdleConnTimeout:     connTimeout,
+		MaxIdleConnsPerHost: 10,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,
 			RootCAs:            x509.NewCertPool(),

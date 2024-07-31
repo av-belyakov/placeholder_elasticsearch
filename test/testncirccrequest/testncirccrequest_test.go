@@ -16,10 +16,10 @@ var _ = Describe("Testncirccrequest", func() {
 			var (
 				url   string = "https://lk.cert.local/api/v2/companies"
 				token string = "fdd2c5e743960ec9ea80d1ff8868cc6d8439b02f4d61075efd69a46eaa52ff0e"
-				inn   string = "7722377866"
+				inn   string = "7708523530"
 			)
 
-			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+			ctx, ctxCancel := context.WithCancel(context.Background())
 
 			settingsFullOrgNameByINN, err := eventenrichmentmodule.NewSettingsFuncFullNameOrganizationByINN(ctx, url, token, (5 * time.Second))
 			Expect(err).ShouldNot(HaveOccurred())
@@ -33,6 +33,7 @@ var _ = Describe("Testncirccrequest", func() {
 				fmt.Println("Full name organization:", v.Sname)
 			}
 
+			ctxCancel()
 			Expect(rd.Count).ShouldNot(Equal(0))
 		})
 	})

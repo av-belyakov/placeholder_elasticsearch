@@ -6,6 +6,7 @@ import (
 	"placeholder_elasticsearch/confighandler"
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/zabbixinteractions"
+	"regexp"
 	"runtime"
 	"time"
 )
@@ -24,11 +25,12 @@ func NewEventEnrichmentModule(
 		ChanOutputModule: make(chan SettingsChanOutputEEM),
 	}
 
-	ctxTimeout, ctxTimeoutCancel := context.WithTimeout(context.Background(), 7*time.Second)
-	settingsFullOrgNameByINN, err := NewSettingsFuncFullNameOrganizationByINN(ctxTimeout, ncirccConf.URL, ncirccConf.Token, (5 * time.Second))
+	patternNumeric := regexp.MustCompile(`^[0-9]+$`)
+
+	connTimeout, err := time.ParseDuration(fmt.Sprintf("%ds", zabbixApi.ConnectionTimeout))
 	if err != nil {
-		ctxTimeoutCancel()
-		return &module, err
+		_, f, l, _ := runtime.Caller(0)
+		return &module, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
 	checkConfZabbixAPI := func(zabbixApi confighandler.ZabbixJsonRPCOptions) error {
@@ -48,6 +50,17 @@ func NewEventEnrichmentModule(
 		}
 
 		return nil
+	}
+
+	if err := checkConfZabbixAPI(zabbixApi); err != nil {
+		return &module, err
+	}
+
+	ctxDone, ctxDoneCancel := context.WithCancel(context.Background())
+	settingsFullOrgNameByINN, err := NewSettingsFuncFullNameOrganizationByINN(ctxDone, ncirccConf.URL, ncirccConf.Token, (5 * time.Second))
+	if err != nil {
+		ctxDoneCancel()
+		return &module, err
 	}
 
 	searchNCIRCCInfo := func(inn, sensorId string) (orgName, fullOrgName string, err error) {
@@ -70,18 +83,6 @@ func NewEventEnrichmentModule(
 		return rd.Data[0].Name, rd.Data[0].Sname, nil
 	}
 
-	if err := checkConfZabbixAPI(zabbixApi); err != nil {
-		ctxTimeoutCancel()
-		return &module, err
-	}
-
-	connTimeout, err := time.ParseDuration(fmt.Sprintf("%ds", zabbixApi.ConnectionTimeout))
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		ctxTimeoutCancel()
-		return &module, fmt.Errorf("'%v' %s:%d", err, f, l-1)
-	}
-
 	zabbixConnHandler, err := zabbixinteractions.NewZabbixConnectionJsonRPC(
 		zabbixinteractions.SettingsZabbixConnectionJsonRPC{
 			Host:              zabbixApi.NetworkHost,
@@ -91,7 +92,7 @@ func NewEventEnrichmentModule(
 		})
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		ctxTimeoutCancel()
+		ctxDoneCancel()
 		return &module, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
@@ -99,7 +100,7 @@ func NewEventEnrichmentModule(
 		for {
 			select {
 			case <-ctx.Done():
-				ctxTimeoutCancel()
+				ctxDoneCancel()
 
 				return
 
@@ -137,15 +138,17 @@ func NewEventEnrichmentModule(
 							HomeNet:    fullInfo.HomeNet,
 						}
 
-						orgName, fullOrgName, err := searchNCIRCCInfo(fullInfo.INN, sensorId)
-						if err != nil {
-							logging <- datamodels.MessageLogging{
-								MsgData: err.Error(),
-								MsgType: "error",
+						if patternNumeric.MatchString(fullInfo.INN) {
+							orgName, fullOrgName, err := searchNCIRCCInfo(fullInfo.INN, sensorId)
+							if err != nil {
+								logging <- datamodels.MessageLogging{
+									MsgData: err.Error(),
+									MsgType: "error",
+								}
+							} else {
+								foundInfo.OrgName = orgName
+								foundInfo.FullOrgName = fullOrgName
 							}
-						} else {
-							foundInfo.OrgName = orgName
-							foundInfo.FullOrgName = fullOrgName
 						}
 
 						settingsResponse.Sensors = append(settingsResponse.Sensors, foundInfo)

@@ -159,7 +159,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				//используется для хранения в MongoDB
 				go NewVerifiedTheHiveFormatCase(chansOut[0], chansDone[0], mdbModule, settings.logging)
 				//используется для хранения в Elasticsearch
-				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], esModule, eeModule, settings.logging)
+				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], esModule, eeModule, mdbModule, settings.logging)
 
 			case "alert":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, "subject_alert")

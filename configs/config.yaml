@@ -101,7 +101,7 @@ ZABBIXJSONRPC:
   networkHost: "192.168.9.45"
   login: "Cherry"
   passwd: "v-2ymX!aVg3eS*hC"
-  connectionTimeout: 3
+  connectionTimeout: 5
 ZABBIX:
   networkHost: "192.168.9.45"
   networkPort: 10051

@@ -117,6 +117,15 @@ func (conn ConnectionDescriptorMongoDB) Routing(
 				if data.Command == "add new alert" {
 					go ws.AddNewAlert(data.Data, logging, counting)
 				}
+
+			case "handling eventenrichment":
+				if data.Command == "add sensor eventenrichment" {
+					go ws.AddNewSensorsEventenrichment(data.Data, logging)
+				}
+
+				if data.Command == "get sensor eventenrichment" {
+					go ws.GetSensorsEventenrichment(data.Data, logging)
+				}
 			}
 		}
 	}()

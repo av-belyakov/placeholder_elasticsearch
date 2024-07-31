@@ -24,9 +24,7 @@ type ZabbixAuthorizationErrorMessage struct {
 	Message string `json:"message"`
 }
 
-// NewZabbixConnectionJsonRPC создает объект соединения с Zabbix API с
-// использование Json-RPC
-// settings - настройки
+// NewZabbixConnectionJsonRPC создает объект соединения с Zabbix API с использование Json-RPC
 func NewZabbixConnectionJsonRPC(settings SettingsZabbixConnectionJsonRPC) (*ZabbixConnectionJsonRPC, error) {
 	var zc ZabbixConnectionJsonRPC
 
@@ -46,8 +44,9 @@ func NewZabbixConnectionJsonRPC(settings SettingsZabbixConnectionJsonRPC) (*Zabb
 	}
 
 	client := &http.Client{Transport: &http.Transport{
-		MaxIdleConns:    10,
-		IdleConnTimeout: connTimeout,
+		MaxIdleConns:        10,
+		IdleConnTimeout:     connTimeout,
+		MaxIdleConnsPerHost: 10,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,
 			RootCAs:            x509.NewCertPool(),
@@ -74,7 +73,7 @@ func NewZabbixConnectionJsonRPC(settings SettingsZabbixConnectionJsonRPC) (*Zabb
 }
 
 // authorizationZabbixAPI делает запрос к Zabbix с целью получения хеша авторизации
-// необходимого для дольнейшей работы с API
+// необходимого для дальнейшей работы с API
 func authorizationZabbixAPI(login, passwd string, zc ZabbixConnectionJsonRPC) (string, error) {
 	req := strings.NewReader(fmt.Sprintf("{\"jsonrpc\":\"2.0\",\"method\":\"user.login\",\"params\":{\"username\":\"%s\",\"password\":\"%s\"},\"id\":1}", login, passwd))
 	res, err := zc.connClient.Post(zc.url, zc.applicationType, req)

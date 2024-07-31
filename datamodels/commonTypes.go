@@ -221,13 +221,13 @@ type SensorAdditionalInformation struct {
 // OrgName - наименование организации
 // FullOrgName - полное наименование организации
 type SensorInformation struct {
-	SensorId    string `json:"sensorId"`
-	HostId      string `json:"hostId"`
-	GeoCode     string `json:"geoCode"`
-	ObjectArea  string `json:"objectArea"`
-	SubjectRF   string `json:"subjectRF"`
-	INN         string `json:"inn"`
-	HomeNet     string `json:"homeNet"`
-	OrgName     string `json:"orgName"`
-	FullOrgName string `json:"fullOrgName"`
+	SensorId    string `json:"sensorId" bson:"sensorId"`
+	HostId      string `json:"hostId" bson:"hostId"`
+	GeoCode     string `json:"geoCode" bson:"geoCode"`
+	ObjectArea  string `json:"objectArea" bson:"objectArea"`
+	SubjectRF   string `json:"subjectRF" bson:"subjectRF"`
+	INN         string `json:"inn" bson:"inn"`
+	HomeNet     string `json:"homeNet" bson:"homeNet"`
+	OrgName     string `json:"orgName" bson:"orgName"`
+	FullOrgName string `json:"fullOrgName" bson:"fullOrgName"`
 }
