@@ -11,7 +11,6 @@ import (
 	"placeholder_elasticsearch/eventenrichmentmodule"
 	"placeholder_elasticsearch/listhandlerforesjson"
 	"placeholder_elasticsearch/listhandlerthehivejson"
-	"placeholder_elasticsearch/mongodbinteractions"
 )
 
 type listSensorId struct {
@@ -38,8 +37,8 @@ func NewVerifiedElasticsearchFormatCase(
 	input <-chan datamodels.ChanOutputDecodeJSON,
 	done <-chan bool,
 	esm *elasticsearchinteractions.ElasticSearchModule,
-	eem *eventenrichmentmodule.EventEnrichmentModule,
-	mdbm *mongodbinteractions.MongoDBModule,
+	cs *coreStorage,
+	eemChan chan<- eventenrichmentmodule.SettingsChanInputEEM,
 	logging chan<- datamodels.MessageLogging) {
 	var (
 		rootId string
@@ -266,61 +265,67 @@ func NewVerifiedElasticsearchFormatCase(
 		}
 	}
 
+	//отправляем кейс в Elasticsearch
+	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+		Section: "handling case",
+		Command: "add new case",
+		Data:    verifiedCase.Get(),
+	}
+
+	//делаем запрос на получение дополнительной информации о сенсорах
 	if len(sensorsId.Get()) > 0 {
+
+		fmt.Printf("func 'NewVerifiedElasticsearchFormatCase', SENS SENSORS ID '%v' REQUEST ->\n", sensorsId.Get())
+
 		//делаем запрос к модулю обогащения доп. информацией из Zabbix
-		eem.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
+		eemChan <- eventenrichmentmodule.SettingsChanInputEEM{
 			RootId:    eventCase.GetRootId(),
 			Source:    verifiedCase.GetSource(),
 			SensorsId: sensorsId.Get(),
 		}
 
-		//получаем результат выполнения запроса к модулю обогащения
-		resultEventenrichment := <-eem.ChanOutputModule
+		/*
+			//получаем результат выполнения запроса к модулю обогащения
+			resultEventenrichment := <-eem.ChanOutputModule
 
-		if len(resultEventenrichment.Sensors) > 0 {
-			//если какая либо информация была найдена
-			sai := datamodels.NewSensorAdditionalInformation()
-			for _, v := range resultEventenrichment.Sensors {
-				si := datamodels.NewSensorInformation()
-				si.SetSensorId(v.SensorId)
-				si.SetHostId(v.HostId)
-				si.SetGeoCode(v.GeoCode)
-				si.SetObjectArea(v.ObjectArea)
-				si.SetSubjectRF(v.SubjectRF)
-				si.SetINN(v.INN)
-				si.SetHomeNet(v.HomeNet)
-				si.SetOrgName(v.OrgName)
-				si.SetFullOrgName(v.FullOrgName)
+			if len(resultEventenrichment.Sensors) > 0 {
+				//если какая либо информация была найдена
+				sai := datamodels.NewSensorAdditionalInformation()
+				for _, v := range resultEventenrichment.Sensors {
+					si := datamodels.NewSensorInformation()
+					si.SetSensorId(v.SensorId)
+					si.SetHostId(v.HostId)
+					si.SetGeoCode(v.GeoCode)
+					si.SetObjectArea(v.ObjectArea)
+					si.SetSubjectRF(v.SubjectRF)
+					si.SetINN(v.INN)
+					si.SetHomeNet(v.HomeNet)
+					si.SetOrgName(v.OrgName)
+					si.SetFullOrgName(v.FullOrgName)
 
-				sai.Add(*si)
-			}
-			verifiedCase.SetSensorAdditionalInformation(*sai)
+					sai.Add(*si)
+				}
+				verifiedCase.SetSensorAdditionalInformation(*sai)
 
-			//отправляем, найденную о сенсорах информацию, в MongoDB
-			mdbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
-				Section: "handling eventenrichment",
-				Command: "add sensor eventenrichment",
-				Data:    resultEventenrichment,
-			}
-		} /*else {
-			//если ничего не было найдено, то есть фактически остутствует доступ
-			//к модулю взаимодействия с Zabbix
-			//отправляем в MongoDB запрос со списком идентификаторов сенсоров
-			//при этом прием результата выполняем в CoreHandler и отправляем
-			//полученные данные в СУБД Elasticsearch для ДОПОЛНЕНИЯ информации
-			//о кейсах
-			mdbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
-				Section: "handling eventenrichment",
-				Command: "get sensor eventenrichment",
-				Data:    resultEventenrichment,
-			}
-		}*/
-	}
-
-	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
-		Section: "handling case",
-		Command: "add new case",
-		Data:    verifiedCase.Get(),
+				//отправляем, найденную о сенсорах информацию, в MongoDB
+				mdbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
+					Section: "handling eventenrichment",
+					Command: "add sensor eventenrichment",
+					Data:    resultEventenrichment,
+				}
+			} /*else {
+				//если ничего не было найдено, то есть фактически остутствует доступ
+				//к модулю взаимодействия с Zabbix
+				//отправляем в MongoDB запрос со списком идентификаторов сенсоров
+				//при этом прием результата выполняем в CoreHandler и отправляем
+				//полученные данные в СУБД Elasticsearch для ДОПОЛНЕНИЯ информации
+				//о кейсах
+				mdbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
+					Section: "handling eventenrichment",
+					Command: "get sensor eventenrichment",
+					Data:    resultEventenrichment,
+				}
+			}*/
 	}
 
 	//******** TEST ********

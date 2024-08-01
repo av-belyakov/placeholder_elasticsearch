@@ -52,7 +52,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 	mdbModule *mongodbinteractions.MongoDBModule,
 	eeModule *eventenrichmentmodule.EventEnrichmentModule) {
 
-	//coreStorage := newStorage()
+	coreStorage := newStorage()
 
 	natsChanReception := natsModule.GetDataReceptionChannel()
 	decodeJsonCase := NewDecodeJsonMessageSettings(listRuleCase, settings.logging, settings.counting)
@@ -62,6 +62,26 @@ func (settings *CoreHandlerSettings) CoreHandler(
 		select {
 		case <-ctx.Done():
 			return
+
+		case info := <-eeModule.ChanOutputModule:
+
+			fmt.Printf("--->>> func 'CoreHandler' RESIVED sensors info: '%v'\n", info)
+
+			if len(info.GetSensorsId()) > 0 {
+				// отправляем, найденную о сенсорах информацию, в MongoDB
+				mdbModule.ChanInputModule <- mongodbinteractions.SettingsInputChan{
+					Section: "handling eventenrichment",
+					Command: "add sensor eventenrichment",
+					Data:    info,
+				}
+
+				//отправляем найденную информацию в СУБД Elasticsearch
+				esModule.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+					Section: "handling case",
+					Command: "add eventenrichment information",
+					Data:    info,
+				}
+			}
 
 		/*case data := <-esModule.ChanOutputModule:
 		switch data.Section {
@@ -159,7 +179,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				//используется для хранения в MongoDB
 				go NewVerifiedTheHiveFormatCase(chansOut[0], chansDone[0], mdbModule, settings.logging)
 				//используется для хранения в Elasticsearch
-				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], esModule, eeModule, mdbModule, settings.logging)
+				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], esModule, coreStorage, eeModule.ChanInputModule, settings.logging)
 
 			case "alert":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, "subject_alert")

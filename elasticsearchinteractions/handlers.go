@@ -38,14 +38,15 @@ func (hsd HandlerSendData) InsertNewDocument(
 }
 
 // AddEventenrichmentCase выполняет обогащение уже имеющегося кейса дополнительной, полезной информацией
-/*func (hsd HandlerSendData) AddEventenrichmentCase(
+func (hsd HandlerSendData) AddEventenrichmentCase(
 	data interface{},
 	indexName string,
 	logging chan<- datamodels.MessageLogging) {
 	//добавляем небольшую задержку что бы СУБД успела добавить индекс
 	time.Sleep(3 * time.Second)
 
-	addSensorsInformation := []datamodels.AdditionSensorInformation(nil)
+	//addSensorsInformation := []datamodels.AdditionSensorInformation(nil)
+	addSensorsInformation := datamodels.SensorAdditionalInformation{}
 
 	//приводим значение к интерфейсу позволяющему получить доступ к информации о сенсорах
 	infoEvent, ok := data.(datamodels.InformationFromEventEnricher)
@@ -81,7 +82,19 @@ func (hsd HandlerSendData) InsertNewDocument(
 
 	sensorsId := infoEvent.GetSensorsId()
 	for _, v := range sensorsId {
-		addSensorsInformation = append(addSensorsInformation, datamodels.AdditionSensorInformation{
+		si := datamodels.NewSensorInformation()
+		si.SetSensorId(v)
+		si.SetHostId(infoEvent.GetHostId(v))
+		si.SetGeoCode(infoEvent.GetGeoCode(v))
+		si.SetObjectArea(infoEvent.GetObjectArea(v))
+		si.SetSubjectRF(infoEvent.GetSubjectRF(v))
+		si.SetINN(infoEvent.GetINN(v))
+		si.SetHomeNet(infoEvent.GetHomeNet(v))
+		si.SetOrgName(infoEvent.GetOrgName(v))
+		si.SetFullOrgName(infoEvent.GetFullOrgName(v))
+
+		addSensorsInformation.Add(*si)
+		/*addSensorsInformation = append(addSensorsInformation, datamodels.AdditionSensorInformation{
 			SensorId:    v,
 			HostId:      infoEvent.GetHostId(v),
 			GeoCode:     infoEvent.GetGeoCode(v),
@@ -91,11 +104,11 @@ func (hsd HandlerSendData) InsertNewDocument(
 			HomeNet:     infoEvent.GetHomeNet(v),
 			OrgName:     infoEvent.GetOrgName(v),
 			FullOrgName: infoEvent.GetFullOrgName(v),
-		})
+		})*/
 	}
 
-	tmpReq := tmpRequest{SensorAdditionalInformation: addSensorsInformation}
-	request, err := json.MarshalIndent(tmpReq, "", " ")
+	//tmpReq := tmpRequest{SensorAdditionalInformation: addSensorsInformation}
+	request, err := json.MarshalIndent(*addSensorsInformation.Get() /*tmpReq*/, "", " ")
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -131,7 +144,7 @@ func (hsd HandlerSendData) InsertNewDocument(
 			MsgType: "error",
 		}
 	}
-}*/
+}
 
 // ReplacementDocumentCase выполняет замену документа, но только в рамках одного индекса
 func (hsd HandlerSendData) ReplacementDocumentCase(

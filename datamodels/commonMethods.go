@@ -688,7 +688,11 @@ func NewSensorAdditionalInformation() *SensorAdditionalInformation {
 	return &SensorAdditionalInformation{Sensors: []SensorInformation(nil)}
 }
 
-func (sai *SensorAdditionalInformation) Get() []SensorInformation {
+func (sai *SensorAdditionalInformation) Get() *SensorAdditionalInformation {
+	return sai
+}
+
+func (sai *SensorAdditionalInformation) GetSensors() []SensorInformation {
 	return sai.Sensors
 }
 
