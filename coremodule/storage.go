@@ -1,6 +1,7 @@
 package coremodule
 
 import (
+	"placeholder_elasticsearch/datamodels"
 	"sync"
 	"time"
 )
@@ -16,8 +17,9 @@ type coreStorage struct {
 }
 
 type messageDescriptors struct {
-	timeCreate int64
-	request    string
+	timeCreate  int64
+	request     string
+	resivedChan chan datamodels.InformationFromEventEnricher
 }
 
 func newStorage() *coreStorage {

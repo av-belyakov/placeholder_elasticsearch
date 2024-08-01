@@ -302,7 +302,7 @@ func NewVerifiedElasticsearchFormatCase(
 				Command: "add sensor eventenrichment",
 				Data:    resultEventenrichment,
 			}
-		} else {
+		} /*else {
 			//если ничего не было найдено, то есть фактически остутствует доступ
 			//к модулю взаимодействия с Zabbix
 			//отправляем в MongoDB запрос со списком идентификаторов сенсоров
@@ -314,7 +314,7 @@ func NewVerifiedElasticsearchFormatCase(
 				Command: "get sensor eventenrichment",
 				Data:    resultEventenrichment,
 			}
-		}
+		}*/
 	}
 
 	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
