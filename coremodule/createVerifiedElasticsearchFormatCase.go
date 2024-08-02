@@ -274,15 +274,37 @@ func NewVerifiedElasticsearchFormatCase(
 
 	//делаем запрос на получение дополнительной информации о сенсорах
 	if len(sensorsId.Get()) > 0 {
-
-		fmt.Printf("func 'NewVerifiedElasticsearchFormatCase', SENS SENSORS ID '%v' REQUEST ->\n", sensorsId.Get())
-
 		//делаем запрос к модулю обогащения доп. информацией из Zabbix
 		eemChan <- eventenrichmentmodule.SettingsChanInputEEM{
 			RootId:    eventCase.GetRootId(),
 			Source:    verifiedCase.GetSource(),
 			SensorsId: sensorsId.Get(),
 		}
+
+		/*
+			550001
+			550119
+			570048
+
+						Некоторые сенсора отвечают вот так:
+					SensorId 530134
+						--->>> func 'CoreHandler' RESIVED sensors info: '{~512335920 rcmmsk [{530134 10504 Wrong Json: <!DOCTYPE html>
+				<html lang="en">
+				<head>
+				  <meta charset="utf-8" />
+				  <title>Ведомственная система обнаружения компьютерных атак</title>
+
+				  <script src="/config/"></script>
+
+				  <script type="module" crossorigin src="/assets/index.313374bb.js"></script>
+				  <link rel="stylesheet" href="/assets/index.190ded15.css">
+				  <script type="module">try{import.meta.url;import("_").catch(()=>1);}catch(e){}window.__vite_is_modern_browser=true;</script>
+				  <script type="module">!function(){if(window.__vite_is_modern_browser)return;console.warn("vite: loading legacy build because dynamic import or import.meta.url is unsupported, syntax error above should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}();</script>
+				</head>...
+
+				По этому это не добавляется в Эластик ни как
+
+		*/
 
 		/*
 			//получаем результат выполнения запроса к модулю обогащения

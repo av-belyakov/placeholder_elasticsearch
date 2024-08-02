@@ -1,6 +1,9 @@
 package listhandlerforesjson
 
-import "placeholder_elasticsearch/listhandlercommon"
+import (
+	"placeholder_elasticsearch/listhandlercommon"
+	"strings"
+)
 
 func NewListHandlerAlertArtifactsElement(saa *SupportiveAlertArtifacts) map[string][]func(interface{}) {
 	return map[string][]func(interface{}){
@@ -104,6 +107,8 @@ func NewListHandlerAlertArtifactsElement(saa *SupportiveAlertArtifacts) map[stri
 							return
 						}
 
+						value = strings.TrimSpace(value)
+						value = strings.Trim(value, "\"")
 						saa.GetArtifactTmp().SetAnyTags(key, value)
 					},
 				)

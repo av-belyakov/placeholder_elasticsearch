@@ -82,6 +82,7 @@ func (a *AlertMessageForEsAlert) SetValueTags(k, v string) bool {
 		a.Tags[k] = []string(nil)
 	}
 
+	v = supportingfunctions.TrimIsNotLetter(v)
 	for _, value := range a.Tags[k] {
 		if v == value {
 			return false

@@ -42,10 +42,12 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 	data interface{},
 	indexName string,
 	logging chan<- datamodels.MessageLogging) {
-	//добавляем небольшую задержку что бы СУБД успела добавить индекс
-	time.Sleep(3 * time.Second)
 
-	//addSensorsInformation := []datamodels.AdditionSensorInformation(nil)
+	//добавляем небольшую задержку что бы СУБД успела добавить индекс
+	//***************************************************************
+	time.Sleep(3 * time.Second)
+	//***************************************************************
+
 	addSensorsInformation := datamodels.SensorAdditionalInformation{}
 
 	//приводим значение к интерфейсу позволяющему получить доступ к информации о сенсорах
@@ -64,8 +66,6 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 	month := int(t.Month())
 	indexCurrent := fmt.Sprintf("%s_%d_%d", indexName, t.Year(), month)
 
-	fmt.Printf("func 'AddEventenrichmentCASE', indexCurrent:%s, rootId:'%s', source:'%s'\n", indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource())
-
 	//выполняем поиск _id индекса
 	caseId, err := SearchUnderlineIdCase(indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource(), hsd)
 	if err != nil {
@@ -78,10 +78,22 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 		return
 	}
 
-	fmt.Println("func 'AddEventenrichmentCASE', indexCurrent:", indexCurrent, " search case id:'", caseId, "'")
-
+	invalidString := "DOCTYPE"
 	sensorsId := infoEvent.GetSensorsId()
 	for _, v := range sensorsId {
+		//убираем невалидные данные
+		if strings.Contains(infoEvent.GetGeoCode(v), invalidString) || strings.Contains(infoEvent.GetObjectArea(v), invalidString) || strings.Contains(infoEvent.GetSubjectRF(v), invalidString) || strings.Contains(infoEvent.GetINN(v), invalidString) {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'sensor '%s' information contains incorrect data %s:%d", v, f, l-2),
+				MsgType: "error",
+			}
+
+			continue
+		}
+
+		//*********************************************************************
+
 		si := datamodels.NewSensorInformation()
 		si.SetSensorId(v)
 		si.SetHostId(infoEvent.GetHostId(v))
@@ -94,21 +106,9 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 		si.SetFullOrgName(infoEvent.GetFullOrgName(v))
 
 		addSensorsInformation.Add(*si)
-		/*addSensorsInformation = append(addSensorsInformation, datamodels.AdditionSensorInformation{
-			SensorId:    v,
-			HostId:      infoEvent.GetHostId(v),
-			GeoCode:     infoEvent.GetGeoCode(v),
-			ObjectArea:  infoEvent.GetObjectArea(v),
-			SubjectRF:   infoEvent.GetSubjectRF(v),
-			INN:         infoEvent.GetINN(v),
-			HomeNet:     infoEvent.GetHomeNet(v),
-			OrgName:     infoEvent.GetOrgName(v),
-			FullOrgName: infoEvent.GetFullOrgName(v),
-		})*/
 	}
 
-	//tmpReq := tmpRequest{SensorAdditionalInformation: addSensorsInformation}
-	request, err := json.MarshalIndent(*addSensorsInformation.Get() /*tmpReq*/, "", " ")
+	request, err := json.MarshalIndent(*addSensorsInformation.Get(), "", " ")
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{

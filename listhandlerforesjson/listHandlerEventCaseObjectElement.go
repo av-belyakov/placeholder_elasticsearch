@@ -3,7 +3,6 @@ package listhandlerforesjson
 import (
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/listhandlercommon"
-	"strings"
 )
 
 func NewListHandlerEventCaseObjectElement(object *datamodels.EventForEsCaseObject) map[string][]func(interface{}) {
@@ -36,8 +35,6 @@ func NewListHandlerEventCaseObjectElement(object *datamodels.EventForEsCaseObjec
 					return
 				}
 
-				value = strings.TrimSpace(value)
-				value = strings.Trim(value, "\"")
 				object.SetAnyTags(key, value)
 			},
 			object.SetAnyTagsAll},

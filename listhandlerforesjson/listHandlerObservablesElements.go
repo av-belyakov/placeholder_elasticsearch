@@ -1,6 +1,9 @@
 package listhandlerforesjson
 
-import "placeholder_elasticsearch/listhandlercommon"
+import (
+	"placeholder_elasticsearch/listhandlercommon"
+	"strings"
+)
 
 func NewListHandlerObservablesElement(so *SupportiveObservables) map[string][]func(interface{}) {
 	return map[string][]func(interface{}){
@@ -129,6 +132,8 @@ func NewListHandlerObservablesElement(so *SupportiveObservables) map[string][]fu
 							return
 						}
 
+						value = strings.TrimSpace(value)
+						value = strings.Trim(value, "\"")
 						so.GetObservableTmp().SetAnyTags(key, value)
 					},
 				)

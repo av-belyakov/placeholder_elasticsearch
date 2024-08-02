@@ -86,6 +86,7 @@ func (e *EventForEsCaseObject) SetValueTags(k, v string) bool {
 		e.Tags[k] = []string(nil)
 	}
 
+	v = supportingfunctions.TrimIsNotLetter(v)
 	for _, value := range e.Tags[k] {
 		if v == value {
 			return false
