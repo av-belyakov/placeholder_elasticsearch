@@ -13,11 +13,13 @@ type SettingsChanInputEEM struct {
 // SettingsChanInputEEM параметры для ОТПРАВКИ данных из модуля
 // RootId - основной идентификатор
 // Source - источник
+// SensorsId - список идентификаторов сенсоров информация по которым не была найдена
 // Sensors - найденная информация, где ключ карты это идентификатор сенсора
 type SettingsChanOutputEEM struct {
-	RootId  string
-	Source  string
-	Sensors []FoundSensorInformation
+	RootId    string
+	Source    string
+	SensorsId []string
+	Sensors   []FoundSensorInformation
 }
 
 // FoundSensorInformation содержит найденную о сенсоре информацию

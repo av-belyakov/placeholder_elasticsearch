@@ -111,9 +111,10 @@ func NewEventEnrichmentModule(
 					logging chan<- datamodels.MessageLogging) {
 
 					settingsResponse := SettingsChanOutputEEM{
-						RootId:  data.RootId,
-						Source:  data.Source,
-						Sensors: []FoundSensorInformation(nil),
+						RootId:    data.RootId,
+						Source:    data.Source,
+						SensorsId: []string(nil),
+						Sensors:   []FoundSensorInformation(nil),
 					}
 
 					for _, sensorId := range data.SensorsId {
@@ -124,6 +125,14 @@ func NewEventEnrichmentModule(
 								MsgData: fmt.Sprintf("'sensorId: '%s', %v' %s:%d", sensorId, err, f, l-1),
 								MsgType: "error",
 							}
+
+							settingsResponse.SensorsId = append(settingsResponse.SensorsId, sensorId)
+
+							continue
+						}
+
+						if fullInfo.HostId == "" {
+							settingsResponse.SensorsId = append(settingsResponse.SensorsId, sensorId)
 
 							continue
 						}

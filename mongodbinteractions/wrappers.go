@@ -15,15 +15,67 @@ import (
 
 // GetSensorsEventenrichment запрос на получения дополнительной информации о сенсоре
 func (w *wrappers) GetSensorsEventenrichment(
+	rootId string,
+	source string,
 	data interface{},
+	chanOutput chan<- ModuleDataBaseInteractionChannel,
 	logging chan<- datamodels.MessageLogging) {
-	/*
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-		   Здесь надо написать запрос на получения информации о сенсорах
+	listSensorId, ok := data.([]string)
+	if !ok {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'error converting the type to type []string' %s:%d", f, l-1),
+			MsgType: "error",
+		}
 
-			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	*/
+		return
+	}
+
+	options := options.Find().SetAllowDiskUse(true)
+	collection := w.ConnDB.Database(w.NameDB).Collection("collection_sensor_information")
+	cur, err := collection.Find(
+		context.Background(),
+		(bson.D{
+			{Key: "sensorId", Value: bson.D{
+				{Key: "$in", Value: listSensorId}},
+			},
+		}), options)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	result := NewResultFoundSensorInformation()
+	result.RootId = rootId
+	result.Source = source
+
+	for cur.Next(context.Background()) {
+		var sensorInfo datamodels.SensorInformation
+		if err := cur.Decode(&sensorInfo); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-1),
+				MsgType: "error",
+			}
+
+			return
+		}
+
+		result.SensorsId = append(result.SensorsId, sensorInfo.SensorId)
+		result.Sensors = append(result.Sensors, sensorInfo)
+	}
+
+	chanOutput <- ModuleDataBaseInteractionChannel{
+		Section: "handling eventenrichment",
+		Command: "sensor eventenrichment response",
+		Data:    result,
+	}
 }
 
 // AddNewSensorsEventenrichment добавляет дополнительную информацию о сенсорах

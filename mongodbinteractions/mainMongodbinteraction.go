@@ -14,32 +14,6 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
-// MongoDBModule содержит описание каналов для взаимодействия с БД MongoDB
-// ChanInputModule - канал для отправки данных В модуль
-// ChanOutputModule - канал для принятия данных ИЗ модуля
-type MongoDBModule struct {
-	ChanInputModule  chan SettingsInputChan
-	ChanOutputModule chan ModuleDataBaseInteractionChannel
-}
-
-type wrappers struct {
-	AdditionalRequestParameters interface{}
-	NameDB                      string
-	ConnDB                      *mongo.Client
-}
-
-// ConnectionDescriptorMongoDB дескриптор соединения с БД MongoDB
-// databaseName - имя базы данных
-// connection - дескриптор соединения
-// ctx - контекст переносит крайний срок, сигнал отмены и другие значения через границы API
-// ctxCancel - метод закрытия контекста
-type ConnectionDescriptorMongoDB struct {
-	databaseName string
-	connection   *mongo.Client
-	ctx          context.Context
-	ctxCancel    context.CancelFunc
-}
-
 func HandlerMongoDB(
 	conf confighandler.AppConfigMongoDB,
 	logging chan<- datamodels.MessageLogging,
@@ -124,7 +98,7 @@ func (conn ConnectionDescriptorMongoDB) Routing(
 				}
 
 				if data.Command == "get sensor eventenrichment" {
-					go ws.GetSensorsEventenrichment(data.Data, logging)
+					go ws.GetSensorsEventenrichment(data.RootId, data.Source, data.Data, channels.ChanOutputModule, logging)
 				}
 			}
 		}

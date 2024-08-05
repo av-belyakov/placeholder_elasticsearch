@@ -64,9 +64,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 			return
 
 		case info := <-eeModule.ChanOutputModule:
-
-			fmt.Printf("--->>> func 'CoreHandler' RESIVED sensors info: '%v'\n", info)
-
+			//если в Zabbix было найденно хоть что то по сенсорам
 			if len(info.GetSensorsId()) > 0 {
 				// отправляем, найденную о сенсорах информацию, в MongoDB
 				mdbModule.ChanInputModule <- mongodbinteractions.SettingsInputChan{
@@ -83,78 +81,27 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				}
 			}
 
-		/*case data := <-esModule.ChanOutputModule:
-		switch data.Section {
-		//получаем запрос от модуля Elasticsearch на обогащение кейса
-		case "eventenrichment case":
-		if data.Command == "get eventenrichment information" {
-			if settings, ok := data.Data.(struct {
-				Source    string
-				RootId    string
-				SensorsId []string
-			}); ok {
-				coreStorage.setRequest(fmt.Sprintf("%s:%s", settings.RootId, settings.Source), "handling case")
-
-				//информация отправляется в модуль обогащения доп. информацией
-				eeModule.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
-					RootId:    settings.RootId,
-					Source:    settings.Source,
-					SensorsId: settings.SensorsId,
+			if len(info.SensorsId) > 0 {
+				//перечень сенсоров по которым по каким то причинам ничего не найдено
+				mdbModule.ChanInputModule <- mongodbinteractions.SettingsInputChan{
+					Section: "handling eventenrichment",
+					Command: "get sensor eventenrichment",
+					RootId:  info.RootId,
+					Source:  info.Source,
+					Data:    info.SensorsId,
 				}
 			}
-		}
 
-
-		//получаем запрос от модуля Elasticsearch на обогащение алерта
-		case "eventenrichment alert":
-			if data.Command == "get eventenrichment information" {
-				if settings, ok := data.Data.(struct {
-					Source    string
-					RootId    string
-					SensorsId []string
-				}); ok {
-					coreStorage.setRequest(fmt.Sprintf("%s:%s", settings.RootId, settings.Source), "handling alert")
-
-					//fmt.Printf("===== eventenrichment alert %s:%s -> send to eventenrichmentmodule", settings.RootId, "handling alert")
-
-					//информация отправляется в модуль обогащения доп. информацией
-					eeModule.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{
-						RootId:    settings.RootId,
-						Source:    settings.Source,
-						SensorsId: settings.SensorsId,
-					}
+		case data := <-mdbModule.ChanOutputModule:
+			if data.Section == "handling eventenrichment" && data.Command == "sensor eventenrichment response" {
+				// отправляем найденную информацию в СУБД Elasticsearch
+				esModule.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+					Section: "handling case",
+					Command: "add eventenrichment information",
+					Data:    data.Data,
 				}
 			}
-		}*/
 
-		//канал для взаимодействия с модулем обогащения доп. информацией об организацией
-		/*case data := <-eeModule.ChanOutputModule:
-		if len(data.Sensors) == 0 {
-			//делаем запрос модулю MongoDB
-			//
-			// надо сделать
-			//
-
-			continue
-		}
-
-		id := fmt.Sprintf("%s:%s", data.GetRootId(), data.GetSource())
-		if section, ok := coreStorage.getRequest(id); ok {
-			//отправляем данные для записи в Elasticsearch
-			esModule.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
-				Section: section,
-				Command: "add eventenrichment information",
-				Data:    data,
-			}
-
-			coreStorage.deleteElement(id)
-		}
-
-		//отправляем данные для записи в MongoDB
-		//
-		// надо сделать
-		//
-		*/
 		//канал для взаимодействия с NATS
 		case data := <-natsChanReception:
 			eventSettings := shortEventSettings{}
