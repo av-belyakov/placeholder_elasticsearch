@@ -131,6 +131,17 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 			_, order, _, _ := eventObjectCustomFields["id-soa"].Get()
 			eventObjectCustomFields["id-soa"].Set(order, i)
 		}},
+		//------------------ class-ca ------------------
+		"event.object.customFields.class-ca.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("class-ca", "string", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["class-ca"].Get()
+			eventObjectCustomFields["class-ca"].Set(i, str)
+		}},
+		"event.object.customFields.class-ca.string": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("class-ca", "string", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["class-ca"].Get()
+			eventObjectCustomFields["class-ca"].Set(order, i)
+		}},
 		//--------------- is-incident ------------------
 		"event.object.customFields.is-incident.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("is-incident", "boolen", &eventObjectCustomFields)
