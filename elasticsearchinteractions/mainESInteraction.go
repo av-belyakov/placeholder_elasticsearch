@@ -2,7 +2,10 @@ package elasticsearchinteractions
 
 import (
 	"fmt"
+	"net"
+	"net/http"
 	"runtime"
+	"time"
 
 	"github.com/elastic/go-elasticsearch/v8"
 
@@ -15,6 +18,15 @@ func (h *HandlerSendData) New() error {
 		Addresses: []string{fmt.Sprintf("http://%s:%d", h.Settings.Host, h.Settings.Port)},
 		Username:  h.Settings.User,
 		Password:  h.Settings.Passwd,
+		Transport: &http.Transport{
+			MaxIdleConns:          10, //число открытых TCP-соединений, которые в данный момент не используются
+			IdleConnTimeout:       5,  //время, через которое закрываются такие неактивные соединения
+			MaxIdleConnsPerHost:   10, //число неактивных TCP-соединений, которые допускается устанавливать на один хост
+			ResponseHeaderTimeout: time.Second,
+			DialContext:           (&net.Dialer{Timeout: time.Second}).DialContext,
+		},
+		//RetryOnError: ,
+		//RetryOnStatus: ,
 	})
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)

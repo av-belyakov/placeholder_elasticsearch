@@ -187,22 +187,6 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		}
 	}
 
-	/*
-		settingsOutputChan := SettingsOutputChan{
-			Section: "eventenrichment case",
-			Command: "get eventenrichment information",
-			Data: struct {
-				Source    string
-				RootId    string
-				SensorsId []string
-			}{
-				Source:    newDocument.GetSource(),
-				RootId:    newDocument.GetEvent().GetRootId(),
-				SensorsId: sensorsId.Get(),
-			},
-		}
-	*/
-
 	newDocumentBinary, err := json.Marshal(newDocument.Get())
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -285,11 +269,6 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 			}
 		}
 
-		// Пока закоментируем, возможно посже откажемся от этого способа
-		//
-		//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
-		//chanOutput <- settingsOutputChan
-
 		return
 	}
 
@@ -371,11 +350,6 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 
 		return
 	}
-
-	// Пока закоментируем, возможно посже откажемся от этого способа
-	//
-	//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
-	//chanOutput <- settingsOutputChan
 
 	if res.StatusCode == http.StatusCreated {
 		//счетчик
