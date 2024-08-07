@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"runtime"
+	"strings"
 
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
@@ -82,6 +83,11 @@ func (settings *CoreHandlerSettings) CoreHandler(
 			}
 
 			if len(info.SensorsId) > 0 {
+				settings.logging <- datamodels.MessageLogging{
+					MsgData: fmt.Sprintf("'the following sensors '%s' were not found in Zabbix, a search will be performed for them in the database MongoDB'", strings.Join(info.SensorsId, ",")),
+					MsgType: "info",
+				}
+
 				//перечень сенсоров по которым по каким то причинам ничего не найдено
 				mdbModule.ChanInputModule <- mongodbinteractions.SettingsInputChan{
 					Section: "handling eventenrichment",

@@ -52,11 +52,9 @@ var _ = Describe("Testreguestsensorinfomongodb", Ordered, func() {
 		connMdb, errMdb = mongo.Connect(ctx, clientOption.ApplyURI(confPath))
 
 		f, errFile = os.OpenFile("sensors_information.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-
-		//bufio.NewWriter()
 	})
 
-	Context("Тест 1. Подключение к СУБД", func() {
+	Context("Тест 1. Инициализация модулей", func() {
 		It("При подключении к СУБД не должно быть ошибки", func() {
 			Expect(errMdb).ShouldNot(HaveOccurred())
 		})

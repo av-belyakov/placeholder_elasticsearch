@@ -27,7 +27,7 @@ func (hsd HandlerSendData) InsertNewDocument(
 		}
 	}
 
-	if res.StatusCode == http.StatusCreated {
+	if res != nil && res.StatusCode == http.StatusCreated {
 		//счетчик
 		counting <- datamodels.DataCounterSettings{
 			DataType: "update count insert Elasticserach",
@@ -137,7 +137,7 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 		return
 	}
 
-	if res.StatusCode != http.StatusOK {
+	if res != nil && res.StatusCode != http.StatusOK {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
 			MsgData: fmt.Sprintf("'rootId: '%s', %d %s' %s:%d", infoEvent.GetRootId(), res.StatusCode, res.Status(), f, l-1),
@@ -351,7 +351,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
-	if res.StatusCode == http.StatusCreated {
+	if res != nil && res.StatusCode == http.StatusCreated {
 		//счетчик
 		counting <- datamodels.DataCounterSettings{
 			DataType: "update count insert Elasticserach",
@@ -737,7 +737,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
 	//chanOutput <- settingsOutputChan
 
-	if res.StatusCode == http.StatusCreated {
+	if res != nil && res.StatusCode == http.StatusCreated {
 		//счетчик
 		counting <- datamodels.DataCounterSettings{
 			DataType: "update count insert Elasticserach",
