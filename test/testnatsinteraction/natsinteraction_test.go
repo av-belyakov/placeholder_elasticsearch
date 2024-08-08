@@ -105,6 +105,7 @@ var _ = Describe("Natsinteraction", Ordered, func() {
 		})
 
 		log.Printf("Connect to NATS with address %s:%d\n", Host, Port)
+		done <- struct{}{}
 
 		return &mnats, nil
 	}
@@ -138,6 +139,12 @@ var _ = Describe("Natsinteraction", Ordered, func() {
 		It("Должно быть получено сообщение типа 'alertupdate'", func() {
 			var str string
 			var err error
+
+			go func() {
+				for v := range done {
+					fmt.Println("SIGNAL DONE", v)
+				}
+			}()
 
 			for data := range mnats.chanOutputNATS {
 				if data.MsgType == "alertupdate" {

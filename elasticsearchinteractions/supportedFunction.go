@@ -95,6 +95,10 @@ func SearchUnderlineIdAlert(indexName, rootId, source string, hsd HandlerSendDat
 	//выполняем поиск _id индекса
 	res, err := hsd.SearchDocument([]string{indexName}, strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId)))
 	defer func() {
+		if res == nil || res.Body == nil {
+			return
+		}
+
 		errClose := res.Body.Close()
 		if err == nil {
 			err = errClose
@@ -127,6 +131,10 @@ func SearchUnderlineIdCase(indexName, rootId, source string, hsd HandlerSendData
 	//выполняем поиск _id индекса
 	res, err := hsd.SearchDocument([]string{indexName}, strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"source\": \"%s\"}}, {\"match\": {\"event.rootId\": \"%s\"}}]}}}", source, rootId)))
 	defer func() {
+		if res == nil || res.Body == nil {
+			return
+		}
+
 		errClose := res.Body.Close()
 		if err == nil {
 			err = errClose

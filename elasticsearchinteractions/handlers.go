@@ -228,6 +228,10 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 
 	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
 	defer func() {
+		if res == nil || res.Body == nil {
+			return
+		}
+
 		errClose := res.Body.Close()
 		if err == nil {
 			err = errClose
@@ -510,20 +514,6 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		}
 	}
 
-	/*settingsOutputChan := SettingsOutputChan{
-		Section: "eventenrichment alert",
-		Command: "get eventenrichment information",
-		Data: struct {
-			Source    string
-			RootId    string
-			SensorsId []string
-		}{
-			Source:    newDocument.GetSource(),
-			RootId:    newDocument.GetEvent().GetRootId(),
-			SensorsId: sensorsId.Get(),
-		},
-	}*/
-
 	newDocumentBinary, err := json.Marshal(newDocument.Get())
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -565,7 +555,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
 	defer func() {
-		if res.Body == nil {
+		if res == nil || res.Body == nil {
 			return
 		}
 

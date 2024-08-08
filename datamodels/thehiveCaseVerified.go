@@ -45,6 +45,14 @@ func (hcase *VerifiedTheHiveCase) SetSource(source string) {
 	hcase.Source = source
 }
 
+func (hcase *VerifiedTheHiveCase) GetCreateTimestamp() string {
+	return hcase.CreateTimestamp
+}
+
+func (hcase *VerifiedTheHiveCase) SetCreateTimestamp(timestamp string) {
+	hcase.CreateTimestamp = timestamp
+}
+
 func (hcase *VerifiedTheHiveCase) GetEvent() *EventMessageTheHiveCase {
 	return &hcase.Event
 }

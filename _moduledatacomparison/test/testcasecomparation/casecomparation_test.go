@@ -51,6 +51,31 @@ func ConnectMongoDB(ctx context.Context, host string, port int, nameDB, user, pa
 	return mongo.Connect(ctx, clientOption.ApplyURI(confPath))
 }
 
+func ConvertFormatCaseMongoDBToElasticsearch(
+	casesFormatMongoDB []datamodels.VerifiedTheHiveCase,
+	listCasesIdConvert []string) ([]datamodels.VerifiedEsCase, error) {
+	countCasesIdConvert := len(listCasesIdConvert)
+	if countCasesIdConvert == 0 {
+		return []datamodels.VerifiedEsCase{}, fmt.Errorf("the list of case IDs to be converted should not be empty")
+	}
+
+	verifiedEsCases := make([]datamodels.VerifiedEsCase, countCasesIdConvert)
+
+	for _, caseId := range listCasesIdConvert {
+		for _, caseInfo := range casesFormatMongoDB {
+			if caseId == caseInfo.GetID() {
+				verifedCase := datamodels.NewVerifiedEsCase()
+				verifedCase.SetID(caseInfo.GetID())
+				verifedCase.SetSource(caseInfo.GetSource())
+				verifedCase.SetCreateTimestamp(caseInfo.GetCreateTimestamp())
+
+			}
+		}
+	}
+
+	return verifiedEsCases, nil
+}
+
 var _ = Describe("Casecomparation", Ordered, func() {
 	var (
 		confApp confighandler.ConfigApp
@@ -133,7 +158,8 @@ var _ = Describe("Casecomparation", Ordered, func() {
 				fmt.Println("RootId:", verifedCase.GetEvent().GetRootId())
 
 				verifedCases = append(verifedCases, verifedCase)
-				casesId = append(casesId, fmt.Sprintf("{ \"span_term\" : { \"@id\" : \"%s\" } }", verifedCase.GetID()))
+				//casesId = append(casesId, fmt.Sprintf("{ \"span_term\" : { \"@id\" : \"%s\" } }", verifedCase.GetID()))
+				casesId = append(casesId, verifedCase.GetID())
 
 				num++
 			}
@@ -142,36 +168,44 @@ var _ = Describe("Casecomparation", Ordered, func() {
 
 			var str string
 			for i := 0; i < len(casesId); i++ {
-				if i == (len(casesId) - 1) {
-					str += casesId[i]
-				} else {
-					str += casesId[i] + ","
+				str += fmt.Sprintf("{\"span_term\": {\"@id\": \"%s\"}}", casesId[i])
+				if i < (len(casesId) - 1) {
+					str += ", "
 				}
 			}
 
 			fmt.Println("Query string:", str)
 
 			//запрос к Elasticsearch
-			//queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"@id\": \"%s\"}}]}}}", ))
-			queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"span_or\": {\"clauses\": [%s]}}}", str))
+			//SetSkip(int64(10)).SetLimit(int64(15) таких кейсов в эластике нет
+			//queryCurrent := strings.NewReader(fmt.Sprintf("{\"query\": {\"span_or\": {\"clauses\": [%s]}}}", str))
+
+			//есть похожие кейсы
+			queryCurrent := strings.NewReader("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"@id\": \"e3c9aa7a-d4e8-46f3-90d4-dae71434cde2\"}}]}}}")
+			//нет похожих кейсов
+			//queryCurrent := strings.NewReader("{\"query\": {\"bool\": {\"must\": [{\"match\": {\"@id\": \"2dbd8d6f-657e-4d61-af95-9945f81bc340\"}}]}}}")
 
 			res, err := connEs.Search(
 				connEs.Search.WithContext(context.Background()),
-				connEs.Search.WithIndex("module_placeholder_new_case_2024_3"),
+				connEs.Search.WithIndex("module_placeholder_new_case_2024_3"), //	1031
+				//connEs.Search.WithIndex("module_placeholder_new_case_2024_8"),
 				connEs.Search.WithBody(queryCurrent))
 			Expect(err).ShouldNot(HaveOccurred())
 
 			Expect(res.StatusCode).Should(Equal(http.StatusOK))
 
-			/*msg := []struct {
-				id        string `json:"@id"`
-				timestamp string `json:"@timestamp"`
-				source    string `json:"source"`
-			}{}*/
 			msg := datamodels.ElasticsearchResponseCase{}
 			err = json.NewDecoder(res.Body).Decode(&msg)
 
-			fmt.Println("RESULT:", &msg)
+			fmt.Println("_________________________________________________")
+			fmt.Println("____ RESULT Total:", &msg.Options.Total)
+
+			foundCaseIdElasticsearch := []string(nil)
+			for _, v := range msg.Options.Hits {
+				foundCaseIdElasticsearch = append(foundCaseIdElasticsearch, v.Source.GetID())
+			}
+
+			fmt.Println("Found id:", strings.Join(foundCaseIdElasticsearch, ","))
 
 			Expect(err).ShouldNot(HaveOccurred())
 		})
