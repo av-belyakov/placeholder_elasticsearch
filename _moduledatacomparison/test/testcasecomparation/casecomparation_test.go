@@ -17,6 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"placeholder_elasticsearch/_moduledatacomparison/supportingfunctions"
 	"placeholder_elasticsearch/confighandler"
 	"placeholder_elasticsearch/datamodels"
 )
@@ -86,10 +87,20 @@ var _ = Describe("Casecomparation", Ordered, func() {
 
 		connEs *elasticsearch.Client
 
+		logging chan datamodels.MessageLogging
+
 		errMdb, errEs, errApp error
 	)
 
 	BeforeAll(func() {
+		logging := make(chan datamodels.MessageLogging)
+
+		go func() {
+			for msg := range logging {
+				fmt.Println("LOG MSG:", msg)
+			}
+		}()
+
 		//конфигурационный файл
 		os.Setenv("GO_PHELASTIC_MAIN", "development")
 		confApp, errApp = confighandler.NewConfig("placeholder_elasticsearch")
@@ -145,7 +156,7 @@ var _ = Describe("Casecomparation", Ordered, func() {
 
 			num := 1
 			casesId := []string(nil)
-			verifedCases := []datamodels.VerifiedTheHiveCase(nil)
+			verifedTheHiveCases := []datamodels.VerifiedTheHiveCase(nil)
 			for cur.Next(context.Background()) {
 				var verifedCase datamodels.VerifiedTheHiveCase
 				if err := cur.Decode(&verifedCase); err != nil {
@@ -157,14 +168,14 @@ var _ = Describe("Casecomparation", Ordered, func() {
 				fmt.Println("@timestamp:", verifedCase.Get().CreateTimestamp)
 				fmt.Println("RootId:", verifedCase.GetEvent().GetRootId())
 
-				verifedCases = append(verifedCases, verifedCase)
+				verifedTheHiveCases = append(verifedTheHiveCases, verifedCase)
 				//casesId = append(casesId, fmt.Sprintf("{ \"span_term\" : { \"@id\" : \"%s\" } }", verifedCase.GetID()))
 				casesId = append(casesId, verifedCase.GetID())
 
 				num++
 			}
 
-			Expect(len(verifedCases)).Should(Equal(15))
+			Expect(len(verifedTheHiveCases)).Should(Equal(15))
 
 			var str string
 			for i := 0; i < len(casesId); i++ {
@@ -207,11 +218,45 @@ var _ = Describe("Casecomparation", Ordered, func() {
 
 			fmt.Println("Found id:", strings.Join(foundCaseIdElasticsearch, ","))
 
+			//конвертируем, полученные их MongoDB, кейсы, которых не хватает в
+			//Elasticsearch в формат подходящий для этой БД формат
+			newVerifedEsCases := []datamodels.VerifiedEsCase(nil)
+			for _, vthc := range verifedTheHiveCases {
+				var isExist bool
+				for _, caseId := range foundCaseIdElasticsearch {
+					if vthc.GetID() == caseId {
+						isExist = true
+
+						break
+					}
+				}
+
+				if !isExist {
+					if b, err := json.Marshal(vthc); err == nil {
+						newVerifedCase := datamodels.VerifiedEsCase{}
+
+						isOk := supportingfunctions.FormatCaseJsonMongoDBHandler(b, &newVerifedCase, logging)
+
+						if isOk {
+							newVerifedEsCases = append(newVerifedEsCases, newVerifedCase)
+						}
+					}
+				}
+			}
+
+			fmt.Println("____ NEW VERIFIED CASE for Elasticsherach: _____")
+			fmt.Println("Count:", len(newVerifedEsCases))
+			for k, v := range newVerifedEsCases {
+				fmt.Printf("%d.\n", k)
+				fmt.Println(v.ToStringBeautiful(0))
+			}
+
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 	})
 
 	AfterAll(func() {
 		ctxMdbCancel()
+		//close(logging)
 	})
 })

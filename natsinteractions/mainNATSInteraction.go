@@ -22,8 +22,8 @@ var (
 )
 
 type natsStorage struct {
+	mutex   sync.Mutex
 	storage map[string]messageDescriptors
-	sync.Mutex
 }
 
 type messageDescriptors struct {
@@ -44,6 +44,9 @@ func NewStorageNATS() *natsStorage {
 func checkLiveTime(ns *natsStorage) {
 	for range time.Tick(5 * time.Second) {
 		go func() {
+			ns.mutex.Lock()
+			defer ns.mutex.Unlock()
+
 			for k, v := range ns.storage {
 				if time.Now().Unix() > (v.timeCreate + 360) {
 					ns.deleteElement(k)
@@ -56,8 +59,8 @@ func checkLiveTime(ns *natsStorage) {
 func (ns *natsStorage) setElement(m *nats.Msg) string {
 	id := uuid.New().String()
 
-	ns.Lock()
-	defer ns.Unlock()
+	ns.mutex.Lock()
+	defer ns.mutex.Unlock()
 
 	ns.storage[id] = messageDescriptors{
 		timeCreate: time.Now().Unix(),
@@ -68,9 +71,6 @@ func (ns *natsStorage) setElement(m *nats.Msg) string {
 }
 
 func (ns *natsStorage) deleteElement(id string) {
-	ns.Lock()
-	defer ns.Unlock()
-
 	delete(ns.storage, id)
 }
 

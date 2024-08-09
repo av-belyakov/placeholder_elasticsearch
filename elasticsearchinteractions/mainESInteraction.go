@@ -19,11 +19,13 @@ func (h *HandlerSendData) New() error {
 		Username:  h.Settings.User,
 		Password:  h.Settings.Passwd,
 		Transport: &http.Transport{
-			MaxIdleConns:          10, //число открытых TCP-соединений, которые в данный момент не используются
-			IdleConnTimeout:       5,  //время, через которое закрываются такие неактивные соединения
-			MaxIdleConnsPerHost:   10, //число неактивных TCP-соединений, которые допускается устанавливать на один хост
-			ResponseHeaderTimeout: time.Second,
-			DialContext:           (&net.Dialer{Timeout: time.Second}).DialContext,
+			MaxIdleConns:          20,              //число открытых TCP-соединений, которые в данный момент не используются
+			IdleConnTimeout:       3 * time.Second, //время, через которое закрываются такие неактивные соединения
+			MaxIdleConnsPerHost:   10,              //число неактивных TCP-соединений, которые допускается устанавливать на один хост
+			ResponseHeaderTimeout: 5 * time.Second, //время в течении которого сервер ожидает получение ответа после записи заголовка запроса
+			DialContext: (&net.Dialer{
+				Timeout: 7 * time.Second,
+			}).DialContext,
 		},
 		//RetryOnError: ,
 		//RetryOnStatus: ,

@@ -110,7 +110,8 @@ func (c *VerifiedEsCase) ToStringBeautiful(num int) string {
 	ws := supportingfunctions.GetWhitespace(num)
 
 	str := strings.Builder{}
-	str.WriteString(fmt.Sprintf("%s'createTimestatmp': '%s'\n", ws, c.CreateTimestamp))
+	str.WriteString(fmt.Sprintf("%s'@id': '%s'\n", ws, c.ID))
+	str.WriteString(fmt.Sprintf("%s'@createTimestatmp': '%s'\n", ws, c.CreateTimestamp))
 	str.WriteString(fmt.Sprintf("%s'source': '%s'\n", ws, c.Source))
 	str.WriteString(fmt.Sprintf("%s'event':\n", ws))
 	str.WriteString(c.Event.ToStringBeautiful(num + 1))

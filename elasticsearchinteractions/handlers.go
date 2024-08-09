@@ -122,6 +122,10 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 	bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": %s}", string(request)))
 	res, err := hsd.Client.Update(indexCurrent, caseId, bodyUpdate)
 	defer func() {
+		if res == nil || res.Body == nil {
+			return
+		}
+
 		errClose := res.Body.Close()
 		if err == nil {
 			err = errClose
@@ -340,6 +344,10 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 
 	res, countDel, err := hsd.UpdateDocument(tag, indexCurrent, listDeleting, nvbyte)
 	defer func() {
+		if res == nil || res.Body == nil {
+			return
+		}
+
 		errClose := res.Body.Close()
 		if err == nil {
 			err = errClose
@@ -600,11 +608,6 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 			}
 		}
 
-		// Пока закоментируем, возможно посже откажемся от этого способа
-		//
-		//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
-		//chanOutput <- settingsOutputChan
-
 		return
 	}
 
@@ -703,7 +706,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 	res, countDel, err := hsd.UpdateDocument(tag, indexCurrent, listDeleting, nvbyte)
 	defer func() {
-		if res.Body == nil {
+		if res == nil || res.Body == nil {
 			return
 		}
 
@@ -721,11 +724,6 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 
 		return
 	}
-
-	// Пока закоментируем, возможно посже откажемся от этого способа
-	//
-	//отправляем запрос для обогащения кейса данными получаемыми из Zabbix
-	//chanOutput <- settingsOutputChan
 
 	if res != nil && res.StatusCode == http.StatusCreated {
 		//счетчик

@@ -5,167 +5,183 @@ import (
 	"fmt"
 	"reflect"
 	"runtime"
-	"strings"
 
 	"placeholder_elasticsearch/_moduledatacomparison/datamodel"
 	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/listhandlerforesjson"
 	"placeholder_elasticsearch/listhandlerthehivejson"
 )
 
-func FormatCaseJsonMongoDBHandler(formatCaseJson []byte, resultObject *datamodels.VerifiedEsCase, logging chan<- datamodels.MessageLogging) {
+func FormatCaseJsonMongoDBHandler(formatCaseJson []byte, resultObject *datamodels.VerifiedEsCase, logging chan<- datamodels.MessageLogging) bool {
 	chanOutputDecodeJson, chanDone := HandlerDecodeJsonMessage(formatCaseJson, logging)
 
-	go func(chanInput <-chan datamodel.ChanOutputDecodeJSON) {
-		var (
-			//Финальный объект
-			verifiedCase *datamodels.VerifiedTheHiveCase = datamodels.NewVerifiedTheHiveCase()
+	var (
+		event *datamodels.EventMessageForEsCase = datamodels.NewEventMessageForEsCase()
 
-			event        *datamodels.EventMessageTheHiveCase = datamodels.NewEventMessageTheHiveCase()
-			eventObject  *datamodels.EventCaseObject         = datamodels.NewEventCaseObject()
-			eventDetails *datamodels.EventCaseDetails        = datamodels.NewEventCaseDetails()
+		eventObject  *datamodels.EventForEsCaseObject = datamodels.NewEventForEsCaseObject()
+		eventDetails *datamodels.EventCaseDetails     = datamodels.NewEventCaseDetails()
 
-			eventObjectCustomFields  datamodels.CustomFields = datamodels.CustomFields{}
-			eventDetailsCustomFields datamodels.CustomFields = datamodels.CustomFields{}
-		)
+		eventObjectCustomFields  datamodels.CustomFields = datamodels.CustomFields{}
+		eventDetailsCustomFields datamodels.CustomFields = datamodels.CustomFields{}
+	)
 
-		//******************* Основные обработчики для Event **********************
-		// ------ EVENT ------
-		listHandlerEvent := listhandlerthehivejson.NewListHandlerEventCaseElement(event)
-		// ------ EVENT OBJECT ------
-		listHandlerEventObject := listhandlerthehivejson.NewListHandlerEventCaseObjectElement(eventObject)
-		// ------ EVENT OBJECT CUSTOMFIELDS ------
-		listHandlerEventObjectCustomFields := listhandlerthehivejson.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
-		// ------ EVENT DETAILS ------
-		listHandlerEventDetails := listhandlerthehivejson.NewListHandlerEventCaseDetailsElement(eventDetails)
-		// ------ EVENT DETAILS CUSTOMFIELDS ------
-		listHandlerEventDetailsCustomFields := listhandlerthehivejson.NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields)
+	//******************* Основные обработчики для Event **********************
+	// ------ EVENT ------
+	listHandlerEvent := listhandlerforesjson.NewListHandlerEventCaseElement(event)
+	// ------ EVENT OBJECT ------
+	listHandlerEventObject := listhandlerforesjson.NewListHandlerEventCaseObjectElement(eventObject)
+	// ------ EVENT OBJECT CUSTOMFIELDS ------
+	listHandlerEventObjectCustomFields := listhandlerthehivejson.NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields)
+	// ------ EVENT DETAILS ------
+	listHandlerEventDetails := listhandlerforesjson.NewListHandlerEventCaseDetailsElement(eventDetails)
+	// ------ EVENT DETAILS CUSTOMFIELDS ------
+	listHandlerEventDetailsCustomFields := listhandlerthehivejson.NewListHandlerEventDetailsCustomFieldsElement(eventDetailsCustomFields)
 
-		//******************* Вспомогательный объект для Observables **********************
-		so := listhandlerthehivejson.NewSupportiveObservables()
-		listHandlerObservables := listhandlerthehivejson.NewListHandlerObservablesElement(so)
+	//******************* Вспомогательный объект для Observables **********************
+	so := listhandlerforesjson.NewSupportiveObservables()
+	listHandlerObservables := listhandlerforesjson.NewListHandlerObservablesElement(so)
 
-		//******************* Вспомогательный объект для Ttp **********************
-		sttp := listhandlerthehivejson.NewSupportiveTtp()
-		listHandlerTtp := listhandlerthehivejson.NewListHandlerTtpElement(sttp)
+	//******************* Вспомогательный объект для Ttp **********************
+	sttp := listhandlerthehivejson.NewSupportiveTtp()
+	listHandlerTtp := listhandlerthehivejson.NewListHandlerTtpElement(sttp)
 
-		for data := range chanInput {
-			//******************************************************************
-			//********** Сбор всех объектов относящихся к полю Event  **********
-			// event element
-			if lf, ok := listHandlerEvent[data.FieldBranch]; ok {
-				for _, f := range lf {
-					f(data.Value)
-				}
-
-				continue
-			}
-
-			// event.object element
-			if lf, ok := listHandlerEventObject[data.FieldBranch]; ok {
-				for _, f := range lf {
-					f(data.Value)
-				}
-
-				continue
-			}
-
-			// event.object.customFields element
-			if lf, ok := listHandlerEventObjectCustomFields[data.FieldBranch]; ok {
-				for _, f := range lf {
-					f(data.Value)
-				}
-
-				continue
-			}
-
-			// event.details element
-			if lf, ok := listHandlerEventDetails[data.FieldBranch]; ok {
-				for _, f := range lf {
-					f(data.Value)
-				}
-
-				continue
-			}
-
-			// event.details.customFields element
-			if lf, ok := listHandlerEventDetailsCustomFields[data.FieldBranch]; ok {
-				for _, f := range lf {
-					f(data.Value)
-				}
-
-				continue
-			}
-
-			//************************************************************************
-			//********** Сбор всех объектов относящихся к полю Observables  **********
-			// для всех полей входящих в observables, кроме содержимого
-			//поля reports
-			if lf, ok := listHandlerObservables[data.FieldBranch]; ok {
-				for _, f := range lf {
-					r := reflect.TypeOf(data.Value)
-					switch r.Kind() {
-					case reflect.Slice:
-						if s, ok := data.Value.([]interface{}); ok {
-							for _, value := range s {
-								f(value)
-							}
-						}
-					default:
-						f(data.Value)
-
-					}
-				}
-
-				continue
-			}
-
-			//для всех полей входящих в состав observables.reports
-			if strings.Contains(data.FieldBranch, "observables.reports.") {
-				so.HandlerReportValue(data.FieldBranch, data.Value)
-			}
-
-			//*********************************************************************
-			//********** Сбор всех объектов относящихся к полю Ttp  ***************
-			if lf, ok := listHandlerTtp[data.FieldBranch]; ok {
-				for _, f := range lf {
-					r := reflect.TypeOf(data.Value)
-					switch r.Kind() {
-					case reflect.Slice:
-						if s, ok := data.Value.([]interface{}); ok {
-							for _, value := range s {
-								f(value)
-							}
-						}
-					default:
-						f(data.Value)
-
-					}
-				}
-
-				continue
-			}
-
-			// Собираем объект Event
-			eventObject.SetValueCustomFields(eventObjectCustomFields)
-			eventDetails.SetValueCustomFields(eventDetailsCustomFields)
-			event.SetValueObject(*eventObject)
-			event.SetValueDetails(*eventDetails)
-
-			// собираем объект observables
-			observables := datamodels.NewObservablesMessageTheHive()
-			observables.SetObservables(so.GetObservables())
-
-			// собираем объект ttp
-			ttps := datamodels.NewTtpsMessageTheHive()
-			ttps.SetTtps(sttp.GetTtps())
-
-			verifiedCase.SetEvent(*event)
-			verifiedCase.SetObservables(*observables)
-			verifiedCase.SetTtps(*ttps)
+	for data := range chanOutputDecodeJson {
+		if data.FieldBranch == "source" {
+			resultObject.SetSource(fmt.Sprint(data.Value))
 		}
-	}(chanOutputDecodeJson)
 
-	<-chanDone
+		if data.FieldBranch == "@id" {
+			resultObject.SetID(fmt.Sprint(data.Value))
+		}
+
+		if data.FieldBranch == "@timestamp" {
+			resultObject.SetCreateTimestamp(fmt.Sprint(data.Value))
+		}
+
+		//******************************************************************
+		//********** Сбор всех объектов относящихся к полю Event  **********
+		// event element
+		if lf, ok := listHandlerEvent[data.FieldBranch]; ok {
+			for _, f := range lf {
+				f(data.Value)
+			}
+
+			continue
+		}
+
+		// event.object element
+		if lf, ok := listHandlerEventObject[data.FieldBranch]; ok {
+			for _, f := range lf {
+				f(data.Value)
+			}
+
+			continue
+		}
+
+		// event.object.customFields element
+		if lf, ok := listHandlerEventObjectCustomFields[data.FieldBranch]; ok {
+			for _, f := range lf {
+				f(data.Value)
+			}
+
+			continue
+		}
+
+		// event.details element
+		if lf, ok := listHandlerEventDetails[data.FieldBranch]; ok {
+			for _, f := range lf {
+				f(data.Value)
+			}
+
+			continue
+		}
+
+		// event.details.customFields element
+		if lf, ok := listHandlerEventDetailsCustomFields[data.FieldBranch]; ok {
+			for _, f := range lf {
+				f(data.Value)
+			}
+
+			continue
+		}
+
+		//************************************************************************
+		//********** Сбор всех объектов относящихся к полю Observables  **********
+		// для всех полей входящих в observables, кроме содержимого
+		//поля reports
+		if lf, ok := listHandlerObservables[data.FieldBranch]; ok {
+			for _, f := range lf {
+				r := reflect.TypeOf(data.Value)
+				switch r.Kind() {
+				case reflect.Slice:
+					if s, ok := data.Value.([]interface{}); ok {
+						for _, value := range s {
+							f(value)
+						}
+					}
+				default:
+					f(data.Value)
+
+				}
+			}
+
+			continue
+		}
+
+		//убрал обработку observables.reports так как тип TtpsMessageEs
+		//способствует росту черезмерно большого количества полей которое
+		//влечет за собой превышения лимита маппинга в Elsticsearch), что
+		//выражается в ошибке от СУБД типа "Limit of total fields [2000]
+		//has been exceeded while adding new fields"
+		//
+		//для всех полей входящих в состав observables.reports
+		//if strings.Contains(data.FieldBranch, "observables.reports.") {
+		//		handlerIsExist = true
+		//		so.HandlerReportValue(data.FieldBranch, data.Value)
+		//}
+
+		//*********************************************************************
+		//********** Сбор всех объектов относящихся к полю Ttp  ***************
+		if lf, ok := listHandlerTtp[data.FieldBranch]; ok {
+			for _, f := range lf {
+				r := reflect.TypeOf(data.Value)
+				switch r.Kind() {
+				case reflect.Slice:
+					if s, ok := data.Value.([]interface{}); ok {
+						for _, value := range s {
+							f(value)
+						}
+					}
+
+				default:
+					f(data.Value)
+
+				}
+			}
+
+			continue
+		}
+	}
+
+	// Собираем объект Event
+	eventObject.SetValueCustomFields(eventObjectCustomFields)
+	eventDetails.SetValueCustomFields(eventDetailsCustomFields)
+	event.SetValueObject(*eventObject)
+	event.SetValueDetails(*eventDetails)
+
+	// собираем объект observables
+	observables := datamodels.NewObservablesMessageEs()
+	observables.SetValueObservables(so.GetObservables())
+
+	// собираем объект ttp
+	ttps := datamodels.NewTtpsMessageTheHive()
+	ttps.SetTtps(sttp.GetTtps())
+
+	resultObject.SetEvent(*event)
+	resultObject.SetObservables(*observables)
+	resultObject.SetTtps(*ttps)
+
+	return <-chanDone
 }
 
 func HandlerDecodeJsonMessage(b []byte, logging chan<- datamodels.MessageLogging) (chan datamodel.ChanOutputDecodeJSON, chan bool) {
@@ -185,6 +201,7 @@ func HandlerDecodeJsonMessage(b []byte, logging chan<- datamodels.MessageLogging
 		listMap := map[string]interface{}{}
 		if err = json.Unmarshal(b, &listMap); err == nil {
 			if len(listMap) == 0 {
+				isSuccess = false
 				logging <- datamodels.MessageLogging{
 					MsgData: fmt.Sprintf("'error decoding the json message, it may be empty' %s:%d", f, l+2),
 					MsgType: "error",
@@ -199,6 +216,7 @@ func HandlerDecodeJsonMessage(b []byte, logging chan<- datamodels.MessageLogging
 			_, f, l, _ = runtime.Caller(0)
 			listSlice := []interface{}{}
 			if err = json.Unmarshal(b, &listSlice); err != nil {
+				isSuccess = false
 				logging <- datamodels.MessageLogging{
 					MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l+2),
 					MsgType: "error",
@@ -208,6 +226,7 @@ func HandlerDecodeJsonMessage(b []byte, logging chan<- datamodels.MessageLogging
 			}
 
 			if len(listSlice) == 0 {
+				isSuccess = false
 				logging <- datamodels.MessageLogging{
 					MsgData: fmt.Sprintf("'error decoding the json message, it may be empty' %s:%d", f, l+2),
 					MsgType: "error",

@@ -50,7 +50,7 @@ func SetMaxTotalFieldsLimit(hsd HandlerSendData, indexes []string, logging chan<
 		if err != nil {
 			_, f, l, _ := runtime.Caller(0)
 			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err, f, l-1),
+				MsgData: fmt.Sprintf("'%s' %s:%d", err, f, l-2),
 				MsgType: "error",
 			}
 
@@ -62,7 +62,7 @@ func SetMaxTotalFieldsLimit(hsd HandlerSendData, indexes []string, logging chan<
 			if err != nil {
 				_, f, l, _ := runtime.Caller(0)
 				logging <- datamodels.MessageLogging{
-					MsgData: fmt.Sprintf("'%s' %s:%d", err, f, l-1),
+					MsgData: fmt.Sprintf("'%s' %s:%d", err, f, l-2),
 					MsgType: "error",
 				}
 
