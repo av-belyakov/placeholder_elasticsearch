@@ -1,8 +1,9 @@
 package listhandlerforesjson
 
 import (
-	"placeholder_elasticsearch/listhandlercommon"
 	"strings"
+
+	"placeholder_elasticsearch/listhandlercommon"
 )
 
 func NewListHandlerObservablesElement(so *SupportiveObservables) map[string][]func(interface{}) {

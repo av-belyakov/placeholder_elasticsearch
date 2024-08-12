@@ -1,10 +1,11 @@
-package supportingfunctions
+package decoder
 
 import (
 	"encoding/json"
 	"fmt"
 	"reflect"
 	"runtime"
+	"strings"
 
 	"placeholder_elasticsearch/_moduledatacomparison/datamodel"
 	"placeholder_elasticsearch/datamodels"
@@ -103,6 +104,10 @@ func FormatCaseJsonMongoDBHandler(formatCaseJson []byte, resultObject *datamodel
 			}
 
 			continue
+		}
+
+		if strings.Contains(data.FieldBranch, "ignoreSimilarity") {
+			fmt.Println("__FIND: ", data.FieldBranch)
 		}
 
 		//************************************************************************

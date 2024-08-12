@@ -4,9 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
+	"runtime/pprof"
 	"strings"
 	"time"
 
@@ -17,7 +20,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"placeholder_elasticsearch/_moduledatacomparison/supportingfunctions"
+	"placeholder_elasticsearch/_moduledatacomparison/datamodel"
+	"placeholder_elasticsearch/_moduledatacomparison/decoder"
 	"placeholder_elasticsearch/confighandler"
 	"placeholder_elasticsearch/datamodels"
 )
@@ -89,7 +93,8 @@ var _ = Describe("Casecomparation", Ordered, func() {
 
 		logging chan datamodels.MessageLogging
 
-		errMdb, errEs, errApp error
+		f                          *os.File
+		err, errMdb, errEs, errApp error
 	)
 
 	BeforeAll(func() {
@@ -98,6 +103,17 @@ var _ = Describe("Casecomparation", Ordered, func() {
 		go func() {
 			for msg := range logging {
 				fmt.Println("LOG MSG:", msg)
+			}
+		}()
+
+		go func() {
+			f, err = os.Create("proff.out")
+			if err != nil {
+				log.Fatal("could not create CPU profile: ", err)
+			}
+
+			if err = pprof.StartCPUProfile(f); err != nil {
+				log.Fatal("could not start CPU profile: ", err)
 			}
 		}()
 
@@ -156,17 +172,17 @@ var _ = Describe("Casecomparation", Ordered, func() {
 
 			num := 1
 			casesId := []string(nil)
-			verifedTheHiveCases := []datamodels.VerifiedTheHiveCase(nil)
+			verifedTheHiveCases := []datamodel.VerifiedTheHiveCase(nil)
 			for cur.Next(context.Background()) {
-				var verifedCase datamodels.VerifiedTheHiveCase
+				var verifedCase datamodel.VerifiedTheHiveCase
 				if err := cur.Decode(&verifedCase); err != nil {
 					Expect(err).ShouldNot(HaveOccurred())
 				}
 
-				fmt.Printf("%d.\n", num)
-				fmt.Println("@id:", verifedCase.GetID())
-				fmt.Println("@timestamp:", verifedCase.Get().CreateTimestamp)
-				fmt.Println("RootId:", verifedCase.GetEvent().GetRootId())
+				//fmt.Printf("%d.\n", num)
+				//fmt.Println("@id:", verifedCase.GetID())
+				//fmt.Println("@timestamp:", verifedCase.Get().CreateTimestamp)
+				//fmt.Println("RootId:", verifedCase.GetEvent().GetRootId())
 
 				verifedTheHiveCases = append(verifedTheHiveCases, verifedCase)
 				//casesId = append(casesId, fmt.Sprintf("{ \"span_term\" : { \"@id\" : \"%s\" } }", verifedCase.GetID()))
@@ -176,8 +192,8 @@ var _ = Describe("Casecomparation", Ordered, func() {
 			}
 
 			Expect(len(verifedTheHiveCases)).Should(Equal(15))
-
-			var str string
+			Expect(len(casesId)).ShouldNot(Equal(0))
+			/*var str string
 			for i := 0; i < len(casesId); i++ {
 				str += fmt.Sprintf("{\"span_term\": {\"@id\": \"%s\"}}", casesId[i])
 				if i < (len(casesId) - 1) {
@@ -185,7 +201,7 @@ var _ = Describe("Casecomparation", Ordered, func() {
 				}
 			}
 
-			fmt.Println("Query string:", str)
+			fmt.Println("Query string:", str)*/
 
 			//запрос к Elasticsearch
 			//SetSkip(int64(10)).SetLimit(int64(15) таких кейсов в эластике нет
@@ -231,11 +247,21 @@ var _ = Describe("Casecomparation", Ordered, func() {
 					}
 				}
 
+				if vthc.GetID() == "f52930a9-5caf-4299-b00b-781b3aba094f" {
+					fmt.Println(vthc.ToStringBeautiful(0))
+
+					//if b, err := json.MarshalIndent(vthc, "", " "); err == nil {
+					//	fmt.Println("___________________________")
+					//	fmt.Println(string(b))
+					//	fmt.Println("___________________________")
+					//}
+				}
+
 				if !isExist {
 					if b, err := json.Marshal(vthc); err == nil {
 						newVerifedCase := datamodels.VerifiedEsCase{}
 
-						isOk := supportingfunctions.FormatCaseJsonMongoDBHandler(b, &newVerifedCase, logging)
+						isOk := decoder.FormatCaseJsonMongoDBHandler(b, &newVerifedCase, logging)
 
 						if isOk {
 							newVerifedEsCases = append(newVerifedEsCases, newVerifedCase)
@@ -248,7 +274,9 @@ var _ = Describe("Casecomparation", Ordered, func() {
 			fmt.Println("Count:", len(newVerifedEsCases))
 			for k, v := range newVerifedEsCases {
 				fmt.Printf("%d.\n", k)
-				fmt.Println(v.ToStringBeautiful(0))
+				if v.GetID() == "f52930a9-5caf-4299-b00b-781b3aba094f" {
+					fmt.Println(v.ToStringBeautiful(0))
+				}
 			}
 
 			Expect(err).ShouldNot(HaveOccurred())
@@ -258,5 +286,8 @@ var _ = Describe("Casecomparation", Ordered, func() {
 	AfterAll(func() {
 		ctxMdbCancel()
 		//close(logging)
+
+		defer f.Close() // error handling omitted for example
+		defer pprof.StopCPUProfile()
 	})
 })

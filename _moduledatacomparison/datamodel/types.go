@@ -12,3 +12,14 @@ type ChanOutputDecodeJSON struct {
 	Value       interface{}
 	FieldBranch string
 }
+
+// SupportiveObservables вспомогательный тип для для обработки observables
+/*type SupportiveObservables struct {
+	currentKey string
+	//previousFieldReports      string
+	listAcceptedFields        []string
+	listAcceptedFieldsReports []string
+	observableTmp             datamodels.ObservableMessageEs
+	observables               map[string][]datamodels.ObservableMessageEs
+}
+*/

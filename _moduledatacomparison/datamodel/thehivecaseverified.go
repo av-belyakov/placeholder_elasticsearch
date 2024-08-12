@@ -1,11 +1,10 @@
-package datamodels
+package datamodel
 
 import (
 	"fmt"
+	"placeholder_elasticsearch/supportingfunctions"
 	"strings"
 	"time"
-
-	"placeholder_elasticsearch/supportingfunctions"
 )
 
 // VerifiedTheHiveCase объект представляет собой верифицированный 'кейс' TheHive

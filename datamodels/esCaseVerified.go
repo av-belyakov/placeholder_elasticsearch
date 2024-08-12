@@ -115,10 +115,8 @@ func (c *VerifiedEsCase) ToStringBeautiful(num int) string {
 	str.WriteString(fmt.Sprintf("%s'source': '%s'\n", ws, c.Source))
 	str.WriteString(fmt.Sprintf("%s'event':\n", ws))
 	str.WriteString(c.Event.ToStringBeautiful(num + 1))
-	str.WriteString(fmt.Sprintf("%s'observables':\n", ws))
-	str.WriteString(c.ObservablesMessageEs.ToStringBeautiful(num + 1))
-	str.WriteString(fmt.Sprintf("%s'ttp':\n", ws))
-	str.WriteString(c.TtpsMessageTheHive.ToStringBeautiful(num + 1))
+	str.WriteString(c.ObservablesMessageEs.ToStringBeautiful(num))
+	str.WriteString(c.TtpsMessageTheHive.ToStringBeautiful(num))
 	//str.WriteString(c.TtpsMessageEs.ToStringBeautiful(num + 1))
 
 	return str.String()

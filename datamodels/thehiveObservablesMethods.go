@@ -69,15 +69,15 @@ func (o *ObservableMessage) SetValueReports(v map[string]ReportTaxonomies) {
 }
 
 func (om ObservablesMessageTheHive) ToStringBeautiful(num int) string {
-	var str strings.Builder = strings.Builder{}
-	ws := supportingfunctions.GetWhitespace(num)
+	return fmt.Sprintf("%s'observables': \n%s", supportingfunctions.GetWhitespace(num), func(l []ObservableMessage) string {
+		var str strings.Builder = strings.Builder{}
+		for k, v := range l {
+			str.WriteString(fmt.Sprintf("%s%d.\n", supportingfunctions.GetWhitespace(num+1), k+1))
+			str.WriteString(v.ToStringBeautiful(num + 2))
+		}
 
-	for k, v := range om.Observables {
-		str.WriteString(fmt.Sprintf("%s%d.\n", ws, k+1))
-		str.WriteString(v.ToStringBeautiful(num + 1))
-	}
-
-	return str.String()
+		return str.String()
+	}(om.Observables))
 }
 
 func (om ObservableMessage) ToStringBeautiful(num int) string {

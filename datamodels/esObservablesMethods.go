@@ -46,6 +46,7 @@ func (o *ObservablesMessageEs) AddValueObservable(k string, v ObservableMessageE
 
 func (om ObservablesMessageEs) ToStringBeautiful(num int) string {
 	var str strings.Builder = strings.Builder{}
+	str.WriteString(fmt.Sprintf("%s'observables': \n", supportingfunctions.GetWhitespace(num)))
 
 	for key, value := range om.Observables {
 		str.WriteString(fmt.Sprintf("%s%s:\n", supportingfunctions.GetWhitespace(num+1), key))

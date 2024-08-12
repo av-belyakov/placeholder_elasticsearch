@@ -2,6 +2,9 @@ package testsyncmutex_test
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"runtime/pprof"
 	"sync"
 	"time"
 
@@ -15,7 +18,13 @@ type MyTestMutix struct {
 }
 
 var _ = Describe("Testsyncmutex", Ordered, func() {
-	var myTestMutix MyTestMutix
+	var (
+		f *os.File
+
+		myTestMutix MyTestMutix
+
+		err error
+	)
 
 	BeforeAll(func() {
 		myTestMutix.List = map[string]string{
@@ -30,6 +39,17 @@ var _ = Describe("Testsyncmutex", Ordered, func() {
 			"nine":  "any nine",
 			"ten":   "any ten",
 		}
+
+		go func() {
+			f, err = os.Create("proff.out")
+			if err != nil {
+				log.Fatal("could not create CPU profile: ", err)
+			}
+
+			if err = pprof.StartCPUProfile(f); err != nil {
+				log.Fatal("could not start CPU profile: ", err)
+			}
+		}()
 	})
 
 	Context("Test 1.", func() {
@@ -68,5 +88,10 @@ var _ = Describe("Testsyncmutex", Ordered, func() {
 
 			Expect(true).Should(BeTrue())
 		})
+	})
+
+	AfterAll(func() {
+		defer f.Close() // error handling omitted for example
+		defer pprof.StopCPUProfile()
 	})
 })
