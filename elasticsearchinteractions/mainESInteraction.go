@@ -24,7 +24,7 @@ func (h *HandlerSendData) New() error {
 			MaxIdleConnsPerHost:   10,              //число неактивных TCP-соединений, которые допускается устанавливать на один хост
 			ResponseHeaderTimeout: 5 * time.Second, //время в течении которого сервер ожидает получение ответа после записи заголовка запроса
 			DialContext: (&net.Dialer{
-				Timeout: 7 * time.Second,
+				Timeout: 3 * time.Second,
 			}).DialContext,
 		},
 		//RetryOnError: ,
