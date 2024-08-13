@@ -11,32 +11,6 @@ import (
 	"placeholder_elasticsearch/datamodels"
 )
 
-func (hsd HandlerSendData) InsertNewDocument(
-	tag string,
-	index string,
-	document []byte,
-	logging chan<- datamodels.MessageLogging,
-	counting chan<- datamodels.DataCounterSettings,
-) {
-	res, err := hsd.InsertDocument(tag, index, document)
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
-	}
-
-	if res != nil && res.StatusCode == http.StatusCreated {
-		//счетчик
-		counting <- datamodels.DataCounterSettings{
-			DataType: "update count insert Elasticserach",
-			DataMsg:  "subject_alert",
-			Count:    1,
-		}
-	}
-}
-
 // AddEventenrichmentCase выполняет обогащение уже имеющегося кейса дополнительной, полезной информацией
 func (hsd HandlerSendData) AddEventenrichmentCase(
 	data interface{},
@@ -91,8 +65,6 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 
 			continue
 		}
-
-		//*********************************************************************
 
 		si := datamodels.NewSensorInformation()
 		si.SetSensorId(v)
@@ -227,6 +199,17 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	if len(indexesOnlyCurrentYear) == 0 {
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
+		indexes = append(indexes, indexCurrent)
+		//устанавливаем максимальный лимит количества полей для всех индексов которые
+		//содержат значение по умолчанию в 1000 полей
+		if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+
 		return
 	}
 
@@ -236,10 +219,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 			return
 		}
 
-		errClose := res.Body.Close()
-		if err == nil {
-			err = errClose
-		}
+		res.Body.Close()
 	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -348,10 +328,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 			return
 		}
 
-		errClose := res.Body.Close()
-		if err == nil {
-			err = errClose
-		}
+		res.Body.Close()
 	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -558,6 +535,16 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	if len(indexesOnlyCurrentYear) == 0 {
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
+		//устанавливаем максимальный лимит количества полей для всех индексов которые
+		//содержат значение по умолчанию в 1000 полей
+		if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+
 		return
 	}
 
@@ -710,10 +697,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 			return
 		}
 
-		errClose := res.Body.Close()
-		if err == nil {
-			err = errClose
-		}
+		res.Body.Close()
 	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)

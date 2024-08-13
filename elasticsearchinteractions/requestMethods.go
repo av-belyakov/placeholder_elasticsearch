@@ -14,6 +14,32 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
 
+// InsertNewDocument добавление нового документа-индекса
+func (hsd HandlerSendData) InsertNewDocument(
+	tag string,
+	index string,
+	document []byte,
+	logging chan<- datamodels.MessageLogging,
+	counting chan<- datamodels.DataCounterSettings) {
+	_, err := hsd.InsertDocument(tag, index, document)
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
+
+		return
+	}
+
+	//счетчик
+	counting <- datamodels.DataCounterSettings{
+		DataType: "update count insert Elasticserach",
+		DataMsg:  "subject_alert",
+		Count:    1,
+	}
+}
+
 // GetIndexSetting получает натройки выбранного индекса
 func (hsd HandlerSendData) GetIndexSetting(index, query string) (*esapi.Response, error) {
 	var (
@@ -44,10 +70,11 @@ func (hsd HandlerSendData) SetIndexSetting(indexes []string, query string) (bool
 
 	res, err := indicesSettings.Do(context.Background(), hsd.Client.Transport)
 	defer func() {
-		errClose := res.Body.Close()
-		if err == nil {
-			err = errClose
+		if res == nil || res.Body == nil {
+			return
 		}
+
+		res.Body.Close()
 	}()
 	if err != nil {
 		return false, err
@@ -100,6 +127,13 @@ func (hsd HandlerSendData) InsertDocument(tag, index string, b []byte) (*esapi.R
 
 	buf := bytes.NewReader(b)
 	res, err := hsd.Client.Index(index, buf)
+	defer func() {
+		if res == nil || res.Body == nil {
+			return
+		}
+
+		res.Body.Close()
+	}()
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
@@ -206,16 +240,17 @@ func (hsd HandlerSendData) GetExistingIndexes(pattern string) ([]string, error) 
 		hsd.Client.Cat.Indices.WithContext(context.TODO()),
 		hsd.Client.Cat.Indices.WithFormat("json"),
 	)
+	defer func() {
+		if res == nil || res.Body == nil {
+			return
+		}
+
+		res.Body.Close()
+	}()
+
 	if err != nil {
 		return nil, err
 	}
-
-	defer func() {
-		errClose := res.Body.Close() //здесь бывает паника !!!!
-		if err == nil {
-			err = errClose
-		}
-	}()
 
 	if err = json.NewDecoder(res.Body).Decode(&msg); err != nil {
 		return nil, err

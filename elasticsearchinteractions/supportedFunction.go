@@ -16,18 +16,28 @@ import (
 // fields [1000] has been exceeded while adding new fields которая
 // возникает при установленном максимальном количестве полей в 1000.
 func SetMaxTotalFieldsLimit(hsd HandlerSendData, indexes []string, logging chan<- datamodels.MessageLogging) error {
-	var (
-		query string = `{
-			"index": {
-				"mapping": {
-					"total_fields": {
-						"limit": 2000
-						}
-					}
-				}
-			}`
+	if len(indexes) == 0 {
+		return fmt.Errorf("an empty list of indexes was received")
+	}
 
-		indexSettings = map[string]struct {
+	getIndexLimit := func(indexName string) (string, bool, error) {
+		res, err := hsd.GetIndexSetting(indexName, "")
+		defer func() {
+			if res == nil || res.Body == nil {
+				return
+			}
+
+			res.Body.Close()
+		}()
+		if err != nil {
+			return "", false, err
+		}
+
+		if res.StatusCode != http.StatusOK {
+			return "", false, fmt.Errorf("the server response when executing an index search query is equal to '%s'", res.Status())
+		}
+
+		indexSettings := map[string]struct {
 			Settings struct {
 				Index struct {
 					Mapping struct {
@@ -38,49 +48,48 @@ func SetMaxTotalFieldsLimit(hsd HandlerSendData, indexes []string, logging chan<
 				} `json:"index"`
 			} `json:"settings"`
 		}{}
-	)
 
-	if len(indexes) == 0 {
-		return fmt.Errorf("an empty list of indexes was received")
+		err = json.NewDecoder(res.Body).Decode(&indexSettings)
+		if err != nil {
+			return "", false, err
+		}
+
+		info, ok := indexSettings[indexName]
+
+		return info.Settings.Index.Mapping.TotalFields.Limit, ok, nil
 	}
 
 	indexForTotalFieldsLimit := []string(nil)
 	for _, v := range indexes {
-		res, err := hsd.GetIndexSetting(v, "")
+		limit, ok, err := getIndexLimit(v)
 		if err != nil {
 			_, f, l, _ := runtime.Caller(0)
 			logging <- datamodels.MessageLogging{
 				MsgData: fmt.Sprintf("'%s' %s:%d", err, f, l-2),
 				MsgType: "error",
 			}
+		}
 
+		if !ok || limit == "2000" {
 			continue
 		}
 
-		if res.StatusCode == 200 {
-			err = json.NewDecoder(res.Body).Decode(&indexSettings)
-			if err != nil {
-				_, f, l, _ := runtime.Caller(0)
-				logging <- datamodels.MessageLogging{
-					MsgData: fmt.Sprintf("'%s' %s:%d", err, f, l-2),
-					MsgType: "error",
-				}
-
-				continue
-			}
-
-			if indexSettings[v].Settings.Index.Mapping.TotalFields.Limit == "2000" {
-				continue
-			}
-
-			indexForTotalFieldsLimit = append(indexForTotalFieldsLimit, v)
-		}
+		indexForTotalFieldsLimit = append(indexForTotalFieldsLimit, v)
 	}
 
 	if len(indexForTotalFieldsLimit) == 0 {
 		return nil
 	}
 
+	var query string = `{
+		"index": {
+			"mapping": {
+				"total_fields": {
+					"limit": 2000
+					}
+				}
+			}
+		}`
 	if _, err := hsd.SetIndexSetting(indexForTotalFieldsLimit, query); err != nil {
 		return err
 	}
