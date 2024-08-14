@@ -14,6 +14,14 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
 
+func responseClose(res *esapi.Response) {
+	if res == nil || res.Body == nil {
+		return
+	}
+
+	res.Body.Close()
+}
+
 // InsertNewDocument добавление нового документа-индекса
 func (hsd HandlerSendData) InsertNewDocument(
 	tag string,
@@ -21,7 +29,8 @@ func (hsd HandlerSendData) InsertNewDocument(
 	document []byte,
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings) {
-	_, err := hsd.InsertDocument(tag, index, document)
+	res, err := hsd.InsertDocument(tag, index, document)
+	defer responseClose(res)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -69,13 +78,7 @@ func (hsd HandlerSendData) SetIndexSetting(indexes []string, query string) (bool
 	}
 
 	res, err := indicesSettings.Do(context.Background(), hsd.Client.Transport)
-	defer func() {
-		if res == nil || res.Body == nil {
-			return
-		}
-
-		res.Body.Close()
-	}()
+	defer responseClose(res)
 	if err != nil {
 		return false, err
 	}
@@ -109,6 +112,7 @@ func (hsd HandlerSendData) DelIndexSetting(indexes []string) (*esapi.Response, e
 	}
 
 	res, err = req.Do(context.Background(), hsd.Client.Transport)
+	defer responseClose(res)
 	if err != nil {
 		return res, err
 	}
@@ -127,13 +131,7 @@ func (hsd HandlerSendData) InsertDocument(tag, index string, b []byte) (*esapi.R
 
 	buf := bytes.NewReader(b)
 	res, err := hsd.Client.Index(index, buf)
-	defer func() {
-		if res == nil || res.Body == nil {
-			return
-		}
-
-		res.Body.Close()
-	}()
+	defer responseClose(res)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		return res, fmt.Errorf("'%v' %s:%d", err, f, l-1)
@@ -170,6 +168,7 @@ func (hsd HandlerSendData) DeleteDocument(index []string, query *strings.Reader)
 		hsd.Client.Search.WithIndex(index...),
 		hsd.Client.Search.WithBody(query),
 	)
+	defer responseClose(res)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		return countDoc, fmt.Errorf("'%v' %s:%d", err, f, l-1)
@@ -184,8 +183,8 @@ func (hsd HandlerSendData) DeleteDocument(index []string, query *strings.Reader)
 	if decEs.Options.Total.Value > 0 {
 		countDoc = decEs.Options.Total.Value
 		for _, v := range decEs.Options.Hits {
-			_, errDel := hsd.Client.Delete(v.Index, v.ID)
-
+			res, errDel := hsd.Client.Delete(v.Index, v.ID)
+			responseClose(res)
 			if errDel != nil {
 				err = fmt.Errorf("%v, %v", err, errDel)
 			}
@@ -214,7 +213,8 @@ func (hsd HandlerSendData) SearchDocument(index []string, query *strings.Reader)
 // параметрам заданным в запросе
 func (hsd HandlerSendData) UpdateDocument(tag, currentIndex string, list []datamodels.ServiseOption, document []byte) (res *esapi.Response, countDel int, err error) {
 	for _, v := range list {
-		_, errDel := hsd.Client.Delete(v.Index, v.ID)
+		res, errDel := hsd.Client.Delete(v.Index, v.ID)
+		responseClose(res)
 		if errDel != nil {
 			err = fmt.Errorf("%v, %v", err, errDel)
 		}
@@ -240,14 +240,7 @@ func (hsd HandlerSendData) GetExistingIndexes(pattern string) ([]string, error) 
 		hsd.Client.Cat.Indices.WithContext(context.TODO()),
 		hsd.Client.Cat.Indices.WithFormat("json"),
 	)
-	defer func() {
-		if res == nil || res.Body == nil {
-			return
-		}
-
-		res.Body.Close()
-	}()
-
+	defer responseClose(res)
 	if err != nil {
 		return nil, err
 	}

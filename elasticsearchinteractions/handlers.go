@@ -323,13 +323,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	}
 
 	res, countDel, err := hsd.UpdateDocument(tag, indexCurrent, listDeleting, nvbyte)
-	defer func() {
-		if res == nil || res.Body == nil {
-			return
-		}
-
-		res.Body.Close()
-	}()
+	defer responseClose(res)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -692,13 +686,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	}
 
 	res, countDel, err := hsd.UpdateDocument(tag, indexCurrent, listDeleting, nvbyte)
-	defer func() {
-		if res == nil || res.Body == nil {
-			return
-		}
-
-		res.Body.Close()
-	}()
+	defer responseClose(res)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{

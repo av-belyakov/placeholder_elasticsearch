@@ -108,10 +108,7 @@ func SearchUnderlineIdAlert(indexName, rootId, source string, hsd HandlerSendDat
 			return
 		}
 
-		errClose := res.Body.Close()
-		if err == nil {
-			err = errClose
-		}
+		res.Body.Close()
 	}()
 	if err != nil {
 		return alertId, err
@@ -144,10 +141,7 @@ func SearchUnderlineIdCase(indexName, rootId, source string, hsd HandlerSendData
 			return
 		}
 
-		errClose := res.Body.Close()
-		if err == nil {
-			err = errClose
-		}
+		res.Body.Close()
 	}()
 	if err != nil {
 		return caseId, err
