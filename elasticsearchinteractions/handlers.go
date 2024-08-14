@@ -213,6 +213,16 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		return
 	}
 
+	//устанавливаем максимальный лимит количества полей для всех индексов которые
+	//содержат значение по умолчанию в 1000 полей
+	if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
+	}
+
 	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
 	defer func() {
 		if res == nil || res.Body == nil {
@@ -247,27 +257,7 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 		//выполняется только когда не найден искомый документ
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
-		//устанавливаем максимальный лимит количества полей для всех индексов которые
-		//содержат значение по умолчанию в 1000 полей
-		if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
-			_, f, l, _ := runtime.Caller(0)
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-				MsgType: "error",
-			}
-		}
-
 		return
-	}
-
-	//устанавливаем максимальный лимит количества полей для всех индексов которые
-	//содержат значение по умолчанию в 1000 полей
-	if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
 	}
 
 	//*** при наличие искомого документа выполняем его замену ***
@@ -529,6 +519,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 	if len(indexesOnlyCurrentYear) == 0 {
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
+		indexes = append(indexes, indexCurrent)
 		//устанавливаем максимальный лимит количества полей для всех индексов которые
 		//содержат значение по умолчанию в 1000 полей
 		if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
@@ -540,6 +531,16 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		}
 
 		return
+	}
+
+	//устанавливаем максимальный лимит количества полей для всех индексов которые
+	//содержат значение по умолчанию в 1000 полей
+	if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		logging <- datamodels.MessageLogging{
+			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
+			MsgType: "error",
+		}
 	}
 
 	res, err := hsd.SearchDocument(indexesOnlyCurrentYear, queryCurrent)
@@ -579,27 +580,7 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 		//выполняется только когда не найден искомый документ
 		hsd.InsertNewDocument(tag, indexCurrent, newDocumentBinary, logging, counting)
 
-		//устанавливаем максимальный лимит количества полей для всех индексов которые
-		//содержат значение по умолчанию в 1000 полей
-		if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
-			_, f, l, _ := runtime.Caller(0)
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-				MsgType: "error",
-			}
-		}
-
 		return
-	}
-
-	//устанавливаем максимальный лимит количества полей для всех индексов которые
-	//содержат значение по умолчанию в 1000 полей
-	if err := SetMaxTotalFieldsLimit(hsd, indexes, logging); err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
-			MsgType: "error",
-		}
 	}
 
 	//*** при наличие искомого документа выполняем его замену ***
