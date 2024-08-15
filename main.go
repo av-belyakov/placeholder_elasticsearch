@@ -256,7 +256,6 @@ func main() {
 	}
 
 	var appName string
-	appStatus := "production"
 	if an, err := supportingfunctions.GetAppName("README.md", 1); err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "warning")
@@ -264,6 +263,7 @@ func main() {
 		appName = an
 	}
 
+	appStatus := "production"
 	envValue, ok := os.LookupEnv("GO_PHELASTIC_MAIN")
 	if ok && envValue == "development" {
 		appStatus = envValue

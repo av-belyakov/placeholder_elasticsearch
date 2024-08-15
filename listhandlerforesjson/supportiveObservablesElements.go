@@ -8,8 +8,7 @@ import (
 
 // SupportiveObservables вспомогательный тип для для обработки observables
 type SupportiveObservables struct {
-	currentKey string
-	//previousFieldReports      string
+	currentKey                string
 	listAcceptedFields        []string
 	listAcceptedFieldsReports []string
 	observableTmp             datamodels.ObservableMessageEs
