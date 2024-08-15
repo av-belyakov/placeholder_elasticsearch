@@ -3,12 +3,13 @@ package eventenrichmentmodule
 import (
 	"context"
 	"fmt"
-	"placeholder_elasticsearch/confighandler"
-	"placeholder_elasticsearch/datamodels"
-	"placeholder_elasticsearch/zabbixinteractions"
 	"regexp"
 	"runtime"
 	"time"
+
+	"placeholder_elasticsearch/confighandler"
+	"placeholder_elasticsearch/datamodels"
+	"placeholder_elasticsearch/zabbixinteractions"
 )
 
 // NewEventEnrichmentModule инициализирует новый модуль обогащения данными

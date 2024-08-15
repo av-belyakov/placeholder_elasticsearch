@@ -78,6 +78,10 @@ func authorizationZabbixAPI(login, passwd string, zc ZabbixConnectionJsonRPC) (s
 	req := strings.NewReader(fmt.Sprintf("{\"jsonrpc\":\"2.0\",\"method\":\"user.login\",\"params\":{\"username\":\"%s\",\"password\":\"%s\"},\"id\":1}", login, passwd))
 	res, err := zc.connClient.Post(zc.url, zc.applicationType, req)
 	defer func() {
+		if res == nil || res.Body == nil {
+			return
+		}
+
 		res.Body.Close()
 	}()
 	if err != nil {
