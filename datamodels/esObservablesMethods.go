@@ -97,12 +97,16 @@ func (o *ObservableMessageEs) GetSnortSid() []string {
 
 // SetValueSnortSid добавляет значение STRING в список поля SnortSid
 func (o *ObservableMessageEs) SetValueSnortSid(v string) {
+	if o.SnortSid == nil {
+		o.SnortSid = []string(nil)
+	}
+
 	o.SnortSid = append(o.SnortSid, v)
 }
 
 // SetAnySnortSid добавляет ЛЮБОЕ значение в список поля SnortSid
 func (o *ObservableMessageEs) SetAnySnortSid(i interface{}) {
-	o.SnortSid = append(o.SnortSid, fmt.Sprint(i))
+	o.SetValueSnortSid(fmt.Sprint(i))
 }
 
 func (o *ObservableMessageEs) GetTags() map[string][]string {
@@ -111,6 +115,10 @@ func (o *ObservableMessageEs) GetTags() map[string][]string {
 
 // SetValueTags добаляет значение в Tags по ключу
 func (o *ObservableMessageEs) SetValueTags(k, v string) bool {
+	if o.Tags == nil {
+		o.Tags = make(map[string][]string)
+	}
+
 	if _, ok := o.Tags[k]; !ok {
 		o.Tags[k] = []string(nil)
 	}
@@ -137,12 +145,16 @@ func (o *ObservableMessageEs) GetTagsAll() []string {
 
 // SetValueTags устанавливает STRING значение для поля TagsAll
 func (o *ObservableMessageEs) SetValueTagsAll(v string) {
+	if o.TagsAll == nil {
+		o.TagsAll = []string(nil)
+	}
+
 	o.TagsAll = append(o.TagsAll, v)
 }
 
 // SetAnyTagsAll устанавливает ЛЮБОЕ значение для поля Tags
 func (o *ObservableMessageEs) SetAnyTagsAll(i interface{}) {
-	o.TagsAll = append(o.TagsAll, fmt.Sprint(i))
+	o.SetValueTagsAll(fmt.Sprint(i))
 }
 
 func (o *ObservableMessageEs) GetAttachment() *AttachmentData {

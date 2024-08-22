@@ -31,7 +31,6 @@ func NewVerifiedEsCase() *VerifiedEsCase {
 		Event:           *NewEventMessageForEsCase(),
 	}
 	vec.ObservablesMessageEs = *NewObservablesMessageEs()
-	//vec.TtpsMessageEs = *NewTtpsMessageEs()
 	vec.TtpsMessageTheHive = *NewTtpsMessageTheHive()
 	vec.SensorAdditionalInformation = *NewSensorAdditionalInformation()
 

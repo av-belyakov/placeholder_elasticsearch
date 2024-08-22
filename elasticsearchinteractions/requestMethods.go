@@ -228,7 +228,7 @@ func (hsd HandlerSendData) UpdateDocument(tag, currentIndex string, list []datam
 }
 
 // GetExistingIndexes выполняет проверку наличия индексов соответствующих
-// определенному шаблону и возвращает список наименований тндексов
+// определенному шаблону и возвращает список наименований индексов
 // подходящих под заданный шаблон
 func (hsd HandlerSendData) GetExistingIndexes(pattern string) ([]string, error) {
 	listIndexes := []string(nil)
