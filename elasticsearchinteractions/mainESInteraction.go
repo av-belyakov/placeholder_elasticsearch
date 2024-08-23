@@ -64,16 +64,6 @@ func HandlerElasticSearch(
 		return module, err
 	}
 
-	/*
-				Была ошибка
-				06.05.2024 15:43:04
-		error: 'dial tcp 192.168.9.10:9200: connect: cannot assign requested address' /go/src/elasticsearchinteractions/handlers.go:90
-		06.05.2024 15:42:57
-		error: 'dial tcp 192.168.9.10:9200: connect: cannot assign requested address' /go/src/elasticsearchinteractions/handlers.go:280
-
-			И она так и осталась. Надо разбиратся с ней!!!!!!
-	*/
-
 	go func() {
 		for data := range module.ChanInputModule {
 			switch data.Section {

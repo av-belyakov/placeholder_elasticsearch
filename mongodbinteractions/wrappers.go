@@ -175,7 +175,7 @@ func (w *wrappers) AddNewCase(
 	//ищем документы подходящие под фильтр и удаляем их что бы избежать дублирования
 	cur, err := qp.Find(bson.D{
 		{Key: "source", Value: obj.GetSource()},
-		{Key: "event.rootId", Value: obj.GetEvent().GetRootId()},
+		{Key: "event.commoneventtype.rootId", Value: obj.GetEvent().GetRootId()},
 	})
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -237,7 +237,7 @@ func (w *wrappers) AddNewCase(
 		}, {
 			Keys: bson.D{
 				{Key: "source", Value: 1},
-				{Key: "event.rootId", Value: 1},
+				{Key: "event.commoneventtype.rootId", Value: 1},
 			},
 			Options: &options.IndexOptions{},
 		},
@@ -259,7 +259,7 @@ func (w *wrappers) AddNewCase(
 	}
 }
 
-// AddNewCase выполняет замену уже существующего объекта типа Alert
+// AddNewAlert выполняет замену уже существующего объекта типа Alert
 // либо добавляет новый, если в БД нет объекта с заданными параметрами
 func (w *wrappers) AddNewAlert(
 	data interface{},
@@ -286,7 +286,7 @@ func (w *wrappers) AddNewAlert(
 	currentData := datamodels.VerifiedTheHiveAlert{}
 	err := qp.FindOne(bson.D{
 		{Key: "source", Value: obj.GetSource()},
-		{Key: "event.rootId", Value: obj.GetEvent().GetRootId()},
+		{Key: "event.commoneventtype.rootId", Value: obj.GetEvent().GetRootId()},
 	}).Decode(&currentData)
 	if err != nil && !errors.Is(err, mongo.ErrNoDocuments) {
 		_, f, l, _ := runtime.Caller(0)
@@ -345,7 +345,7 @@ func (w *wrappers) AddNewAlert(
 			}, {
 				Keys: bson.D{
 					{Key: "source", Value: 1},
-					{Key: "event.rootId", Value: 1},
+					{Key: "event.commoneventtype.rootId", Value: 1},
 				},
 				Options: &options.IndexOptions{},
 			}}); err != nil {
