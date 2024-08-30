@@ -1,7 +1,6 @@
 package datamodels
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -193,10 +192,6 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 
 				currentStruct.Field(i).Set(newStruct.Field(j))
 				countReplacingFields++
-
-				fmt.Println("func 'EventAlertObject', Field name:", typeOfCurrentStruct.Field(i).Name, " Value:", newStruct.Field(j))
-				fmt.Println("func 'EventAlertObject', countReplacingFields:", countReplacingFields)
-
 			}
 		}
 	}

@@ -42,7 +42,7 @@ LOGGING:
       msgTypeName: "error",
       writingFile: true,
       pathDirectory: "logs",
-      writingStdout: false,
+      writingStdout: true,
       maxFileSize: 10000,
     }
   - {
@@ -55,6 +55,13 @@ LOGGING:
   - {
       msgTypeName: "info",
       writingFile: true,
+      pathDirectory: "logs",
+      writingStdout: true,
+      maxFileSize: 10000,
+    }
+  - {
+      msgTypeName: "debug",
+      writingFile: false,
       pathDirectory: "logs",
       writingStdout: true,
       maxFileSize: 10000,

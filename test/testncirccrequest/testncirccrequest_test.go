@@ -16,7 +16,7 @@ var _ = Describe("Testncirccrequest", func() {
 			var (
 				url   string = "https://lk.cert.local/api/v2/companies"
 				token string = "fdd2c5e743960ec9ea80d1ff8868cc6d8439b02f4d61075efd69a46eaa52ff0e"
-				inn   string = "7708523530"
+				inn   string = "5408105390"
 			)
 
 			ctx, ctxCancel := context.WithCancel(context.Background())
