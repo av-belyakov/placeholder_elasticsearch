@@ -39,6 +39,8 @@ func readReflectAnyTypeSprint(name interface{}, anyType interface{}, num int) st
 	var (
 		nameStr string
 		str     strings.Builder = strings.Builder{}
+
+		isCleanLine bool
 	)
 
 	r := reflect.TypeOf(anyType)
@@ -48,6 +50,10 @@ func readReflectAnyTypeSprint(name interface{}, anyType interface{}, num int) st
 		nameStr = fmt.Sprintf("%s%v.", ws, n+1)
 	} else if n, ok := name.(string); ok {
 		nameStr = fmt.Sprintf("%s\"%s\":", ws, n)
+
+		if n == "description" {
+			isCleanLine = true
+		}
 	}
 
 	if r == nil {
@@ -56,7 +62,14 @@ func readReflectAnyTypeSprint(name interface{}, anyType interface{}, num int) st
 
 	switch r.Kind() {
 	case reflect.String:
-		str.WriteString(fmt.Sprintf("%s \"%s\"\n", nameStr, reflect.ValueOf(anyType).String()))
+		dataStr := reflect.ValueOf(anyType).String()
+
+		if isCleanLine {
+			dataStr = strings.ReplaceAll(dataStr, "\t", "")
+			dataStr = strings.ReplaceAll(dataStr, "\n", "")
+		}
+
+		str.WriteString(fmt.Sprintf("%s \"%s\"\n", nameStr, dataStr))
 
 	case reflect.Int, reflect.Int16, reflect.Int32, reflect.Int64:
 		str.WriteString(fmt.Sprintf("%s %d\n", nameStr, reflect.ValueOf(anyType).Int()))
