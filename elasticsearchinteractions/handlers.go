@@ -283,6 +283,9 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 			ID:    v.ID,
 			Index: v.Index,
 		})
+
+		//устанавливаем время создания первой записи о кейсе
+		updateVerified.SetCreateTimestamp(v.Source.CreateTimestamp)
 	}
 
 	//выполняем обновление объекта типа Event
