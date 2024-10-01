@@ -342,102 +342,6 @@ func (hsd HandlerSendData) ReplacementDocumentCase(
 	}
 }
 
-// AddEventenrichmentAlert выполняет обогащение уже имеющегося алерта дополнительной, полезной информацией
-/*func (hsd HandlerSendData) AddEventenrichmentAlert(
-	data interface{},
-	indexName string,
-	logging chan<- datamodels.MessageLogging) {
-	//добавляем небольшую задержку что бы СУБД успела добавить индекс
-	time.Sleep(3 * time.Second)
-
-	addSensorsInformation := []datamodels.AdditionSensorInformation(nil)
-
-	//приводим значение к интерфейсу позволяющему получить доступ к информации о сенсорах
-	infoEvent, ok := data.(datamodels.InformationFromEventEnricher)
-	if !ok {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.InformationFromEventEnricher' %s:%d", f, l-1),
-			MsgType: "error",
-		}
-
-		return
-	}
-
-	t := time.Now()
-	month := int(t.Month())
-	indexCurrent := fmt.Sprintf("%s_%s_%d_%d", indexName, infoEvent.GetSource(), t.Year(), month)
-
-	fmt.Printf("func 'AddEventenrichmentALERT', indexCurrent:%s, rootId:'%s', source:'%s'\n", indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource())
-
-	//выполняем поиск _id индекса
-	alertId, err := SearchUnderlineIdAlert(indexCurrent, infoEvent.GetRootId(), infoEvent.GetSource(), hsd)
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'rootId: '%s', %s' %s:%d", infoEvent.GetRootId(), err.Error(), f, l-2),
-			MsgType: "error",
-		}
-
-		return
-	}
-
-	fmt.Println("func 'AddEventenrichmentALERT', indexCurrent:", indexCurrent, " search case id:'", alertId, "'")
-
-	sensorsId := infoEvent.GetSensorsId()
-	for _, v := range sensorsId {
-		addSensorsInformation = append(addSensorsInformation, datamodels.AdditionSensorInformation{
-			SensorId:    v,
-			HostId:      infoEvent.GetHostId(v),
-			GeoCode:     infoEvent.GetGeoCode(v),
-			ObjectArea:  infoEvent.GetObjectArea(v),
-			SubjectRF:   infoEvent.GetSubjectRF(v),
-			INN:         infoEvent.GetINN(v),
-			HomeNet:     infoEvent.GetHomeNet(v),
-			OrgName:     infoEvent.GetOrgName(v),
-			FullOrgName: infoEvent.GetFullOrgName(v),
-		})
-	}
-
-	tmpReq := tmpRequest{SensorAdditionalInformation: addSensorsInformation}
-	request, err := json.MarshalIndent(tmpReq, "", " ")
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'rootId: '%s', '%s' %s:%d", infoEvent.GetRootId(), err.Error(), f, l-2),
-			MsgType: "error",
-		}
-
-		return
-	}
-
-	bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": %s}", string(request)))
-	res, err := hsd.Client.Update(indexCurrent, alertId, bodyUpdate)
-	defer func() {
-		errClose := res.Body.Close()
-		if err == nil {
-			err = errClose
-		}
-	}()
-	if err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'rootId: '%s', %s' %s:%d", err.Error(), infoEvent.GetRootId(), f, l-1),
-			MsgType: "error",
-		}
-
-		return
-	}
-
-	if res.StatusCode != http.StatusOK {
-		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'rootId: '%s', %d %s' %s:%d", infoEvent.GetRootId(), res.StatusCode, res.Status(), f, l-1),
-			MsgType: "error",
-		}
-	}
-}*/
-
 // ReplacementDocumentAlert выполняет замену документа, но только в рамках одного индекса
 func (hsd HandlerSendData) ReplacementDocumentAlert(
 	data interface{},
@@ -614,6 +518,9 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 			ID:    v.ID,
 			Index: v.Index,
 		})
+
+		//устанавливаем время создания первой записи об алерте
+		updateVerified.SetCreateTimestamp(v.Source.CreateTimestamp)
 	}
 
 	//выполняем обновление объекта типа Event
