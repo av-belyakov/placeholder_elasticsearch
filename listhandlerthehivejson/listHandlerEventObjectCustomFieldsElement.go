@@ -51,6 +51,106 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 			_, order, _, _ := eventObjectCustomFields["class-attack"].Get()
 			eventObjectCustomFields["class-attack"].Set(order, i)
 		}},
+		//------------------ class-ca ------------------
+		"event.object.customFields.class-ca.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("class-ca", "string", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["class-ca"].Get()
+			eventObjectCustomFields["class-ca"].Set(i, supportingfunctions.TrimIsNotLetter(str))
+		}},
+		"event.object.customFields.class-ca.string": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("class-ca", "string", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["class-ca"].Get()
+			eventObjectCustomFields["class-ca"].Set(order, i)
+		}},
+		//--------------- count-of-files ------------------
+		"event.object.customFields.count-of-files.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("count-of-files", "integer", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["count-of-files"].Get()
+			eventObjectCustomFields["count-of-files"].Set(i, str)
+		}},
+		"event.object.customFields.count-of-files.integer": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("count-of-files", "integer", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["count-of-files"].Get()
+			eventObjectCustomFields["count-of-files"].Set(order, i)
+		}},
+		//--------------- count-of-malwares ------------------
+		"event.object.customFields.count-of-malwares.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("count-of-malwares", "integer", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["count-of-malwares"].Get()
+			eventObjectCustomFields["count-of-malwares"].Set(i, str)
+		}},
+		"event.object.customFields.count-of-malwares.integer": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("count-of-malwares", "integer", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["count-of-malwares"].Get()
+			eventObjectCustomFields["count-of-malwares"].Set(order, i)
+		}},
+		//--------------- event-number ------------------
+		"event.object.customFields.event-number.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("event-number", "integer", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["event-number"].Get()
+			eventObjectCustomFields["event-number"].Set(i, str)
+		}},
+		"event.object.customFields.event-number.integer": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("event-number", "integer", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["event-number"].Get()
+			eventObjectCustomFields["event-number"].Set(order, i)
+		}},
+		//--------------- external-letter ------------------
+		"event.object.customFields.external-letter.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("external-letter", "integer", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["external-letter"].Get()
+			eventObjectCustomFields["external-letter"].Set(i, str)
+		}},
+		"event.object.customFields.external-letter.integer": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("external-letter", "integer", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["external-letter"].Get()
+			eventObjectCustomFields["external-letter"].Set(order, i)
+		}},
+		//--------------- misp-event-id ------------------
+		"event.object.customFields.misp-event-id.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("misp-event-id", "string", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["misp-event-id"].Get()
+			eventObjectCustomFields["misp-event-id"].Set(i, str)
+		}},
+		"event.object.customFields.misp-event-id.string": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("misp-event-id", "string", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["misp-event-id"].Get()
+			eventObjectCustomFields["misp-event-id"].Set(order, i)
+		}},
+		// --------------- verdict ------------------
+		"event.object.customFields.verdict.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("verdict", "string", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["verdict"].Get()
+			eventObjectCustomFields["verdict"].Set(i, str)
+		}},
+		"event.object.customFields.verdict.string": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("verdict", "string", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["verdict"].Get()
+			eventObjectCustomFields["verdict"].Set(order, i)
+		}},
+		// --------------- classification ------------------
+		"event.object.customFields.classification.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("classification", "string", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["classification"].Get()
+			eventObjectCustomFields["classification"].Set(i, str)
+		}},
+		"event.object.customFields.classification.string": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("classification", "string", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["classification"].Get()
+			eventObjectCustomFields["classification"].Set(order, i)
+		}},
+		//--------------- gratitude ------------------ номер благодарственного письма ????
+		"event.object.customFields.gratitude.order": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("gratitude", "integer", &eventObjectCustomFields)
+			_, _, _, str := eventObjectCustomFields["gratitude"].Get()
+			eventObjectCustomFields["gratitude"].Set(i, str)
+		}},
+		"event.object.customFields.gratitude.integer": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("gratitude", "integer", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["gratitude"].Get()
+			eventObjectCustomFields["gratitude"].Set(order, i)
+		}},
+
 		//------------------ ncircc-class-attack ------------------
 		"event.object.customFields.ncircc-class-attack.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("ncircc-class-attack", "string", &eventObjectCustomFields)
@@ -68,11 +168,21 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 			_, _, _, str := eventObjectCustomFields["inbox1"].Get()
 			eventObjectCustomFields["inbox1"].Set(i, supportingfunctions.TrimIsNotLetter(str))
 		}},
+		"event.object.customFields.inbox1.string": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("inbox1", "string", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["inbox1"].Get()
+			eventObjectCustomFields["inbox1"].Set(order, i)
+		}},
 		//------------------ inner-letter ------------------
 		"event.object.customFields.inner-letter.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("inner-letter", "string", &eventObjectCustomFields)
 			_, _, _, str := eventObjectCustomFields["inner-letter"].Get()
 			eventObjectCustomFields["inner-letter"].Set(i, supportingfunctions.TrimIsNotLetter(str))
+		}},
+		"event.object.customFields.inner-letter.string": {func(i interface{}) {
+			listhandlercommon.NewCustomFieldsElement("inner-letter", "string", &eventObjectCustomFields)
+			_, order, _, _ := eventObjectCustomFields["inner-letter"].Get()
+			eventObjectCustomFields["inner-letter"].Set(order, i)
 		}},
 		//------------------ notification ------------------
 		"event.object.customFields.notification.order": {func(i interface{}) {
