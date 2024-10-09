@@ -72,6 +72,10 @@ func (s SourceMessageTheHive) ToStringBeautiful(num int) string {
 	return fmt.Sprintf("source: '%s'\n", s.Source)
 }
 
+func (fields *CustomFields) Get() CustomFields {
+	return *fields
+}
+
 func (fields *CustomFields) Set(v CustomFields) {
 	if *fields == nil {
 		*fields = make(CustomFields)
