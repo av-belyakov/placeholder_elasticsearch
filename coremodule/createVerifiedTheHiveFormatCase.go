@@ -248,10 +248,6 @@ func NewVerifiedTheHiveFormatCase(
 	verifiedCase.SetObservables(*observables)
 	verifiedCase.SetTtps(*ttps)
 
-	fmt.Println("________________ !!!!!!!!!!!!! ____________________")
-	fmt.Println(verifiedCase.Get().CreateTimestamp)
-	fmt.Println("____________________________________")
-
 	mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
 		Section: "handling case",
 		Command: "add new case",
