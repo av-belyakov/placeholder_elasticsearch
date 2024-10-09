@@ -272,7 +272,7 @@ func main() {
 	}
 
 	msg := fmt.Sprintf("%s application, version %s is running. Application status is '%s'\n", versionandname.GetName(), versionandname.GetVersion(), appStatus)
-	log.Panicln(msg)
+	log.Println(msg)
 
 	//инициализируем модуль временного хранения информации
 	storageApp := memorytemporarystorage.NewTemporaryStorage()
