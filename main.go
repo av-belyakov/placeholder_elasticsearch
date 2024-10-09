@@ -17,6 +17,7 @@ import (
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
 	"placeholder_elasticsearch/eventenrichmentmodule"
+	"placeholder_elasticsearch/internal/versionandname"
 	"placeholder_elasticsearch/memorytemporarystorage"
 	"placeholder_elasticsearch/mongodbinteractions"
 	"placeholder_elasticsearch/natsinteractions"
@@ -278,8 +279,7 @@ func main() {
 		log.Fatalln("The application has been stopped. At least one subscription must be set for NATS")
 	}
 
-	appVersion := supportingfunctions.GetAppVersion(appName)
-	log.Printf("Placeholder_Elasticsearch application, version %s is running. Application status is '%s'\n", appVersion, appStatus)
+	log.Printf("%s application, version %s is running. Application status is '%s'\n", versionandname.GetName(), versionandname.GetVersion(), appStatus)
 
 	//инициализируем модуль временного хранения информации
 	storageApp := memorytemporarystorage.NewTemporaryStorage()
