@@ -1,5 +1,3 @@
-github.com/av-belyakov/simplelogger v0.0.0-20240829125809-4bc20651afb8 h1:UdvYv8kvFSmpRvj859TGhWX1LCTBWBhCKAsOcXWAslw=
-github.com/av-belyakov/simplelogger v0.0.0-20240829125809-4bc20651afb8/go.mod h1:NGvAPMeVHkAPNroGgrQzNvQBbXVmhj0g25+9y7ZUjsg=
 github.com/av-belyakov/simplelogger v0.0.0-20240829144636-e8b606b7e069 h1:uAVF/bS8X+hHm8hvy1voWBHonfdbrcAEFw58mvHPYsw=
 github.com/av-belyakov/simplelogger v0.0.0-20240829144636-e8b606b7e069/go.mod h1:NGvAPMeVHkAPNroGgrQzNvQBbXVmhj0g25+9y7ZUjsg=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=

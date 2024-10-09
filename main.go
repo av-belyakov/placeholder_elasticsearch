@@ -323,7 +323,7 @@ func main() {
 	}
 
 	logging <- datamodels.MessageLogging{
-		MsgData: msg, //"application '" + appName + "' is started",
+		MsgData: msg,
 		MsgType: "info",
 	}
 
