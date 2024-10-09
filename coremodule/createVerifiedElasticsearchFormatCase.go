@@ -240,13 +240,12 @@ func NewVerifiedElasticsearchFormatCase(
 	//это равносильно пустому значению
 	// если значение поля больше чем 1970-01-01T00:00:00+00:00, то в
 	//@timestamp укладываем его, иначе используем значение из поля event.object._createAt
+	verifiedCase.SetCreateTimestamp(eventObject.GetCreatedAt())
 	for k, v := range eventObjectCustomFields.Get() {
 		if k == "first-time" {
 			_, _, _, date := v.Get()
 			if date != "1970-01-01T00:00:00+00:00" {
 				verifiedCase.SetCreateTimestamp(date)
-			} else {
-				verifiedCase.SetCreateTimestamp(eventObject.GetCreatedAt())
 			}
 
 			break
@@ -282,10 +281,6 @@ func NewVerifiedElasticsearchFormatCase(
 			sensorsId.AddElem(v)
 		}
 	}
-
-	fmt.Println("---------- VerifiedCase -----------")
-	fmt.Println(verifiedCase.Get())
-	fmt.Println("---------- VerifiedCase !!!!!!!!!!!!!!!-----------")
 
 	//отправляем кейс в Elasticsearch
 	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{

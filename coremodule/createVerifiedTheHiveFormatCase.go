@@ -205,6 +205,27 @@ func NewVerifiedTheHiveFormatCase(
 		return
 	}
 
+	//проверяем что, в поле event.object.customFields.first-time
+	//временное значение не соответствует 1970-01-01T00:00:00+00:00, так как
+	//это равносильно пустому значению
+	// если значение поля больше чем 1970-01-01T00:00:00+00:00, то в
+	//@timestamp укладываем его, иначе используем значение из поля event.object._createAt
+	verifiedCase.SetCreateTimestamp(eventObject.GetCreatedAt())
+	for k, v := range eventObjectCustomFields.Get() {
+		//fmt.Println("CustomField: k =", k, " value =", v)
+
+		if k == "first-time" {
+			_, _, _, date := v.Get()
+			//fmt.Println("CustomField: DATE =", date)
+
+			if date != "1970-01-01T00:00:00+00:00" {
+				verifiedCase.SetCreateTimestamp(date)
+			}
+
+			break
+		}
+	}
+
 	// Собираем объект Event
 	eventObject.SetValueCustomFields(eventObjectCustomFields)
 	eventDetails.SetValueCustomFields(eventDetailsCustomFields)
@@ -226,6 +247,10 @@ func NewVerifiedTheHiveFormatCase(
 	verifiedCase.SetEvent(*event)
 	verifiedCase.SetObservables(*observables)
 	verifiedCase.SetTtps(*ttps)
+
+	fmt.Println("________________ !!!!!!!!!!!!! ____________________")
+	fmt.Println(verifiedCase.Get().CreateTimestamp)
+	fmt.Println("____________________________________")
 
 	mongodbm.ChanInputModule <- mongodbinteractions.SettingsInputChan{
 		Section: "handling case",
