@@ -117,7 +117,7 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 		}()
 
 		// инициализируем модуль чтения правил обработки сообщений поступающих через NATS
-		listRule, warnings, errRule = rules.NewListRule("placeholder_elasticsearch", "rules", "mispmsgrule.yaml")
+		listRule, warnings, errRule = rules.NewListRule("placeholder_elasticsearch", "rules", "msgrule_case.yaml")
 		exampleByte, errReadFile = readFileJson("test/test_json", "example_caseId_33705.json")
 
 		//инициализируем клиента Elasticsearch
@@ -170,14 +170,19 @@ var _ = Describe("Handlerfinalyobject", Ordered, func() {
 		It("Должен быть получен валидный объект", func() {
 			esSettings := <-esModule.ChanInputModule
 
+			fmt.Println(esSettings)
+
 			data, ok := esSettings.Data.(datamodels.VerifiedTheHiveCase)
 			Expect(ok).Should(BeTrue())
 
 			verifiedObject := data.Get()
 
-			//fmt.Println("func 'NewVerifiedTheHiveFormat' is STOPPED")
-			//fmt.Println("------------------ VerifiedObject RESULT ----------------")
-			//fmt.Println(verifiedObject.ToStringBeautiful(0))
+			fmt.Println("func 'NewVerifiedTheHiveFormat' is STOPPED")
+			fmt.Println("------------------ VerifiedObject RESULT ----------------")
+			fmt.Println(verifiedObject.ToStringBeautiful(0))
+
+			// event.object.createAt 1702709874604 (Sat Dec 16 2023 09:57:54 GMT+0300)
+			// event.object.customFild.first-time (Sat Dec 16 2023 03:20:56 GMT+0300)
 
 			//************************************************
 			//тестовая отправка данных в Elastisearch

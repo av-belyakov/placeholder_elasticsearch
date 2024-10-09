@@ -260,14 +260,6 @@ func main() {
 		log.Fatalf("error module 'zabbixinteraction': %v\n", err)
 	}
 
-	var appName string
-	if an, err := supportingfunctions.GetAppName("README.md", 1); err != nil {
-		_, f, l, _ := runtime.Caller(0)
-		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "warning")
-	} else {
-		appName = an
-	}
-
 	appStatus := "production"
 	envValue, ok := os.LookupEnv("GO_PHELASTIC_MAIN")
 	if ok && envValue == "development" {
@@ -279,7 +271,8 @@ func main() {
 		log.Fatalln("The application has been stopped. At least one subscription must be set for NATS")
 	}
 
-	log.Printf("%s application, version %s is running. Application status is '%s'\n", versionandname.GetName(), versionandname.GetVersion(), appStatus)
+	msg := fmt.Sprintf("%s application, version %s is running. Application status is '%s'\n", versionandname.GetName(), versionandname.GetVersion(), appStatus)
+	log.Panicln(msg)
 
 	//инициализируем модуль временного хранения информации
 	storageApp := memorytemporarystorage.NewTemporaryStorage()
@@ -330,7 +323,7 @@ func main() {
 	}
 
 	logging <- datamodels.MessageLogging{
-		MsgData: "application '" + appName + "' is started",
+		MsgData: msg, //"application '" + appName + "' is started",
 		MsgType: "info",
 	}
 

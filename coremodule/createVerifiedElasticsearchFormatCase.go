@@ -283,6 +283,10 @@ func NewVerifiedElasticsearchFormatCase(
 		}
 	}
 
+	fmt.Println("---------- VerifiedCase -----------")
+	fmt.Println(verifiedCase.Get())
+	fmt.Println("---------- VerifiedCase !!!!!!!!!!!!!!!-----------")
+
 	//отправляем кейс в Elasticsearch
 	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
 		Section: "handling case",
