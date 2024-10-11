@@ -12,6 +12,7 @@ import (
 	"placeholder_elasticsearch/supportingfunctions"
 )
 
+// NewConfig обработчик конфигурационных файлов
 func NewConfig(rootDir string) (ConfigApp, error) {
 	conf := ConfigApp{}
 	var envList map[string]string = map[string]string{
@@ -84,6 +85,22 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 			conf.CommonAppConfig.NCIRCC = NCIRCCOptions{
 				URL:   ncircc.NCIRCC.URL,
 				Token: ncircc.NCIRCC.Token,
+			}
+		}
+
+		//*****************************************************
+		//*** параметры настройки для доступа к API GeoIP DB
+		//*****************************************************
+		geoipdb := GEOIPJSONRPCSet{}
+		if ok := viper.IsSet("GEOIPJSONRPC"); ok {
+			if err := viper.GetViper().Unmarshal(&geoipdb); err != nil {
+				return err
+			}
+
+			conf.CommonAppConfig.GeoIpJsonRPC = GeoIPJsonRPCOptions{
+				Port: geoipdb.GEOIPJSONRPC.Port,
+				Host: geoipdb.GEOIPJSONRPC.Host,
+				Path: geoipdb.GEOIPJSONRPC.Path,
 			}
 		}
 

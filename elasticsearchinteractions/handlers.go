@@ -24,6 +24,13 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 
 	addSensorsInformation := datamodels.SensorAdditionalInformation{}
 
+	//*******************************************
+	//	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// Тут где то надо сделать добавление найденной информации
+	// по ip адресам и загружат ее в эластик
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//*******************************************
+
 	//приводим значение к интерфейсу позволяющему получить доступ к информации о сенсорах
 	infoEvent, ok := data.(datamodels.InformationFromEventEnricher)
 	if !ok {

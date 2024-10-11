@@ -11,6 +11,7 @@ import (
 	"placeholder_elasticsearch/eventenrichmentmodule"
 	"placeholder_elasticsearch/listhandlerforesjson"
 	"placeholder_elasticsearch/listhandlerthehivejson"
+	"placeholder_elasticsearch/natsinteractions"
 )
 
 type listSensorId struct {
@@ -33,13 +34,7 @@ func (e *listSensorId) AddElem(sensorId string) {
 	e.sensors = append(e.sensors, sensorId)
 }
 
-func NewVerifiedElasticsearchFormatCase(
-	input <-chan datamodels.ChanOutputDecodeJSON,
-	done <-chan bool,
-	esm *elasticsearchinteractions.ElasticSearchModule,
-	cs *coreStorage,
-	eemChan chan<- eventenrichmentmodule.SettingsChanInputEEM,
-	logging chan<- datamodels.MessageLogging) {
+func NewVerifiedElasticsearchFormatCase(opts VerifiedElasticsearchFormatCaseOptions) {
 	var (
 		rootId string
 		// список не обработанных полей
@@ -77,7 +72,7 @@ func NewVerifiedElasticsearchFormatCase(
 	sttp := listhandlerthehivejson.NewSupportiveTtp()
 	listHandlerTtp := listhandlerthehivejson.NewListHandlerTtpElement(sttp)
 
-	for data := range input {
+	for data := range opts.input {
 		var handlerIsExist bool
 		verifiedCase.SetID(data.UUID)
 
@@ -217,17 +212,17 @@ func NewVerifiedElasticsearchFormatCase(
 
 	// отправляем список полей которые не смогли обработать
 	if len(listRawFields) > 0 {
-		logging <- datamodels.MessageLogging{
+		opts.logging <- datamodels.MessageLogging{
 			MsgData: joinRawFieldsToString(listRawFields, "rootId", rootId),
 			MsgType: "alert_raw_fields",
 		}
 	}
 
 	//проверяем значения объектов на соответствие правилам
-	isAllowed := <-done
+	isAllowed := <-opts.done
 	if !isAllowed {
 		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
+		opts.logging <- datamodels.MessageLogging{
 			MsgData: fmt.Sprintf("'the message with aler rootId %s was not sent to ES because it does not comply with the rules' %s:%d", event.GetRootId(), f, l-1),
 			MsgType: "warning",
 		}
@@ -235,10 +230,9 @@ func NewVerifiedElasticsearchFormatCase(
 		return
 	}
 
-	//проверяем что, в поле event.object.customFields.first-time
-	//временное значение не соответствует 1970-01-01T00:00:00+00:00, так как
-	//это равносильно пустому значению
-	// если значение поля больше чем 1970-01-01T00:00:00+00:00, то в
+	//проверяем что, в поле event.object.customFields.first-time временное значение
+	// не соответствует 1970-01-01T00:00:00+00:00, так как это равносильно пустому
+	//значению если значение поля больше чем 1970-01-01T00:00:00+00:00, то в
 	//@timestamp укладываем его, иначе используем значение из поля event.object._createAt
 	verifiedCase.SetCreateTimestamp(eventObject.GetCreatedAt())
 	for k, v := range eventObjectCustomFields.Get() {
@@ -252,7 +246,7 @@ func NewVerifiedElasticsearchFormatCase(
 		}
 	}
 
-	// Собираем объект Event
+	//собираем объект Event
 	eventObject.SetValueCustomFields(eventObjectCustomFields)
 	eventDetails.SetValueCustomFields(eventDetailsCustomFields)
 	event.SetValueObject(*eventObject)
@@ -282,17 +276,30 @@ func NewVerifiedElasticsearchFormatCase(
 		}
 	}
 
+	//******************************************
+	//
+	// здесь надо формировать список ip адресов
+	// по которым будет выполнятся поис GeoIP
+	//
+	//*****************************************
+
 	//отправляем кейс в Elasticsearch
-	esm.ChanInputModule <- elasticsearchinteractions.SettingsInputChan{
+	opts.esmChan <- elasticsearchinteractions.SettingsInputChan{
 		Section: "handling case",
 		Command: "add new case",
 		Data:    verifiedCase.Get(),
 	}
 
+	//отправляем запрос в модуль NATS для установки тега 'Webhook: send="ES"'
+	opts.natsChan <- natsinteractions.SettingsInputChan{
+		Command: "send tag",
+		TaskId:  opts.msgId,
+	}
+
 	//делаем запрос на получение дополнительной информации о сенсорах
 	if len(sensorsId.Get()) > 0 {
 		//делаем запрос к модулю обогащения доп. информацией из Zabbix
-		eemChan <- eventenrichmentmodule.SettingsChanInputEEM{
+		opts.eemChan <- eventenrichmentmodule.SettingsChanInputEEM{
 			RootId:    eventCase.GetRootId(),
 			Source:    verifiedCase.GetSource(),
 			SensorsId: sensorsId.Get(),
@@ -305,12 +312,12 @@ func NewVerifiedElasticsearchFormatCase(
 	infoUpdate, err := json.MarshalIndent(verifiedCase, "", "  ")
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
-		logging <- datamodels.MessageLogging{
+		opts.logging <- datamodels.MessageLogging{
 			MsgData: fmt.Sprintf("'%s' %s:%d", err.Error(), f, l-2),
 			MsgType: "error",
 		}
 	}
-	logging <- datamodels.MessageLogging{
+	opts.logging <- datamodels.MessageLogging{
 		MsgData: string(infoUpdate),
 		MsgType: "test_object_update",
 	}

@@ -12,6 +12,7 @@ type CommonAppConfig struct {
 	LogList       []LogSet
 	NCIRCC        NCIRCCOptions
 	Zabbix        ZabbixOptions
+	GeoIpJsonRPC  GeoIPJsonRPCOptions
 	ZabbixJsonRPC ZabbixJsonRPCOptions
 }
 
@@ -45,6 +46,16 @@ type NCIRCCSet struct {
 type NCIRCCOptions struct {
 	URL   string `yaml:"url"`
 	Token string `yaml:"token"`
+}
+
+type GEOIPJSONRPCSet struct {
+	GEOIPJSONRPC GeoIPJsonRPCOptions
+}
+
+type GeoIPJsonRPCOptions struct {
+	Port int    `yaml:"port"`
+	Host string `yaml:"host"`
+	Path string `yaml:"path"`
 }
 
 type ZABBIXJSONRPCSet struct {

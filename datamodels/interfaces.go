@@ -5,6 +5,7 @@ type InformationFromEventEnricher interface {
 	GetterSource
 	GetterSensorsId
 	GetterSensorInformation
+	GetterIpAddressesInformation
 }
 
 type GetterRootId interface {
@@ -17,6 +18,22 @@ type GetterSource interface {
 
 type GetterSensorsId interface {
 	GetSensorsId() []string
+}
+
+type GetterIpAddresses interface {
+	GetIpAddresses() []GetterIpAddressesInformation
+}
+
+type GetterIpAddressesInformation interface {
+	GetIsSuccess() bool
+	GetIp() string
+	GetIpLocation() map[string]GetterIpLocation
+}
+
+type GetterIpLocation interface {
+	GetCity() string
+	GetCountry() string
+	GetCountryCode() string
 }
 
 type GetterSensorInformation interface {

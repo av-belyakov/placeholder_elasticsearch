@@ -55,7 +55,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 
 	coreStorage := newStorage()
 
-	natsChanReception := natsModule.GetDataReceptionChannel()
+	natsReception := natsModule.GetDataReceptionChannel()
 	decodeJsonCase := NewDecodeJsonMessageSettings(listRuleCase, settings.logging, settings.counting)
 	decodeJsonAlert := NewDecodeJsonMessageSettings(listRuleAlert, settings.logging, settings.counting)
 
@@ -109,7 +109,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 			}
 
 		//канал для взаимодействия с NATS
-		case data := <-natsChanReception:
+		case data := <-natsReception:
 			eventSettings := shortEventSettings{}
 
 			if err := json.Unmarshal(data.Data, &eventSettings); err != nil {
@@ -132,7 +132,15 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				//используется для хранения в MongoDB
 				go NewVerifiedTheHiveFormatCase(chansOut[0], chansDone[0], mdbModule, settings.logging)
 				//используется для хранения в Elasticsearch
-				go NewVerifiedElasticsearchFormatCase(chansOut[1], chansDone[1], esModule, coreStorage, eeModule.ChanInputModule, settings.logging)
+				go NewVerifiedElasticsearchFormatCase(VerifiedElasticsearchFormatCaseOptions{
+					msgId:    data.MsgId,
+					cs:       coreStorage,
+					input:    chansOut[1],
+					done:     chansDone[1],
+					natsChan: natsModule.GetDataDeliveryChannel(),
+					esmChan:  esModule.ChanInputModule,
+					eemChan:  eeModule.ChanInputModule,
+					logging:  settings.logging})
 
 			case "alert":
 				chanOutputDecodeJson, chanDecodeJsonDone := decodeJsonAlert.HandlerJsonMessage(data.Data, data.MsgId, "subject_alert")

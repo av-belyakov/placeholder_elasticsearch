@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"runtime"
+	"sync"
 	"time"
 
 	"placeholder_elasticsearch/confighandler"
@@ -13,12 +14,10 @@ import (
 )
 
 // NewEventEnrichmentModule инициализирует новый модуль обогащения данными
-// ctx - должен быть context.WithCancel()
-// ncirccConf - параметры для доступа к НКЦКИ
-// zabbixApi - параметры для доступа к API Zabbix
 func NewEventEnrichmentModule(
 	ctx context.Context,
 	ncirccConf confighandler.NCIRCCOptions,
+	geoIpConf confighandler.GeoIPJsonRPCOptions,
 	zabbixApi confighandler.ZabbixJsonRPCOptions,
 	logging chan<- datamodels.MessageLogging) (*EventEnrichmentModule, error) {
 	module := EventEnrichmentModule{
@@ -97,6 +96,18 @@ func NewEventEnrichmentModule(
 		return &module, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
+	geoIpClient, err := NewGeoIpClient(
+		context.Background(),
+		WithHost(geoIpConf.Host),
+		WithPort(geoIpConf.Port),
+		WithPath(geoIpConf.Path),
+		WithConnectionTimeout(10*time.Second))
+	if err != nil {
+		_, f, l, _ := runtime.Caller(0)
+		ctxDoneCancel()
+		return &module, fmt.Errorf("'%v' %s:%d", err, f, l-1)
+	}
+
 	go func() {
 		for {
 			select {
@@ -112,57 +123,88 @@ func NewEventEnrichmentModule(
 					logging chan<- datamodels.MessageLogging) {
 
 					settingsResponse := SettingsChanOutputEEM{
-						RootId:    data.RootId,
-						Source:    data.Source,
-						SensorsId: []string(nil),
-						Sensors:   []FoundSensorInformation(nil),
+						RootId:      data.RootId,
+						Source:      data.Source,
+						SensorsId:   []string(nil),
+						Sensors:     []FoundSensorInformation(nil),
+						IpAddresses: []GeoIpInformation(nil),
 					}
 
-					for _, sensorId := range data.SensorsId {
-						fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(sensorId, zabbixConnHandler)
-						if err != nil {
-							_, f, l, _ := runtime.Caller(0)
-							logging <- datamodels.MessageLogging{
-								MsgData: fmt.Sprintf("'sensorId: '%s', %v' %s:%d", sensorId, err, f, l-1),
-								MsgType: "error",
-							}
+					var wg sync.WaitGroup
+					wg.Add(2)
 
-							settingsResponse.SensorsId = append(settingsResponse.SensorsId, sensorId)
-
-							continue
-						}
-
-						if fullInfo.HostId == "" {
-							settingsResponse.SensorsId = append(settingsResponse.SensorsId, sensorId)
-
-							continue
-						}
-
-						foundInfo := FoundSensorInformation{
-							SensorId:   sensorId,
-							HostId:     fullInfo.HostId,
-							GeoCode:    fullInfo.GeoCode,
-							ObjectArea: fullInfo.ObjectArea,
-							SubjectRF:  fullInfo.SubjectRF,
-							INN:        fullInfo.INN,
-							HomeNet:    fullInfo.HomeNet,
-						}
-
-						if patternNumeric.MatchString(fullInfo.INN) {
-							orgName, fullOrgName, err := searchNCIRCCInfo(fullInfo.INN, sensorId)
+					//поиск информации по сенсорам
+					go func(sensors []string) {
+						for _, sensorId := range sensors {
+							fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(sensorId, zabbixConnHandler)
 							if err != nil {
+								_, f, l, _ := runtime.Caller(0)
 								logging <- datamodels.MessageLogging{
-									MsgData: err.Error(),
+									MsgData: fmt.Sprintf("'sensorId: '%s', %v' %s:%d", sensorId, err, f, l-1),
 									MsgType: "error",
 								}
-							} else {
-								foundInfo.OrgName = orgName
-								foundInfo.FullOrgName = fullOrgName
+
+								settingsResponse.SensorsId = append(settingsResponse.SensorsId, sensorId)
+
+								continue
 							}
+
+							if fullInfo.HostId == "" {
+								settingsResponse.SensorsId = append(settingsResponse.SensorsId, sensorId)
+
+								continue
+							}
+
+							foundInfo := FoundSensorInformation{
+								SensorId:   sensorId,
+								HostId:     fullInfo.HostId,
+								GeoCode:    fullInfo.GeoCode,
+								ObjectArea: fullInfo.ObjectArea,
+								SubjectRF:  fullInfo.SubjectRF,
+								INN:        fullInfo.INN,
+								HomeNet:    fullInfo.HomeNet,
+							}
+
+							if patternNumeric.MatchString(fullInfo.INN) {
+								orgName, fullOrgName, err := searchNCIRCCInfo(fullInfo.INN, sensorId)
+								if err != nil {
+									logging <- datamodels.MessageLogging{
+										MsgData: err.Error(),
+										MsgType: "error",
+									}
+								} else {
+									foundInfo.OrgName = orgName
+									foundInfo.FullOrgName = fullOrgName
+								}
+							}
+
+							settingsResponse.Sensors = append(settingsResponse.Sensors, foundInfo)
 						}
 
-						settingsResponse.Sensors = append(settingsResponse.Sensors, foundInfo)
-					}
+						wg.Done()
+					}(data.SensorsId)
+
+					//поиск информации о геопозиционировании ip адресов
+					go func(ipAddresses []string) {
+						for _, ip := range ipAddresses {
+							geoIpInfo, err := geoIpClient.GetGeoInformation(ip)
+							if err != nil {
+								_, f, l, _ := runtime.Caller(0)
+								logging <- datamodels.MessageLogging{
+									MsgData: fmt.Sprintf("'ip address: '%s', %v' %s:%d", ip, err, f, l-1),
+									MsgType: "error",
+								}
+
+								continue
+							}
+
+							settingsResponse.IpAddresses = append(settingsResponse.IpAddresses, geoIpInfo)
+						}
+
+						wg.Done()
+					}(data.IpAddresses)
+
+					wg.Wait()
 
 					module.ChanOutputModule <- settingsResponse
 				}(data, module.ChanOutputModule, logging)

@@ -132,3 +132,38 @@ func (e SettingsChanOutputEEM) GetFullOrgName(sensorId string) string {
 
 	return foundElem
 }
+
+// GetIpAddresses список найденной по ip адресам информации
+func (e SettingsChanOutputEEM) GetIpAddresses() []GeoIpInformation {
+	return e.IpAddresses
+}
+
+// GetIsSuccess успешность выполненного запроса
+func (gii GeoIpInformation) GetIsSuccess() bool {
+	return gii.IsSuccess
+}
+
+// GetIp ip адрес по которому осуществлялся поиск
+func (gii GeoIpInformation) GetIp() string {
+	return gii.Ip
+}
+
+// GetIpLocation подробная информация об ip адресе
+func (gii GeoIpInformation) GetIpLocation() map[string]IpLocation {
+	return gii.Info
+}
+
+// GetCity название города
+func (ipl IpLocation) GetCity() string {
+	return ipl.City
+}
+
+// GetCountry название страны
+func (ipl IpLocation) GetCountry() string {
+	return ipl.Country
+}
+
+// GetCountryCode код страны
+func (ipl IpLocation) GetCountryCode() string {
+	return ipl.CountryCode
+}

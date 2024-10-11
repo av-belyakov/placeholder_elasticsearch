@@ -37,9 +37,9 @@ var _ = Describe("Confighandler", func() {
 			Expect(ces.Port).Should(Equal(9200))
 			Expect(ces.User).Should(Equal("writer"))
 			Expect(ces.Passwd).Should(Equal("XxZqesYXuk8C"))
-			Expect(ces.PrefixCase).Should(Equal("test_"))
+			Expect(ces.PrefixCase).Should(Equal("test_elem_"))
 			Expect(ces.IndexCase).Should(Equal("module_placeholder_case"))
-			Expect(ces.PrefixAlert).Should(Equal("test_"))
+			Expect(ces.PrefixAlert).Should(Equal("test_elem_"))
 			Expect(ces.IndexAlert).Should(Equal("module_placeholder_alert"))
 		})
 		It("Все пораметры конфигрурационного файла для MongoDB должны быть успешно получены", func() {
@@ -178,17 +178,22 @@ var _ = Describe("Confighandler", func() {
 			Expect(commonApp.Zabbix.EventTypes[2].ZabbixKey).Should(Equal("placeholder_elasticsearch.handshake"))
 			Expect(commonApp.Zabbix.EventTypes[2].IsTransmit).Should(BeTrue())
 
-			Expect(len(conf.GetListLogs())).Should(Equal(8))
+			Expect(len(conf.GetListLogs())).Should(Equal(9))
 
 			//параметры подключения к НКЦКИ
-			Expect(commonApp.NCIRCC.URL).Should(Equal("https://lk.cert.local/api/v2/companies"))
+			Expect(commonApp.NCIRCC.URL).Should(Equal("https://10.0.227.10/api/v2/companies"))
 			Expect(len(commonApp.NCIRCC.Token)).ShouldNot(Equal(0))
+
+			//параметры подключения к API GeoIP DB
+			Expect(commonApp.GeoIpJsonRPC.Host).Should(Equal("pg2.cloud.gcm"))
+			Expect(commonApp.GeoIpJsonRPC.Port).Should(Equal(88))
+			Expect(commonApp.GeoIpJsonRPC.Path).Should(Equal("ip"))
 
 			//параметры подключения к API Zabbix для работы через JsonRPC
 			Expect(commonApp.ZabbixJsonRPC.NetworkHost).Should(Equal("192.168.9.45"))
 			Expect(commonApp.ZabbixJsonRPC.Login).Should(Equal("Cherry"))
 			Expect(len(commonApp.ZabbixJsonRPC.Passwd)).ShouldNot(Equal(0))
-			Expect(commonApp.ZabbixJsonRPC.ConnectionTimeout).Should(Equal(3))
+			Expect(commonApp.ZabbixJsonRPC.ConnectionTimeout).Should(Equal(5))
 		})
 	})
 })

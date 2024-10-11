@@ -15,10 +15,10 @@ import (
 // SettingsFuncFullNameOrganizationByINN настройки для получения информации
 // об организации по её ИНН
 type SettingsFuncFullNameOrganizationByINN struct {
-	ctx               context.Context
-	connectionTimeout time.Duration
 	url               string
 	token             string
+	connectionTimeout time.Duration
+	ctx               context.Context
 	client            *http.Client
 }
 
@@ -29,6 +29,7 @@ type ResponseFullNameOrganizationByINN struct {
 	Data    []SettingsResponseFullNameOrganizationByINN `json:"data"`
 }
 
+// SettingsResponseFullNameOrganizationByINN настройки ответа полной информации об организации
 type SettingsResponseFullNameOrganizationByINN struct {
 	SubjectINN string `json:"settings_inn_of_subject"`
 	Name       string `json:"settings_name"`
@@ -103,6 +104,7 @@ func (settings *SettingsFuncFullNameOrganizationByINN) GetFullNameOrganizationBy
 	req.URL.RawQuery = q.Encode()
 
 	res, err := settings.client.Do(req)
+	defer responseClose(res)
 	if err != nil {
 		_, f, l, _ = runtime.Caller(0)
 

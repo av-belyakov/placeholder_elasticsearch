@@ -1,53 +1,37 @@
 package eventenrichmentmodule
 
 // SettingsChanInputEEM параметры для ПРИЕМА данных в модуль
-// RootId - основной идентификатор
-// Source - источник
-// SensorsId - искомые идентификаторы сенсоров
 type SettingsChanInputEEM struct {
-	RootId    string
-	Source    string
-	SensorsId []string
+	RootId      string   //основной идентификатор
+	Source      string   //источник
+	SensorsId   []string //искомые идентификаторы сенсоров
+	IpAddresses []string //искомые ip адреса
 }
 
 // SettingsChanInputEEM параметры для ОТПРАВКИ данных из модуля
-// RootId - основной идентификатор
-// Source - источник
-// SensorsId - список идентификаторов сенсоров информация по которым не была найдена
-// Sensors - найденная информация, где ключ карты это идентификатор сенсора
 type SettingsChanOutputEEM struct {
-	RootId    string
-	Source    string
-	SensorsId []string
-	Sensors   []FoundSensorInformation
+	RootId      string                   //основной идентификатор
+	Source      string                   //источник
+	SensorsId   []string                 //список идентификаторов сенсоров информация по которым не была найдена
+	Sensors     []FoundSensorInformation //найденная информация, где ключ карты это идентификатор сенсора
+	IpAddresses []GeoIpInformation       //найденная по ip адресам информация
 }
 
 // FoundSensorInformation содержит найденную о сенсоре информацию
-// SensorId - идентификатор сенсора
-// HostId - идентификатор сенсора, специальный, для поиска информации в НКЦКИ
-// GeoCode - географический код страны
-// ObjectArea - сфера деятельности объекта
-// SubjectRF - субъект Российской Федерации
-// INN - налоговый идентификатор
-// HomeNet - перечень домашних сетей
-// OrgName - наименование организации
-// FullOrgName - полное наименование организации
 type FoundSensorInformation struct {
-	SensorId    string `json:"sensorId"`
-	HostId      string `json:"hostId"`
-	GeoCode     string `json:"geoCode"`
-	ObjectArea  string `json:"objectArea"`
-	SubjectRF   string `json:"subjectRF"`
-	INN         string `json:"inn"`
-	HomeNet     string `json:"homeNet"`
-	OrgName     string `json:"orgName"`
-	FullOrgName string `json:"fullOrgName"`
+	SensorId    string `json:"sensorId"`    //идентификатор сенсора
+	HostId      string `json:"hostId"`      //идентификатор сенсора, специальный, для поиска информации в НКЦКИ
+	GeoCode     string `json:"geoCode"`     //географический код страны
+	ObjectArea  string `json:"objectArea"`  //сфера деятельности объекта
+	SubjectRF   string `json:"subjectRF"`   //субъект Российской Федерации
+	INN         string `json:"inn"`         //налоговый идентификатор
+	HomeNet     string `json:"homeNet"`     //перечень домашних сетей
+	OrgName     string `json:"orgName"`     //наименование организации
+	FullOrgName string `json:"fullOrgName"` //полное наименование организации
 }
 
 // EventEnrichmentModule инициализированный модуль обогащения кейсов
-// ChanInputModule - канал для отправки данных В модуль
-// ChanOutputModule - канал для принятия данных ИЗ модуля
 type EventEnrichmentModule struct {
-	ChanInputModule  chan SettingsChanInputEEM
-	ChanOutputModule chan SettingsChanOutputEEM
+	ChanInputModule  chan SettingsChanInputEEM  //канал для отправки данных В модуль
+	ChanOutputModule chan SettingsChanOutputEEM //канал для принятия данных ИЗ модуля
 }

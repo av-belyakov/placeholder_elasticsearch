@@ -307,7 +307,7 @@ func main() {
 	}
 
 	//инициализация модуля применяемого для обогащения кейсов
-	eventenrichmentModule, err := eventenrichmentmodule.NewEventEnrichmentModule(ctx, confApp.NCIRCC, confApp.ZabbixJsonRPC, logging)
+	eventenrichmentModule, err := eventenrichmentmodule.NewEventEnrichmentModule(ctx, confApp.NCIRCC, confApp.GeoIpJsonRPC, confApp.ZabbixJsonRPC, logging)
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		_ = sl.WriteLoggingData(fmt.Sprintf(" '%s' %s:%d", err, f, l-2), "error")

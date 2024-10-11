@@ -150,7 +150,6 @@ func NewListHandlerEventObjectCustomFieldsElement(eventObjectCustomFields datamo
 			_, order, _, _ := eventObjectCustomFields["gratitude"].Get()
 			eventObjectCustomFields["gratitude"].Set(order, i)
 		}},
-
 		//------------------ ncircc-class-attack ------------------
 		"event.object.customFields.ncircc-class-attack.order": {func(i interface{}) {
 			listhandlercommon.NewCustomFieldsElement("ncircc-class-attack", "string", &eventObjectCustomFields)

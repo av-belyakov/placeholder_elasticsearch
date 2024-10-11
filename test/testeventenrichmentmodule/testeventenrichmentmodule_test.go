@@ -87,7 +87,7 @@ var _ = Describe("Testeventenrichmentmodule", Ordered, func() {
 		commonConf := confApp.GetCommonApp()
 
 		ctx, ctxCancel = context.WithCancel(context.Background())
-		eventEnrichmentModule, errEEM = eventenrichmentmodule.NewEventEnrichmentModule(ctx, commonConf.NCIRCC, commonConf.ZabbixJsonRPC, logging)
+		eventEnrichmentModule, errEEM = eventenrichmentmodule.NewEventEnrichmentModule(ctx, commonConf.NCIRCC, commonConf.GeoIpJsonRPC, commonConf.ZabbixJsonRPC, logging)
 
 		mongoDBConf := confApp.GetAppMongoDB()
 

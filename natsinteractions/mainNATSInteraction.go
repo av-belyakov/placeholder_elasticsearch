@@ -1,13 +1,12 @@
 package natsinteractions
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"runtime"
-	"sync"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/nats-io/nats.go"
 
 	"placeholder_elasticsearch/confighandler"
@@ -15,77 +14,19 @@ import (
 	"placeholder_elasticsearch/memorytemporarystorage"
 )
 
-var (
-	ns    *natsStorage
-	once  sync.Once
-	mnats ModuleNATS
-)
-
-type natsStorage struct {
-	mutex   sync.Mutex
-	storage map[string]messageDescriptors
-}
-
-type messageDescriptors struct {
-	timeCreate int64
-	msgNats    *nats.Msg
-}
-
-func NewStorageNATS() *natsStorage {
-	once.Do(func() {
-		ns = &natsStorage{storage: make(map[string]messageDescriptors)}
-
-		go checkLiveTime(ns)
-	})
-
-	return ns
-}
-
-func checkLiveTime(ns *natsStorage) {
-	for range time.Tick(5 * time.Second) {
-		go func() {
-			ns.mutex.Lock()
-			defer ns.mutex.Unlock()
-
-			for k, v := range ns.storage {
-				if time.Now().Unix() > (v.timeCreate + 360) {
-					ns.deleteElement(k)
-				}
-			}
-		}()
-	}
-}
-
-func (ns *natsStorage) setElement(m *nats.Msg) string {
-	id := uuid.New().String()
-
-	ns.mutex.Lock()
-	defer ns.mutex.Unlock()
-
-	ns.storage[id] = messageDescriptors{
-		timeCreate: time.Now().Unix(),
-		msgNats:    m,
-	}
-
-	return id
-}
-
-func (ns *natsStorage) deleteElement(id string) {
-	delete(ns.storage, id)
-}
-
-func init() {
-	mnats.chanOutputNATS = make(chan SettingsOutputChan)
-
-	//инициируем хранилище для дескрипторов сообщений NATS
-	ns = NewStorageNATS()
-}
-
 func NewClientNATS(
 	conf confighandler.AppConfigNATS,
 	storageApp *memorytemporarystorage.CommonStorageTemporary,
 	logging chan<- datamodels.MessageLogging,
 	counting chan<- datamodels.DataCounterSettings) (*ModuleNATS, error) {
+	mnats := ModuleNATS{
+		chanOutputNATS: make(chan SettingsOutputChan),
+		chanInputNATS:  make(chan SettingsInputChan),
+	}
+
+	//инициируем хранилище для дескрипторов сообщений NATS
+	ns = NewStorageNATS()
+
 	if conf.SubjectCase == "" && conf.SubjectAlert == "" {
 		_, f, l, _ := runtime.Caller(0)
 		return &mnats, fmt.Errorf("'there is not a single subscription available for NATS in the configuration file' %s:%d", f, l-1)
@@ -141,10 +82,76 @@ func NewClientNATS(
 				Count:    1,
 			}
 		})
-
 	}
+
+	go SenderData(ns, mnats.GetDataDeliveryChannel(), logging)
 
 	log.Printf("Connect to NATS with address %s:%d\n", conf.Host, conf.Port)
 
 	return &mnats, nil
+}
+
+// SenderData выполняет отправку в NATS данных приходящих в модуль из основной части приложения
+func SenderData(ns *natsStorage, chanInput <-chan SettingsInputChan, logging chan<- datamodels.MessageLogging) {
+
+	fmt.Println("func 'SenderData' START")
+
+	for data := range chanInput {
+		fmt.Println("func 'SenderData' DATA:", data)
+
+		if data.Command != "send tag" {
+			continue
+		}
+		fmt.Println("func 'SenderData' CHECK 111")
+
+		//получаем дескриптор соединения с NATS для отправки eventId
+		ncd, ok := ns.getElement(data.TaskId)
+		if !ok {
+			_, f, l, _ := runtime.Caller(0)
+
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("connection descriptor for task id '%s' not found %s:%d", data.TaskId, f, l-2),
+				MsgType: "error",
+			}
+
+			continue
+		}
+		fmt.Println("func 'SenderData' CHECK 222")
+
+		res, err := json.Marshal(datamodels.NewResponseMessage())
+		if err != nil {
+			_, f, l, _ := runtime.Caller(0)
+
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("%s %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+
+			continue
+		}
+		fmt.Println("func 'SenderData' CHECK 333")
+		request, err := json.MarshalIndent(datamodels.NewResponseMessage(), "", " ")
+		if err != nil {
+			_, f, l, _ := runtime.Caller(0)
+
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("%s %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+		fmt.Println(string(request))
+
+		//отправляем в NATS пакет с eventId для добавления его в TheHive
+		if err := ncd.Respond(res); err != nil {
+			_, f, l, _ := runtime.Caller(0)
+
+			logging <- datamodels.MessageLogging{
+				MsgData: fmt.Sprintf("%s %s:%d", err.Error(), f, l-2),
+				MsgType: "error",
+			}
+		}
+
+		fmt.Println("func 'SenderData' SEND DATA IS SUCCEFULY")
+
+	}
 }
