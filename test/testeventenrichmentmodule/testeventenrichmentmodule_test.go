@@ -32,7 +32,7 @@ var _ = Describe("Testeventenrichmentmodule", Ordered, func() {
 		errConfApp, errEEM, errMDB error
 	)
 
-	requestMongoDB := func(sensorId string, sensorSettings datamodels.InformationFromEventEnricher) error {
+	requestMongoDB := func(sensorId string, sensorSettings datamodels.GetterSensorInformation) error {
 		collection := connMDB.Database(confApp.GetAppMongoDB().NameDB).Collection(collectionName)
 		opts := options.FindOne()
 		currentData := datamodels.NewSensorInformation()

@@ -12,36 +12,29 @@ import (
 )
 
 // AddEventenrichmentCase выполняет обогащение уже имеющегося кейса дополнительной, полезной информацией
-func (hsd HandlerSendData) AddEventenrichmentCase(
-	data interface{},
-	indexName string,
-	logging chan<- datamodels.MessageLogging) {
+func (hsd HandlerSendData) AddEventenrichmentCase(data interface{}, indexName string, logging chan<- datamodels.MessageLogging) {
 
 	//добавляем небольшую задержку что бы СУБД успела добавить индекс
 	//***************************************************************
 	time.Sleep(3 * time.Second)
 	//***************************************************************
 
-	addSensorsInformation := datamodels.SensorAdditionalInformation{}
-
-	//*******************************************
-	//	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	// Тут где то надо сделать добавление найденной информации
-	// по ip адресам и загружат ее в эластик
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	//*******************************************
+	additionalInformation := datamodels.AdditionalInformation{}
 
 	//приводим значение к интерфейсу позволяющему получить доступ к информации о сенсорах
 	infoEvent, ok := data.(datamodels.InformationFromEventEnricher)
 	if !ok {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
-			MsgData: fmt.Sprintf("'error converting the type to type *datamodels.InformationFromEventEnricher' %s:%d", f, l-1),
+			MsgData: fmt.Sprintf("'error converting the type to type datamodels.InformationFromEventEnricher' %s:%d", f, l-1),
 			MsgType: "error",
 		}
 
 		return
 	}
+
+	fmt.Println("---- func 'AddEventenrichmentCase' ----")
+	fmt.Println(infoEvent)
 
 	t := time.Now()
 	month := int(t.Month())
@@ -59,9 +52,9 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 		return
 	}
 
+	//информация по сенсорам
 	invalidString := "DOCTYPE"
-	sensorsId := infoEvent.GetSensorsId()
-	for _, v := range sensorsId {
+	for _, v := range infoEvent.GetSensorsId() {
 		//убираем невалидные данные
 		if strings.Contains(infoEvent.GetGeoCode(v), invalidString) || strings.Contains(infoEvent.GetObjectArea(v), invalidString) || strings.Contains(infoEvent.GetSubjectRF(v), invalidString) || strings.Contains(infoEvent.GetINN(v), invalidString) {
 			_, f, l, _ := runtime.Caller(0)
@@ -84,10 +77,27 @@ func (hsd HandlerSendData) AddEventenrichmentCase(
 		si.SetOrgName(infoEvent.GetOrgName(v))
 		si.SetFullOrgName(infoEvent.GetFullOrgName(v))
 
-		addSensorsInformation.Add(*si)
+		additionalInformation.AddSensor(*si)
 	}
 
-	request, err := json.MarshalIndent(*addSensorsInformation.Get(), "", " ")
+	//информация по ip адресам
+	for _, ipAddress := range infoEvent.GetIpAddresses() {
+		if !infoEvent.GetIsSuccess(ipAddress) {
+			continue
+		}
+
+		ipi := datamodels.NewIpAddressesInformation()
+		ipi.SetIp(ipAddress)
+
+		customIpInfo := groupIpInfoResult(infoEvent)
+		ipi.SetCity(customIpInfo.city)
+		ipi.SetCountry(customIpInfo.country)
+		ipi.SetCountryCode(customIpInfo.countryCode)
+
+		additionalInformation.AddIpAddress(*ipi)
+	}
+
+	request, err := json.MarshalIndent(*additionalInformation.Get(), "", " ")
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		logging <- datamodels.MessageLogging{
@@ -608,4 +618,33 @@ func (hsd HandlerSendData) ReplacementDocumentAlert(
 			MsgType: "warning",
 		}
 	}
+}
+
+func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct{ city, country, countryCode string } {
+	sources := [...]string{"GeoipNoc", "MAXMIND", "DBIP", "AriadnaDB"}
+	customIpResult := struct{ city, country, countryCode string }{}
+
+	for _, ip := range infoEvent.GetIpAddresses() {
+		for _, source := range sources {
+			if city, ok := infoEvent.SearchCity(ip, source); ok {
+				if city != "" {
+					customIpResult.city = city
+				}
+			}
+
+			if country, ok := infoEvent.SearchCountry(ip, source); ok {
+				if country != "" {
+					customIpResult.country = country
+				}
+			}
+
+			if countryCode, ok := infoEvent.SearchCountryCode(ip, source); ok {
+				if countryCode != "" {
+					customIpResult.countryCode = countryCode
+				}
+			}
+		}
+	}
+
+	return customIpResult
 }

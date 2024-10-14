@@ -134,8 +134,72 @@ func (e SettingsChanOutputEEM) GetFullOrgName(sensorId string) string {
 }
 
 // GetIpAddresses список найденной по ip адресам информации
-func (e SettingsChanOutputEEM) GetIpAddresses() []GeoIpInformation {
+func (e SettingsChanOutputEEM) GetIpAddresses() []string {
 	return e.IpAddresses
+}
+
+// GetIsSuccess успешность выполненного запроса
+func (e SettingsChanOutputEEM) GetIsSuccess(ip string) bool {
+	var foundElem bool
+
+	for _, v := range e.IpAddressesInfo {
+		if v.Ip == ip {
+			foundElem = v.IsSuccess
+		}
+	}
+
+	return foundElem
+}
+
+// SearchCity поиск названия города
+func (e SettingsChanOutputEEM) SearchCity(ip, sourceInfo string) (string, bool) {
+	var foundElem string
+
+	for _, v := range e.IpAddressesInfo {
+		if v.Ip == ip {
+			continue
+		}
+
+		if information, ok := v.Info[sourceInfo]; ok {
+			return information.GetCity(), ok
+		}
+	}
+
+	return foundElem, false
+}
+
+// SearchCountry поиск названия страны
+func (e SettingsChanOutputEEM) SearchCountry(ip, sourceInfo string) (string, bool) {
+	var foundElem string
+
+	for _, v := range e.IpAddressesInfo {
+		if v.Ip == ip {
+			continue
+		}
+
+		if information, ok := v.Info[sourceInfo]; ok {
+			return information.GetCountry(), ok
+		}
+	}
+
+	return foundElem, false
+}
+
+// SearchCountryCode поиск кода страны
+func (e SettingsChanOutputEEM) SearchCountryCode(ip, sourceInfo string) (string, bool) {
+	var foundElem string
+
+	for _, v := range e.IpAddressesInfo {
+		if v.Ip == ip {
+			continue
+		}
+
+		if information, ok := v.Info[sourceInfo]; ok {
+			return information.GetCountryCode(), ok
+		}
+	}
+
+	return foundElem, false
 }
 
 // GetIsSuccess успешность выполненного запроса
@@ -149,7 +213,7 @@ func (gii GeoIpInformation) GetIp() string {
 }
 
 // GetIpLocation подробная информация об ip адресе
-func (gii GeoIpInformation) GetIpLocation() map[string]IpLocation {
+func (gii GeoIpInformation) GetIpLocation(ip string) map[string]IpLocation {
 	return gii.Info
 }
 

@@ -22,7 +22,7 @@ type VerifiedEsCase struct {
 	//Elsticsearch), что выражается в ошибке от СУБД типа "Limit of total
 	//fields [2000] has been exceeded while adding new fields"
 	TtpsMessageTheHive
-	SensorAdditionalInformation
+	AdditionalInformation
 }
 
 func NewVerifiedEsCase() *VerifiedEsCase {
@@ -32,7 +32,7 @@ func NewVerifiedEsCase() *VerifiedEsCase {
 	}
 	vec.ObservablesMessageEs = *NewObservablesMessageEs()
 	vec.TtpsMessageTheHive = *NewTtpsMessageTheHive()
-	vec.SensorAdditionalInformation = *NewSensorAdditionalInformation()
+	vec.AdditionalInformation = *NewAdditionalInformation()
 
 	return &vec
 }
@@ -89,12 +89,12 @@ func (c *VerifiedEsCase) SetTtps(ttp TtpsMessageTheHive) {
 	c.TtpsMessageTheHive = ttp
 }
 
-func (c *VerifiedEsCase) GetSensorAdditionalInformation() *SensorAdditionalInformation {
-	return &c.SensorAdditionalInformation
+func (c *VerifiedEsCase) GetSensorAdditionalInformation() *AdditionalInformation {
+	return &c.AdditionalInformation
 }
 
-func (c *VerifiedEsCase) SetSensorAdditionalInformation(sai SensorAdditionalInformation) {
-	c.SensorAdditionalInformation = sai
+func (c *VerifiedEsCase) SetSensorAdditionalInformation(sai AdditionalInformation) {
+	c.AdditionalInformation = sai
 }
 
 /*func (c *VerifiedEsCase) GetTtps() *TtpsMessageEs {

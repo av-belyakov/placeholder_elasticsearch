@@ -118,7 +118,8 @@ func SenderData(ns *natsStorage, chanInput <-chan SettingsInputChan, logging cha
 		}
 		fmt.Println("func 'SenderData' CHECK 222")
 
-		res, err := json.Marshal(datamodels.NewResponseMessage())
+		resMsg := datamodels.NewResponseMessage()
+		res, err := json.Marshal(resMsg.GetResponseMessageFromMispToTheHave())
 		if err != nil {
 			_, f, l, _ := runtime.Caller(0)
 
@@ -130,7 +131,7 @@ func SenderData(ns *natsStorage, chanInput <-chan SettingsInputChan, logging cha
 			continue
 		}
 		fmt.Println("func 'SenderData' CHECK 333")
-		request, err := json.MarshalIndent(datamodels.NewResponseMessage(), "", " ")
+		request, err := json.MarshalIndent(resMsg.GetResponseMessageFromMispToTheHave(), "", " ")
 		if err != nil {
 			_, f, l, _ := runtime.Caller(0)
 

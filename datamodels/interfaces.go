@@ -5,6 +5,7 @@ type InformationFromEventEnricher interface {
 	GetterSource
 	GetterSensorsId
 	GetterSensorInformation
+	GetterIpAddresses
 	GetterIpAddressesInformation
 }
 
@@ -20,29 +21,24 @@ type GetterSensorsId interface {
 	GetSensorsId() []string
 }
 
+type GetterSensorInformation interface {
+	GetHostId(sid string) string
+	GetGeoCode(sid string) string
+	GetObjectArea(sid string) string
+	GetSubjectRF(sid string) string
+	GetINN(sid string) string
+	GetHomeNet(sid string) string
+	GetOrgName(sid string) string
+	GetFullOrgName(sid string) string
+}
+
 type GetterIpAddresses interface {
-	GetIpAddresses() []GetterIpAddressesInformation
+	GetIpAddresses() []string
 }
 
 type GetterIpAddressesInformation interface {
-	GetIsSuccess() bool
-	GetIp() string
-	GetIpLocation() map[string]GetterIpLocation
-}
-
-type GetterIpLocation interface {
-	GetCity() string
-	GetCountry() string
-	GetCountryCode() string
-}
-
-type GetterSensorInformation interface {
-	GetHostId(string) string
-	GetGeoCode(string) string
-	GetObjectArea(string) string
-	GetSubjectRF(string) string
-	GetINN(string) string
-	GetHomeNet(string) string
-	GetOrgName(string) string
-	GetFullOrgName(string) string
+	GetIsSuccess(ip string) bool
+	SearchCity(ip, sourceInfo string) (string, bool)
+	SearchCountry(ip, sourceInfo string) (string, bool)
+	SearchCountryCode(ip, sourceInfo string) (string, bool)
 }

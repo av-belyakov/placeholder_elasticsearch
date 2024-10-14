@@ -684,22 +684,39 @@ func (ped PatternExtraData) ToStringBeautiful(num int) string {
 	return str.String()
 }
 
-func NewSensorAdditionalInformation() *SensorAdditionalInformation {
-	return &SensorAdditionalInformation{Sensors: []SensorInformation(nil)}
+// NewAdditionalInformation формирует структуру содержащую дополнительную информацию
+func NewAdditionalInformation() *AdditionalInformation {
+	return &AdditionalInformation{
+		Sensors:     []SensorInformation(nil),
+		IpAddresses: []IpAddressesInformation(nil)}
 }
 
-func (sai *SensorAdditionalInformation) Get() *SensorAdditionalInformation {
-	return sai
+// Get возвращает дополнительную информацию
+func (ai *AdditionalInformation) Get() *AdditionalInformation {
+	return ai
 }
 
-func (sai *SensorAdditionalInformation) GetSensors() []SensorInformation {
-	return sai.Sensors
+// GetSensors возвращает дополнительную информацию по сенсорам
+func (ai *AdditionalInformation) GetSensors() []SensorInformation {
+	return ai.Sensors
 }
 
-func (sai *SensorAdditionalInformation) Add(e SensorInformation) {
-	sai.Sensors = append(sai.Sensors, e)
+// AddSensor добавляет дополнительную информациб по сенсору
+func (ai *AdditionalInformation) AddSensor(e SensorInformation) {
+	ai.Sensors = append(ai.Sensors, e)
 }
 
+// GetIpAddresses возвращает дополнительную информацию по ip адресам
+func (ai *AdditionalInformation) GetIpAddresses() []IpAddressesInformation {
+	return ai.IpAddresses
+}
+
+// AddIpAddress добавляет дополнительную информациб по ip адресу
+func (ai *AdditionalInformation) AddIpAddress(e IpAddressesInformation) {
+	ai.IpAddresses = append(ai.IpAddresses, e)
+}
+
+// NewSensorInformation формирует структуру с информацией о сенсоре
 func NewSensorInformation() *SensorInformation {
 	return &SensorInformation{}
 }
@@ -792,4 +809,49 @@ func (si *SensorInformation) GetFullOrgName() string {
 // SetFullOrgName устанавливает значение FullOrgName
 func (si *SensorInformation) SetFullOrgName(v string) {
 	si.FullOrgName = v
+}
+
+// NewIpAddressesInformation формирует структуру с информацией об ip адресе
+func NewIpAddressesInformation() *IpAddressesInformation {
+	return &IpAddressesInformation{}
+}
+
+// GetIp возвращает ip адрес
+func (ipi *IpAddressesInformation) GetIp() string {
+	return ipi.Ip
+}
+
+// SetIp устанавливает ip адрес
+func (ipi *IpAddressesInformation) SetIp(v string) {
+	ipi.Ip = v
+}
+
+// GetCity возвращает название города
+func (ipi *IpAddressesInformation) GetCity() string {
+	return ipi.City
+}
+
+// SetCity устанавливает название города
+func (ipi *IpAddressesInformation) SetCity(v string) {
+	ipi.City = v
+}
+
+// GetCountry возвращает название страны
+func (ipi *IpAddressesInformation) GetCountry() string {
+	return ipi.Country
+}
+
+// SetCountry устанавливает название страны
+func (ipi *IpAddressesInformation) SetCountry(v string) {
+	ipi.Country = v
+}
+
+// GetCountryCode возвращает код страны
+func (ipi *IpAddressesInformation) GetCountryCode() string {
+	return ipi.CountryCode
+}
+
+// SetCountryCode устанавливает код страны
+func (ipi *IpAddressesInformation) SetCountryCode(v string) {
+	ipi.CountryCode = v
 }

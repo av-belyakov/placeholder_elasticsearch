@@ -79,10 +79,7 @@ func (w *wrappers) GetSensorsEventenrichment(
 }
 
 // AddNewSensorsEventenrichment добавляет дополнительную информацию о сенсорах
-func (w *wrappers) AddNewSensorsEventenrichment(
-	data interface{},
-	logging chan<- datamodels.MessageLogging) {
-
+func (w *wrappers) AddNewSensorsEventenrichment(data interface{}, logging chan<- datamodels.MessageLogging) {
 	requestMongoDB := func(sensorId string, sensorSettings datamodels.InformationFromEventEnricher) error {
 		collection := w.ConnDB.Database(w.NameDB).Collection("collection_sensor_information")
 		opts := options.FindOne()

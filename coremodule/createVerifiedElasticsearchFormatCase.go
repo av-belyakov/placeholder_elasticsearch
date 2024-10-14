@@ -34,6 +34,26 @@ func (e *listSensorId) AddElem(sensorId string) {
 	e.sensors = append(e.sensors, sensorId)
 }
 
+type listIpAddresses struct {
+	ip []string
+}
+
+// Get возвращает список ip
+func (e *listIpAddresses) Get() []string {
+	return e.ip
+}
+
+// AddElem добавляет только уникальные элементы
+func (e *listIpAddresses) AddElem(ip string) {
+	for _, v := range e.ip {
+		if v == ip {
+			return
+		}
+	}
+
+	e.ip = append(e.ip, ip)
+}
+
 func NewVerifiedElasticsearchFormatCase(opts VerifiedElasticsearchFormatCaseOptions) {
 	var (
 		rootId string
@@ -264,24 +284,33 @@ func NewVerifiedElasticsearchFormatCase(opts VerifiedElasticsearchFormatCaseOpti
 	verifiedCase.SetObservables(*observables)
 	verifiedCase.SetTtps(*ttps)
 
+	eventCase := verifiedCase.GetEvent()
+	objectElem := eventCase.GetObject()
+
+	//формируется список идентификаторов сенсоров
 	sensorsId := listSensorId{
 		sensors: []string(nil),
 	}
-
-	eventCase := verifiedCase.GetEvent()
-	objectElem := eventCase.GetObject()
 	if listSensorId, ok := objectElem.GetTags()["sensor:id"]; ok {
 		for _, v := range listSensorId {
 			sensorsId.AddElem(v)
 		}
 	}
 
-	//******************************************
-	//
-	// здесь надо формировать список ip адресов
-	// по которым будет выполнятся поис GeoIP
-	//
-	//*****************************************
+	//формируется список ip адресов
+	ipAddresses := listIpAddresses{
+		ip: []string(nil),
+	}
+	if ipObservables, ok := verifiedCase.GetKeyObservables("ip"); ok {
+		for _, v := range ipObservables {
+			ipAddresses.AddElem(v.Data)
+		}
+	}
+	if listIpAddresses, ok := objectElem.GetTags()["ip"]; ok {
+		for _, v := range listIpAddresses {
+			ipAddresses.AddElem(v)
+		}
+	}
 
 	//отправляем кейс в Elasticsearch
 	opts.esmChan <- elasticsearchinteractions.SettingsInputChan{
@@ -297,12 +326,13 @@ func NewVerifiedElasticsearchFormatCase(opts VerifiedElasticsearchFormatCaseOpti
 	}
 
 	//делаем запрос на получение дополнительной информации о сенсорах
-	if len(sensorsId.Get()) > 0 {
+	if len(sensorsId.Get()) > 0 || len(ipAddresses.Get()) > 0 {
 		//делаем запрос к модулю обогащения доп. информацией из Zabbix
 		opts.eemChan <- eventenrichmentmodule.SettingsChanInputEEM{
-			RootId:    eventCase.GetRootId(),
-			Source:    verifiedCase.GetSource(),
-			SensorsId: sensorsId.Get(),
+			RootId:      eventCase.GetRootId(),
+			Source:      verifiedCase.GetSource(),
+			SensorsId:   sensorsId.Get(),
+			IpAddresses: ipAddresses.Get(),
 		}
 	}
 

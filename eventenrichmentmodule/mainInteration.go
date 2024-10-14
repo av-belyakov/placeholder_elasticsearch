@@ -33,6 +33,7 @@ func NewEventEnrichmentModule(
 		return &module, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
+	//поиск информации в Zabbix
 	checkConfZabbixAPI := func(zabbixApi confighandler.ZabbixJsonRPCOptions) error {
 		if zabbixApi.NetworkHost == "" {
 			_, f, l, _ := runtime.Caller(0)
@@ -63,6 +64,7 @@ func NewEventEnrichmentModule(
 		return &module, err
 	}
 
+	//поиск информации по ИНН в НКЦКИ
 	searchNCIRCCInfo := func(inn, sensorId string) (orgName, fullOrgName string, err error) {
 		if inn == "" {
 			_, f, l, _ := runtime.Caller(0)
@@ -123,11 +125,12 @@ func NewEventEnrichmentModule(
 					logging chan<- datamodels.MessageLogging) {
 
 					settingsResponse := SettingsChanOutputEEM{
-						RootId:      data.RootId,
-						Source:      data.Source,
-						SensorsId:   []string(nil),
-						Sensors:     []FoundSensorInformation(nil),
-						IpAddresses: []GeoIpInformation(nil),
+						RootId:            data.RootId,
+						Source:            data.Source,
+						SensorsIdNotFound: []string(nil),
+						Sensors:           []FoundSensorInformation(nil),
+						IpAddresses:       []string(nil),
+						IpAddressesInfo:   []GeoIpInformation(nil),
 					}
 
 					var wg sync.WaitGroup
@@ -144,13 +147,13 @@ func NewEventEnrichmentModule(
 									MsgType: "error",
 								}
 
-								settingsResponse.SensorsId = append(settingsResponse.SensorsId, sensorId)
+								settingsResponse.SensorsIdNotFound = append(settingsResponse.SensorsIdNotFound, sensorId)
 
 								continue
 							}
 
 							if fullInfo.HostId == "" {
-								settingsResponse.SensorsId = append(settingsResponse.SensorsId, sensorId)
+								settingsResponse.SensorsIdNotFound = append(settingsResponse.SensorsIdNotFound, sensorId)
 
 								continue
 							}
@@ -198,7 +201,8 @@ func NewEventEnrichmentModule(
 								continue
 							}
 
-							settingsResponse.IpAddresses = append(settingsResponse.IpAddresses, geoIpInfo)
+							settingsResponse.IpAddresses = append(settingsResponse.IpAddresses, ip)
+							settingsResponse.IpAddressesInfo = append(settingsResponse.IpAddressesInfo, geoIpInfo)
 						}
 
 						wg.Done()

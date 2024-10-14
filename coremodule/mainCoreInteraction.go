@@ -65,8 +65,8 @@ func (settings *CoreHandlerSettings) CoreHandler(
 			return
 
 		case info := <-eeModule.ChanOutputModule:
-			//если в Zabbix было найденно хоть что то по сенсорам
-			if len(info.GetSensorsId()) > 0 {
+			//если модуль хоть что то нашел по сенсорам или ip адресам
+			if len(info.GetSensorsId()) > 0 || len(info.GetIpAddresses()) > 0 {
 				// отправляем, найденную о сенсорах информацию, в MongoDB
 				mdbModule.ChanInputModule <- mongodbinteractions.SettingsInputChan{
 					Section: "handling eventenrichment",
@@ -82,9 +82,9 @@ func (settings *CoreHandlerSettings) CoreHandler(
 				}
 			}
 
-			if len(info.SensorsId) > 0 {
+			if len(info.SensorsIdNotFound) > 0 {
 				settings.logging <- datamodels.MessageLogging{
-					MsgData: fmt.Sprintf("'the following sensors '%s' were not found in Zabbix, a search will be performed for them in the database MongoDB'", strings.Join(info.SensorsId, ",")),
+					MsgData: fmt.Sprintf("'the following sensors '%s' were not found in Zabbix, a search will be performed for them in the database MongoDB'", strings.Join(info.GetSensorsId(), ",")),
 					MsgType: "info",
 				}
 
@@ -94,7 +94,7 @@ func (settings *CoreHandlerSettings) CoreHandler(
 					Command: "get sensor eventenrichment",
 					RootId:  info.RootId,
 					Source:  info.Source,
-					Data:    info.SensorsId,
+					Data:    info.SensorsIdNotFound,
 				}
 			}
 
