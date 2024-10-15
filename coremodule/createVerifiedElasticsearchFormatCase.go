@@ -322,6 +322,7 @@ func NewVerifiedElasticsearchFormatCase(opts VerifiedElasticsearchFormatCaseOpti
 	//отправляем запрос в модуль NATS для установки тега 'Webhook: send="ES"'
 	opts.natsChan <- natsinteractions.SettingsInputChan{
 		Command: "send tag",
+		EventId: fmt.Sprint(objectElem.GetCaseId()),
 		TaskId:  opts.msgId,
 	}
 

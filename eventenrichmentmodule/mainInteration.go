@@ -16,10 +16,9 @@ import (
 // NewEventEnrichmentModule инициализирует новый модуль обогащения данными
 func NewEventEnrichmentModule(
 	ctx context.Context,
-	ncirccConf confighandler.NCIRCCOptions,
-	geoIpConf confighandler.GeoIPJsonRPCOptions,
-	zabbixApi confighandler.ZabbixJsonRPCOptions,
+	options EventEnrichmentModuleOptions,
 	logging chan<- datamodels.MessageLogging) (*EventEnrichmentModule, error) {
+
 	module := EventEnrichmentModule{
 		ChanInputModule:  make(chan SettingsChanInputEEM),
 		ChanOutputModule: make(chan SettingsChanOutputEEM),
@@ -27,7 +26,7 @@ func NewEventEnrichmentModule(
 
 	patternNumeric := regexp.MustCompile(`^[0-9]+$`)
 
-	connTimeout, err := time.ParseDuration(fmt.Sprintf("%ds", zabbixApi.ConnectionTimeout))
+	connTimeout, err := time.ParseDuration(fmt.Sprintf("%ds", options.ConfZabbixApi.ConnectionTimeout))
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		return &module, fmt.Errorf("'%v' %s:%d", err, f, l-1)
@@ -53,12 +52,12 @@ func NewEventEnrichmentModule(
 		return nil
 	}
 
-	if err := checkConfZabbixAPI(zabbixApi); err != nil {
+	if err := checkConfZabbixAPI(options.ConfZabbixApi); err != nil {
 		return &module, err
 	}
 
 	ctxDone, ctxDoneCancel := context.WithCancel(context.Background())
-	settingsFullOrgNameByINN, err := NewSettingsFuncFullNameOrganizationByINN(ctxDone, ncirccConf.URL, ncirccConf.Token, (5 * time.Second))
+	settingsFullOrgNameByINN, err := NewSettingsFuncFullNameOrganizationByINN(ctxDone, options.ConfNCIRCC.URL, options.ConfNCIRCC.Token, (5 * time.Second))
 	if err != nil {
 		ctxDoneCancel()
 		return &module, err
@@ -87,9 +86,9 @@ func NewEventEnrichmentModule(
 
 	zabbixConnHandler, err := zabbixinteractions.NewZabbixConnectionJsonRPC(
 		zabbixinteractions.SettingsZabbixConnectionJsonRPC{
-			Host:              zabbixApi.NetworkHost,
-			Login:             zabbixApi.Login,
-			Passwd:            zabbixApi.Passwd,
+			Host:              options.ConfZabbixApi.NetworkHost,
+			Login:             options.ConfZabbixApi.Login,
+			Passwd:            options.ConfZabbixApi.Passwd,
 			ConnectionTimeout: &connTimeout,
 		})
 	if err != nil {
@@ -98,11 +97,12 @@ func NewEventEnrichmentModule(
 		return &module, fmt.Errorf("'%v' %s:%d", err, f, l-1)
 	}
 
+	//поиск информации по георасположению в API баз данных geoip
 	geoIpClient, err := NewGeoIpClient(
 		context.Background(),
-		WithHost(geoIpConf.Host),
-		WithPort(geoIpConf.Port),
-		WithPath(geoIpConf.Path),
+		WithHost(options.ConfGeoIP.Host),
+		WithPort(options.ConfGeoIP.Port),
+		WithPath(options.ConfGeoIP.Path),
 		WithConnectionTimeout(10*time.Second))
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
@@ -139,6 +139,7 @@ func NewEventEnrichmentModule(
 					//поиск информации по сенсорам
 					go func(sensors []string) {
 						for _, sensorId := range sensors {
+							//получение полной информации о сенсоре
 							fullInfo, err := zabbixinteractions.GetFullSensorInformationFromZabbixAPI(sensorId, zabbixConnHandler)
 							if err != nil {
 								_, f, l, _ := runtime.Caller(0)
@@ -162,7 +163,7 @@ func NewEventEnrichmentModule(
 								SensorId:   sensorId,
 								HostId:     fullInfo.HostId,
 								GeoCode:    fullInfo.GeoCode,
-								ObjectArea: fullInfo.ObjectArea,
+								ObjectArea: MappingObjectArea(fullInfo.ObjectArea, options.ConfMapping.AreaActivity),
 								SubjectRF:  fullInfo.SubjectRF,
 								INN:        fullInfo.INN,
 								HomeNet:    fullInfo.HomeNet,

@@ -24,6 +24,10 @@ func (conf *ConfigApp) GetAppRulesProcMsg() *AppConfigRulesProcMsg {
 	return &conf.AppConfigRulesProcMsg
 }
 
+func (conf *ConfigApp) GetMappingParameters() *AppConfigMapping {
+	return &conf.AppConfigMapping
+}
+
 func (conf *ConfigApp) Clean() {
 	conf = &ConfigApp{}
 }

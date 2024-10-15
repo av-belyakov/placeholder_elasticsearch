@@ -102,7 +102,7 @@ func SenderData(ns *natsStorage, chanInput <-chan SettingsInputChan, logging cha
 		if data.Command != "send tag" {
 			continue
 		}
-		fmt.Println("func 'SenderData' CHECK 111")
+		fmt.Println("func 'SenderData' received case ID:", data.EventId)
 
 		//получаем дескриптор соединения с NATS для отправки eventId
 		ncd, ok := ns.getElement(data.TaskId)

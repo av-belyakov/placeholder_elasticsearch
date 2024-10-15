@@ -1,0 +1,43 @@
+# MAPPINGFIELDACTIVITY настройки для сопоставления сферы деятельности организации
+# approvedName содержит основное наименование
+# variationsName перечень различных наименований которые нужно привести к основному наименованию
+MAPPINGAREAACTIVITY:
+  - approvedName: "Атомная энергетика"
+    variationsName: ["Атомная промышленность"]
+  - approvedName: "Банковская сфера и иные сферы финансового рынка"
+    variationsName: ["Кредитно-финансовая сфера"]
+  - approvedName: "Горнодобывающая промышленность"
+    variationsName: []
+  - approvedName: "Государственная/муниципальная власть"
+    variationsName:
+      [
+        "Государственные органы",
+        "Государственный орган",
+        "Орган безопасности",
+        "ФСБ России",
+        "Органы безопасности",
+      ]
+  - approvedName: "Здравоохранение"
+    variationsName: []
+  - approvedName: "Металлургическая промышленность"
+    variationsName: []
+  - approvedName: "Наука"
+    variationsName: []
+  - approvedName: "Оборонная промышленность"
+    variationsName: ["Оборонная"]
+  - approvedName: "Образование"
+    variationsName: ["Наука и образование"]
+  - approvedName: "Ракетно-космическая промышленность"
+    variationsName: []
+  - approvedName: "Связь"
+    variationsName: []
+  - approvedName: "СМИ"
+    variationsName: ["Средства массовой информации"]
+  - approvedName: "Топливно-энергетический комплекс"
+    variationsName: ["Топливная промышленность", "Энергетика"]
+  - approvedName: "Транспорт"
+    variationsName: []
+  - approvedName: "Химическая промышленность"
+    variationsName: []
+  - approvedName: "Иная"
+    variationsName: ["Другие", "Другие отрасли", "Иная (спорт)"]

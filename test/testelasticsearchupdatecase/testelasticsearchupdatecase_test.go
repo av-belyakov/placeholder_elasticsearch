@@ -60,7 +60,15 @@ var _ = Describe("Testelasticsearchupdatecase", Ordered, func() {
 		errConn = hsd.New()
 
 		ctxEEM, ctxCancelEEM = context.WithCancel(context.Background())
-		eventEnrichmentModule, errEEM = eventenrichmentmodule.NewEventEnrichmentModule(ctxEEM, commonConf.NCIRCC, commonConf.GeoIpJsonRPC, commonConf.ZabbixJsonRPC, logging)
+		eventEnrichmentModule, errEEM = eventenrichmentmodule.NewEventEnrichmentModule(
+			ctxEEM,
+			eventenrichmentmodule.EventEnrichmentModuleOptions{
+				ConfNCIRCC:    commonConf.NCIRCC,
+				ConfGeoIP:     commonConf.GeoIpJsonRPC,
+				ConfZabbixApi: commonConf.ZabbixJsonRPC,
+				ConfMapping:   confApp.AppConfigMapping,
+			},
+			logging)
 
 		//получаем информацию о сенсорах
 		eventEnrichmentModule.ChanInputModule <- eventenrichmentmodule.SettingsChanInputEEM{

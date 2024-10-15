@@ -18,23 +18,22 @@ type responseData struct {
 }
 
 type FullSensorInformationFromZabbixAPI struct {
-	SensorId   string
-	HostId     string
-	GeoCode    string
-	ObjectArea string
-	SubjectRF  string
-	INN        string
-	HomeNet    string
+	SensorId   string //id  сенсора
+	HostId     string //id хоста
+	GeoCode    string //геокод
+	ObjectArea string //сфера деятельности
+	SubjectRF  string //субъект РФ
+	INN        string //ИНН
+	HomeNet    string //список домашних сетей
 }
 
 func GetFullSensorInformationFromZabbixAPI(sensorId string, zconn *ZabbixConnectionJsonRPC) (FullSensorInformationFromZabbixAPI, error) {
-	fullInfo := FullSensorInformationFromZabbixAPI{SensorId: sensorId}
-
 	var (
 		requiredHostId *RequiredHostId
 		err            error
 	)
 
+	fullInfo := FullSensorInformationFromZabbixAPI{SensorId: sensorId}
 	requiredHostId, err = NewRequiredHostId(sensorId, zconn)
 	if err != nil {
 		//при возникновении ошибки пытаемся авторизоватся повторно, так как при устаревании

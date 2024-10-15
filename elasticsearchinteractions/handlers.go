@@ -626,22 +626,24 @@ func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct
 
 	for _, ip := range infoEvent.GetIpAddresses() {
 		for _, source := range sources {
-			if city, ok := infoEvent.SearchCity(ip, source); ok {
-				if city != "" {
-					customIpResult.city = city
-				}
+			fmt.Println("func 'groupIpInfoResult', ip:", ip, " source:", source)
+
+			if city, ok := infoEvent.SearchCity(ip, source); ok && city != "" {
+				fmt.Println("func 'groupIpInfoResult', set City =", city)
+
+				customIpResult.city = city
 			}
 
-			if country, ok := infoEvent.SearchCountry(ip, source); ok {
-				if country != "" {
-					customIpResult.country = country
-				}
+			if country, ok := infoEvent.SearchCountry(ip, source); ok && country != "" {
+				fmt.Println("func 'groupIpInfoResult', set Country =", country)
+
+				customIpResult.country = country
 			}
 
-			if countryCode, ok := infoEvent.SearchCountryCode(ip, source); ok {
-				if countryCode != "" {
-					customIpResult.countryCode = countryCode
-				}
+			if countryCode, ok := infoEvent.SearchCountryCode(ip, source); ok && countryCode != "" {
+				fmt.Println("func 'groupIpInfoResult', set CountryCode =", countryCode)
+
+				customIpResult.countryCode = countryCode
 			}
 		}
 	}

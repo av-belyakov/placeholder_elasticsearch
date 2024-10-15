@@ -146,6 +146,28 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 		return nil
 	}
 
+	setMapping := func(fn string) error {
+		viper.SetConfigFile(fn)
+		viper.SetConfigType("yaml")
+		if err := viper.ReadInConfig(); err != nil {
+			return err
+		}
+
+		//**********************************************
+		//*** параметры настройки для доступа к НКЦКИ
+		//**********************************************
+		maa := MAPPINGAREAACTIVITYSet{}
+		if ok := viper.IsSet("MAPPINGAREAACTIVITY"); ok {
+			if err := viper.GetViper().Unmarshal(&maa); err != nil {
+				return err
+			}
+
+			conf.AreaActivity = maa.MAPPINGAREAACTIVITY
+		}
+
+		return nil
+	}
+
 	setSpecial := func(fn string) error {
 		viper.SetConfigFile(fn)
 		viper.SetConfigType("yaml")
@@ -236,7 +258,6 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 	}
 
 	confPath := path.Join(rootPath, "configs")
-
 	list, err := os.ReadDir(confPath)
 	if err != nil {
 		return conf, err
@@ -249,6 +270,16 @@ func NewConfig(rootDir string) (ConfigApp, error) {
 
 	//читаем общий конфигурационный файл
 	if err := setCommonSettings(fileNameCommon); err != nil {
+		return conf, err
+	}
+
+	fileNameMapping, err := getFileName("config_mapping.yaml", confPath, list)
+	if err != nil {
+		return conf, err
+	}
+
+	//читаем файл с настройками сопоставления
+	if err := setMapping(fileNameMapping); err != nil {
 		return conf, err
 	}
 

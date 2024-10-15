@@ -1,5 +1,7 @@
 package eventenrichmentmodule
 
+import "placeholder_elasticsearch/confighandler"
+
 // SettingsChanInputEEM параметры для ПРИЕМА данных в модуль
 type SettingsChanInputEEM struct {
 	RootId      string   //основной идентификатор
@@ -35,4 +37,11 @@ type FoundSensorInformation struct {
 type EventEnrichmentModule struct {
 	ChanInputModule  chan SettingsChanInputEEM  //канал для отправки данных В модуль
 	ChanOutputModule chan SettingsChanOutputEEM //канал для принятия данных ИЗ модуля
+}
+
+type EventEnrichmentModuleOptions struct {
+	ConfNCIRCC    confighandler.NCIRCCOptions
+	ConfGeoIP     confighandler.GeoIPJsonRPCOptions
+	ConfZabbixApi confighandler.ZabbixJsonRPCOptions
+	ConfMapping   confighandler.AppConfigMapping
 }

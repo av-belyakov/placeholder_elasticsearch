@@ -1,6 +1,7 @@
 package testconfighandler_test
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
@@ -142,6 +143,12 @@ var _ = Describe("Confighandler", func() {
 			Expect(cmdb.User).Should(Equal(MDB_USER))
 			Expect(cmdb.Passwd).Should(Equal(MDB_PASSWD))
 			Expect(cmdb.NameDB).Should(Equal(MDB_NAMEDB))
+		})
+		It("Параметры для сопоставления значений", func() {
+			mapping := confEnv.GetMappingParameters()
+
+			fmt.Println("MAPPING AreaActivity LIST:", mapping.AreaActivity)
+			Expect(len(mapping.AreaActivity)).ShouldNot(Equal(0))
 		})
 	})
 

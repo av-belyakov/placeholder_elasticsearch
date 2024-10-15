@@ -15,11 +15,11 @@ func NewResponseMessage() *ResponseMessageFromMispToTheHave {
 	return &ResponseMessageFromMispToTheHave{
 		Success: true,
 		//Service: "ES",
-		Service: "MISP_TEST",
+		Service: "MISP",
 		Commands: []ResponseCommandForTheHive{
 			{
 				Command: "addtag",
-				String:  "Webhook: send=\"ES\"",
+				String:  "Webhook: send=\"Elasticsearch\"",
 			},
 		},
 	}

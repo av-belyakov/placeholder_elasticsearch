@@ -1,11 +1,13 @@
 package confighandler
 
+// ConfigApp конфигурационная структура
 type ConfigApp struct {
-	CommonAppConfig
-	AppConfigNATS
-	AppConfigElasticSearch
-	AppConfigMongoDB
-	AppConfigRulesProcMsg
+	CommonAppConfig        //общие настройки
+	AppConfigNATS          //настройки для доступа к API NATS
+	AppConfigElasticSearch //настройки для доступа к API Elasticsearch
+	AppConfigMongoDB       //настройки для доступа к MongoDB
+	AppConfigRulesProcMsg  //правила фильтрации
+	AppConfigMapping       //настройки сопоставления значений
 }
 
 type CommonAppConfig struct {
@@ -111,4 +113,17 @@ type AppConfigRulesProcMsg struct {
 	Directory string `yaml:"directory"`
 	FileCase  string `yaml:"file_case"`
 	FileAlert string `yaml:"file_alert"`
+}
+
+type AppConfigMapping struct {
+	AreaActivity []ObjectAreaActivity
+}
+
+type MAPPINGAREAACTIVITYSet struct {
+	MAPPINGAREAACTIVITY []ObjectAreaActivity
+}
+
+type ObjectAreaActivity struct {
+	ApprovedName   string   `yaml:"approvedName"`
+	VariationsName []string `yaml:"variationsName"`
 }
