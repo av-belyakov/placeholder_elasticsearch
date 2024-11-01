@@ -99,7 +99,6 @@ func NewEventEnrichmentModule(
 
 	//поиск информации по георасположению в API баз данных geoip
 	geoIpClient, err := NewGeoIpClient(
-		context.Background(),
 		WithHost(options.ConfGeoIP.Host),
 		WithPort(options.ConfGeoIP.Port),
 		WithPath(options.ConfGeoIP.Path),
@@ -191,19 +190,22 @@ func NewEventEnrichmentModule(
 					//поиск информации о геопозиционировании ip адресов
 					go func(ipAddresses []string) {
 						for _, ip := range ipAddresses {
-							geoIpInfo, err := geoIpClient.GetGeoInformation(ip)
+							ctxTimeout, ctxCancel := context.WithTimeout(ctx, 5*time.Second)
+							geoIpInfo, err := geoIpClient.GetGeoInformation(ctxTimeout, ip)
 							if err != nil {
 								_, f, l, _ := runtime.Caller(0)
 								logging <- datamodels.MessageLogging{
-									MsgData: fmt.Sprintf("'ip address: '%s', %v' %s:%d", ip, err, f, l-1),
+									MsgData: fmt.Sprintf("'ip address: '%s', %v' %s:%d", ip, err, f, l-2),
 									MsgType: "error",
 								}
 
+								ctxCancel()
 								continue
 							}
 
 							settingsResponse.IpAddresses = append(settingsResponse.IpAddresses, ip)
 							settingsResponse.IpAddressesInfo = append(settingsResponse.IpAddressesInfo, geoIpInfo)
+							ctxCancel()
 						}
 
 						wg.Done()

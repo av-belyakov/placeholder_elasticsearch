@@ -14,8 +14,7 @@ import (
 func NewResponseMessage() *ResponseMessageFromMispToTheHave {
 	return &ResponseMessageFromMispToTheHave{
 		Success: true,
-		//Service: "ES",
-		Service: "MISP",
+		Service: "ES",
 		Commands: []ResponseCommandForTheHive{
 			{
 				Command: "addtag",

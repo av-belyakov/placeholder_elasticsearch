@@ -156,7 +156,7 @@ func (e SettingsChanOutputEEM) SearchCity(ip, sourceInfo string) (string, bool) 
 	var foundElem string
 
 	for _, v := range e.IpAddressesInfo {
-		if v.Ip == ip {
+		if v.Ip != ip {
 			continue
 		}
 
@@ -173,7 +173,7 @@ func (e SettingsChanOutputEEM) SearchCountry(ip, sourceInfo string) (string, boo
 	var foundElem string
 
 	for _, v := range e.IpAddressesInfo {
-		if v.Ip == ip {
+		if v.Ip != ip {
 			continue
 		}
 
@@ -190,7 +190,7 @@ func (e SettingsChanOutputEEM) SearchCountryCode(ip, sourceInfo string) (string,
 	var foundElem string
 
 	for _, v := range e.IpAddressesInfo {
-		if v.Ip == ip {
+		if v.Ip != ip {
 			continue
 		}
 

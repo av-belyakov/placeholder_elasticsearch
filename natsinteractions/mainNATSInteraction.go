@@ -93,16 +93,10 @@ func NewClientNATS(
 
 // SenderData выполняет отправку в NATS данных приходящих в модуль из основной части приложения
 func SenderData(ns *natsStorage, chanInput <-chan SettingsInputChan, logging chan<- datamodels.MessageLogging) {
-
-	fmt.Println("func 'SenderData' START")
-
 	for data := range chanInput {
-		fmt.Println("func 'SenderData' DATA:", data)
-
 		if data.Command != "send tag" {
 			continue
 		}
-		fmt.Println("func 'SenderData' received case ID:", data.EventId)
 
 		//получаем дескриптор соединения с NATS для отправки eventId
 		ncd, ok := ns.getElement(data.TaskId)
@@ -116,7 +110,6 @@ func SenderData(ns *natsStorage, chanInput <-chan SettingsInputChan, logging cha
 
 			continue
 		}
-		fmt.Println("func 'SenderData' CHECK 222")
 
 		resMsg := datamodels.NewResponseMessage()
 		res, err := json.Marshal(resMsg.GetResponseMessageFromMispToTheHave())
@@ -130,19 +123,8 @@ func SenderData(ns *natsStorage, chanInput <-chan SettingsInputChan, logging cha
 
 			continue
 		}
-		fmt.Println("func 'SenderData' CHECK 333")
-		request, err := json.MarshalIndent(resMsg.GetResponseMessageFromMispToTheHave(), "", " ")
-		if err != nil {
-			_, f, l, _ := runtime.Caller(0)
 
-			logging <- datamodels.MessageLogging{
-				MsgData: fmt.Sprintf("%s %s:%d", err.Error(), f, l-2),
-				MsgType: "error",
-			}
-		}
-		fmt.Println(string(request))
-
-		//отправляем в NATS пакет с eventId для добавления его в TheHive
+		//отправляем в NATS пакет с тегом
 		if err := ncd.Respond(res); err != nil {
 			_, f, l, _ := runtime.Caller(0)
 
@@ -151,8 +133,5 @@ func SenderData(ns *natsStorage, chanInput <-chan SettingsInputChan, logging cha
 				MsgType: "error",
 			}
 		}
-
-		fmt.Println("func 'SenderData' SEND DATA IS SUCCEFULY")
-
 	}
 }

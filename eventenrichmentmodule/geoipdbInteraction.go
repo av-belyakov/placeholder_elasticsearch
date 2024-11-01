@@ -17,7 +17,6 @@ type GeoIpClient struct {
 	port              int
 	host              string
 	path              string
-	ctx               context.Context
 	connectionTimeout time.Duration
 	client            *http.Client
 }
@@ -96,11 +95,8 @@ func WithConnectionTimeout(timeout time.Duration) geoIpClientOptions {
 }
 
 // NewGeoIpClient GeoIP клиент
-func NewGeoIpClient(ctx context.Context, opts ...geoIpClientOptions) (*GeoIpClient, error) {
-	settings := GeoIpClient{
-		ctx:               ctx,
-		connectionTimeout: 30 * time.Second,
-	}
+func NewGeoIpClient(opts ...geoIpClientOptions) (*GeoIpClient, error) {
+	settings := GeoIpClient{connectionTimeout: 30 * time.Second}
 
 	for _, opt := range opts {
 		if err := opt(&settings); err != nil {
@@ -119,7 +115,7 @@ func NewGeoIpClient(ctx context.Context, opts ...geoIpClientOptions) (*GeoIpClie
 }
 
 // GetGeoInformation делает запрос к API БД GeoIP
-func (gic *GeoIpClient) GetGeoInformation(ip string) (GeoIpInformation, error) {
+func (gic *GeoIpClient) GetGeoInformation(ctx context.Context, ip string) (GeoIpInformation, error) {
 	result := GeoIpInformation{
 		Ip:   ip,
 		Info: make(map[string]IpLocation, 0),
@@ -132,7 +128,7 @@ func (gic *GeoIpClient) GetGeoInformation(ip string) (GeoIpInformation, error) {
 	}
 
 	url := fmt.Sprintf("http://%s:%d/%s/%s/", gic.host, gic.port, gic.path, ip)
-	req, err := http.NewRequestWithContext(gic.ctx, "GET", url, strings.NewReader(""))
+	req, err := http.NewRequestWithContext(ctx, "GET", url, strings.NewReader(""))
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)
 		return result, fmt.Errorf("%v %s:%d", err, f, l-2)

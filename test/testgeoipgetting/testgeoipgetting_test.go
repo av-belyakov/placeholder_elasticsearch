@@ -215,7 +215,7 @@ var _ = Describe("Testgeoipgetting", Ordered, func() {
 				WithConnectionTimeout(10*time.Second))
 			Expect(err).ShouldNot(HaveOccurred())
 
-			geoIpInfo, err := geoIpClient.GetGeoInformation("78.23.6.93")
+			geoIpInfo, err := geoIpClient.GetGeoInformation("144.126.197.43" /*"78.23.6.93"*/)
 			Expect(err).ShouldNot(HaveOccurred())
 
 			//--------------------------------------------------------

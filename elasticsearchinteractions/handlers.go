@@ -90,6 +90,9 @@ func (hsd HandlerSendData) AddEventenrichmentCase(data interface{}, indexName st
 		ipi.SetIp(ipAddress)
 
 		customIpInfo := groupIpInfoResult(infoEvent)
+
+		fmt.Println("---- func 'AddEventenrichmentCase' ---- customIpInfo:", customIpInfo)
+
 		ipi.SetCity(customIpInfo.city)
 		ipi.SetCountry(customIpInfo.country)
 		ipi.SetCountryCode(customIpInfo.countryCode)
@@ -107,6 +110,9 @@ func (hsd HandlerSendData) AddEventenrichmentCase(data interface{}, indexName st
 
 		return
 	}
+
+	fmt.Println("---- func 'AddEventenrichmentCase' ----")
+	fmt.Println("Request IP:", string(request))
 
 	bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": %s}", string(request)))
 	res, err := hsd.Client.Update(indexCurrent, caseId, bodyUpdate)
@@ -626,6 +632,30 @@ func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct
 
 	for _, ip := range infoEvent.GetIpAddresses() {
 		for _, source := range sources {
+			if city, ok := infoEvent.SearchCity(ip, source); ok && city != "" {
+				customIpResult.city = city
+			}
+
+			if country, ok := infoEvent.SearchCountry(ip, source); ok && country != "" {
+				customIpResult.country = country
+			}
+
+			if countryCode, ok := infoEvent.SearchCountryCode(ip, source); ok && countryCode != "" {
+				customIpResult.countryCode = countryCode
+			}
+		}
+	}
+
+	return customIpResult
+}
+
+/*
+func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct{ city, country, countryCode string } {
+	sources := [...]string{"GeoipNoc", "MAXMIND", "DBIP", "AriadnaDB"}
+	customIpResult := struct{ city, country, countryCode string }{}
+
+	for _, ip := range infoEvent.GetIpAddresses() {
+		for _, source := range sources {
 			fmt.Println("func 'groupIpInfoResult', ip:", ip, " source:", source)
 
 			if city, ok := infoEvent.SearchCity(ip, source); ok && city != "" {
@@ -650,3 +680,4 @@ func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct
 
 	return customIpResult
 }
+*/

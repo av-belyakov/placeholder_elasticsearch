@@ -1,5 +1,7 @@
 github.com/av-belyakov/simplelogger v0.0.0-20240829144636-e8b606b7e069 h1:uAVF/bS8X+hHm8hvy1voWBHonfdbrcAEFw58mvHPYsw=
 github.com/av-belyakov/simplelogger v0.0.0-20240829144636-e8b606b7e069/go.mod h1:NGvAPMeVHkAPNroGgrQzNvQBbXVmhj0g25+9y7ZUjsg=
+github.com/av-belyakov/simplelogger v0.0.0-20241025122435-67bb4d6f6ae4 h1:sIT6BPdH12iQoIDZKqrfP0g5rjIffJnpNuCxmG/QZvA=
+github.com/av-belyakov/simplelogger v0.0.0-20241025122435-67bb4d6f6ae4/go.mod h1:NGvAPMeVHkAPNroGgrQzNvQBbXVmhj0g25+9y7ZUjsg=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

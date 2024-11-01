@@ -42,8 +42,9 @@ var _ = Describe("Testzabbixapijsonrpc", Ordered, func() {
 
 	Context("Тест 1. Выполняем POST запрос к Zabbix", func() {
 		It("Не должно быть ошибок при запросе", func() {
-			//hostName := "690028"
-			hostName := "8030010"
+			hostName := "630102"
+
+			//hostName := "8030010"
 			//hostName := "570084"
 			//hostName := 530043 (содержит некорректную запись в Zabbix)
 
