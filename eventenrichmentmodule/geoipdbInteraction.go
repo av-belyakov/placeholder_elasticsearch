@@ -121,13 +121,14 @@ func (gic *GeoIpClient) GetGeoInformation(ctx context.Context, ip string) (GeoIp
 		Info: make(map[string]IpLocation, 0),
 	}
 
-	rex := regexp.MustCompile(`^((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$`)
-	if !rex.MatchString(ip) {
+	rex := regexp.MustCompile(`((25[0-5]|2[0-4]\d|[01]?\d\d?)[.]){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)`)
+	tmp := rex.FindStringSubmatch(ip)
+	if len(tmp) == 0 {
 		_, f, l, _ := runtime.Caller(0)
 		return result, fmt.Errorf("an invalid ip address '%s' was received %s:%d", ip, f, l-1)
 	}
 
-	url := fmt.Sprintf("http://%s:%d/%s/%s/", gic.host, gic.port, gic.path, ip)
+	url := fmt.Sprintf("http://%s:%d/%s/%s/", gic.host, gic.port, gic.path, tmp[0])
 	req, err := http.NewRequestWithContext(ctx, "GET", url, strings.NewReader(""))
 	if err != nil {
 		_, f, l, _ := runtime.Caller(0)

@@ -35,7 +35,7 @@ func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct
 	return customIpResult
 }
 
-var ipAddresses = [...]string{"104.16.167.228", "82.221.129.24", "192.168.152.1"}
+var ipAddresses = [...]string{"104.16.167.228", "82.221.129.24", "192.168.152.1", "56.14.66.100:8954"}
 
 func TestGeoIpInteraction(t *testing.T) {
 	settingsResponse := eventenrichmentmodule.SettingsChanOutputEEM{
