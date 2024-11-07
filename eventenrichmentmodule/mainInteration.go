@@ -190,7 +190,7 @@ func NewEventEnrichmentModule(
 					//поиск информации о геопозиционировании ip адресов
 					go func(ipAddresses []string) {
 						for _, ip := range ipAddresses {
-							ctxTimeout, ctxCancel := context.WithTimeout(ctx, 5*time.Second)
+							ctxTimeout, ctxCancel := context.WithTimeout(ctx, 7*time.Second)
 							geoIpInfo, err := geoIpClient.GetGeoInformation(ctxTimeout, ip)
 							if err != nil {
 								_, f, l, _ := runtime.Caller(0)
