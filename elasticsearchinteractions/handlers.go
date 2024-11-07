@@ -33,9 +33,6 @@ func (hsd HandlerSendData) AddEventenrichmentCase(data interface{}, indexName st
 		return
 	}
 
-	fmt.Println("---- func 'AddEventenrichmentCase' ----")
-	fmt.Println(infoEvent)
-
 	t := time.Now()
 	month := int(t.Month())
 	indexCurrent := fmt.Sprintf("%s_%d_%d", indexName, t.Year(), month)
@@ -91,8 +88,6 @@ func (hsd HandlerSendData) AddEventenrichmentCase(data interface{}, indexName st
 
 		customIpInfo := groupIpInfoResult(infoEvent)
 
-		fmt.Println("---- func 'AddEventenrichmentCase' ---- customIpInfo:", customIpInfo)
-
 		ipi.SetCity(customIpInfo.city)
 		ipi.SetCountry(customIpInfo.country)
 		ipi.SetCountryCode(customIpInfo.countryCode)
@@ -110,9 +105,6 @@ func (hsd HandlerSendData) AddEventenrichmentCase(data interface{}, indexName st
 
 		return
 	}
-
-	fmt.Println("---- func 'AddEventenrichmentCase' ----")
-	fmt.Println("Request IP:", string(request))
 
 	bodyUpdate := strings.NewReader(fmt.Sprintf("{\"doc\": %s}", string(request)))
 	res, err := hsd.Client.Update(indexCurrent, caseId, bodyUpdate)

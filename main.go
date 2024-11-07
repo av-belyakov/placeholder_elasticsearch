@@ -26,7 +26,13 @@ import (
 	"placeholder_elasticsearch/zabbixinteractions"
 )
 
-const ROOT_DIR = "placeholder_elasticsearch"
+const (
+	ROOT_DIR = "placeholder_elasticsearch"
+
+	ansiReset             = "\033[0m"
+	ansiWhite             = "\033[97m"
+	ansiDarkRedbackground = "\033[41m"
+)
 
 func getLoggerSettings(cls []confighandler.LogSet) []simplelogger.Options {
 	loggerConf := make([]simplelogger.Options, 0, len(cls))
@@ -271,7 +277,7 @@ func main() {
 		log.Fatalln("The application has been stopped. At least one subscription must be set for NATS")
 	}
 
-	msg := fmt.Sprintf("%s application, version %s is running. Application status is '%s'\n", versionandname.GetName(), versionandname.GetVersion(), appStatus)
+	msg := fmt.Sprintf("%v%v%s application, version %s is running. Application status is '%s'%v\n", ansiDarkRedbackground, ansiWhite, versionandname.GetName(), versionandname.GetVersion(), appStatus, ansiReset)
 	log.Println(msg)
 
 	//инициализируем модуль временного хранения информации
