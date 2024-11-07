@@ -19,14 +19,26 @@ func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct
 	for _, ip := range infoEvent.GetIpAddresses() {
 		for _, source := range sources {
 			if city, ok := infoEvent.SearchCity(ip, source); ok && city != "" {
+				if customIpResult.city != "" {
+					continue
+				}
+
 				customIpResult.city = city
 			}
 
 			if country, ok := infoEvent.SearchCountry(ip, source); ok && country != "" {
+				if customIpResult.country != "" {
+					continue
+				}
+
 				customIpResult.country = country
 			}
 
 			if countryCode, ok := infoEvent.SearchCountryCode(ip, source); ok && countryCode != "" {
+				if customIpResult.countryCode != "" {
+					continue
+				}
+
 				customIpResult.countryCode = countryCode
 			}
 		}
@@ -35,7 +47,7 @@ func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct
 	return customIpResult
 }
 
-var ipAddresses = [...]string{"104.16.167.228", "82.221.129.24", "192.168.152.1", "56.14.66.100:8954"}
+var ipAddresses = [...]string{"104.16.167.228", "82.221.129.24", "192.168.152.1", "56.14.66.100:8954", "82.157.247.165"}
 
 func TestGeoIpInteraction(t *testing.T) {
 	settingsResponse := eventenrichmentmodule.SettingsChanOutputEEM{
@@ -50,7 +62,7 @@ func TestGeoIpInteraction(t *testing.T) {
 		eventenrichmentmodule.WithConnectionTimeout(10*time.Second))
 	assert.NoError(t, err)
 
-	ctxTimeout, ctxCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctxTimeout, ctxCancel := context.WithTimeout(context.Background(), 7*time.Second)
 	defer ctxCancel()
 
 	for _, ip := range ipAddresses {
