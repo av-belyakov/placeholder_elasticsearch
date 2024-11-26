@@ -47,7 +47,7 @@ func groupIpInfoResult(infoEvent datamodels.InformationFromEventEnricher) struct
 	return customIpResult
 }
 
-var ipAddresses = [...]string{"104.16.167.228", "82.221.129.24", "192.168.152.1", "56.14.66.100:8954", "82.157.247.165"}
+var ipAddresses = [...]string{"42.236.85.79", "82.221.129.24", "192.168.152.1", "56.14.66.100:8954", "82.157.247.165"}
 
 func TestGeoIpInteraction(t *testing.T) {
 	settingsResponse := eventenrichmentmodule.SettingsChanOutputEEM{
@@ -62,7 +62,7 @@ func TestGeoIpInteraction(t *testing.T) {
 		eventenrichmentmodule.WithConnectionTimeout(10*time.Second))
 	assert.NoError(t, err)
 
-	ctxTimeout, ctxCancel := context.WithTimeout(context.Background(), 7*time.Second)
+	ctxTimeout, ctxCancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer ctxCancel()
 
 	for _, ip := range ipAddresses {
@@ -78,6 +78,12 @@ func TestGeoIpInteraction(t *testing.T) {
 
 		settingsResponse.IpAddresses = append(settingsResponse.IpAddresses, ip)
 		settingsResponse.IpAddressesInfo = append(settingsResponse.IpAddressesInfo, res)
+
+		for _, v := range settingsResponse.IpAddressesInfo {
+			if v.Ip == "42.236.85.79" {
+				fmt.Printf("%+v\n", v)
+			}
+		}
 
 		customIpInfo := groupIpInfoResult(settingsResponse)
 
