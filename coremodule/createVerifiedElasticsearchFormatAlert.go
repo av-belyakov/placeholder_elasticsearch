@@ -181,36 +181,24 @@ func NewVerifiedElasticsearchFormatAlert(
 	}
 
 	if eventObject.GetDescription() != "" {
-		fmt.Println("---- func 'NewVerifiedElasticsearchFormatAlert' eventObject.GetDescription()")
-
 		//получаем id сенсора из event.object.description (если он там есть)
 		if findSensorId, err := getSensorIdFromDescription(eventObject.GetDescription()); err == nil {
-			fmt.Println("---- func 'NewVerifiedElasticsearchFormatAlert' eventObject.GetDescription(), findSensorId =", findSensorId)
-
 			eventObject.SetValueTags("sensor:id", findSensorId)
 			eventDetails.SetValueTags("sensor:id", findSensorId)
 		}
 	}
 
 	if eventDetails.GetDescription() != "" {
-		fmt.Println("---- func 'NewVerifiedElasticsearchFormatAlert' eventDetails.GetDescription()")
-
 		//получаем id сенсора из event.details.description (если он там есть)
 		if findSensorId, err := getSensorIdFromDescription(eventDetails.GetDescription()); err == nil {
-			fmt.Println("---- func 'NewVerifiedElasticsearchFormatAlert' eventDetails.GetDescription(), findSensorId =", findSensorId)
-
 			eventObject.SetValueTags("sensor:id", findSensorId)
 			eventDetails.SetValueTags("sensor:id", findSensorId)
 		}
 	}
 
 	if alert.GetDescription() != "" {
-		fmt.Println("---- func 'NewVerifiedElasticsearchFormatAlert' alert.GetDescription()")
-
 		//получаем id сенсора из alert.description (если он там есть)
 		if findSensorId, err := getSensorIdFromDescription(alert.GetDescription()); err == nil {
-			fmt.Println("---- func 'NewVerifiedElasticsearchFormatAlert' alert.GetDescription(), findSensorId =", findSensorId)
-
 			alert.SetValueTags("sensor:id", findSensorId)
 		}
 	}
