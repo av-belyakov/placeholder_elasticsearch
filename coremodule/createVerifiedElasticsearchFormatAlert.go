@@ -183,6 +183,11 @@ func NewVerifiedElasticsearchFormatAlert(
 	//Собираем объект Alert
 	eventObject.SetValueCustomFields(eventObjectCustomFields)
 
+	//получаем id сенсора из event.object.description (если он там есть)
+	if findSensorId, err := getSensorIdFromDescription(eventObject.GetDescription()); err == nil {
+		eventObject.SetValueTags("sensor:id", findSensorId)
+	}
+
 	event.SetValueObject(*eventObject)
 	event.SetValueDetails(*eventDetails)
 

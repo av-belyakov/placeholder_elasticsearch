@@ -1,7 +1,9 @@
 package coremodule
 
 import (
+	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"placeholder_elasticsearch/datamodels"
@@ -54,4 +56,15 @@ func checkDatetimeFieldsEventObject(e *datamodels.EventMessageTheHiveCase) {
 	if e.Object.GetUpdatedAt() == "" {
 		e.Object.SetValueUpdatedAt("1970-01-01T00:00:00+00:00")
 	}
+}
+
+func getSensorIdFromDescription(v string) (string, error) {
+	rexSensorId := regexp.MustCompile(`СОА:\s-\s\*\*\x60(\d+)\x60\*\*`)
+	tmp := rexSensorId.FindStringSubmatch(v)
+
+	if len(tmp) <= 1 {
+		return "", errors.New("there is no sensor ID in the accepted line")
+	}
+
+	return tmp[1], nil
 }

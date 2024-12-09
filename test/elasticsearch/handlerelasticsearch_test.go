@@ -15,7 +15,7 @@ import (
 
 	"placeholder_elasticsearch/datamodels"
 	"placeholder_elasticsearch/elasticsearchinteractions"
-	"placeholder_elasticsearch/test/testelasticsearch"
+	testelasticsearch "placeholder_elasticsearch/test/elasticsearch"
 )
 
 func GetVerifiedForEsAlert(res *esapi.Response) (datamodels.ElasticsearchPatternVerifiedForEsAlert, error) {
