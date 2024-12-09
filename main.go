@@ -29,8 +29,11 @@ import (
 const (
 	ROOT_DIR = "placeholder_elasticsearch"
 
-	ansiReset             = "\033[0m"
-	ansiWhite             = "\033[97m"
+	boldFont                = "\033[1m"
+	ansiReset               = "\033[0m"
+	ansiWhite               = "\033[97m"
+	ansiDarkGreenBackground = "\033[42m"
+
 	ansiDarkRedbackground = "\033[41m"
 )
 
@@ -277,8 +280,8 @@ func main() {
 		log.Fatalln("The application has been stopped. At least one subscription must be set for NATS")
 	}
 
-	msg := fmt.Sprintf("%v%v%s application, version %s is running. Application status is '%s'%v\n", ansiDarkRedbackground, ansiWhite, versionandname.GetName(), versionandname.GetVersion(), appStatus, ansiReset)
-	log.Println(msg)
+	msg := fmt.Sprintf("%s application, version %s is running. Application status is '%s'", versionandname.GetName(), versionandname.GetVersion(), appStatus)
+	log.Printf("%v%v%v%s%v\n", ansiDarkGreenBackground, boldFont, ansiWhite, msg, ansiReset)
 
 	//инициализируем модуль временного хранения информации
 	storageApp := memorytemporarystorage.NewTemporaryStorage()
