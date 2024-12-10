@@ -10,7 +10,8 @@ type ObservablesMessageEs struct {
 
 // ObservableMessageEs наблюдаемое сообщение
 // SensorId - идентификатор сенсора
-// SnortSid - список идентификаторов сигнатур
+// SnortSid - список идентификаторов сигнатур (строка)
+// SnortSidNumber - список идентификаторов сигнатур (число)
 // Tags - список тегов
 // TagsAll - список всех тегов
 // Attachment - приложенные данные
@@ -20,10 +21,11 @@ type ObservablesMessageEs struct {
 // been exceeded while adding new fields"
 type ObservableMessageEs struct {
 	commonobservable.CommonObservableType
-	SensorId   string              `json:"sensorId,omitempty" bson:"sensorId"`
-	SnortSid   []string            `json:"snortSid,omitempty" bson:"snortSid"`
-	Tags       map[string][]string `json:"tags" bson:"tags"`
-	TagsAll    []string            `json:"tagsAll" bson:"tagsAll"`
-	Attachment AttachmentData      `json:"attachment,omitempty" bson:"attachment"`
+	SensorId       string              `json:"sensorId,omitempty" bson:"sensorId"`
+	SnortSid       []string            `json:"snortSid,omitempty" bson:"snortSid"`
+	SnortSidNumber []int               `json:"SnortSidNumber,omitempty" bson:"SnortSidNumber"`
+	Tags           map[string][]string `json:"tags" bson:"tags"`
+	TagsAll        []string            `json:"tagsAll" bson:"tagsAll"`
+	Attachment     AttachmentData      `json:"attachment,omitempty" bson:"attachment"`
 	// Reports    map[string]ReportTaxonomies `json:"reports" bson:"reports"`
 }

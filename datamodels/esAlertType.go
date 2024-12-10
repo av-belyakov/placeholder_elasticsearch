@@ -24,13 +24,15 @@ type AlertMessageForEsAlert struct {
 
 // ArtifactForEsAlert содержит артефакт к алерту
 // SensorId - сенсор id
-// SnortSid - список snort сигнатур
+// SnortSid - список snort сигнатур (строка)
+// SnortSidNumber - список snort сигнатур (число)
 // Tags - теги после обработки
 // TagsAll - все теги
 type ArtifactForEsAlert struct {
 	commonalertartifact.CommonArtifactType
-	SensorId string              `json:"sensorId,omitempty" bson:"sensorId"`
-	SnortSid []string            `json:"snortSid,omitempty" bson:"snortSid"`
-	Tags     map[string][]string `json:"tags" bson:"tags"`
-	TagsAll  []string            `json:"tagsAll" bson:"tagsAll"`
+	SensorId       string              `json:"sensorId,omitempty" bson:"sensorId"`
+	SnortSid       []string            `json:"snortSid,omitempty" bson:"snortSid"`
+	SnortSidNumber []int               `json:"SnortSidNumber,omitempty" bson:"SnortSidNumber"`
+	Tags           map[string][]string `json:"tags" bson:"tags"`
+	TagsAll        []string            `json:"tagsAll" bson:"tagsAll"`
 }

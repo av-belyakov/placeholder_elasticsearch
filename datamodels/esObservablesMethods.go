@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"placeholder_elasticsearch/datamodels/commonobservable"
@@ -104,9 +105,30 @@ func (o *ObservableMessageEs) SetValueSnortSid(v string) {
 	o.SnortSid = append(o.SnortSid, v)
 }
 
+func (o *ObservableMessageEs) GetSnortSidNumber() []int {
+	return o.SnortSidNumber
+}
+
 // SetAnySnortSid добавляет ЛЮБОЕ значение в список поля SnortSid
 func (o *ObservableMessageEs) SetAnySnortSid(i interface{}) {
 	o.SetValueSnortSid(fmt.Sprint(i))
+}
+
+// SetValueSnortSidNumber добавляет значение INT в список поля SnortSidNumber
+func (o *ObservableMessageEs) SetValueSnortSidNumber(v int) {
+	if o.SnortSidNumber == nil {
+		o.SnortSidNumber = []int(nil)
+	}
+
+	o.SnortSidNumber = append(o.SnortSidNumber, v)
+}
+
+// SetAnySnortSidNumber добавляет ЛЮБОЕ значение в список поля SnortSidNumber
+func (o *ObservableMessageEs) SetAnySnortSidNumber(i interface{}) {
+	str := fmt.Sprint(i)
+	if num, err := strconv.ParseUint(str, 10, 32); err == nil {
+		o.SetValueSnortSidNumber(int(num))
+	}
 }
 
 func (o *ObservableMessageEs) GetTags() map[string][]string {
@@ -195,6 +217,7 @@ func (om ObservableMessageEs) ToStringBeautiful(num int) string {
 	str.WriteString(om.CommonObservableType.ToStringBeautiful(num))
 	str.WriteString(fmt.Sprintf("%s'sensorId': '%s'\n", ws, om.SensorId))
 	str.WriteString(fmt.Sprintf("%s'snortSid': \n%s", ws, ToStringBeautifulSlice(num, om.SnortSid)))
+	str.WriteString(fmt.Sprintf("%s'snortSidNumber': \n%s", ws, ToStringBeautifulSlice(num, om.SnortSidNumber)))
 	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulMapSlice(num, om.Tags)))
 	str.WriteString(fmt.Sprintf("%s'tagsAll': \n%s", ws, ToStringBeautifulSlice(num, om.TagsAll)))
 	str.WriteString(fmt.Sprintf("%s'attachment': \n%s", ws, om.Attachment.ToStringBeautiful(num+1)))

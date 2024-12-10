@@ -2,6 +2,7 @@ package datamodels
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"placeholder_elasticsearch/datamodels/commonalert"
@@ -185,9 +186,10 @@ func NewArtifactForEsAlert() *ArtifactForEsAlert {
 			CreatedAt: "1970-01-01T00:00:00+00:00",
 			StartDate: "1970-01-01T00:00:00+00:00",
 		},
-		SnortSid: []string(nil),
-		Tags:     make(map[string][]string),
-		TagsAll:  []string(nil),
+		SnortSid:       []string(nil),
+		SnortSidNumber: []int(nil),
+		Tags:           make(map[string][]string),
+		TagsAll:        []string(nil),
 	}
 }
 
@@ -222,6 +224,23 @@ func (a *ArtifactForEsAlert) SetValueSnortSid(v string) {
 // SetAnySnortSid добавляет ЛЮБОЕ значение в список поля SnortSid
 func (a *ArtifactForEsAlert) SetAnySnortSid(i interface{}) {
 	a.SnortSid = append(a.SnortSid, fmt.Sprint(i))
+}
+
+func (a *ArtifactForEsAlert) GetSnortSidNumber() []int {
+	return a.SnortSidNumber
+}
+
+// SetValueSnortSidNumber добавляет значение INT в список поля SnortSidNumber
+func (a *ArtifactForEsAlert) SetValueSnortSidNumber(v int) {
+	a.SnortSidNumber = append(a.SnortSidNumber, v)
+}
+
+// SetAnySnortSidNumber добавляет ЛЮБОЕ значение в список поля SnortSidNumber
+func (a *ArtifactForEsAlert) SetAnySnortSidNumber(i interface{}) {
+	str := fmt.Sprint(i)
+	if num, err := strconv.ParseUint(str, 10, 32); err == nil {
+		a.SetValueSnortSidNumber(int(num))
+	}
 }
 
 func (a *ArtifactForEsAlert) GetTags() map[string][]string {
@@ -272,6 +291,7 @@ func (a *ArtifactForEsAlert) ToStringBeautiful(num int) string {
 	str.WriteString(a.CommonArtifactType.ToStringBeautiful(num))
 	str.WriteString(fmt.Sprintf("%s'sensorId': '%s'\n", ws, a.SensorId))
 	str.WriteString(fmt.Sprintf("%s'snortSid': \n%s", ws, ToStringBeautifulSlice(num, a.SnortSid)))
+	str.WriteString(fmt.Sprintf("%s'snortSidNumber': \n%s", ws, ToStringBeautifulSlice(num, a.SnortSidNumber)))
 	str.WriteString(fmt.Sprintf("%s'tags': \n%s", ws, ToStringBeautifulMapSlice(num, a.Tags)))
 	str.WriteString(fmt.Sprintf("%s'tagsAll': \n%s", ws, ToStringBeautifulSlice(num, a.TagsAll)))
 

@@ -14,6 +14,8 @@ type UserTypeGetter interface {
 	SetValueData(string)
 	SetValueSensorId(string)
 	SetValueSnortSid(string)
+	SetAnySnortSidNumber(any)
+	SetValueSnortSidNumber(int)
 }
 
 // PostProcessingUserType выполняет постобработку некоторых пользовательских типов
@@ -23,6 +25,7 @@ func PostProcessingUserType[T UserTypeGetter](ut T) (T, bool) {
 			if !strings.Contains(utg.GetData(), ",") {
 				if utg.GetData() != "" {
 					utg.SetValueSnortSid(utg.GetData())
+					utg.SetAnySnortSidNumber(utg.GetData())
 				}
 
 				return
@@ -30,7 +33,9 @@ func PostProcessingUserType[T UserTypeGetter](ut T) (T, bool) {
 
 			tmp := strings.Split(utg.GetData(), ",")
 			for _, v := range tmp {
-				utg.SetValueSnortSid(strings.TrimSpace(v))
+				str := strings.TrimSpace(v)
+				utg.SetValueSnortSid(str)
+				utg.SetAnySnortSidNumber(str)
 			}
 		},
 		"ip_home": func(utg UserTypeGetter) {
@@ -78,12 +83,12 @@ func replacingSliceString(current, new reflect.Value) (list reflect.Value, ok bo
 	return list, true
 }
 
-func ToStringBeautifulSlice(num int, l []string) string {
+func ToStringBeautifulSlice[T any](num int, l []T) string {
 	str := strings.Builder{}
 	ws := supportingfunctions.GetWhitespace(num + 1)
 
 	for k, v := range l {
-		str.WriteString(fmt.Sprintf("%s%d. '%s'\n", ws, k+1, v))
+		str.WriteString(fmt.Sprintf("%s%d. '%v'\n", ws, k+1, v))
 	}
 
 	return str.String()
