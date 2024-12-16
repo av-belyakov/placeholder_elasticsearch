@@ -56,7 +56,18 @@ func (o *ObservableMessageEs) ReplacingOldValues(element ObservableMessageEs) in
 			// для обработки поля "SnortSid"
 			//******************************
 			if typeOfCurrentStruct.Field(i).Name == "SnortSid" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
+					currentStruct.Field(i).Set(list)
+					countReplacingFields++
+				}
+
+				continue
+			}
+
+			//для обработки поля "SnortSidNumber"
+			//***********************************
+			if typeOfCurrentStruct.Field(i).Name == "SnortSidNumber" {
+				if list, ok := replacingSlice[int](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -86,7 +97,7 @@ func (o *ObservableMessageEs) ReplacingOldValues(element ObservableMessageEs) in
 			// для обработки поля "TagsAll"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}

@@ -63,13 +63,13 @@ func PostProcessingUserType[T UserTypeGetter](ut T) (T, bool) {
 	return ut, true
 }
 
-func replacingSliceString(current, new reflect.Value) (list reflect.Value, ok bool) {
+func replacingSlice[T comparable](current, new reflect.Value) (list reflect.Value, ok bool) {
 	if reflect.DeepEqual(current, new) {
 		return list, false
 	}
 
-	currentTags, okCurr := current.Interface().([]string)
-	newTags, okNew := new.Interface().([]string)
+	currentTags, okCurr := current.Interface().([]T)
+	newTags, okNew := new.Interface().([]T)
 	if !okCurr || !okNew {
 		return list, false
 	}
@@ -78,7 +78,7 @@ func replacingSliceString(current, new reflect.Value) (list reflect.Value, ok bo
 		return list, false
 	}
 
-	list = reflect.ValueOf(supportingfunctions.SliceJoinUniq[string](currentTags, newTags))
+	list = reflect.ValueOf(supportingfunctions.SliceJoinUniq[T](currentTags, newTags))
 
 	return list, true
 }

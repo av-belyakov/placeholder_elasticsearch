@@ -58,7 +58,7 @@ func (am *AlertMessageForEsAlert) ReplacingOldValues(element AlertMessageForEsAl
 			// для обработки поля "TagsAll"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -179,7 +179,7 @@ func (a *ArtifactForEsAlert) ReplacingOldValues(element ArtifactForEsAlert) int 
 			// для обработки поля "TagsAll"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}

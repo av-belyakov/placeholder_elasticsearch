@@ -39,7 +39,7 @@ func (am *AlertMessageTheHiveAlert) ReplacingOldValues(element AlertMessageTheHi
 
 			// для обработки поля "Tags"
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -155,7 +155,7 @@ func (a *AlertArtifact) ReplacingOldValues(element AlertArtifact) int {
 
 			// для обработки поля "Tags"
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}

@@ -169,7 +169,7 @@ func (o *EventForEsCaseObject) ReplacingOldValues(element EventForEsCaseObject) 
 			// для обработки поля "TagsAll"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "TagsAll" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}

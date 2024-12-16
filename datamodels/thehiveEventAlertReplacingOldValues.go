@@ -86,7 +86,7 @@ func (d *EventAlertDetails) ReplacingOldValues(element EventAlertDetails) int {
 			// для обработки поля "Tags"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -148,7 +148,7 @@ func (o *EventAlertObject) ReplacingOldValues(element EventAlertObject) int {
 			// для обработки поля "Tags"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Tags" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}

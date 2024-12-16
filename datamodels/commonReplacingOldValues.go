@@ -142,7 +142,7 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 			// для обработки поля "Platforms"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "Platforms" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -153,7 +153,7 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 			// для обработки поля "PermissionsRequired"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "PermissionsRequired" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -164,7 +164,7 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 			// для обработки поля "DataSources"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "DataSources" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -175,7 +175,7 @@ func (ped *PatternExtraData) ReplacingOldValues(element PatternExtraData) int {
 			// для обработки поля "Tactics"
 			//*****************************
 			if typeOfCurrentStruct.Field(i).Name == "Tactics" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
@@ -239,7 +239,7 @@ func (a *AttachmentData) ReplacingOldValues(element AttachmentData) int {
 			// для обработки поля "Hashes"
 			//**************************
 			if typeOfCurrentStruct.Field(i).Name == "Hashes" {
-				if list, ok := replacingSliceString(currentStruct.Field(i), newStruct.Field(j)); ok {
+				if list, ok := replacingSlice[string](currentStruct.Field(i), newStruct.Field(j)); ok {
 					currentStruct.Field(i).Set(list)
 					countReplacingFields++
 				}
